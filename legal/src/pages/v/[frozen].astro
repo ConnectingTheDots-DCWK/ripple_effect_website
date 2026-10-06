@@ -1,0 +1,81 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { documents, entryId, formatDate, legal } from "../../manifest";
+
+/**
+ * A version, pinned.
+ *
+ * Every version of every document gets one of these, including the one
+ * currently in force, and the promise attached to it is that it never changes
+ * again. That is what makes "you accepted version 1.0 on 15 October" a
+ * statement somebody can check: the application records a version, and this
+ * is the page that version resolves to for as long as the record is worth
+ * anything.
+ *
+ * The path is built from the manifest's `path` rather than composed here, so
+ * there is exactly one spelling of it and the application's test can compare
+ * against the same string.
+ */
+export function getStaticPaths() {
+  return documents.flatMap((document) =>
+    document.versions.map((version) => ({
+      // `path` is `v/eula-1.0`; this route owns everything after `v/`.
+      params: { frozen: version.path.replace(/^v\//, "") },
+      props: { document, version },
+    })),
+  );
+}
+
+const { document, version } = Astro.props;
+const entry = await getEntry("documents", entryId(document.slug, version.version));
+if (!entry) {
+  throw new Error(
+    `legal: ${document.slug} ${version.version} is in the manifest but ${version.source} does not exist`,
+  );
+}
+const { Content } = await render(entry);
+
+const isCurrent = version.version === document.current;
+---
+
+<Base
+  title={`${document.title} v${version.version}`}
+  description={document.summary}
+  current={document.slug}
+  archived={!isCurrent}
+  canonical={`${legal.origin}/${document.slug}/`}
+>
+  <h1 class="title">{document.title}</h1>
+  <p class="standfirst">{document.summary}</p>
+
+  <p class="stamp">
+    <b>Version {version.version}</b>, effective {formatDate(version.effective)}. This
+    page is a fixed copy and will not change.
+    <br />
+    {
+      isCurrent ? (
+        <>
+          It is also the version in force. The living link is{" "}
+          <a href={`/${document.slug}/`}>
+            {legal.origin}/{document.slug}/
+          </a>
+          .
+        </>
+      ) : (
+        <>
+          <b>This version has been superseded.</b> The one in force is version{" "}
+          {document.current}, at{" "}
+          <a href={`/${document.slug}/`}>
+            {legal.origin}/{document.slug}/
+          </a>
+          .
+        </>
+      )
+    }
+  </p>
+
+  <div class="prose">
+    <Content />
+  </div>
+</Base>

@@ -1,0 +1,243 @@
+/*
+ * The house style, translated onto Starlight and onto Tailwind.
+ *
+ * `website/src/app/globals.css` is the source and the hexes are copied from it
+ * verbatim — the same relationship that file has with
+ * `packages/ripple_theme/lib/src/app_tokens.dart` in the app. Nothing here is
+ * converted or re-derived, so a diff between the three is a real diff.
+ *
+ * Three things make this a translation rather than a copy, and each is a way
+ * to be silently wrong.
+ *
+ * **Starlight is dark-first; the landing page is light-first.** Starlight puts
+ * dark in `:root` and light in `:root[data-theme='light']`. The site does the
+ * opposite. The two blocks below are in the reverse order to the file they came
+ * from, and a value moved across without being swapped is in the wrong mode.
+ *
+ * **The theme switch is a different mechanism.** Starlight writes `data-theme`
+ * on the root element; the landing page uses next-themes and a `.dark` class.
+ * Tailwind's `dark:` variant is redefined for this by
+ * `@astrojs/starlight-tailwind`, so `dark:` works in markup pasted from the
+ * landing page — but a hand-written `.dark` selector will never match.
+ *
+ * **`--sl-color-white` is not white and `--sl-color-black` is not black.** They
+ * are roles — "furthest from the page" and "the page itself" — and they swap
+ * actual colours between modes. Read every `--sl-color-*` name as a role.
+ */
+
+/* --------------------------------------------------------------------------
+ * Tailwind's vocabulary, pointed at the same tokens.
+ *
+ * `inline` rather than a plain `@theme`: it makes the generated utilities emit
+ * `var(--background)` rather than a copied value, which is the only way a
+ * class like `bg-background` can follow the theme switch. The names match
+ * `globals.css` exactly so that a class list pasted from a landing-page
+ * component means the same thing here as it did there.
+ * ----------------------------------------------------------------------- */
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-popover: var(--popover);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-border: var(--border);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-brand: var(--brand);
+	--color-destructive: var(--destructive);
+	--color-go: var(--go);
+	--color-caution: var(--caution);
+	--color-ring: var(--ring);
+
+	/* AppRadius, which derives everything from one number so that making the
+	   product rounder is one edit that keeps the relationships. */
+	--radius-sm: 0.5rem; /* 8px  — inputs, menu items, rows */
+	--radius-md: 0.75rem; /* 12px — buttons, cards, chips */
+	--radius-lg: 1rem; /* 16px — panels, popovers */
+	--radius-xl: 1.5rem; /* 24px — dialogs */
+
+	/* AppMotion. Short and few: motion is here to say "that responded". */
+	--ease-curve: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+	/* Read by `@astrojs/starlight-tailwind`, which wires `--sl-font` from it —
+	   so this is the one place the family is named. Starlight appends its own
+	   system stack after it. */
+	--font-sans: 'Geist Variable';
+	--font-mono: 'Geist Mono Variable';
+}
+
+@layer ripple {
+	/* ------------------------------------------------------------------
+	 * The tokens, verbatim. Dark first, because that is where Starlight
+	 * keeps it.
+	 * --------------------------------------------------------------- */
+
+	:root,
+	::backdrop {
+		/* AppNeutrals.dark */
+		--background: #0d0f13; /* surface          */
+		--foreground: #e8eaef; /* onSurface        */
+		--card: #14171c; /* containerLow     */
+		--popover: #1a1d23; /* container        */
+		--muted: #1a1d23;
+		--muted-foreground: #99a0ae; /* onSurfaceVariant */
+		--border: #262a32; /* outlineVariant   */
+
+		/* Light accent, dark label — the direction the app's own dark scheme
+		   takes the seed. `--brand` is the mark's colour and stays put across
+		   modes; `--primary` is the legible derivative links and controls use. */
+		--brand: #6c7bf5;
+		--primary: #a8b1fa;
+		--primary-foreground: #14171c;
+		--ring: #a8b1fa;
+
+		/* The glint's sweep. White in both modes, because a highlight is
+		   lighter than the thing it crosses; only how hard it has to be pushed
+		   changes. #a8b1fa is already pale, so 0.55 here against 0.4 on the
+		   light theme's indigo lands at a comparable step. */
+		--glint: rgb(255 255 255 / 0.55);
+
+		--destructive: #cf4538; /* AppStatus.stop.dark    */
+		--go: #398358; /* AppStatus.go.dark      */
+		--caution: #fbbf24; /* AppStatus.caution.dark */
+
+		--radius: 0.75rem;
+		--motion-fast: 120ms;
+		--motion-base: 180ms;
+		--motion-slow: 260ms;
+		--motion-curve: cubic-bezier(0.215, 0.61, 0.355, 1);
+	}
+
+	:root[data-theme='light'],
+	[data-theme='light'] ::backdrop {
+		/* AppNeutrals.light */
+		--background: #f3f5f9; /* surface          */
+		--foreground: #15171c; /* onSurface        */
+		--card: #ffffff; /* containerLowest  */
+		--popover: #ffffff;
+		--muted: #edeff4;
+		--muted-foreground: #5a6070; /* onSurfaceVariant */
+		--border: #dfe3eb; /* outlineVariant   */
+
+		/* White on the seed #6C7BF5 is 3.63:1; on this it is 5.63:1, which is
+		   why the seed is never the thing text sits on. */
+		--brand: #6c7bf5;
+		--primary: #4a57e0;
+		--primary-foreground: #ffffff;
+		--ring: #4a57e0;
+		--glint: rgb(255 255 255 / 0.4);
+
+		--destructive: #c0392b; /* AppStatus.stop.light    */
+		--go: #2f7a4f; /* AppStatus.go.light      */
+		--caution: #a04a08; /* AppStatus.caution.light */
+	}
+
+	/* ------------------------------------------------------------------
+	 * The bridge. Written once, because custom properties resolve at use:
+	 * every `var(--background)` below picks up whichever of the two blocks
+	 * above is in scope. Duplicating it per mode would be two chances to
+	 * disagree.
+	 * --------------------------------------------------------------- */
+
+	:root,
+	::backdrop {
+		--sl-color-white: var(--foreground);
+		--sl-color-black: var(--background);
+
+		/* Starlight's ramp runs 1 (nearest the text) to 7 (nearest the page).
+		   Three of the seven are real tokens; the gaps are mixed between the
+		   two anchors rather than invented, so the ladder stays tied to the
+		   same hexes and there is nothing new to keep in step. */
+		--sl-color-gray-1: var(--foreground);
+		--sl-color-gray-2: color-mix(in oklab, var(--foreground) 82%, var(--background));
+		--sl-color-gray-3: var(--muted-foreground);
+		--sl-color-gray-4: color-mix(in oklab, var(--muted-foreground) 62%, var(--background));
+		--sl-color-gray-5: var(--border);
+		--sl-color-gray-6: var(--card);
+		--sl-color-gray-7: var(--popover);
+
+		/* Body text is `--foreground`, not the dimmer step Starlight defaults
+		   to. Documentation is read for minutes at a time; the site's
+		   *secondary* text colour is used below for exactly that. */
+		--sl-color-text: var(--foreground);
+		--sl-color-text-accent: var(--primary);
+		--sl-color-text-invert: var(--primary-foreground);
+
+		/*
+		 * **The one place this deliberately inverts Starlight, and the whole
+		 * reason it looks like itself.** The house rule is that *the page is
+		 * the grey one and a card sits lighter on it, in both modes* —
+		 * Material's light ramp runs the other way, which puts a panel
+		 * underneath the page it is on and makes it read as a dent.
+		 *
+		 * Starlight's dark mode already agrees. Its light mode does not: a
+		 * white page with a faintly grey nav, which is the dent. Pointing the
+		 * page at `--background` and both chrome surfaces at `--card` fixes
+		 * light and leaves dark where it already was.
+		 */
+		--sl-color-bg: var(--background);
+		--sl-color-bg-nav: var(--card);
+		--sl-color-bg-sidebar: var(--card);
+		--sl-color-bg-inline-code: var(--muted);
+		--sl-color-bg-accent: var(--primary);
+
+		--sl-color-accent-low: color-mix(in oklab, var(--primary) 18%, var(--background));
+		--sl-color-accent: var(--primary);
+		--sl-color-accent-high: color-mix(in oklab, var(--primary) 65%, var(--foreground));
+
+		--sl-color-hairline: var(--border);
+		--sl-color-hairline-light: var(--border);
+		--sl-color-hairline-shade: var(--border);
+
+		--sl-color-backdrop-overlay: color-mix(in srgb, var(--background) 66%, transparent);
+
+		/*
+		 * Asides are keyed by hue rather than by meaning — note is blue, tip is
+		 * purple, caution is orange, danger is red — so the app's own status
+		 * colours land on them by name. A caution in the docs is then the same
+		 * yellow as a caution in the app's messages panel.
+		 *
+		 * Each hue needs a `-low` (a tint to sit behind text) and a `-high`
+		 * (the readable variant). Both are mixed from the mid rather than
+		 * tabled per mode: `-low` moves toward the page and `-high` toward the
+		 * text, and since those two swap places between light and dark, one
+		 * formula is correct in both.
+		 */
+		--sl-color-blue: var(--primary);
+		--sl-color-purple: var(--brand);
+		--sl-color-green: var(--go);
+		--sl-color-orange: var(--caution);
+		--sl-color-red: var(--destructive);
+
+		--sl-color-blue-low: color-mix(in oklab, var(--sl-color-blue) 20%, var(--background));
+		--sl-color-blue-high: color-mix(in oklab, var(--sl-color-blue) 65%, var(--foreground));
+		--sl-color-purple-low: color-mix(in oklab, var(--sl-color-purple) 20%, var(--background));
+		--sl-color-purple-high: color-mix(in oklab, var(--sl-color-purple) 65%, var(--foreground));
+		--sl-color-green-low: color-mix(in oklab, var(--sl-color-green) 20%, var(--background));
+		--sl-color-green-high: color-mix(in oklab, var(--sl-color-green) 65%, var(--foreground));
+		--sl-color-orange-low: color-mix(in oklab, var(--sl-color-orange) 20%, var(--background));
+		--sl-color-orange-high: color-mix(in oklab, var(--sl-color-orange) 65%, var(--foreground));
+		--sl-color-red-low: color-mix(in oklab, var(--sl-color-red) 20%, var(--background));
+		--sl-color-red-high: color-mix(in oklab, var(--sl-color-red) 65%, var(--foreground));
+
+		/*
+		 * Starlight's own shadow scale, flattened to nothing.
+		 *
+		 * The house rule is *no glass, no gradients* and a card is told apart
+		 * from the page by a hairline and a tone, never by a drop shadow. The
+		 * three variables still have to exist because Starlight's components
+		 * reference them.
+		 */
+		--sl-shadow-sm: none;
+		--sl-shadow-md: none;
+		--sl-shadow-lg: none;
+
+		/* The landing page's header is 64px and its prose column is 48rem.
+		   Matching both is most of why a reader moving between the two sites
+		   does not feel the seam. */
+		--sl-nav-height: 4rem;
+		--sl-content-width: 48rem;
+	}
+}

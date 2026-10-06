@@ -1,0 +1,125 @@
+---
+title: Exporting
+description: A project copy for a translator, or a compiled campaign for a runtime — with passages as Markdown or as HTML against a profile of your own.
+sidebar:
+  order: 11
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Export makes one of two things, and the dialog asks which.
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+## A project copy
+
+What export always made: a folder that opens in the editor, with `.ripple/`
+included, for handing to a translator or for keeping. It is the project with
+its media resolved — a picture the prose points at from outside the project
+lands in `media/external/` — and zipping it or leaving the media out are
+switches on the dialog.
+
+**Include media** is three switches, one each for images, videos and audio.
+A story's music is the heaviest thing in the folder and the one most likely
+to be somebody else's to license, so sending a translator the story and
+keeping the score is the ordinary case. With a kind off, its files are listed
+and left behind, and the passages, boards and soundscapes still point where
+they would have been, so they can be put back later.
+
+## A campaign
+
+The story **compiled down** to a bundle a runtime plays with no editor
+anywhere near it. It is not a rearranged copy of the project: every reference
+has been resolved ahead of time, every board's evaluation order decided, every
+passage's languages flattened into one file, and everything only an editor
+cares about thrown away.
+
+<FileTree>
+- campaign/
+  - campaign.json the manifest
+  - boards/
+    - the_gates.board.json
+  - passages/
+    - reaching_the_gates.passage.json every language, in one file
+  - components/
+    - goblin.component.json
+  - scripts/
+    - damage.py
+  - soundscapes/
+    - tavern.soundscape.json every clip's file as a media index
+  - media/
+    - art/
+      - map.png
+    - music/
+      - tavern.ogg
+</FileTree>
+
+What a compiled campaign gets right that a copy of the project could not:
+
+- **Only the languages the project has.** A language you switched off stays in
+  your project and does not ship.
+- **Only the media the project actually holds.** A picture a passage or a
+  component points at but does not have is left out rather than travelling as
+  a name nothing can open. The export already told you about these in
+  Messages; now what it produces agrees with what it said.
+- **A macro is copied into whatever calls it.** Nothing of a macro reaches
+  the bundle: each call is spliced into the board that made it, so a runtime
+  never has to know what a macro is, and two calls are two copies.
+- **The Python does not travel inside the prose.** Each passage's snippets are
+  lifted into a table of their own, with a marker left where each one was, so
+  a program playing the campaign puts the answers in by number and never has
+  to know what Markdown is.
+- **Sound is a table, and the runtime plays none of it.** A Narration node
+  names its soundscape by index into `soundscapes/`; the runtime decides
+  which one is in force and tells its host, which renders it with whatever
+  it has. The command-line player prints a line per change and hears
+  nothing, and that is conforming.
+- **A node's metadata travels with it**, under `metadata` on the node, for
+  whatever plays the campaign to read. The runtime hands it to the host on
+  the node's turn and never looks inside.
+
+The lifting is what makes delivering the prose in another format possible at
+all. It is also why **a campaign exported by an earlier version will not play
+in this one** — it says so by name, and exporting it again from the project is
+one click. A saved game is unaffected.
+
+The bundle format is a published contract, and the runtime that plays it —
+`ripple_runtime` — is pure Dart with no Flutter in it. A command-line player
+built from it plays a campaign in a terminal with neither Flutter nor Dart
+installed, which is how the claim is checked.
+
+## Passages as HTML
+
+Below the line in the export dialog — the controls above it decide what
+*travels*, the ones below decide what the prose *becomes* — a campaign can
+have every passage written out as an HTML fragment per language, ready to
+drop into a page. The editor and the play view stay Markdown; this is for
+whatever reads the campaign next.
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+An **export profile** names the class each kind of element gets. A paragraph,
+a heading, emphasis, a link, a table cell, a Python snippet — each can carry a
+class of your choosing, so the fragments fit a stylesheet you already have.
+Picking HTML opens the profile beside the export controls: each kind of thing
+on the left, with the Markdown it stands for on a tooltip, and a field for its
+class on the right, saved as you type. Nothing assigned means no attribute at
+all.
+
+A profile is a file in the project, `.ripple/export/<name>.profile.json`,
+committed with the story so a build reproduces it, and one profile serves as
+many exports as you like.
+
+## Stripping media and links
+
+Two switches, and both work on a project copy as well as a campaign:
+
+- **Strip media** takes embedded pictures, videos and audio out of the prose,
+  for a reader that cannot show them — one child switch per kind.
+- **Strip links** unwraps a link to its words.
+
+A link to a picture is a picture, not a link, and answers to the first switch.
+Neither changes what travels beside the passages — that is still *Include
+media* — and a strip for a kind that is not in the export is disabled, since
+there is nothing to strip; it comes back as it was when the kind does.

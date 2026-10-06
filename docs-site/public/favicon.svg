@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- The generated app icon, transcribed: the plate from
+       test/tool/generate_icons_test.dart (a rounded square, corner radius
+       side * 0.22, a topLeft-to-bottomRight gradient from the seed at HSL
+       lightness +0.06 to -0.14) with paintRippleMark in white, inset 0.17 on
+       every side. The same numbers as the landing page's src/lib/brand.ts,
+       which draws its favicon from them, so the two tabs carry one icon. -->
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="hsl(233.4 87.3% 75.2%)"/>
+      <stop offset="1" stop-color="hsl(233.4 87.3% 55.2%)"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14.08" fill="url(#plate)"/>
+  <circle cx="32" cy="32" r="9.72" stroke="#fff" stroke-opacity="0.95" stroke-width="2.75"/>
+  <circle cx="32" cy="32" r="15.21" stroke="#fff" stroke-opacity="0.55" stroke-width="2.32"/>
+  <circle cx="32" cy="32" r="20.28" stroke="#fff" stroke-opacity="0.28" stroke-width="1.90"/>
+  <circle cx="32" cy="32" r="3.59" fill="#fff"/>
+</svg>

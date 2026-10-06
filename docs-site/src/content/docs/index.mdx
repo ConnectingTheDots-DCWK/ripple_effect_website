@@ -1,0 +1,38 @@
+---
+title: Ripple Effect
+description: A branching narrative and game design tool that keeps a story as ordinary files on your own disk.
+template: splash
+hero:
+  tagline: Stories drawn as node graphs, over a folder you own.
+  image:
+    file: ../../assets/ripple-mark.svg
+  actions:
+    - text: What Ripple Effect is
+      link: /start-here/what-ripple-effect-is/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Overviews" icon="open-book">
+    One page per feature — boards, passages, components, Python, sound,
+    playing, exporting, version control — saying what each is for and where
+    its files live. Start with [the workspace](/overviews/the-workspace/).
+  </Card>
+  <Card title="Tutorials" icon="pencil">
+    [Your first story](/tutorials/your-first-story/) goes from an empty folder
+    to a playable branch in a few minutes.
+  </Card>
+  <Card title="Setup" icon="setting">
+    [Installing](/setup/installing/) on each platform and what to click when
+    it is stopped, and [connecting an MCP
+    client](/setup/connecting-an-mcp-client/) — Claude Code, Claude Desktop,
+    Cursor or anything else.
+  </Card>
+  <Card title="Reference" icon="document">
+    [Every node](/reference/nodes/), and the [Python
+    API](/reference/python/): every function a script, a passage or the
+    console may call, what it answers and what it refuses.
+  </Card>
+</CardGrid>

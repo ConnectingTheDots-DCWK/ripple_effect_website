@@ -1,0 +1,116 @@
+---
+title: Passages and languages
+description: One passage in every language the story has, as a folder of Markdown files — and how long each takes to read.
+sidebar:
+  order: 3
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+A passage is Markdown. On a board it is a Narration node; on disk it is a
+**localised passage** — a folder the app shows as one file, holding one `.md`
+per language the project has.
+
+<FileTree>
+- chapters/
+  - the_gates.graph.json
+  - reaching_the_gates.loc.narr.bdl/
+    - en-US.md the passage, in the language the story is written in
+    - it-IT.md its translation
+    - touch.json when each was last touched, so a clone can tell which is older
+</FileTree>
+
+One passage in several languages is one document — nothing anybody wants to
+open separately. What is on disk stays ordinary Markdown, so a translator
+handed the folder can work in any editor and a `git diff` reads as prose.
+
+<Shot name="localisation" />
+
+## Writing
+
+Double-click a Narration node to write in it. The editor is the same Markdown
+editor the app uses everywhere: a live render, a formatting toolbar, and image
+embeds, local and remote, raster and SVG — drop a file on it and the link
+writes itself. A picture picked from outside the project is copied into
+`.ripple/external/` first, unless importing outside assets is switched off
+from the palette, in which case it is linked and Messages says so.
+
+A link the app writes starts with a slash — `![map](/art/map.png)`, measured
+from the project's root the way GitHub reads one — so a passage can be dragged
+into a chapter and a folder renamed and the picture still points where it
+did. A link written by hand without one goes on meaning what it always meant:
+relative to the bundle's *parent* folder, the way a file in its place would
+be, so `![](../art/map.png)` beside `chapters/the_gates.graph.json` means
+`art/map.png`.
+
+Two places in a passage can hold Python — an inline `{{ … }}` span and a
+fenced ```` ```ripple ```` block — so a sentence can vary instead of forking
+into two passages. A passage only *reads*; see [Python
+scripting](/overviews/python-scripting/).
+
+## The languages
+
+**The language a story is written in is chosen when the project is made.** The
+starting point comes from your computer's settings, but the choice is offered
+rather than applied on your behalf. The languages it is *translated into* are
+chosen in Project settings.
+
+Switching a translation language on puts an empty translation into every
+bundle. Switching one off deletes nothing: the files stay, the editor keeps
+showing them marked retired, and readers stop being offered that language. If
+you want the words gone, you are asked once, on save, and **Keep them** is the
+button under your finger — nothing is deleted by clicking through the dialog
+or dismissing it.
+
+Project settings says what changing *Written in* will do, which is nothing to
+your prose: every passage gets an empty file for the new language, everything
+you have written stays where it is as a translation, and until you carry it
+across your passages play empty. There is no migration for that yet.
+
+## When a translation falls behind
+
+The locale chips along the top of a bundle each stand for one language. A
+**dot** on a chip means that translation is older than its source. The
+Messages tab lists every one that has fallen behind, across the whole project.
+
+The app cannot ask the filesystem this question — a `git clone` sets every
+file's time to the moment of checkout — which is what `touch.json` is for. It
+is written with sorted keys and UTC times so it stays quiet in a diff, and a
+conflict between two translators is three lines a person can resolve.
+
+## Reading time
+
+{/* TODO(shots): <Shot name="readingTime" /> */}
+
+Under every passage: the word count on the left, and on the right a choice of
+reading pace — slow, average or skimming — with the estimate beside it. It
+keeps up as you type, and the pace you pick is remembered.
+
+**It counts the language you are actually writing in.** Fifty-four of them,
+each with its own reading speed, so a passage in German and the same passage
+in English come out at about the same length of read even though the word
+counts differ. Japanese, Chinese, Thai and Khmer are counted by the character,
+because they are written without spaces between words and counting those by
+the word gives an answer wrong by a factor of ten. A passage mixing scripts is
+counted as both.
+
+**The estimate says how much to trust it.** Seventeen of the languages carry
+figures from reading studies; the rest are worked out from a close relative,
+and the tooltip on the estimate says which one you are looking at.
+
+Code does not count as prose: Python snippets and fenced blocks come out
+before anything is counted, and a link is worth the words you read rather than
+the length of its URL.
+
+**A passage that mixes languages can be counted as one.** Off by default, and
+switched on per project in settings: paragraphs written in a language other
+than the passage's own are found and priced at that language's speed. It is a
+project setting because whether your prose mixes languages is a fact about the
+story, and it is off by default because it reads every paragraph after each
+pause in typing. Short paragraphs are left alone — a language guessed from one
+line is guessed, not known.
+
+The arithmetic is a separate, open-source package:
+[`dart_read_time`](https://github.com/ConnectingTheDots-DCWK/dart_read_time),
+pure Dart, MIT.

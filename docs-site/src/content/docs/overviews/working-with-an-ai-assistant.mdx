@@ -1,0 +1,124 @@
+---
+title: Working with an AI assistant
+description: Ripple Effect is an MCP server. An assistant you already use can read the project, play it, and — once you allow it — write into it.
+sidebar:
+  order: 13
+---
+
+import Shot from '../../../components/Shot.astro';
+
+Ripple Effect is an **MCP server**, so Claude Code, Claude Desktop, Cursor and
+anything else that speaks the protocol can work in the folder alongside you
+instead of being pasted things. Because a project is ordinary files, an
+assistant with the folder open can already read most of it; what the server
+adds is the part the files cannot answer on their own — what leads to what
+across boards, which translations have fallen behind, what the embedded
+Python can actually do, and playing the story.
+
+{/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+## Off until you turn it on, in two steps
+
+The **Agents** panel opens from the robot button in the app bar, or from the
+palette. It has two switches, and both default to off:
+
+- **Agent access** — the server listens. An assistant can read the project and
+  play it. Reading is useful on its own and cannot touch a thing.
+- **Agents may edit** — subordinate to the first, and off independently. An
+  assistant can change files.
+
+The server is a private local channel that only your own account can open —
+never a network port. Pointing a client at it is a copy-and-paste, and the
+[setup page](/setup/connecting-an-mcp-client/) walks through it per client.
+
+## What it can read
+
+The shape of the whole project in about twenty lines; any board as a compact
+digest; any passage in every language it has; any component, script or state
+machine; what leads to what across boards; every route between two passages;
+which translations have fallen behind; what the Messages tab is saying; and
+what the sandbox says the Python can do. It can evaluate Python against the
+project's definitions, read-only.
+
+It can also ask **what a node is**. `node_types` lists every kind of node
+this build has — the name to add it by, what the card is called and what it
+does — and, named, describes one in full with the fields to fill in and the
+ports to wire. It is read off the editor's own palette at the moment it is
+asked, so it describes the version you are running rather than a list
+somebody wrote for an older one.
+
+**The tools it is shown are the app's, not a list built into the bridge.**
+The bridge asks the running app what it offers the moment a client starts
+it, and the app answers for *this* build and *this* project: the node types
+`board_add_node` takes are an enum off the editor's own palette with the card
+names beside them, every `locale` argument names the languages the project is
+written in, `cvar` names the variables it declares, and a write tool says in
+its description when *Agents may edit* is off. The client is told the moment
+any of that changes — a project opened, a switch thrown, a language or a
+variable declared. A node's metadata reaches it too: `board_read` prints it
+as a `meta` line under the node, and `board_set_node` and `board_add_node`
+take `metadata`, an object that replaces what the node had.
+
+## What it can play
+
+Not a simulation — the same runner the Play button uses, with the same Python
+and the same component values. It starts a campaign, makes choices, reads the
+state, and can walk **every** branch and report what nobody has time to sit
+through: which endings are reachable, which passages nothing leads to, where
+a path runs out of wire, and which jumps are broken. A playthrough writes
+nothing, and it plays the boards as they are on disk rather than what is
+half-edited in a tab.
+
+It reads the same **trace** the play window shows — what the playthrough has
+done so far, line by line, with the board and the node each came from — and
+continues from where it last read. An Input node reaches it as a slide of its
+own listing the fields it asks for, and it fills the form in with a value per
+name; an unattended walk goes through one with every field blank.
+
+## What it can write, once you let it
+
+A passage in any language, or a passage and its translations together; a new
+passage added to a board and wired to the choice that leads there; wires and
+the words on them; a component's fields; new boards, macros, components and
+scripts, made the way the app makes them; any kind of node, including a Jump
+and a Macro call with its ports already on the card; nodes removed or
+re-pointed; a soundscape laid out clip by clip, with each clip answered
+where it settled on the timeline; files moved or removed; and a way to write
+out work the app is still holding. The [MCP tools
+reference](/reference/mcp-tools/) lists every one.
+
+Every write goes through the app's own sessions, so **adding a passage is a
+single undo**, autosave sees it, and version control lists it. Everything
+changed this session is listed in the agents panel, and every change is
+posted to Messages as it happens.
+
+{/* TODO(shots): <Shot name="agentConnected" /> */}
+
+## What it is never allowed to do
+
+- **Resolve a conflict.** A document with two versions pending is your
+  decision, and a tool that picked a side would be making it for you. It is
+  refused.
+- **Write the registry directly, or re-issue a catalog id.** Renames and moves
+  go through the same verb the file tree uses, so a Jump keeps pointing at the
+  right board.
+- **Remove a board's Start or add a second one.** A board has one way in.
+- **Declare a console variable.** That is the project's page, not a tool.
+- **Delete anything outside the project, or in `.ripple/`, or with unsaved
+  edits.** Deleting a file cannot be undone and is guarded rather than
+  prompted.
+
+## Who is connected
+
+While a client is connected its mark appears in the app bar — Claude's,
+OpenAI's, Gemini's, or a plain robot for everything else — with the client's
+name and version on the tooltip, and pressing it opens the panel. Two or more
+stack.
+
+## Two prompts it can be handed
+
+*Writing a passage* and *editing a board*, each arriving with the passage or
+board you asked about already in it. They carry the two things an assistant
+gets wrong first: that Python in prose is monty rather than CPython, so an
+attribute is `component("X")["attr"]`, and that a node id is numbered across a
+whole board rather than per type.

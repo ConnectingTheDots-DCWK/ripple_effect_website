@@ -1,0 +1,155 @@
+---
+title: Soundscapes and sounds
+description: Music and sound under a passage, as a timeline file the passage names; a sound played once from a node or from Python; and the rule for what is playing when.
+sidebar:
+  order: 8
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+A story can carry sound in two shapes. A **soundscape** is what plays *under*
+a scene — music, rain on a roof, a bell at the second minute — laid out on a
+timeline, in a file of its own, and named by the passage it belongs to. A
+**sound** is one file played once, now, from a node or from a script, while
+the story carries straight on.
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## Audio in the project
+
+Every audio file in the folder is in the registry. Drop an `.ogg`, `.mp3`,
+`.wav`, `.flac`, `.m4a`, `.aac` or `.opus` anywhere in the project and it is
+in every picker — no file dialog needed, though *Import…* still brings an
+outside file in, copied to `.ripple/external/` the way a picture picked from
+outside the project is. An audio file opens in a tab of its own with play,
+pause and a scrub bar.
+
+## A soundscape is a file
+
+`*.soundscape.json` — a timeline of clips over one clock. Make one from the
+file tree's **+** menu, open it in a tab, and lay clips out on lanes: *Add
+clip* and a double-click on empty canvas both offer the project's audio —
+searched by name or by folder, each row saying where the file is, or
+*Import a file…* when there is none yet — and a sound dragged from the file
+tree lands where you let go of it. Each clip is a block **with the shape of its sound drawn inside it** — the
+part of the file it plays, so pulling a ledge moves the picture with the
+sound and you can trim to a beat by eye. It appears a moment after the clip
+does, since reading a file's shape means decoding it. Drag a block to move
+it, pull either edge to trim it, and select it to edit it in the panel on the
+right.
+
+**A clip's fades are drawn on it, and you pull them.** What its two ramps
+leave of it is the shape you see: a slope up at the start, a slope down at
+the end, and the quiet part shaded over the waveform. A small grip sits at
+the top of each slope — drag it inward to make the ramp longer, back into the
+corner to take it off. An auto-loop clip shows the same shape on every
+repeat, because that is where it ramps. The two fields in the panel are still
+there when you want a ramp measured to the millisecond, and they say how long
+it lasts, not when it begins: a quarter-second fade reads `0.25 s`.
+
+A clip whose two ramps together outlast it is allowed, and sounds the way it
+looks — it rises and falls without ever reaching full, because the two ramps
+are taken at whichever is quieter rather than multiplied together.
+
+| | |
+| --- | --- |
+| **File** | which audio it plays, picked by name or by folder; the path is under the field |
+| **From**, **To** | which part of the file, as clocks — `m:ss.mmm` |
+| **Playback** | *Once* — at its position on the first pass of the timeline and never again; *Loop* — on every pass of a looping timeline, cut where the timeline ends; *Auto-loop* — over and over for as long as the soundscape plays, with no regard for where the timeline ends, which is what music wants |
+| **Rest** | *Auto-loop* only: a silence between one play and the next. Off is gapless — a bed; on, a bell every so often, on its own rhythm across the whole soundscape, and the lane shows where every play will fall |
+| **Volume**, **Speed** | its own gain, relative to the timeline's, and its rate |
+| **Fade in**, **Fade out** | how long it ramps at either end of every play, in seconds — the same two ramps the grips on the block pull. An auto-loop ramps at every turn of its clip, rest or no rest, which is what lets a file that does not loop cleanly be used as a bed: the fade covers the seam |
+
+**Lanes have names.** Double-click a lane's header to call it *Bed* or
+*Weather*; right-click one for the same and a **lock**, which is a lane that
+takes no clip — a bed laid out once stays where it was put while everything
+else is moved around it. A right-click anywhere else offers what the pointer
+is on: duplicate or delete a clip, add one here, select everything on a lane,
+fit the pane, the row height, undo and redo.
+
+The timeline's own six properties live behind the gear in the toolbar:
+**Length**; **Loop timeline**; **Fade in** and **Fade out**, over which the
+whole soundscape rises when it begins and falls when it is replaced;
+**Volume**, which every clip's is relative to; and **Tied to the passage**,
+below. A clip past the length is legal and shaded — the length is a field you
+may lengthen next, and what lies past it is cut at play time rather than
+refused in the editor.
+
+**Mute and solo are your ears, not the file.** Every lane header carries an
+**M** and an **S**, the lane's menu has both in words, and a clip can be
+silenced on its own from its panel — silenced clips are drawn faint and say
+so. None of it is saved and none of it reaches the story: a soundscape plays
+every clip it holds.
+
+**Preview it from the tab.** Space plays and pauses, Shift+Space stops, and
+the ruler — or any empty canvas — is the scrub bar. It plays through the same
+thing the campaign does, so a change is heard where the clock is: a gain
+slider is live and a dragged clip does not restart the bed under it. The
+whole file is one undo, the toolbar's; a ledge pulled on the timeline and a
+volume typed in the panel are the same history.
+
+## What is playing, and when
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+Pick a soundscape on a **Narration** node — a row under the choices — and it
+plays from that passage on, **through every passage after it that brings none
+of its own**: a tavern goes on being a tavern. Naming the same one again on a
+later passage does not start it over. Two soundscapes never sound at once:
+the old one finishes its fade before the new one begins its own.
+
+The row has two more answers. *Silence* stops whatever is playing outright.
+And a soundscape marked **tied** belongs to its passage: it stops when the
+story moves on, rather than staying in force. A passage with *None* changes
+nothing.
+
+A saved game remembers what was playing, so a load hears the tavern before
+it sees the page; a tied soundscape comes back only at its own passage.
+
+Which soundscape is in force is the **runtime's** decision, and the runtime
+plays nothing: it tells whatever is hosting the story which one is in force
+and the host renders it with whatever it has. The play window renders it
+through the app's mixer; the command-line player prints a line per change and
+hears nothing, and that is conforming. The [exporting](/overviews/exporting/)
+page says what a compiled campaign carries.
+
+## A sound, once
+
+**The Play sound node.** One file, once, at a volume and a speed — and the
+story carries straight on. Nothing waits for a sound: `completed` fires the
+moment it is cued, so a door slams and the next passage is already showing.
+See the [nodes reference](/reference/nodes/#play-sound).
+
+**`play_sound("sfx/bell.ogg")` from a Script node.** The same, from Python,
+by the project's spelling of the path or the bundle's; `volume` and `speed`
+by name. A passage's snippets are refused — they run again on every redraw
+and every change of language, and a bell rung from prose would ring twice.
+See the [Python reference](/reference/python/sounds/).
+
+## Hearing it
+
+The campaign window's header has a **mute** button, and it is remembered
+between sessions. It is the reader's, and it belongs to the campaign:
+previewing a soundscape in its own tab is never silenced by it. A soundscape's
+volume is the file's, and every clip's is relative to it — there is no second
+master to keep in step.
+
+## Where it lives
+
+<FileTree>
+- my-story/
+  - .ripple/
+    - external/
+      - rain.ogg an outside file brought in with Import…
+  - music/
+    - tavern.ogg
+  - chapters/
+    - the_gates.graph.json names tavern by id
+    - tavern.soundscape.json
+</FileTree>
+
+A soundscape's clips name their audio by catalog id, as a Narration node
+names the soundscape, so renaming or moving a file never breaks a clip. The
+file carries integer milliseconds throughout and every default written out,
+and is refused by an earlier build rather than half-read.

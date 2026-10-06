@@ -1,0 +1,82 @@
+---
+/**
+ * The header lockup, overridden so that the docs wear the same name as the app
+ * and the landing page.
+ *
+ * Starlight's own `SiteTitle` renders `title` as a single run of text in
+ * `--sl-color-text-accent`, which produces "Ripple Effect" in indigo — a
+ * different name in a different shape from the one on every other surface.
+ * The app's rule is:
+ *
+ * > The underscore is coloured rather than swallowed: it is half the name, and
+ * > a `ripple effect` that has lost it reads as two words somebody forgot to
+ * > join up.
+ *
+ * `title` in `astro.config.mjs` stays "Ripple Effect", because that is what
+ * belongs in a `<title>` element, a search result and a browser tab. This is
+ * only what the header *shows*.
+ *
+ * The mark is the same three-ring table as `lib/src/widgets/app_brand.dart`
+ * and the landing page's `RippleMark`, drawn rather than imported for the
+ * reason the app gives: there is no logo file, the mark is painted so that it
+ * takes the theme's colours and stays crisp at any size.
+ */
+const { siteTitleHref } = Astro.locals.starlightRoute;
+
+/** (radius, alpha, stroke width) as fractions of unit = 16 in a 32x32 box. */
+const RINGS = [
+	{ r: 0.46, alpha: 0.95, width: 0.13 },
+	{ r: 0.72, alpha: 0.55, width: 0.11 },
+	{ r: 0.96, alpha: 0.28, width: 0.09 },
+];
+const U = 16;
+---
+
+<a href={siteTitleHref} class="site-title sl-flex">
+	<svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+		{
+			RINGS.map((ring) => (
+				<circle
+					cx={U}
+					cy={U}
+					r={U * ring.r}
+					stroke="currentColor"
+					stroke-opacity={ring.alpha}
+					stroke-width={U * ring.width}
+				/>
+			))
+		}
+		<circle cx={U} cy={U} r={U * 0.17} fill="currentColor" />
+	</svg>
+	<span class="wordmark" translate="no">ripple<span class="tail">_effect</span></span>
+</a>
+
+<style>
+	@layer starlight.core {
+		.site-title {
+			align-items: center;
+			gap: 0.75rem;
+			font-size: var(--sl-text-h4);
+			font-weight: 600;
+			letter-spacing: -0.02em;
+			/* Not `--sl-color-text-accent`: the name is text, and only the half
+			   after the underscore is the accent. */
+			color: var(--sl-color-white);
+			text-decoration: none;
+			white-space: nowrap;
+			min-width: 0;
+		}
+		.mark {
+			height: 1.5rem;
+			width: 1.5rem;
+			flex-shrink: 0;
+			color: var(--brand);
+		}
+		.wordmark {
+			overflow: hidden;
+		}
+		.tail {
+			color: var(--sl-color-text-accent);
+		}
+	}
+</style>

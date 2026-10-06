@@ -1,0 +1,135 @@
+---
+title: Console variables
+description: Typed, named values a project declares once and any board reads, writes or branches on — no wire needed.
+sidebar:
+  order: 6
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A story can carry state with no wire at all. A project declares **console
+variables** — the game-engine idea, at the size a story needs: a typed, named
+value with a default, set anywhere, read anywhere, across boards and across
+saves, starting every playthrough at its default.
+
+{/* TODO(shots): <Shot name="cvarsPage" /> */}
+
+## Declaring one
+
+The **Console variables** page is reached from the left panel's footer or the
+command palette. Every row is a name, a type and a default. Renaming a
+variable is free for every board that names it: a node stores the variable's
+id, not its name.
+
+Twenty-four types, and no others — the same twenty-four every other editor
+in the app offers:
+
+| type | holds |
+| --- | --- |
+| `int` | a whole number |
+| `float` | a number |
+| `bool` | `true` or `false` |
+| `string` | text |
+| `markdown` | text with a renderer |
+| `asset` | a path to a file in the project |
+| `componentRef` | a path to a component |
+| `json` | any JSON value at all |
+| `list<…>` | an ordered list of any of the eight |
+| `map<…>` | names to any of the eight |
+
+`markdown`, `asset` and `componentRef` are text as far as what you may write
+into them goes — they say what the variable is *for*, which is what the page
+draws its field from. `json` is the open one: it holds a list or an object as
+it stands, so a `list<json>` is a list of lists if that is what you put in
+it. Nothing may hold nothing; every type refuses an empty value.
+
+The declarations live in `.ripple/cvars.json`, beside the project's settings,
+and travel with the project:
+
+```json
+{
+  "version": 3,
+  "cvars": [
+    { "id": "4f2a…", "name": "gold", "type": "int", "default": 10 },
+    { "id": "9c11…", "name": "tags", "type": "list<string>", "default": [], "scope": ["28cf…"] }
+  ]
+}
+```
+
+## Scoping one to boards
+
+The page has a **Boards** column per variable: a searchable menu of the
+project's boards with a box beside each, reading *Everywhere* until you tick
+some. A Get, Set or Variable branch node then offers only the variables
+scoped to its board or to none, and one already pointed at a variable scoped
+elsewhere keeps its name and says *Not scoped to this board* under it.
+
+That is all a scope does. It is where a variable is *offered*, not where it
+can be read: the campaign holds every variable everywhere, a script names
+any of them from anywhere, and nothing about it reaches a bundle. Ticking a
+board moves `.ripple/cvars.json` to version 2, which an earlier build refuses
+rather than reading and quietly writing back without the scopes — and a
+project that never ticks one still moves, since the version is the file's
+and not the variable's.
+
+## On a board
+
+{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+
+Three nodes, and a Set on one board and a Branch on another need no wire
+between them — the variable is the wire.
+
+- **Get variable** publishes what the variable holds on *value*.
+- **Set variable** writes it — from a wire into *value*, or the value typed on
+  the card; the wire wins when both are there — and publishes the new value on
+  *result*.
+- **Variable branch** compares the variable against a value, on the card or
+  wired in, and leaves by *yes* or *no*. Equality reads both sides as text;
+  ordering only works between two numbers or two strings, the Comparator's
+  rules.
+
+All three take the flow rather than being pulled, so a read after a write is
+never stale.
+
+## Every write is lossless or refused
+
+One rule, asked by the Set node, by Python, by the campaign panel and by the
+export alike: a value is coerced to the declared type when nothing is lost,
+and refused otherwise. A whole number goes into an `int`; `3.5` does not. The
+text `"42"` goes into an `int`; `"forty-two"` does not. `true` and `false` go
+into a `bool`; `"yes"` and `1` do not. A scalar is never wrapped into a list.
+
+A value that does not fit is refused **as you type it** on a card, and one
+that arrives on a wire wrong ends the run with a message naming the node:
+
+> `gold holds an int, and 3.5 is not one`
+
+The full coercion table is in the
+[reference](/reference/python/console-variables/#coercion).
+
+## In the campaign window
+
+A third panel beside the entities and the console shows what every variable
+holds as the story runs, and lets you change one by hand — after which *Start
+over* is offered, as it is after deleting an entity.
+
+## From Python
+
+`cvar_get("gold")`, `cvar_set("gold", 25)`, `cvar_reset("gold")`,
+`cvar_names()` and `cvar_type("gold")`, in a Script node and in the campaign
+window's console. A passage may read one and not write it; the editor's own
+console reads the defaults and says so when asked to write. See the
+[reference](/reference/python/console-variables/).
+
+## Agents, saves and exports
+
+An agent sees the declarations through `project_info` and the live values
+through `campaign_state`, and can point a variable node at one by name.
+
+A saved game carries every variable. A save from before the project had one
+holds it at its default; a variable added while a campaign is paused is there
+when it resumes; one removed is gone.
+
+An export carries `.ripple/cvars.json` beside the project's settings, so a
+scaffold opens with every card still pointing at its variable, and a compiled
+campaign carries the declarations in its own form.

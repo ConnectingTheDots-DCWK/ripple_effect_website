@@ -1,0 +1,362 @@
+/*
+ * The site chrome — header, search, sidebar, table of contents, pagination.
+ *
+ * All of it in `@layer ripple`, which is declared last in `index.css` and
+ * therefore beats Starlight's own rules whatever their specificity. Nothing
+ * here needs `!important` and nothing here should acquire one.
+ *
+ * This is where the "different DNA" actually lived. The palette was already
+ * right; what still read as stock Starlight was the *shapes* — square corners,
+ * a solid accent slab for the current page, a search field that looked like a
+ * button rather than an input, links with no resting affordance. The landing
+ * page's answer to all four is the same: a hairline, a radius from `AppRadius`,
+ * and a tonal fill. No shadows, no gradients.
+ */
+
+@layer ripple {
+	/*
+	 * There is deliberately no rule for the header's own divider.
+	 *
+	 * `PageFrame.astro` already draws it — `border-bottom: 1px solid
+	 * var(--sl-color-hairline-shade)` — on the *wrapper* around `.header`, and
+	 * that variable is already pointed at `--border` in `tokens.css`. Adding
+	 * one to `.header` itself put a second line one pixel under the first,
+	 * which is the kind of thing that reads as a rendering fault rather than a
+	 * decision. The same trap is why the sidebar and the mobile contents strip
+	 * have no border rules here either: Starlight draws all three, and the
+	 * theme's job is only to have already told them what colour to be.
+	 */
+
+	/* ------------------------------------------------------------------
+	 * Search
+	 *
+	 * Starlight ships this as a button that looks like a button. On the
+	 * landing page the equivalent affordance is an input: a hairline box on
+	 * the *page* colour sitting inside the lighter bar, with the label in
+	 * secondary text. Same element, same behaviour, different promise.
+	 * --------------------------------------------------------------- */
+
+	site-search button[data-open-modal] {
+		gap: 0.625rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background-color: var(--background);
+		color: var(--muted-foreground);
+		/* Asymmetric, like Starlight's own: the label needs room from the
+		   magnifier, the shortcut needs less from the edge than the label does
+		   because it is already a bordered chip. A single `padding-inline` here
+		   is what crushed it. */
+		padding-inline-start: 0.875rem;
+		padding-inline-end: 0.625rem;
+		height: 2.5rem;
+		transition:
+			border-color var(--motion-base) var(--motion-curve),
+			color var(--motion-base) var(--motion-curve);
+	}
+
+	site-search button[data-open-modal]:hover {
+		border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+		color: var(--foreground);
+	}
+
+	/* The shortcut is *two* elements: a `<kbd>` wrapping two more. Only the
+	   inner pair are chips — styling both levels put a bordered box inside a
+	   bordered box and pushed it into the edge. */
+	site-search button[data-open-modal] > kbd {
+		gap: 0.25rem;
+		border: 0;
+		background-color: transparent;
+		padding: 0;
+	}
+
+	site-search button[data-open-modal] kbd kbd {
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		background-color: var(--muted);
+		color: var(--muted-foreground);
+		font-family: var(--sl-font-mono);
+		font-size: var(--sl-text-2xs);
+		padding: 0.0625rem 0.3125rem;
+	}
+
+	/* The search dialog itself, so opening it does not land on a different
+	   design system. */
+	site-search dialog {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		background-color: var(--card);
+		box-shadow: none;
+	}
+
+	/* ------------------------------------------------------------------
+	 * Sidebar
+	 *
+	 * The single biggest tell. Starlight marks the current page with a solid
+	 * accent block and square corners, which is a shape the app never makes.
+	 * A row here is a menu item: `--radius-sm`, a tonal fill on hover, and
+	 * the accent carried by the *text* rather than by a slab behind it —
+	 * "accent is a pointer, not a paint".
+	 * --------------------------------------------------------------- */
+
+	.sidebar-content a {
+		border-radius: var(--radius-sm);
+		padding: 0.3125rem 0.5rem;
+		transition:
+			background-color var(--motion-fast) var(--motion-curve),
+			color var(--motion-fast) var(--motion-curve);
+	}
+
+	.sidebar-content a:hover,
+	.sidebar-content a:focus-visible {
+		background-color: var(--muted);
+		color: var(--foreground);
+	}
+
+	.sidebar-content a[aria-current='page'],
+	.sidebar-content a[aria-current='page']:hover,
+	.sidebar-content a[aria-current='page']:focus {
+		background-color: var(--muted);
+		color: var(--primary);
+		font-weight: 500;
+	}
+
+	/* Group headings read as labels, not as links you failed to click. */
+	.sidebar-content .group-label > span,
+	.sidebar-content summary .group-label {
+		color: var(--foreground);
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	.sidebar-content ul.top-level > li + li {
+		margin-top: 0.125rem;
+	}
+
+	/* ------------------------------------------------------------------
+	 * Table of contents — the same row treatment, one step quieter.
+	 * --------------------------------------------------------------- */
+
+	starlight-toc nav a {
+		border-radius: var(--radius-sm);
+		padding-block: 0.25rem;
+		padding-inline: 0.5rem;
+		color: var(--muted-foreground);
+		transition: color var(--motion-fast) var(--motion-curve);
+	}
+
+	starlight-toc nav a:hover {
+		color: var(--foreground);
+	}
+
+	starlight-toc nav a[aria-current='true'] {
+		color: var(--primary);
+		font-weight: 500;
+	}
+
+	/* Indent only. Starlight draws no rail in the contents list, and inventing
+	   one here would make it the odd panel out. */
+	starlight-toc nav > ul > li > ul {
+		margin-inline-start: 0.5rem;
+	}
+
+	mobile-starlight-toc nav .dropdown {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		background-color: var(--card);
+		box-shadow: none;
+	}
+
+	/* ------------------------------------------------------------------
+	 * Pagination
+	 *
+	 * Two cards, which is what they always were pretending to be: hairline,
+	 * `--radius-md`, the card fill, and the accent arriving only on hover.
+	 * --------------------------------------------------------------- */
+
+	.pagination-links a {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		background-color: var(--card);
+		box-shadow: none;
+		padding: 1rem;
+		transition:
+			border-color var(--motion-base) var(--motion-curve),
+			color var(--motion-base) var(--motion-curve);
+	}
+
+	.pagination-links a:hover {
+		border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+		color: var(--primary);
+	}
+
+	.pagination-links .link-title {
+		color: inherit;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	/* ------------------------------------------------------------------
+	 * Footer, and the mobile menu panel
+	 * --------------------------------------------------------------- */
+
+	footer.sl-flex {
+		border-top: 1px solid var(--border);
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+	}
+
+	@media (max-width: 50rem) {
+		.sidebar-pane {
+			border-top: 1px solid var(--border);
+			background-color: var(--card);
+		}
+	}
+}
+
+@layer ripple {
+	/* ------------------------------------------------------------------
+	 * Splash hero, and the link buttons it is made of
+	 *
+	 * `<LinkButton>` is Starlight's, and it is the same element the hero's
+	 * `actions` render into — so styling it here fixes the splash page and
+	 * every button in prose at once, with no component override. That is why
+	 * `Hero.astro` is *not* in `components`: the only thing wrong with it was
+	 * the shape of its buttons.
+	 * --------------------------------------------------------------- */
+
+	.sl-link-button {
+		border: 1px solid transparent;
+		border-radius: var(--radius-lg);
+		gap: 0.5rem;
+		height: 2.75rem;
+		padding-inline: 1.5rem;
+		font-size: var(--sl-text-base);
+		font-weight: 500;
+		transition:
+			background-color var(--motion-base) var(--motion-curve),
+			border-color var(--motion-base) var(--motion-curve),
+			color var(--motion-base) var(--motion-curve);
+	}
+
+	.sl-link-button.primary {
+		position: relative;
+		overflow: hidden;
+		border-color: transparent;
+		background-color: var(--primary);
+		color: var(--primary-foreground);
+	}
+
+	.sl-link-button.primary:hover {
+		background-color: color-mix(in oklab, var(--primary) 82%, var(--background));
+	}
+
+	.sl-link-button:is(.secondary, .minimal) {
+		border-color: var(--border);
+		background-color: var(--background);
+		color: var(--foreground);
+	}
+
+	.sl-link-button:is(.secondary, .minimal):hover {
+		background-color: var(--muted);
+		color: var(--foreground);
+	}
+
+	/*
+	 * The glint — the landing page's one piece of decorative motion, ported
+	 * rather than reinvented so the two CTAs behave identically.
+	 *
+	 * White in both modes, because a highlight is lighter than the thing it
+	 * crosses; the alpha is a token per mode because the dark theme's primary
+	 * is already pale and has less room above it.
+	 *
+	 * Note this is `glint` and not `shimmer`: on the landing page that name
+	 * was already taken by shadcn's *text* shimmer, whose `background-clip:
+	 * text` clipped the button's fill to its glyphs and emptied the label.
+	 * Nothing here uses shadcn's stylesheet, but the name stays wrong-proof.
+	 */
+	.sl-link-button.primary::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: linear-gradient(
+			110deg,
+			transparent 40%,
+			var(--glint) 50%,
+			transparent 60%
+		);
+		background-size: 250% 100%;
+		background-repeat: no-repeat;
+		animation: glint 4s linear infinite;
+	}
+
+	@keyframes glint {
+		0% {
+			background-position: 100% 0;
+		}
+		60%,
+		100% {
+			background-position: 0% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sl-link-button.primary::after {
+			animation: none;
+		}
+	}
+
+	.hero h1 {
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+
+	.hero .tagline {
+		color: var(--muted-foreground);
+	}
+
+	/* The mark is a 32-unit drawing; at the hero's default width it stops
+	   reading as a logo and starts reading as a target. */
+	.hero img {
+		max-width: 16rem;
+		margin-inline: auto;
+	}
+	/*
+	 * The two plain-text files in the header's icon row — `/llms.txt` and
+	 * `/llms-full.txt`, generated by `starlight-llms-txt`.
+	 *
+	 * Starlight's social row labels an icon with an `sr-only` span, which is
+	 * right for GitHub, whose mark everybody already reads, and not enough
+	 * for these: two documents drawn as two document-ish glyphs are not told
+	 * apart by looking. So they get a resting tooltip on hover and on
+	 * keyboard focus, and it is `attr(href)` rather than a string written
+	 * here — the label *is* the filename, and one that could disagree with
+	 * where the link goes would be the one thing worth avoiding.
+	 *
+	 * A stylesheet rather than an override of `SocialIcons.astro`, for the
+	 * reason this whole file exists: a component override is frozen at the
+	 * version it was copied from.
+	 */
+	.social-icons a[href$='.txt'] {
+		position: relative;
+	}
+
+	.social-icons a[href$='.txt']:hover::after,
+	.social-icons a[href$='.txt']:focus-visible::after {
+		content: attr(href);
+		position: absolute;
+		top: calc(100% + 0.375rem);
+		right: 0;
+		z-index: 10;
+		padding: 0.125rem 0.375rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: var(--card);
+		color: var(--muted-foreground);
+		font-size: var(--sl-text-xs);
+		font-family: var(--sl-font-mono);
+		white-space: nowrap;
+		pointer-events: none;
+	}
+}

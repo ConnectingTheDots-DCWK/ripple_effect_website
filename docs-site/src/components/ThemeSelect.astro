@@ -1,0 +1,65 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+
+/**
+ * The theme control, replaced so it is the same control as the landing page's.
+ *
+ * Starlight ships a three-option `<select>` — Dark, Light, Auto — with a laptop
+ * icon and a caret. The landing page has a two-state icon button. Keeping both
+ * would mean the same product offering the same setting through two different
+ * affordances, which is exactly the seam this whole pass exists to close.
+ *
+ * **The cost is the "Auto" option**, and it is a real loss rather than a
+ * tidy-up: a reader who wants the docs to follow their operating system can no
+ * longer say so, and clearing the preference now needs devtools. The landing
+ * page has always had this limitation — its toggle flips the *resolved* theme —
+ * so the two sites behave alike, which is the trade being made. Restoring it
+ * would mean a three-state control on both, not just here.
+ *
+ * **Both icons are rendered and CSS picks one.** That is the landing page's
+ * trick, for its reason: server and client markup match, so no mounted guard is
+ * needed and there is no flash of the wrong glyph. `dark:` works because
+ * `@astrojs/starlight-tailwind` redefines that variant against
+ * `[data-theme=dark]` — the same class list would do nothing without it.
+ *
+ * `bg-transparent` is not decoration. Only Tailwind's theme and utilities are
+ * imported here, not Preflight, so a `<button>` keeps the user agent's
+ * `buttonface` fill and renders as a grey lozenge until it is told otherwise.
+ *
+ * The storage key and the `data-theme` attribute are Starlight's own, so the
+ * inline `ThemeProvider` script still applies the stored choice before first
+ * paint. Nothing here re-implements persistence; it only writes what Starlight
+ * already reads.
+ */
+---
+
+<starlight-theme-toggle>
+	<button
+		type="button"
+		aria-label="Toggle theme"
+		class="inline-flex size-8 shrink-0 cursor-pointer appearance-none items-center justify-center rounded-lg border border-transparent bg-transparent p-0 text-[var(--sl-color-gray-3)] transition-colors outline-none select-none hover:bg-[var(--muted)] hover:text-[var(--foreground)] focus-visible:border-[var(--ring)] focus-visible:ring-3 focus-visible:ring-[color-mix(in_oklab,var(--ring)_50%,transparent)]"
+	>
+		<Icon name="sun" size="1.125rem" class="hidden dark:block" />
+		<Icon name="moon" size="1.125rem" class="dark:hidden" />
+	</button>
+</starlight-theme-toggle>
+
+<script>
+	class StarlightThemeToggle extends HTMLElement {
+		constructor() {
+			super();
+			this.querySelector('button')?.addEventListener('click', () => {
+				const next =
+					document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+				document.documentElement.dataset.theme = next;
+				try {
+					localStorage.setItem('starlight-theme', next);
+				} catch {
+					// Site data blocked. The page in front of the reader still
+					// changes; it just will not be remembered.
+				}
+			});
+		}
+	}
+	customElements.define('starlight-theme-toggle', StarlightThemeToggle);
+</script>

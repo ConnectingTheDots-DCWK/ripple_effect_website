@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  // `docs-site/` and `legal/` are the other two applications in this
+  // repository — both Astro, both with their own tsconfig and their own
+  // `astro check`. Without them here, `tsc --noEmit` walks into their sources
+  // and their dependencies and reports errors about `astro:content` and about
+  // a Starlight plugin's own regexes, none of which this project can act on.
+  // `eslint.config.mjs` ignores the same two directories for the same reason,
+  // and neither tool stops at a directory boundary on its own.
+  "exclude": ["node_modules", "docs-site", "legal"]
+}

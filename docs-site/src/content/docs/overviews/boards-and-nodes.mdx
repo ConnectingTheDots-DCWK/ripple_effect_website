@@ -1,0 +1,217 @@
+---
+title: Boards and nodes
+description: The canvas, the wires, the choices that ride on them, and every kind of node the app knows.
+sidebar:
+  order: 2
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A board is one thread of story: a `*.graph.json` file drawn as a canvas of
+cards and the wires between them. A project has as many boards as it wants —
+one per chapter, one per conversation, one per encounter — and a **Jump** hands
+the story from one to the next. A **macro** is a board a board can *call* —
+a stretch of story written once and used from anywhere — and it has a
+[section of its own](#macros) below.
+
+<Shot name="board" />
+
+## The canvas
+
+Every board begins with a **Start** node, and it has exactly one. The Create
+menu will not offer a second, and a board that somehow has two is refused at
+Play with both named: several Starts used to mean several stories running one
+after another in an order decided by where the cards happened to sit, which
+nobody designed and nothing could tell you about.
+
+**Narration** nodes hold a passage and grow one output port per choice — wire
+the last one and a new spare appears beneath it. Click a choice's row on the
+card to give it two things: a **name**, which is the label the card shows so a
+branch can be found on a wide board, and its **words**, which are what the
+reader is offered, in every language the story is being written in. A choice
+with nothing in the reader's language falls back to the language the story was
+written in — an untranslated passage is prose somebody can read past, and an
+untranslated choice is a button they cannot press. A wire can carry a caption
+of its own as well; that is an annotation for you, and no reader sees it.
+
+Drop a wire on empty canvas and the Create menu opens there, already wired to
+whatever you pick. Everything else — Jump, Script, loops, components — is a
+right-click away. The quickbar along the top has one button, for a passage,
+because a passage is the one node frequent enough to earn the space.
+
+**Every picker of something you made is searchable, and alphabetical.** A
+Jump's board, a Component's component, a Script's `.py`, a Narration node's
+passage or soundscape, a State machine's diagram, a variable on a `cvar`
+node: the menu opens with a search field focused, and typing narrows it by
+name or by path, which sits under each name. The one exception is a Jump's
+node picker, which keeps a board's reading order because that order means
+something.
+
+**Every card can carry metadata of your own.** Right-click it and choose
+*Edit metadata…*: a list of names, types and values, and a small tag on the
+card's header while there is any. Nothing on the board reads it — it is
+yours, for a status, a reviewer's note, a mark for a tool of your own — and
+it travels with the node into a compiled campaign and to an agent. A copied
+node arrives with its notes. One thing worth knowing: an older build of the
+editor re-saving such a board keeps every wire and every field and drops the
+notes.
+
+{/* TODO(shots): <Shot name="nodeMenu" /> */}
+{/* TODO(shots): <Shot name="metadataEditor" /> */}
+
+A **Jump** stores the target board's catalog id rather than its path, so
+renaming or moving a board never breaks a link. The arrow on the card opens the
+board it points at. How the boards hand the story to each other is drawn for
+you by **script navigation**, from the left panel's footer — see [Reading a
+story back](/overviews/reading-a-story-back/).
+
+<Shot name="overview" />
+
+Cycles are the point, and nothing refuses one.
+
+## Two kinds of wire
+
+Every port on a card is one of two kinds, and the canvas draws them apart.
+
+**Control** ports carry the story. A card's way in is called `exec`; its ways
+out are the choices, the branches, the *first* and *again* of a gate, the
+`completed` of a node that merely did something. The story is the path from
+Start along control wires: a node takes its turn, hands the flow on through
+one of its control outputs, and the next takes its. Two branches that
+converge on a card run it twice — there is no waiting for both, because a
+branch a condition never takes would wait forever.
+
+**Data** ports carry values: a number, a name, a list of goblins, the state a
+machine is in. A data wire is not a step in the story. It is a question the
+card at its end asks when its turn comes.
+
+The engine runs the two in opposite directions: **control is pushed, data is
+pulled** — and it is one engine, the same one whether you press play in the app
+or ship the campaign, so a story never reads one way here and another there. When a node takes its turn and reads a data input, the value is
+fetched from the card wired into it, and that card's inputs from theirs, as
+far back as the wires go. A value that is a function of its inputs is worked
+out once and reused until an input changes; anything that rolls or reads the
+world — a die, a random number, a variable — is evaluated afresh on every
+pull.
+
+Every card has control ports, so a card the story never reaches would never
+take a turn — and something downstream might still read from it. Before a
+story begins the engine walks the data wires back from everything the Start
+can reach and finds those cards: they are **primed**, run once ahead of the
+story in dependency order, so that whoever reads them finds the value there.
+That is what lets you **wire the story and leave the values hanging off it**:
+a Number into a Set variable, a String into a Component's name, a Get variable
+into an Output — none of them needs an `exec` wire. Lay out one correct
+control path and every value a node on it reads is worked out before it runs.
+
+The one rule that follows: **a value that depends on something the story
+does must be in the flow after it.** A Comparator hanging off a Dice roller
+is primed before the story starts, before there is a roll to compare, and
+answers for a total that did not exist yet. Wire the roller's `completed`
+into the Comparator and the Comparator's into the If, and the comparison
+happens when the roll has. The priming is for values that are true before
+the story; the flow is for values it makes.
+
+### The story only goes forwards
+
+Reading a value never makes a card run. The story arrives at a card, the card
+looks at what is wired into it, and what it finds is **whatever that card
+published the last time it had a turn** — this turn, an earlier passage, the
+priming before the story began, or nothing at all. Nothing is fetched by going
+back up the wire and running it again, and that is deliberate: a value that
+could run its card backwards would mean reading a number rolls a die.
+
+So a value is in one of three states, and only the first is the one you want:
+
+- **Computed on the way in** — its cards are in the flow just before whatever
+  reads them, so every path to that passage runs them. This is what to aim for.
+  For several values at once, put a **Do all** in front of the passage with a
+  chain per value and its `completed` wired on.
+- **Worked out before the story** — nothing in the flow reaches it, so it was
+  primed and answers the same on every visit. Right for a number or a name,
+  wrong for anything the story changes. The app says so wherever a primed
+  value's cards read something the story changes, as
+  [`W.GE.05`](/reference/diagnostics/#wge05).
+- **Left over from another path** — its cards are in the flow, but the way the
+  reader got here this time did not pass them, so the value is an older turn's.
+  *Which* visit it came from is not something anything can work out, but the
+  question behind it is: [`W.GE.06`](/reference/diagnostics/#wge06) asks
+  whether every route to the card that reads the value runs the card that makes
+  it, and says so when one does not. It is worth a look rather than a problem,
+  because a running total and a flag set once on the way in are both meant to
+  be read that way — and it can be answered per card with *I meant that*.
+
+Both of these are drawn on the board as well as listed: a card something was
+said about wears a halo and a small mark in its header. Every check is in the
+[diagnostics reference](/reference/diagnostics/).
+
+**Wires that go back on themselves are fine.** A control wire back to an
+earlier card is a loop, which is how a hub or a conversation works. A data wire
+back into the card that feeds it reads that card's previous answer, which is how
+a running total works — it is a value, not a question being asked in a circle.
+
+## Every kind of node
+
+Grouped the way the Create menu groups them — Flow, Story,
+Value, Chance, Math and Logic, and the two ends of a macro. Each is described,
+with what it takes and what it answers, on the [nodes
+reference](/reference/nodes/). The ones a story meets first: **Narration**
+for a passage, **Jump** for another board, **End** for where a path stops,
+**If** and **Switch** for branching, **Dice roller** for chance, **Component**
+for a character or an item, and **Script** for Python.
+
+## Macros
+
+{/* TODO(shots): <Shot name="macro" /> */}
+
+A **macro** is a stretch of story you write once and call from anywhere — a
+shop, a rest, a skill check with its own three passages. It is a file of its
+own, `*.macro.graph.json`, made from the file tree's **+** beside a board, and
+it opens on the same canvas with two nodes where a board has its Start and its
+Ends:
+
+- **Macro In** says what the macro *takes*, described the way an Input node
+  is — double-click it for a name and a type per row — and grows an output
+  per name carrying what the calling board wired in or typed on the card. A
+  macro has exactly one.
+- **Macro Out** says what it *answers*, the same way, and grows an input per
+  name. Its way in takes any number of wires, so every branch inside
+  the macro can finish at the same way out. Also exactly one.
+
+Everything between the two is the same node set a board has. Drag the file
+onto a board and a **Macro** card appears with a port per name, and a field
+beside every one it takes: wire it or type it, and the wire wins. Press play on
+the macro's own tab to read it on its own, with nothing wired in.
+
+A macro is copied into whatever calls it when the campaign is compiled, so
+calling one twice is two independent copies — a *Once* gate inside a shop
+fires once per shop rather than once for the whole story — and a macro cannot
+call itself. A macro cannot be jumped to and a board cannot be called: a Jump
+lists boards and a Macro card lists macros. A story can be paused inside one
+and picked up where it left off, and a line in the play window's
+[trace](/overviews/playing-a-campaign/#the-four-panels) about something inside
+a macro takes you to the card that called it.
+
+## Doing several things before a passage
+
+A **Do all** runs everything wired to it, one branch after another, then
+carries on from `completed`. The rule underneath is that every branch runs to
+the end of its wire before the next starts, and a passage does not end a wire
+— so a passage on branch two holds branch three until every passage after it
+has been read, which looks exactly like a Set that never fired. The card's
+description says so, and the `completed` port is the way not to have to
+think about it: put the jobs on the branches and the story on `completed`.
+Boards written before the port existed grow it the moment they open.
+
+## What remembers, and for how long
+
+FlipFlop, Once and State machine remember for the whole playthrough. Leaving
+the board and coming back, or saving and loading, does not reset them;
+starting over does. A saved game carries what they remember.
+
+## Where the story begins
+
+Where a board begins no longer depends on where its cards are. Script
+navigation and the merged trace ask the same question the runner does — *which
+node is the Start?* — so a route drawn between two passages is the route the
+story actually takes.

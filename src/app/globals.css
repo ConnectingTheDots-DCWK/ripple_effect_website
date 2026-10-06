@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The app's house style, transcribed.
+ *
+ * Values are the app's own hexes rather than converted oklch, so the site and
+ * the tool cannot drift by a rounding error:
+ * `packages/ripple_theme/lib/src/app_tokens.dart` is the source, and a diff
+ * between the two files is a real diff.
+ *
+ * Two things carry over that are easy to lose:
+ *
+ * - The neutral ramp is not grey. It sits at roughly 225 degrees, at a
+ *   saturation low enough to read as grey — "a cool grey looks chosen; a pure
+ *   grey looks defaulted".
+ * - **The page is the grey one and a card sits lighter on it, in both modes.**
+ *   Material's light ramp runs the other way, which puts a card underneath the
+ *   page it is on and makes a panel read as a dent.
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* The seed itself, for the mark and nothing else. See below. */
+  --color-brand: var(--brand);
+  --color-brand-from: var(--brand-from);
+  --color-brand-via: var(--brand-via);
+  --color-brand-to: var(--brand-to);
+  --color-brand-foreground: var(--brand-foreground);
+
+  /* AppStatus.go — "start something". */
+  --color-go: var(--go);
+  /* AppStatus.caution — the app's own warning colour, so a caveat on the site
+     and a caveat in the messages panel are the same yellow. */
+  --color-caution: var(--caution);
+  /* The paid tier's own accent, and nothing else's — see CLAUDE.md. */
+  --color-premium: var(--premium);
+  --color-premium-foreground: var(--premium-foreground);
+
+  /* Named by `Marquee` and `OrbitingCircles`; the keyframes are at the foot of
+     this file. */
+  --animate-marquee: marquee var(--duration, 40s) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
+    infinite;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+
+  /* AppRadius, which derives everything from one number so that making the
+     app rounder is one edit that keeps the relationships. The template's own
+     scale was a set of multipliers off 0.625rem and did not land on these. */
+  --radius-sm: 0.5rem; /* 8px  — inputs, menu items, rows */
+  --radius-md: 0.75rem; /* 12px — buttons, cards, chips */
+  --radius-lg: 1rem; /* 16px — panels, popovers */
+  --radius-xl: 1.5rem; /* 24px — dialogs */
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 1.5rem;
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* AppNeutrals.light */
+  --background: #f3f5f9; /* surface           */
+  --foreground: #15171c; /* onSurface         */
+  --card: #ffffff; /* containerLowest   */
+  --card-foreground: #15171c;
+  --popover: #ffffff;
+  --popover-foreground: #15171c;
+  --secondary: #edeff4; /* container         */
+  --secondary-foreground: #15171c;
+  --muted: #edeff4;
+  --muted-foreground: #5a6070; /* onSurfaceVariant  */
+  --accent: #e4e8ef; /* containerHigh     */
+  --accent-foreground: #15171c;
+  --border: #dfe3eb; /* outlineVariant    */
+  --input: #dfe3eb;
+
+  /* The seed, #6C7BF5, is the *mark's* colour. `--primary` is the legible
+     derivative used for filled controls and links — which is exactly what
+     ColorScheme.fromSeed does in the app, where `primary` is never the seed
+     either. White on #6C7BF5 is 3.63:1; on this it is 5.63:1. */
+  --brand: #6c7bf5;
+  --primary: #4a57e0;
+  --primary-foreground: #ffffff;
+  --ring: #4a57e0;
+
+  /* The travelling border light's two stops. It is the one gradient on the
+     site and the one place the house rule is deliberately set aside — see
+     CLAUDE.md. Both are the brand hue, so it reads as a highlight moving over
+     the edge rather than as a second colour arriving. */
+  --brand-from: #6c7bf5;
+  --brand-via: #8a96f8;
+  --brand-to: #a8b1fa;
+
+  /* The glint's sweep. White, because a highlight is lighter than the thing it
+     crosses; see the `glint` utility at the foot of this file for why the
+     alpha is a token per mode. On #4a57e0 this lands at #929aec — a long way
+     from where it started, so 0.4 is plenty. */
+  --glint: rgb(255 255 255 / 0.4);
+
+  /* What reads on the brand gradient — and it is the *same* in both modes,
+     which is the point. The gradient is light lavender either way, so white
+     on it is 3.63:1 at the darkest stop and 2.3:1 at the lightest: not text.
+     #14171c is 5.8:1 and 8.8:1 across the same two. A foreground that follows
+     the theme would be wrong in one of them. */
+  --brand-foreground: #14171c;
+
+  --destructive: #c0392b; /* AppStatus.stop.light    */
+  --go: #2f7a4f; /* AppStatus.go.light      */
+  --caution: #a04a08; /* AppStatus.caution.light */
+  /* Not a token of the app's: the paid tier has no surface there yet. The
+     complement of the brand's indigo, kept olive rather than amber so it is
+     not mistaken for `--caution`. 4.87:1 on the page, 5.32:1 on a card, and
+     white on it 5.32:1 — so it can fill a button. */
+  --premium: #8a6512;
+  --premium-foreground: #ffffff;
+}
+
+.dark {
+  /* AppNeutrals.dark */
+  --background: #0d0f13; /* surface           */
+  --foreground: #e8eaef; /* onSurface         */
+  --card: #14171c; /* containerLow      */
+  --card-foreground: #e8eaef;
+  --popover: #1a1d23; /* container         */
+  --popover-foreground: #e8eaef;
+  --secondary: #1a1d23;
+  --secondary-foreground: #e8eaef;
+  --muted: #1a1d23;
+  --muted-foreground: #99a0ae; /* onSurfaceVariant  */
+  --accent: #21242b; /* containerHigh     */
+  --accent-foreground: #e8eaef;
+  --border: #262a32; /* outlineVariant    */
+  --input: #262a32;
+
+  /* Light accent, dark label — the direction Material takes a seed in dark
+     mode, and the direction the app's own dark scheme takes it. */
+  --brand: #6c7bf5;
+  --primary: #a8b1fa;
+  --primary-foreground: #14171c;
+  --ring: #a8b1fa;
+
+  --brand-from: #8e99f8;
+  --brand-via: #aab3fb;
+  --brand-to: #c7cdfd;
+
+  /* Same white, more of it. #a8b1fa is already pale, so there is less room
+     above it than there is above the indigo — 0.55 lands at #d8dcfd, which is
+     a comparable step. The colour does not invert between modes; only how
+     hard it has to be pushed does. */
+  --glint: rgb(255 255 255 / 0.55);
+
+  --brand-foreground: #14171c; /* not a typo — see the light block */
+
+  --destructive: #cf4538; /* AppStatus.stop.dark    */
+  --go: #398358; /* AppStatus.go.dark      */
+  --caution: #fbbf24; /* AppStatus.caution.dark */
+  /* 10.97:1 on the page; ink on it 10.28:1, the same arrangement as the
+     brand foreground — a pale fill takes dark text. */
+  --premium: #e3c06a;
+  --premium-foreground: #14171c;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans scroll-smooth;
+  }
+}
+
+/*
+ * AppMotion. Short and few, because this is a tool people work in for hours
+ * and motion is here to say "that responded", not to be admired.
+ *   fast 120ms · base 180ms · slow 260ms · Curves.easeOutCubic
+ */
+:root {
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-slow: 260ms;
+  --motion-curve: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/*
+ * The glint, worn by the two download buttons and nothing else.
+ *
+ * **It is not called `shimmer`, and that is the whole reason this comment is
+ * at the top.** `shadcn/tailwind.css` — imported three lines from the top of
+ * this file — already ships `@utility shimmer`, and it is a *text* shimmer:
+ * it sets `background-clip: text` and `-webkit-text-fill-color: transparent`
+ * so a gradient runs through the letterforms. Put that class on a filled
+ * button and the damage is total and silent: `background-clip: text` clips
+ * `bg-primary`'s fill to the glyphs, so the button loses its colour, and the
+ * transparent text fill empties the label. What is left is a dark rectangle
+ * with a faint smear where the words were, plus whatever SVG is inside —
+ * icons stroke with `currentColor` and are not affected by a text fill, so
+ * they alone survive. It builds, it lints, and nothing anywhere reports a
+ * collision. **Check a bare class name against that file before using one.**
+ *
+ * `@utility` rather than a plain rule so it lands in Tailwind's utilities
+ * layer and orders against everything else on the button instead of beating
+ * all of it from outside the cascade.
+ *
+ * **It is a pseudo-element rather than a child**, which is why this is CSS and
+ * not markup. The buttons it goes on are `asChild` — a `Link` to /download, an
+ * `<a>` to the release asset — so a component that wrapped its children in a
+ * positioned `<span>` would have to reach inside somebody else's element to do
+ * it. `::after` needs nothing of the sort, and works the same whichever
+ * element the Slot resolves to.
+ *
+ * **The sweep is white in both modes; the alpha is what is corrected.**
+ * velora's original hardcodes `rgba(255,255,255,0.35)`, tuned for one dark
+ * button. Light mode's `--primary` is #4a57e0 and 0.4 white takes it to
+ * #929aec, which is a large step. Dark mode's is #a8b1fa, already pale, so
+ * there is less room above it and the same alpha barely registers — 0.55
+ * takes it to #d8dcfd, a comparable step. That is the correction.
+ *
+ * **Darkening the dark-mode button instead was tried and is wrong.** The
+ * reasoning was that a pale lavender has no headroom, so the sweep should go
+ * the other way; the arithmetic says otherwise — white still moves #a8b1fa by
+ * about fifty points of red — and on screen a dark band travelling over a
+ * light button does not read as a highlight at all. It reads as a smudge. A
+ * glint is lighter than the thing it crosses, in both themes.
+ *
+ * It passes *over* the label rather than behind it. Deliberate: white over
+ * a white label in light mode and over a near-black one in dark mode does not
+ * wash either out, and keeping it behind would have meant z-indexing text
+ * nodes that have no element to hang a z-index on.
+ *
+ * The keyframes rest for the last 40% of the cycle. A glint that never stops
+ * is a spinner, and this sits under a paragraph people are meant to read.
+ */
+@utility glint {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      110deg,
+      transparent 40%,
+      var(--glint) 50%,
+      transparent 60%
+    );
+    background-size: 250% 100%;
+    background-repeat: no-repeat;
+    animation: glint 4s linear infinite;
+  }
+}
+
+@keyframes glint {
+  0% {
+    background-position: 100% 0;
+  }
+  60%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glint::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
+ * velora's keyframes for `Marquee` and `OrbitingCircles`, copied verbatim from
+ * the template's own `globals.css` because both components address them by
+ * name — `animate-marquee`, `animate-orbit` — and neither ships its own.
+ */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg))
+      translateY(calc(var(--radius) * -1px)) rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg))
+      translateY(calc(var(--radius) * -1px))
+      rotate(calc((var(--angle) * 1deg + 360deg) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-vertical,
+  .animate-orbit {
+    animation: none;
+  }
+}

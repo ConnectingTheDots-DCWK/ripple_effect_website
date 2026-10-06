@@ -1,0 +1,75 @@
+---
+title: State machines
+description: A guard's moods, a door's states, a quest's stages — drawn as a mermaid diagram in a file of its own, and driven from a board.
+sidebar:
+  order: 7
+---
+
+import Shot from '../../../components/Shot.astro';
+
+Some state is a *shape* rather than a value: a door that is locked, then
+unlocked, then open; a quest that is offered, then taken, then done; a guard
+who is calm until provoked. That is a state machine, and in Ripple Effect it
+is a drawing.
+
+{/* TODO(shots): <Shot name="fsmEditor" /> */}
+
+## The file
+
+A machine is a `*.fsm.mmd` file holding a mermaid `stateDiagram-v2`. Every
+arrow is `From --> To : event`:
+
+```text
+stateDiagram-v2
+    [*] --> Locked
+    Locked --> Unlocked : key
+    Unlocked --> Open : push
+    Open --> Unlocked : pull
+    Unlocked --> Locked : lock
+```
+
+Mermaid owns the format, so unlike every other file the app writes this one
+carries no version line of ours — the `stateDiagram-v2` header is the version
+mermaid gave it. It renders on GitHub, in an editor plugin, anywhere mermaid
+does, and the full syntax is mermaid's own [state diagram
+reference](https://mermaid.js.org/syntax/stateDiagram.html). The paragraph
+below says which part of it the app reads.
+
+The editor shows the text on one side and the picture on the other, redrawn
+as you type, with every problem on its line. While the text does not parse
+the last machine that did is drawn greyed, so a half-typed arrow does not
+blank the pane.
+
+What the reader understands: the header, `%%` comments, `direction`,
+`[*] --> S`, `S --> T : event`, `S --> [*] : event`, `state "Long name" as
+S`, and `S : description`. Notes are skipped. It refuses composite states,
+choice pseudo-states, concurrency, a second start, and any line it does not
+understand, naming the line. An arrow with no event is drawn and kept but can
+never fire, and the editor says so.
+
+## On a board
+
+Drop the file on a board and it becomes a **State machine** node, or pick the
+machine on a node from the Create menu. The node takes an event and answers
+the state the machine is in after it:
+
+- Wire or type the **event**. Leave it blank to read the state without moving.
+- `[*]` as the event resets the machine to its start.
+- Wire the **state** output into a **Switch** — one row per state — and the
+  story branches on where the machine is.
+
+A machine remembers for the whole playthrough, across boards and across
+saves, the way the FlipFlop and Once gates do. Starting over resets it.
+
+**Two nodes anywhere in the story drive the same machine** unless one is given
+an **instance** name. Two doors want two instances of the door machine; one
+quest wants one.
+
+## In a saved game and in an export
+
+A save carries what every machine remembers. A save from before a project had
+machines reads as remembering nothing, which is what was true of it.
+
+A compiled campaign carries each machine as a transition table, so a runtime
+needs no mermaid parser. The compiler writes that table with the same reader
+the editor draws from, so a file that draws is a file that plays.

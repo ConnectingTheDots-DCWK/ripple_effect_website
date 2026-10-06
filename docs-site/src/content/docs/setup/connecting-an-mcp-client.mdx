@@ -1,0 +1,170 @@
+---
+title: Connecting an MCP client
+description: Turning agent access on and pointing Claude Code, Claude Desktop, Cursor or anything else at the project you have open.
+sidebar:
+  order: 2
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Ripple Effect is an MCP server, which means an assistant you already use —
+Claude Code, Claude Desktop, Cursor, and anything else that speaks the
+protocol — can read the project you have open, play it, and, once you say
+so, write into it. The [overview](/overviews/working-with-an-ai-assistant/)
+says what that buys you; this page is the five minutes of setup.
+
+Three things: switch access on in the app, copy one block of configuration
+from it, and paste that block where your client reads it.
+
+<Steps>
+
+1. **Switch agent access on.**
+
+   Open the **Agents** panel from the robot button in the app bar, or from
+   the command palette. Switch on **Agent access**. From now on an assistant
+   can read the project and play it — but change nothing.
+
+   Leave **Agents may edit** off until you want an assistant to change files.
+   It only does anything while the first switch is on, and reading is useful
+   on its own.
+
+   Both switches are for the app rather than for one project: the app serves
+   whichever project is open.
+
+   {/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+2. **Copy the configuration.**
+
+   Press **Copy client configuration** in the panel. What lands on the
+   clipboard is the block most clients read, already pointing at the right
+   place on your machine:
+
+   ```json
+   {
+     "mcpServers": {
+       "ripple_effect": {
+         "command": "/opt/ripple_effect/ripple_effect_mcp",
+         "args": []
+       }
+     }
+   }
+   ```
+
+   The path is a small program installed beside the app that the client
+   starts and that talks to the app for it. Copy it from the panel rather
+   than typing it — the app installs to a different place on each platform.
+
+3. **Paste it where your client reads it.**
+
+   <Tabs syncKey="client">
+     <TabItem label="Claude Code">
+       One command, with the path from the panel:
+
+       ```sh
+       claude mcp add ripple_effect -- /opt/ripple_effect/ripple_effect_mcp
+       ```
+
+       Quote the path on Windows, where it contains a space. `claude mcp
+       list` shows it registered; `/mcp` inside a session shows whether it
+       connected.
+     </TabItem>
+     <TabItem label="Claude Desktop">
+       Settings → Developer → **Edit Config** opens
+       `claude_desktop_config.json`; paste the block in. If the file already
+       has an `mcpServers` object, add the `ripple_effect` entry inside it
+       rather than pasting a second object. Restart Claude Desktop and the
+       tools appear. Claude Desktop has no Linux build.
+     </TabItem>
+     <TabItem label="Cursor">
+       Paste the block into `.cursor/mcp.json` in the project you are
+       working from, or into `~/.cursor/mcp.json` for every project. Cursor
+       lists it under Settings → MCP, where it can be switched on and off.
+     </TabItem>
+     <TabItem label="Anything else">
+       Every MCP client that runs local servers takes a command and an
+       argument list. The command is the path in the block and the argument
+       list is empty. Most read the `mcpServers` key exactly as above; check
+       your client's own documentation for which file it wants.
+     </TabItem>
+   </Tabs>
+
+4. **Ask it something.**
+
+   While a client is connected its mark appears in the app bar, with its
+   name and version on the tooltip, and the panel's *Who is connected* lists
+   it. A good first thing to ask for is `project_outline` — the shape of the
+   whole story in about twenty lines — or simply *what is this project
+   about?* and let the assistant find that tool itself.
+
+   {/* TODO(shots): <Shot name="agentConnected" /> */}
+
+</Steps>
+
+## If it says the app is not running
+
+Every tool call answers with this while the app is closed or agent access is
+off:
+
+```text
+ripple_effect is not running, or agent access is switched off.
+Open the project in ripple_effect and enable agent access from the app bar.
+```
+
+Open the project and switch access on; the client does not need restarting.
+The assistant sees the full tool list either way, so it can tell you what it
+*would* be able to do before the app is up.
+
+## After the app updates
+
+The program the client starts asks the running app what it offers, and is
+told the moment that changes — so from 1.4 on, an update to the app is seen
+by a client that was already running, and so is a project opened, a switch
+thrown or a variable declared. One visible consequence: a client with the
+bridge configured shows up in the agents panel as soon as agent access is
+on, rather than at its first call.
+
+A bridge from before 1.4 carried its tool list built in, so the one update
+that still wants a restart of the client is the one that brings it to 1.4.
+
+## What the assistant gets
+
+Thirty-nine tools, in six groups, each listed with what it takes on the
+[MCP tools reference](/reference/mcp-tools/). Every one that takes a board,
+passage, component, soundscape or sound accepts an id, a name or a
+project-relative path, and an ambiguous name comes back as a list of
+candidates rather than a guess.
+
+| | Tools | Needs |
+| --- | --- | --- |
+| Orientation | `project_info`, `project_outline`, `catalog_find` | Agent access |
+| Reading | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` | Agent access |
+| What only the app can answer | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` | Agent access |
+| Playtesting | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | Agent access |
+| Writing | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | Agents may edit |
+| Sound | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | Agents may edit |
+
+The list a client sees is the app's own for the build and the project it has
+open: `board_add_node`'s node types are an enum off the editor's palette,
+`locale` names the project's languages and `cvar` its variables, and a write
+tool says in its description when editing is off. Two prompts,
+*writing-a-passage* and *editing-a-board*, each arriving with the passage or
+board you name already in it. A write tool called with editing off answers
+`refused`. Every write goes through the app's own document
+sessions, so it is one undo, autosave sees it, and it is posted to Messages
+and listed in the panel as it happens.
+
+## Where the program is, if you need it by hand
+
+| Platform | Path |
+| --- | --- |
+| Linux, `.deb` | `/opt/ripple_effect/ripple_effect_mcp` |
+| Linux, `.rpm` | `/usr/share/ripple-effect/ripple_effect_mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\Ripple Effect\ripple_effect_mcp.exe` |
+| macOS | `/Applications/Ripple Effect.app/Contents/MacOS/ripple_effect_mcp` |
+
+It is deliberately not on your `PATH`: the app installs to three different
+places on three platforms, and no one command line is true on all of them.
+The connection between it and the app is private to your user account and
+never a network port. A build run from source has no such program beside it;
+`melos run editor:mcp:bridge` makes one and prints where it put it.

@@ -1,0 +1,13 @@
+# This file's only job is to be *here*, for the reason `docs-site/` has one.
+#
+# pnpm walks up looking for a workspace root, and the landing page has one at
+# `website/pnpm-workspace.yaml`. Without this file, installing in `legal/`
+# would be an install into that root — one lockfile for three projects that
+# share no dependency, and a Vercel build for the landing page that resolves
+# this tree as well. The nearest workspace root wins, so declaring one here
+# keeps the installs apart.
+#
+# `allowBuilds` names the one native build this project has: esbuild is Vite's.
+# There is no `sharp` here because there are no images — this site is text.
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,58 @@
+---
+/**
+ * A picture of one card, or an honest gap where one is missing.
+ *
+ * `Shot` at a third of the width: the same three states decided by which
+ * files exist, the same per-theme hiding, keyed on a node type from
+ * `src/node-types.ts` rather than on a slug from `src/shots.ts`. It is a
+ * separate component rather than a `size` prop on `Shot` because the two
+ * are captured differently — a shot is a window at the protocol's size, a
+ * preview is one card cropped out of the canvas — and a manifest entry per
+ * card, forty of them saying the same sentence, would be noise.
+ */
+import { Image } from 'astro:assets';
+import { nodeTypes, type NodeType } from '../node-types';
+
+interface Props {
+  type: NodeType;
+}
+
+const { type } = Astro.props;
+const label = nodeTypes[type];
+if (!label) throw new Error(`<NodePreview type="${type}">: no such node type in src/node-types.ts`);
+
+const files = import.meta.glob<ImageMetadata>('/src/assets/screenshots/nodes/*.png', {
+  eager: true,
+  import: 'default',
+});
+const dark = files[`/src/assets/screenshots/nodes/${type}-dark.png`];
+const light = files[`/src/assets/screenshots/nodes/${type}-light.png`];
+
+const alt = `The ${label} card`;
+const frame = 'overflow-hidden rounded-lg border border-border bg-card';
+const image = 'block h-auto w-full';
+---
+
+<figure class="not-content my-4 max-w-xs">
+  {
+    !dark && !light ? (
+      <div class={`${frame} flex aspect-3/2 flex-col items-center justify-center gap-2 border-dashed p-4 text-center`}>
+        <p class="font-mono text-xs text-primary">nodes/{type}-dark.png</p>
+        <p class="text-xs text-muted-foreground">The {label} card alone, every port visible, nothing wired.</p>
+      </div>
+    ) : dark && light ? (
+      <>
+        <div class={`${frame} dark:sl-hidden`}>
+          <Image src={light} alt={alt} sizes="20rem" class={image} />
+        </div>
+        <div class={`${frame} light:sl-hidden`}>
+          <Image src={dark} alt={alt} sizes="20rem" class={image} />
+        </div>
+      </>
+    ) : (
+      <div class={frame}>
+        <Image src={(dark ?? light)!} alt={alt} sizes="20rem" class={image} />
+      </div>
+    )
+  }
+</figure>

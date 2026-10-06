@@ -1,0 +1,113 @@
+---
+title: Installing
+description: How the app is distributed, why the installer is stopped on first run, what to click, and the one error that is not a click away.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Ripple Effect is one download per platform from the [download
+page](https://ripplefx.app/download), which always points at the latest
+release. After the first install the app updates itself: once per launch it
+asks whether a newer release exists, and when one does it fetches the right
+installer for the way *this* copy was installed, checks it against the
+checksum the release publishes, and hands it to your platform's own
+installer. See [Updates, logs and
+support](/overviews/updates-logs-and-support/).
+
+| Platform | You get | Needs |
+| --- | --- | --- |
+| Linux, Debian and Ubuntu | a `.deb` | glibc 2.38 or newer — Ubuntu 24.04+, Debian 13+ |
+| Linux, Fedora and RHEL | an `.rpm` | glibc 2.38 or newer — Fedora 39+ |
+| Windows | a Setup `.exe` | Windows 10 or 11. It installs for your account only and never asks for an administrator. |
+| macOS | a `.dmg` | macOS 12 Monterey or newer. One universal build, Apple silicon and Intel. |
+
+## Nothing is code-signed yet
+
+None of the installers is signed by an authority your machine already trusts.
+So Windows and macOS will each stop the app once, on first run, and say they
+do not know it. **The warning is about the missing certificate, not about
+anything the installer does.** Linux checks nothing of the sort and asks
+nothing.
+
+A purchased certificate would remove the SmartScreen warning on Windows and,
+with notarisation, the Gatekeeper prompt on macOS. Both are a known next step
+rather than a decision against; until then, this is what each platform asks.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+    SmartScreen shows **Windows protected your PC**. Choose **More info**,
+    then **Run anyway**. Setup then installs into
+    `%LOCALAPPDATA%\Programs\Ripple Effect`, for you alone, and running a
+    later installer over it upgrades in place.
+
+    If instead you see **An Application Control policy has blocked this
+    file**, that is not SmartScreen — see [Smart App Control](#smart-app-control)
+    below.
+  </TabItem>
+  <TabItem label="macOS">
+    Gatekeeper says the app cannot be opened because it is from an
+    unidentified developer, or that it could not verify it. Drag the app to
+    Applications first, then either right-click it and choose **Open**, which
+    adds an Open button to the dialog, or clear the quarantine mark from a
+    terminal:
+
+    ```sh
+    xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"
+    ```
+
+    Either is once; the app opens normally afterwards.
+  </TabItem>
+  <TabItem label="Linux">
+    ```sh
+    sudo apt install ./ripple_effect-<version>-linux.deb
+    sudo dnf install ./ripple_effect-<version>-linux.rpm
+    ```
+
+    Nothing asks about signing. The `.deb` installs to
+    `/opt/ripple_effect` and the `.rpm` to `/usr/share/ripple-effect`, and
+    both put `ripple_effect` on your `PATH`. A package refused with a
+    complaint about `libc6` or `GLIBC_2.38` is the floor in the table above:
+    the version control feature ships a libgit2 that needs it, and a package
+    that claimed less would install and then be unable to open a repository.
+    Sound adds three runtime libraries the `.deb` declares — ALSA, PulseAudio
+    and PipeWire — which every desktop has.
+  </TabItem>
+</Tabs>
+
+## Smart App Control
+
+**Windows 11 only.** If Setup refuses with
+
+```text
+An Application Control policy has blocked this file
+```
+
+— error 4551, in the language of a log — then **Smart App Control** is on. It
+is a Windows 11 feature that runs only apps Microsoft's reputation service
+already knows or that carry a trusted signature, and an unsigned installer is
+neither. It has no *Run anyway*: unlike SmartScreen there is no per-app
+exception, so the only way to install is to turn it off.
+
+You may well have never seen it. It is only ever enabled on a **clean
+install** of Windows 11 (a reset counts), it starts in an *Evaluation* mode
+that blocks nothing while Windows decides whether the feature suits the
+machine, and then switches itself **On** — with a notification — or Off. A PC
+that has been upgraded from Windows 10, or that was seen running developer
+tools during evaluation, has it off already, which is why most people never
+meet it.
+
+To check and to turn it off: **Settings → Privacy & security → Windows
+Security → App & browser control → Smart App Control settings**, and choose
+**Off**.
+
+:::caution
+Turning Smart App Control off is a decision, not a toggle. Microsoft says
+that recent Windows updates allow it to be turned back on without
+reinstalling; on older builds, once it is off the only way back is a clean
+reset of Windows. Weigh that before switching it off for one app.
+:::
+
+That this is the error at all is the strongest argument for signing the
+Windows build, and it is the one being weighed.

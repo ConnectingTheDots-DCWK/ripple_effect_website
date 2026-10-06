@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "origin": "https://legal.ripplefx.app",
+  "documents": [
+    {
+      "slug": "eula",
+      "title": "End-User Licence Agreement",
+      "summary": "What you may do with the Ripple Effect application on your own machine.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effective": "2026-10-15",
+          "path": "v/eula-1.0",
+          "source": "en/eula/1.0.md"
+        }
+      ]
+    },
+    {
+      "slug": "terms",
+      "title": "Terms of Service",
+      "summary": "What governs this website and the hosted service an account gives you.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effective": "2026-10-15",
+          "path": "v/terms-1.0",
+          "source": "en/terms/1.0.md"
+        }
+      ]
+    },
+    {
+      "slug": "privacy",
+      "title": "Privacy Notice",
+      "summary": "What personal data is processed, on what basis, and for how long.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effective": "2026-10-15",
+          "path": "v/privacy-1.0",
+          "source": "en/privacy/1.0.md"
+        }
+      ]
+    },
+    {
+      "slug": "subprocessors",
+      "title": "Sub-processors",
+      "summary": "The third parties that process personal data on our behalf.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effective": "2026-10-15",
+          "path": "v/subprocessors-1.0",
+          "source": "en/subprocessors/1.0.md"
+        }
+      ]
+    }
+  ]
+}

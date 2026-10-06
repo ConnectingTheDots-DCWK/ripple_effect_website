@@ -1,0 +1,142 @@
+# Does every legal URL still resolve?
+#
+# This is the first workflow in this repository, and it exists because nothing
+# else checks these URLs. The application carries the same version numbers as
+# literals and has a test that compares them against `legal/manifest.json` —
+# but that test resolves against a submodule its CI never checks out, so it
+# only ever runs on somebody's laptop. And a file existing in this tree is not
+# a page existing at the origin.
+#
+# The frozen paths are the point. `/v/eula-1.0/` is a promise that the text
+# somebody accepted stays where it was, and a promise nothing checks is a
+# promise that quietly stops being true — a route renamed, a manifest entry
+# dropped in a bad merge, a Vercel project reconfigured. This fetches every
+# one of them, including superseded versions, which are precisely the ones
+# nobody would notice breaking.
+
+name: Legal links
+
+on:
+  schedule:
+    # Mondays, early. Nothing here is urgent enough for a tighter cadence, and
+    # a check that runs often enough to be noise is a check that gets muted.
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+  # And on a push to the default branch, which is the moment a merged change
+  # becomes the deployed site.
+  push:
+    branches: [main]
+    paths:
+      - "legal/manifest.json"
+      - "legal/en/**"
+      - "legal/src/**"
+
+# **Deliberately not `pull_request`.** It was, for one commit, on the reasoning
+# that a bad manifest should be caught before it is deployed. That reasoning
+# was wrong: this job fetches the *origin*, and a pull request has not been
+# deployed to the origin — so on a PR it checks the previous contents of the
+# site and reports them as a verdict on the change, which is worse than not
+# running. Before the first deploy it simply fails, which is what it did.
+#
+# What a PR needs is `legal`'s own build, which already refuses a manifest
+# naming a file that does not exist: `getStaticPaths` throws. That check is
+# real, runs on every PR through Vercel, and is about the change rather than
+# about production.
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch every living slug and every frozen version
+        id: check
+        run: |
+          set -uo pipefail
+          origin=$(jq -r '.origin' legal/manifest.json)
+
+          # Every stable slug, then every version of every document. `-e` on
+          # jq so an empty result is a failure rather than an empty loop that
+          # passes by checking nothing.
+          urls=$(jq -er --arg o "$origin" '
+            [ .documents[] | "\($o)/\(.slug)/" ]
+            + [ .documents[] | .versions[] | "\($o)/\(.path)/" ]
+            | .[]
+          ' legal/manifest.json)
+
+          echo "Checking $(printf '%s\n' "$urls" | wc -l) URLs against $origin"
+          : > failures.txt
+
+          while IFS= read -r url; do
+            # Three attempts: a legal document is static, so a single 503 from
+            # an edge node is noise rather than news.
+            for attempt in 1 2 3; do
+              code=$(curl -sS -o /dev/null -w '%{http_code}' \
+                          --max-time 20 -L "$url" || echo 000)
+              [ "$code" = "200" ] && break
+              sleep 5
+            done
+            if [ "$code" = "200" ]; then
+              echo "  ok   $url"
+            else
+              echo "  FAIL $url -> $code"
+              echo "- \`$url\` — HTTP $code" >> failures.txt
+            fi
+          done <<< "$urls"
+
+          if [ -s failures.txt ]; then
+            {
+              echo "failed=true"
+              echo "body<<EOF"
+              echo "The scheduled check of the legal documents found URLs that do not resolve."
+              echo ""
+              cat failures.txt
+              echo ""
+              echo "A stable slug failing means the site is broken."
+              echo "A \`/v/\` path failing is worse: that is a version somebody was asked to accept, and the application records it by URL."
+              echo ""
+              echo "Run: \`${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\`"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+      - name: Open an issue
+        # Every trigger opens one, because every trigger is now about the
+        # deployed site: a schedule, a manual dispatch, or a merge that has
+        # just changed it. Re-runs comment on the open issue rather than
+        # filing a second.
+        if: failure() && steps.check.outputs.failed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = process.env.BODY;
+            const title = "Legal documents: a URL does not resolve";
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "legal-links",
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["legal-links"],
+              });
+            }
+        env:
+          BODY: ${{ steps.check.outputs.body }}

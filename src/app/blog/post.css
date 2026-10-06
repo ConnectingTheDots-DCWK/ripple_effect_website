@@ -1,0 +1,201 @@
+/*
+ * The prose block a post's Markdown renders into.
+ *
+ * Plain CSS against the same tokens rather than `@tailwindcss/typography`,
+ * for the reason the documentation site's `content.css` gives: the plugin
+ * arrives with its own colour ramp and its own spacing opinions, and every
+ * one of them then has to be argued back down to this site's. Writing the
+ * dozen rules that are actually wanted is smaller than overriding the eighty
+ * that are not.
+ *
+ * It is also the *same* dozen rules, on purpose. The link colour, the inline
+ * code chip, the blockquote rule and the table are lifted from
+ * `docs-site/src/styles/content.css` so that a paragraph of ours reads the
+ * same whichever of the two sites it is on.
+ *
+ * Unlayered, so it beats Tailwind's utilities layer without `!important`.
+ * That is safe here and nowhere else: everything it styles is HTML that came
+ * out of a Markdown file and carries no classes of its own.
+ */
+
+.post {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+/* ---------------------------------------------------------------- Type */
+
+.post :is(h2, h3, h4) {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  /* The header is `fixed` and 64px tall, so an anchor jump lands underneath
+     it without this. `rehype-slug` is what puts the ids there. */
+  scroll-margin-top: 6rem;
+}
+
+.post h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.post h3 {
+  margin-top: 2.5rem;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+.post h4 {
+  margin-top: 2rem;
+  font-size: 1.0625rem;
+}
+
+.post :is(p, ul, ol, blockquote, pre, table, figure, .post-scroll) {
+  margin-top: 1.25rem;
+}
+
+.post :is(h2, h3, h4) + * {
+  margin-top: 0.875rem;
+}
+
+.post strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.post a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--motion-fast) var(--motion-curve);
+}
+
+.post a:hover {
+  color: color-mix(in oklab, var(--primary) 80%, var(--foreground));
+}
+
+.post :is(ul, ol) {
+  padding-left: 1.5rem;
+}
+
+.post ul {
+  list-style: disc;
+}
+.post ol {
+  list-style: decimal;
+}
+.post li + li {
+  margin-top: 0.5rem;
+}
+.post li > :is(ul, ol) {
+  margin-top: 0.5rem;
+}
+
+.post blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 1.25rem;
+  color: var(--muted-foreground);
+}
+
+.post hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* --------------------------------------------------------------- Code */
+
+/* Inline code is a chip, the way it is in the app and in the docs. */
+.post :not(pre) > code {
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background-color: var(--muted);
+  padding: 0.125rem 0.3125rem;
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.post :is(h2, h3, h4) code {
+  font-size: inherit;
+}
+
+/*
+ * A block is our frame round Shiki's colours: the card surface, a hairline and
+ * `--radius-sm`. Shiki emitted no background of its own — `defaultColor:
+ * false` in `src/lib/markdown.ts` puts both themes in custom properties and
+ * sets no `color` or `background-color` — which is exactly what leaves the
+ * frame to us and the syntax to it.
+ */
+.post pre {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--card);
+  padding: 1rem 1.125rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+.post pre code {
+  display: block;
+  font-family: var(--font-mono);
+}
+
+/* The theme switch, and the whole of it. `next-themes` is configured with
+   `attribute="class"`, so the dark half hangs off `.dark` on <html>. */
+.post .shiki,
+.post .shiki span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style, inherit);
+  font-weight: var(--shiki-light-font-weight, inherit);
+  text-decoration: var(--shiki-light-text-decoration, inherit);
+}
+
+:where(.dark) .post .shiki,
+:where(.dark) .post .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+  text-decoration: var(--shiki-dark-text-decoration, inherit);
+}
+
+/* -------------------------------------------------------------- Tables */
+
+/* Hairline, no zebra, a quieter header — the rule between rows is the
+   structure. Scrolls inside itself so a wide table never scrolls the page. */
+/* The scroller is the wrapper `rehypeWrapTables` puts round every table, so
+   the table itself stays a table and can fill the column. */
+.post .post-scroll {
+  overflow-x: auto;
+}
+
+.post table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.post :is(th, td) {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.post th {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------- Figures */
+
+.post img {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}

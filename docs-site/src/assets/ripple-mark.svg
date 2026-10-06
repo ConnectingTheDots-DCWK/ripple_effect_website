@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- paintRippleMark, transcribed. Same three-ring table as
+       lib/src/widgets/app_brand.dart and the landing page's RippleMark:
+       (radius, alpha, stroke width) as fractions of unit = 16. -->
+  <circle cx="16" cy="16" r="7.36" stroke="#6c7bf5" stroke-opacity="0.95" stroke-width="2.08"/>
+  <circle cx="16" cy="16" r="11.52" stroke="#6c7bf5" stroke-opacity="0.55" stroke-width="1.76"/>
+  <circle cx="16" cy="16" r="15.36" stroke="#6c7bf5" stroke-opacity="0.28" stroke-width="1.44"/>
+  <circle cx="16" cy="16" r="2.72" fill="#6c7bf5"/>
+</svg>

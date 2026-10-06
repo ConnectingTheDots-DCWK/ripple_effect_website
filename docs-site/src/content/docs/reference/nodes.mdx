@@ -1,0 +1,1479 @@
+---
+title: Nodes
+description: Every kind of node a board or a macro can hold — what each is for, what it takes on its ports, what it answers, and where to read more.
+sidebar:
+  order: 1
+---
+
+import NodePreview from '../../../components/NodePreview.astro';
+
+Every card the Create menu offers, grouped as it groups them. For each: what
+it is for, in the card's own words; what is on the card; the ports it takes
+and the ports it answers on; and, where one exists, something to read. An
+agent gets the same list for the build it is talking to from `node_types`.
+
+A port carries either **flow** — the story, pushed from card to card — or a
+value, pulled when a card needs it. The [boards
+overview](/overviews/boards-and-nodes/#two-kinds-of-wire) says how the two are
+run and the one rule that follows. Every card's way in is `exec` unless the
+table says otherwise, and every value port is typed: a `number` joins a
+`number`, `any` joins anything.
+
+**Five cards let you declare their own ports** — Output, Input, Script, Macro
+In and Macro Out. Double-click one and each row is a name and a type, and a
+type is two questions: **what it is** — `int`, `float`, `bool`, `string`,
+`markdown`, `asset`, `component` or `json` — and **how many of it**: one, a
+list, or a map of names to it. Twenty-four in all, and every one of the five
+offers the same twenty-four, as do a component's attributes and the console
+variables.
+
+Two older words, `number` and `entity`, are still read wherever they appear
+and are no longer suggested: `int` or `float` says which, and an entity is a
+name, which is a `string`.
+
+What a row *declares* and what its port *carries* are deliberately not the
+same set. `int` and `float` both carry `number`, because a wire that would not
+join a whole number to an Operator expecting a number is a wire nobody wants.
+A lone `asset`, `component` or `markdown` carries `string`, since each of them
+is a path or some text. A **list** of assets or of components carries the tag a
+component's own `assetList` and `componentList` attributes carry, so those
+join each other. A map carries `json`. The file keeps the narrower word
+whichever way it goes, so nothing is lost by the port being broad.
+
+**An Input node's types are narrowed on the way into a campaign**, and that
+is the one thing worth knowing about them. What it declares is drawn as a
+form for the reader to fill in, and a form has no file picker — so an `asset`
+field reaches whoever is playing as a text box asking for a path. You may
+still declare it: the word is kept in your project, where it says what the
+field is for.
+
+**A Macro In's takes and a Script node's inputs can carry a default** — what
+the slot is worth when nothing fills it. Where the card's own literal and a
+wire both answer a port, **the wire wins**, and the field on the card
+disappears while the wire is attached; where neither is there, the declared
+default stands in, and where there is no default either, the type's own blank
+does. A default on a `json` or a `map<…>` slot cannot travel, and the app
+says so when you compile.
+
+**Every card can carry metadata of your own.** Right-click it and choose
+*Edit metadata…*: a list of names, types and values — `int`, `float`, `bool`,
+`string`, a list of each, and `json` for anything nested — and a small tag on
+the card's header while there is any. A shorter list than a port may declare,
+and for a structural reason: a node stores the value and not its type, so the
+editor reads the type back off the value's own shape when it opens. An
+`asset` and a `string` would be the same thing written down, so it does not
+offer the difference; a whole `3` and a fractional `3.0` are not, so it does. Nothing on the board reads it; it is yours, for a status, a
+reviewer's note, a mark for a tool of your own. It travels with the node into
+a compiled campaign and to an agent, and a copied node arrives with its notes.
+
+## Flow
+
+### Start
+
+<NodePreview type="start" />
+
+Where the story begins.
+
+A marker: it holds no text of its own, only the single wire that leaves it.
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `out` | `flow` | The single wire the story leaves by. |
+
+
+### Macro
+
+<NodePreview type="macro" />
+
+Runs a macro here — a board a board can call.
+
+Drag a macro out of the file tree and drop it on the canvas, or pick one here. It grows an input per thing the macro takes and an output per thing it answers, and the flow carries on where the macro ends.
+
+Wire a take, or type it on the card; the wire wins.
+
+The macro is spliced in when the campaign is compiled, so calling one twice is two copies of it and a macro cannot call itself.
+
+Plus one **input per thing the macro takes**, with a field beside it to type a literal, and one **output per thing it answers**.
+
+**On the card:** **Macro**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken where the macro reached its Macro Out. |
+
+**Read more:** [Macros](/overviews/boards-and-nodes/#macros)
+
+
+### Jump
+
+<NodePreview type="jump" />
+
+Continues the story on another board.
+
+Pick the board it goes to, and use the arrow to open that board here. It is how a chapter hands over to the next one, and how a session joins onto the one before it.
+
+It has no output: what happens next happens on the board it names.
+
+Leave Node on `Start` to begin that board at the beginning, or name a node to resume partway in — which is how a chapter can be re-entered without replaying it.
+
+**On the card:** **Board**; **Node** — Leave it on Start to begin that board at its beginning, or name a node to resume partway in.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | The way in. There is no way out: what happens next happens on the board it names. |
+
+**Read more:** [Reading a story back](/overviews/reading-a-story-back/)
+
+
+### While
+
+<NodePreview type="while" />
+
+Repeats a stretch of the story.
+
+Wire the end of the loop back into `continue` and it goes round again through `loop`. Wire something into `break` and it leaves through `exit`.
+
+It holds no condition of its own: what decides is whatever you wired to those two inputs.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `continue` | `flow` | Wire the end of the loop back here to go round again. |
+| `break` | `flow` | Wire something here to leave. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `loop` | `flow` | Taken on every pass. |
+| `exit` | `flow` | Taken on break. |
+| `iteration` | `number` | Which pass this is, counting from zero. |
+
+
+### For
+
+<NodePreview type="for" />
+
+Repeats a stretch of the story, but not forever.
+
+The same two ways in and two ways out as a While. What it adds is a ceiling: once it has gone round that many times it leaves through `exit` whatever the graph says.
+
+It is the loop to reach for when the condition is somebody else's and you would rather not find out the hard way that it never comes false.
+
+**On the card:** **Max iterations**, default `100` — The ceiling.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `continue` | `flow` | Wire the end of the loop back here to go round again. |
+| `break` | `flow` | Wire something here to leave early. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `loop` | `flow` | Taken on every pass. |
+| `exit` | `flow` | Taken on break, or once the ceiling is reached. |
+| `iteration` | `number` | Which pass this is, counting from zero. |
+
+
+### Switch
+
+<NodePreview type="switch" />
+
+Sends the flow down one branch of several, by name.
+
+Type into the last row and another appears beneath it, each with its own way out. Clear the last one again and it goes away.
+
+Wire the thing being decided into `value`. Cases are matched as text: a number is compared as the digits you would write it with, so 42 and "42" are the same case.
+
+Nothing matching is not an error and not a fall-through — the story simply stops there. A branch nobody wrote is worse than a branch that is plainly missing.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | The way in. |
+| `value` | `any` | The thing being decided. Matched as text, so 42 and "42" are one case. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `case.0` | `flow` | One way out per row. Type into the last row and another appears; nothing matching stops the story there. |
+
+
+### If
+
+<NodePreview type="flow.if" />
+
+Sends the flow one of two ways, on a yes or no wired into it.
+
+It asks nothing itself: `condition` takes a true-or-false from somewhere else, usually a Comparator. That is what makes it the piece a While or a For has been waiting for — wire `true` back into `continue` and `false` into `break`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `condition` | `bool` | True or false, usually from a Comparator. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `trueBranch` | `flow` | Taken when the condition is true. |
+| `falseBranch` | `flow` | Taken when it is false. |
+
+
+### Do all
+
+<NodePreview type="flow.all" />
+
+Runs everything wired to it, one branch after another, then carries on from `completed`.
+
+Wire the last branch and another appears beneath it, so it grows as many as you need. They run top to bottom, each to the end of its wire before the next starts — a passage on a branch holds the branches below it until every passage reachable from it has been read. So put the jobs on the branches and the story on `completed`: it fires once every branch has run out.
+
+For the bookkeeping a story needs before a passage: three things to set up, side by side, and then the passage.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken once every branch has run out. Boards written before it had one grow the port the moment they open. |
+| `branch_0` | `flow` | One per branch, run top to bottom; wire the last and another appears. |
+
+
+### State machine
+
+<NodePreview type="fsm" />
+
+Fires an event at a state machine and says what state it is in.
+
+The machine is a `.fsm.mmd` file — a mermaid state diagram. `event` is what to fire, from the card or from a wire; leave it blank to read the state without moving. `[*]` puts the machine back at its start.
+
+`changed` is taken when an arrow fired, `unchanged` when none did — which is not an error. `state` is where the machine is now; a Switch on it is how the story branches.
+
+`instance` names *which* one: leave it blank and every node driving this machine drives the same one. It remembers for the whole playthrough, across boards and saves; starting over forgets.
+
+**On the card:** **Machine**; **Instance**; **Event** — Blank reads the state without moving.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `event` | `string` | What to fire; blank reads the state without moving; `[*]` resets. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `changed` | `flow` | Taken when an arrow fired. |
+| `unchanged` | `flow` | Taken when none did — not an error. |
+| `state` | `string` | Where the machine is now. |
+
+**Read more:** [Finite state machines](https://brilliant.org/wiki/finite-state-machines/) · [Mermaid state diagrams](https://docs.mermaidviewer.com/diagrams/state.html) · [State machines in Ripple Effect](/overviews/state-machines/)
+
+
+### Variable branch
+
+<NodePreview type="cvar.branch" />
+
+Sends the flow one of two ways depending on a console variable.
+
+Pick the variable, a comparison, and what to compare it against — on the card, or wired into `value`. The comparison is the Comparator's: equality goes through text, so 42 and "42" are equal, and only two numbers or two strings order.
+
+A Get variable node into a Comparator into an If does the same in three cards; this is the one card for the common case, a story that branches on a flag.
+
+**On the card:** **Variable**; **Comparison**, default `equal` — The same set a Comparator offers; **Value**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `value` | `any` | What to compare the variable against. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `yes` | `flow` | Taken when the comparison holds. |
+| `no` | `flow` | Taken when it does not. |
+
+**Read more:** [Console variables](/overviews/console-variables/)
+
+
+### Delay
+
+<NodePreview type="flow.delay" />
+
+Holds the story for a while, then carries on.
+
+The wait is written the ISO 8601 way: `PT2S` is two seconds, `PT1M30S` a minute and a half, `P1DT12H` a day and a half. Years and months are not a length of time and are refused.
+
+The last passage stays on screen while it waits. An agent playing the story, or a test, does not wait at all.
+
+**On the card:** **Duration**, default `PT1S`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the wait is over. |
+
+**Read more:** [ISO 8601 durations](https://en.wikipedia.org/wiki/ISO_8601#Durations)
+
+
+### FlipFlop
+
+<NodePreview type="flow.flipflop" />
+
+Takes one way out, then the other, then the first again — every time the flow reaches it.
+
+The first visit goes out of `a`. `is A` is true while `a` is the side running. It remembers for the whole playthrough: leaving the board and coming back, or saving and loading, does not reset it. Starting over does.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `a` | `flow` | Taken on the first visit, and every second one after. |
+| `b` | `flow` | Taken on the visits in between. |
+| `isA` | `bool` | True while `a` is the side running. |
+
+**Read more:** [What remembers, and for how long](/overviews/boards-and-nodes/#what-remembers-and-for-how-long)
+
+
+### Once
+
+<NodePreview type="flow.once" />
+
+The first time the flow reaches it goes out of `first`; every time after goes out of `again`.
+
+`visits` is how many times so far, counting this one, so a Switch on it can tell the third visit from the second. It remembers for the whole playthrough: leaving the board and coming back, or saving and loading, does not reset it. Starting over does.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `first` | `flow` | Taken on the first visit only. |
+| `again` | `flow` | Taken on every visit after. |
+| `visits` | `number` | How many visits so far, counting this one. |
+
+**Read more:** [What remembers, and for how long](/overviews/boards-and-nodes/#what-remembers-and-for-how-long)
+
+
+### End
+
+<NodePreview type="end" />
+
+Where a path stops.
+
+Its input accepts any number of wires, so every branch of a story can finish at the same ending.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | Any number of wires; every branch can finish here. |
+
+
+## Story
+
+### Narration
+
+<NodePreview type="narration" />
+
+A passage of prose, in every language the project is written in.
+
+The text lives in a localised passage beside the board rather than on the node, so one passage can be read by several nodes and a translator can work on it in any editor. The card shows the first few rendered lines of the story's own language; double-click it to write.
+
+It always carries one spare choice at the bottom. Wire that one up and another appears beneath it, so a passage grows as many branches as the reader needs. Click a choice's row on the card to give it a name, which is what the card shows, and its words, which are what the reader is offered — in every language the story is written in.
+
+A soundscape — a timeline of music and sounds, a file of its own — plays from the moment this passage is shown, and **stays in force** through every passage after it until one brings its own: a tavern goes on being a tavern. A passage with none changes nothing; a passage set to *Silence* stops whatever is playing. A soundscape marked *tied* belongs to its passage and stops when the story moves on.
+
+**On the card:** **Passage** — Which passage file the card reads. New makes one beside the board; **Soundscape** — *None*, *Silence*, or one of the project's soundscapes.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | The way in, at the title. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `choice_0` | `flow` | One per choice, in order; always one spare at the bottom. The words the reader sees are set on the row, per language. |
+
+**Read more:** [Passages and languages](/overviews/passages-and-languages/), [Soundscapes and sounds](/overviews/soundscapes-and-sounds/)
+
+
+### Output
+
+<NodePreview type="display" />
+
+Shows values the story worked out.
+
+Double-click to say what it shows — a name and a type per row — and it grows a port per name. Wire a Script node's outputs into them.
+
+It is a slide with one way on, so it reads as a passage rather than as a debugger.
+
+Plus one **input per name** in *Shows*, typed as the shape says.
+
+**On the card:** **Shows**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the reader moves on. |
+
+**Read more:** [Python scripting](/overviews/python-scripting/)
+
+
+### Input
+
+<NodePreview type="input" />
+
+Asks the reader for values.
+
+Double-click to say what to ask for — a name and a type per row — and it grows a port per name, carrying what was typed. A `bool` is a switch, a `number` a number field, a list a line of comma-separated values.
+
+It is a form with one way on. Say what you are asking, and why, in the passage before it.
+
+Plus one **output per name** in *Asks*, typed as the shape says, carrying what the reader typed.
+
+**On the card:** **Asks**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the reader submits the form. |
+
+**Read more:** [Playing a campaign](/overviews/playing-a-campaign/)
+
+
+### Play sound
+
+<NodePreview type="flow.sound" />
+
+Plays one sound, once, and carries straight on.
+
+The file is any audio in the project — drop one into the folder and it is in the list. Volume runs from 0 to 1 and speed from a little above 0, 1 being the file's own.
+
+Nothing waits for it: `completed` fires the moment the sound is cued, so a door slams and the next passage is already showing. For music under a scene, set a soundscape on the passage instead.
+
+**On the card:** **Sound** — Any audio file the project holds; **Volume**, default `1.0`; **Speed**, default `1.0`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken the moment the sound is cued, not when it ends. |
+
+**Read more:** [Soundscapes and sounds](/overviews/soundscapes-and-sounds/)
+
+
+## Math
+
+### Operator
+
+<NodePreview type="math.operator" />
+
+Adds, subtracts, multiplies or divides the two numbers wired into it.
+
+Both sides only take numbers. Dividing by zero gives an infinity rather than stopping the board — a story that fell over because a wire happened to carry a zero would be worse than one that carries an odd number.
+
+**On the card:** **Operation**, default `add` — Add, subtract, multiply or divide.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `a` | `number` | The left-hand number. |
+| `b` | `number` | The right-hand number. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `number` | The answer; dividing by zero gives an infinity. |
+
+
+## Logic
+
+### Comparator
+
+<NodePreview type="logic.comparator" />
+
+Compares the two values wired into it and answers true or false.
+
+Neither side declares a type, so anything may be plugged in. Equality reads both as text — 42 and "42" are equal here for the same reason they are one case on a Switch. Ordering is only answered for two numbers or two pieces of text; anything else compares as false.
+
+Its result is what an If node is waiting for.
+
+**On the card:** **Compare**, default `equal` — Equal, not equal, less, greater, and the two or-equals.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `a` | `any` | The left-hand value. |
+| `b` | `any` | The right-hand value. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `bool` | True or false, for an If. |
+
+
+## Lists
+
+These four read a list — and a piece of text, which they read the same way. A list is itself; everything else is its text, one character at a time. So the same three cards work on `["bread", "rope"]` and on `"hi"`, and what comes out is the kind that went in: appending `!` to `hi` gives `hi!`, not a list of three letters.
+
+An index counts from zero, and from the end when it is negative — `-1` is the last item. Nothing here ever stops the story: an index past either end is an ordinary thing to reach inside a loop.
+
+A map is the one thing these three do not read. It has no order for an index to mean, so they hand it back untouched and answer nothing — the [Maps](#maps) cards below are what read one.
+
+### Insert
+
+<NodePreview type="list.insert" />
+
+Puts something into a list, and answers the whole list.
+
+Into a list, another list is added item by item and anything else goes in whole — appending `5` to `[3]` gives `[3, 5]`, and appending `[1, 2]` gives `[3, 1, 2]`. Into a piece of text, whatever you give it is read as text and spliced in, one character at a time: appending `!` to `hi` gives `hi!`. What comes out is the kind that went in.
+
+The index counts from the end when it is negative, so -1 is the last, and past either end it simply goes on the end — except under **Replace at**, which leaves the list alone rather than quietly writing somewhere else.
+
+**On the card:** **Placement**, default `append` — prepend, append, insert at or replace at. The `index` row is dimmed under prepend and append, which do not read it.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The list, or the text. |
+| `index` | `number` | Where, under *insert at* and *replace at*. |
+| `item` | `any` | What goes in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | The whole thing, as the kind that went in. |
+
+
+### At
+
+<NodePreview type="list.at" />
+
+Answers one item of a list, or one character of a piece of text.
+
+Counting starts at zero, and a negative index counts from the end — -1 is the last item. Past either end it answers nothing rather than stopping the story, because walking off the end of a list is an ordinary thing to do inside a loop.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The list, or the text. |
+| `index` | `number` | Which one, from zero, or from the end when negative. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `item` | `any` | The item, or nothing past either end. |
+
+
+### Remove
+
+<NodePreview type="list.remove" />
+
+Takes one item out of a list, and answers the whole list.
+
+Point it at a piece of text instead and it takes one character out, the same way. What comes out is the kind that went in.
+
+Counting is At's: from zero, and from the end when the index is negative — -1 is the last item. Past either end it leaves the list alone rather than quietly taking the nearest one instead.
+
+Its own card rather than a fifth placement on **Insert**, because putting something in and taking something out are two different things to want and one of them should not be hidden inside a dropdown on the other.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The list, or the text. |
+| `index` | `number` | Which one, from zero, or from the end when negative. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | The whole thing, as the kind that went in. |
+
+
+### Size
+
+<NodePreview type="list.size" />
+
+How many items a list has, and whether it has none.
+
+A piece of text is counted in characters, and an emoji counts as one.
+
+`length` is what a For node's ceiling wants when you mean to walk a list item by item; `empty` is what an If node is waiting for.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The list, or the text. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `length` | `number` | How many. |
+| `empty` | `bool` | Whether there are none. |
+
+
+## Maps
+
+These seven read a map: a set of names, each holding a value. **A map is itself; everything else is an empty map** — point one of them at a list, at a number or at nothing and that is what it sees.
+
+Which is also how a map is made, there being no card that holds one the way a Text node holds a word: a **Set** with nothing wired to its subject hands you back a map of one pair, and a chain of them is a map.
+
+A name is always text. A name that is not there never stops the story — **Get** answers nothing and says so on `found`, and **Remove** hands the map back as it was.
+
+### Get
+
+<NodePreview type="map.get" />
+
+Answers what a map holds under one name.
+
+A name nothing is under answers nothing rather than stopping the story, because reaching for a name that may not be there is an ordinary thing to do.
+
+`found` is how you tell a name that is not there from a name that is there holding nothing: the two read the same on `value`, and only one of them means the story never wrote it.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map. |
+| `key` | `string` | The name to look under. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `any` | What is under it, or nothing. |
+| `found` | `bool` | Whether anything was under it at all. |
+
+
+### Set
+
+<NodePreview type="map.set" />
+
+Writes one name into a map, and answers the whole map.
+
+Point it at nothing and it answers a map of one pair, which is how a map is made: there is no other card that builds one from scratch.
+
+A name already there is written over. Nothing is changed in place — what comes out is the map to carry on with, which is what makes a chain of these the way a map is built.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map, or nothing to start one. |
+| `key` | `string` | The name to write. |
+| `value` | `any` | What goes under it. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | The whole map. |
+
+
+### Remove
+
+<NodePreview type="map.remove" />
+
+Takes one name out of a map, and answers the whole map.
+
+A name that is not there leaves the map alone rather than stopping the story.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map. |
+| `key` | `string` | The name to take out. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | The whole map. |
+
+
+### Keys
+
+<NodePreview type="map.keys" />
+
+Every name a map holds something under, as a list.
+
+In name order, which is the order a map reads as text in — so what an Output node shows and what this answers are never in two different orders.
+
+This and a **Size** node are how a map is walked: the length is a For node's ceiling, an **At** node picks a name out of the list, and a **Get** node reads what is under it.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `keys` | `stringList` | The names, in name order. |
+
+
+### Values
+
+<NodePreview type="map.values" />
+
+Everything a map holds, as a list.
+
+In the same order a **Keys** node answers, so the two line up: the first of these is under the first of those.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `values` | `any` | What is held, in the order the names come out in. |
+
+
+### Merge
+
+<NodePreview type="map.merge" />
+
+Two maps into one.
+
+`other` wins: a name in both comes out holding what `other` had. Either side may be nothing, which leaves the other as it was.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The first map. |
+| `other` | `any` | The second, which wins. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | The two together. |
+
+
+### Size
+
+<NodePreview type="map.size" />
+
+How many names a map holds, and whether it holds none.
+
+`length` is what a For node's ceiling wants when you mean to walk a map name by name; `empty` is what an If node is waiting for.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `subject` | `any` | The map. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `length` | `number` | How many names. |
+| `empty` | `bool` | Whether there are none. |
+
+
+## Entities
+
+### Component
+
+<NodePreview type="component" />
+
+Reads a component into the board — a character, an item, a room.
+
+Drag one out of the file tree and drop it on the canvas, or pick it here. Every attribute gets its own output, typed the way the component declares it, so a number joins a number and text joins text.
+
+`component` carries the whole thing as one value, for passing along rather than picking apart.
+
+It has two modes. In **Reference** it is a window onto the file: outputs, and nothing else.
+
+In **Entity** it stops being a window and makes the story a *thing*: one entity, kept for the length of the campaign under the name you give it. Every attribute grows an input, so what happens earlier in the story can set it. Two nodes with two names are two independent swords; a node on a later board with the same name is the same sword.
+
+Either way it reads the file and never writes to it. The component itself is edited where it lives.
+
+Plus one **output per attribute**, typed as the component declares it — and in Entity mode one **input per attribute** as well.
+
+**On the card:** **Component**; **Entity mode**, default `false` — Reference off, Entity on; **Name** — The entity's name, in Entity mode.
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. In Entity mode this is when the entity exists. |
+| `component` | `component` | The whole component as one value, for passing along rather than picking apart. |
+
+**Read more:** [Components and entities](/overviews/components-and-entities/)
+
+
+### Spawn
+
+<NodePreview type="component.spawn" />
+
+Makes many entities of one component at once — six goblins, a hand of cards, a shelf of potions.
+
+Pick the component, say how many, and choose how they are told apart: numbers or letters, and what goes between. `Goblin` with numbers and a dash makes Goblin-1, Goblin-2, and so on.
+
+`entities` carries their names as a list of text. That is how anything else reaches them: a Script node can walk it and give each one its own hit points, and a Component node set to Entity with that name is that goblin.
+
+The names it makes depend only on what is on the node, so coming back to it finds the goblins it already made rather than six more. A second wave wants a different name, which is what the `name` input is for.
+
+It runs when the flow reaches it, so anything reading `entities` has to be wired after `completed` — a Script hanging off it with nothing flowing in reads nothing.
+
+**On the card:** **Component**; **Name**; **How many**, default `1`; **Numbering**, default `numbers` — Numbers or letters; **Separator**, default `dash` — What goes between the stem and the number.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `name` | `string` | The stem the names are built on. A wire beats the card. |
+| `count` | `number` | How many to make. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `entities` | `stringList` | Their names, as a list of text. |
+
+**Read more:** [Components and entities](/overviews/components-and-entities/)
+
+
+### Delete Entity
+
+<NodePreview type="component.delete" />
+
+Forgets one entity: the goblin is dead, the potion is drunk, the sword was left behind.
+
+Name it on the card, or wire a name in — a name from upstream wins, which is how a loop clears out everything a Spawn node made.
+
+It removes the entity from the campaign and nothing from the project: the component file it was made from is untouched, and a Component node set to Entity naming it later simply makes a fresh one from that file.
+
+A name that names nothing is not an error — it removes nothing and the story carries on. Ask an Entity Exists node first if that matters.
+
+**On the card:** **Name**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `name` | `string` | Which entity to forget. A wire beats the card; a name nothing answers to removes nothing. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+
+**Read more:** [Components and entities](/overviews/components-and-entities/)
+
+
+### Entity Exists
+
+<NodePreview type="component.exists" />
+
+Asks whether the campaign has an entity under a name, and answers true or false.
+
+Name it on the card, or wire a name in — a name from upstream wins.
+
+It asks about entities, not about components. False means the story has not made this one, or has deleted it; the component file may be sitting there all the same, and a Component node set to Reference would read it happily.
+
+It runs when the flow reaches it, so anything reading `exists` has to be wired after `completed` — an If node hanging off it with nothing flowing in reads nothing.
+
+**On the card:** **Name**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `name` | `string` | Which entity to ask about. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `exists` | `bool` | Whether the campaign has one under that name. |
+
+**Read more:** [Components and entities](/overviews/components-and-entities/)
+
+
+### Entity Names
+
+<NodePreview type="component.names" />
+
+Answers every entity the story has made, as a list of names in alphabetical order.
+
+Pick a component to count only those — the goblins, not the swords — or leave it empty for all of them. A name wired into `of` beats the pick, so the story can decide on the way past.
+
+This is the roster as it stands, not the wave a Spawn node made: anything deleted since is gone from it, and anything made on another board is in it.
+
+Wire `names` into a `For` node with a `List at` to do something to each one — the same shape a Spawn node's `entities` output takes.
+
+It runs when the flow reaches it, so anything reading `names` has to be wired after `completed`.
+
+**On the card:** **Of**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `of` | `string` | Which component to count, by name. A wire beats the card, and nothing at all counts every entity. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `names` | `stringList` | Every name, in alphabetical order. |
+
+**Read more:** [Components and entities](${DocsPage.componentsAndEntities.url})
+
+
+## Value
+
+### Script
+
+<NodePreview type="script" />
+
+Runs a Python file, and publishes what it assigned.
+
+Pick the script, then say what it reads and what it writes — the same rows of name and type every other card's ports are written in, behind the *Inputs* and *Outputs* buttons — and the node grows a port per name. Inputs arrive in Python as globals of that name; assign the output names and they come back out. An input may declare a default, which stands in when nothing is wired to it.
+
+Double-click to write the script, and to try it in the console beside it. The file is a real `.py` in the project, so a snippet can be shared by as many nodes as want it.
+
+It shows nothing on its own. Wire an Output node to its outputs to put them on screen.
+
+Plus one **input per name** in *Inputs* and one **output per name** in *Outputs*, typed as the shape says.
+
+**On the card:** **Script**; **Inputs**; **Outputs**; **Test inputs** — Values to run the script with from the editor, without a board.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the script has run. |
+
+**Read more:** [Python scripting](/overviews/python-scripting/) · [The Python API](/reference/python/)
+
+
+### Get variable
+
+<NodePreview type="cvar.get" />
+
+Reads a console variable onto `value`.
+
+Console variables are declared on the project's variables page — a name, a type and a default — and are set anywhere and read anywhere, across boards and saves, with no wire between. This is the reading half; a Set variable node or a Script node's cvar_set is the writing half.
+
+It takes the flow rather than being pulled, so that it always answers what the variable holds *now*: put it in the story after whatever sets the variable, and wire `value` onwards from there.
+
+**On the card:** **Variable**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `any` | What the variable holds now, typed as the variable is. |
+
+**Read more:** [Console variables](/overviews/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
+
+
+### Set variable
+
+<NodePreview type="cvar.set" />
+
+Sets a console variable.
+
+Wire a value into `value`, or type one on the card; the wire wins when both are there. The value has to be the variable's type — a whole number for an int, true or false for a bool — and one that is not ends the run with a message naming this node, rather than being bent to fit.
+
+`result` is what the variable holds after the write.
+
+**On the card:** **Variable**; **Value**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `value` | `any` | What to write. A wire beats the card; a value of the wrong type ends the run naming this node. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `result` | `any` | What the variable holds after the write. |
+
+**Read more:** [Console variables](/overviews/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
+
+
+### Random number
+
+<NodePreview type="random.number" />
+
+A number nobody chose.
+
+`% X` is how many numbers are in the range and `+ Y` is where it starts, so a six-sided die is 6 and 1. Turn on `decimals` and it answers with a fraction from the same range.
+
+It rolls again every time the flow reaches it.
+
+**On the card:** **% X**, default `100`; **+ Y**, default `0`; **Decimals**, default `false` — Answer with a fraction from the same range.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `any` | A fresh number every time the flow arrives. |
+
+
+### Random string
+
+<NodePreview type="random.string" />
+
+A string nobody chose.
+
+The pattern is tried against every printable character on its own, and the ones it matches are what the string is drawn from — `[A-Za-z0-9]` for alphanumeric, `[0-9a-f]` for hex. An empty pattern means all of them.
+
+A pattern that matches nothing gives an empty string, which is the quieter answer than a failure mid-story.
+
+**On the card:** **Pattern**, default `[A-Za-z0-9]`; **Length**, default `8`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `any` | A fresh string every time the flow arrives. |
+
+**Read more:** [Regular expression character classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Character_classes)
+
+
+### number
+
+<NodePreview type="value.number" />
+
+Holds a `number` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `number`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **number**, default `0` — The number.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `number` | The number typed on the card. |
+
+
+### bool
+
+<NodePreview type="value.bool" />
+
+Holds a `bool` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `bool`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **bool**, default `false` — The truth.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `bool` | The truth typed on the card. |
+
+
+### string
+
+<NodePreview type="value.string" />
+
+Holds a `string` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `string`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **string** — The text.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `string` | The text typed on the card. |
+
+
+### list&lt;number>
+
+<NodePreview type="value.numberList" />
+
+Holds a `list<number>` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `numberList`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **list&lt;number>** — The list, as `list<number>`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `numberList` | The list typed on the card. |
+
+
+### list&lt;bool>
+
+<NodePreview type="value.boolList" />
+
+Holds a `list<bool>` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `boolList`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **list&lt;bool>** — The list, as `list<bool>`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `boolList` | The list typed on the card. |
+
+
+### list&lt;string>
+
+<NodePreview type="value.stringList" />
+
+Holds a `list<string>` for the rest of the board to read.
+
+Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather than only hang off it; left unwired it simply holds its value. Its data port carries the tag `stringList`, so the editor will only let it join something that expects the same thing — or something that expects anything at all.
+
+**On the card:** **list&lt;string>** — The list, as `list<string>`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `value` | `stringList` | The list typed on the card. |
+
+
+## Chance
+
+### Dice roller
+
+<NodePreview type="random.dice" />
+
+Rolls dice notation, the way a table would.
+
+`2d6+4` is two six-sided dice and four; `4d6kh3` keeps the highest three of four; `1d20+1d4+2` chains a d20, a d4 and a bonus. Keep or drop with `kh`, `kl`, `dh`, `dl`. Pick a preset, or type your own.
+
+`Rolls` is how many times over. `total` is the sum of everything, `results` one total per roll, `dice` every face that counted. The two criticals are a natural twenty or a natural one on the first dice term.
+
+A wire into `notation` or `rolls` beats what is typed on the card.
+
+**On the card:** **Notation**, default `1d20` — Type it, or pick one of the presets; **Rolls**, default `1`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `notation` | `string` | The dice notation. A wire beats the card. |
+| `count` | `number` | How many times over. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the node has run. |
+| `total` | `number` | The sum of everything. |
+| `results` | `numberList` | One total per roll. |
+| `dice` | `numberList` | Every face that counted. |
+| `isCriticalHit` | `bool` | A natural twenty on the first term. |
+| `isCriticalFailure` | `bool` | A natural one on the first term. |
+
+**Read more:** [Dice notation, explained](https://rolldyce.com/dice-notation/)
+
+
+### Percentile check
+
+<NodePreview type="random.check" />
+
+Rolls a d100 against a chance out of a hundred.
+
+At or under the chance is `success`, over it is `failure` — so 0 never succeeds and 100 always does. What was rolled comes out of `roll`, for a passage that wants to say how close it was.
+
+A wire into `chance` beats what is typed on the card.
+
+**On the card:** **Chance**, default `50`.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. |
+| `chance` | `number` | Out of a hundred. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `success` | `flow` | Taken at or under the chance. |
+| `failure` | `flow` | Taken over it. |
+| `roll` | `number` | What the d100 came up. |
+
+**Read more:** [Percentile systems, in the dice notation guide](https://rolldyce.com/dice-notation/)
+
+
+### Weighted branch
+
+<NodePreview type="random.weighted" />
+
+Sends the flow down one branch of several, drawn by weight.
+
+Each row is an outcome and how likely it is against the others — 60 / 30 / 10, or 6 / 3 / 1, which is the same branch. Type into the last row and another appears beneath it. A row with no name, or a weight of nothing, is never drawn.
+
+`picked` is the name of the row that won. Wire a number from 0 to 100 into `roll` to decide with it instead of rolling.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | The way in. |
+| `roll` | `number` | Optional: a number from 0 to 100 to decide with instead of rolling. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `picked` | `string` | The name of the row that won. |
+| `outcome.0` | `flow` | One way out per row, drawn by weight. Type into the last row and another appears. |
+
+
+## Macro
+
+Offered on a macro's own canvas only, where a board would have its Start and its Ends. Everything above is offered on both.
+
+### Macro In
+
+<NodePreview type="macro.in" />
+
+Where this macro begins, and what it takes.
+
+Double-click to say what it takes — a name and a type per row — and it grows a port per name, carrying what the board that called the macro wired in or typed on the card.
+
+A macro has exactly one of these, and it stands where a Start would.
+
+Plus one **output per name** in *Takes*, typed as the shape says.
+
+**On the card:** **Takes**.
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `out` | `flow` | The single wire the macro begins by. |
+
+**Read more:** [Macros](/overviews/boards-and-nodes/#macros)
+
+
+### Macro Out
+
+<NodePreview type="macro.out" />
+
+Where this macro ends, and what it answers.
+
+Double-click to say what it answers — a name and a type per row — and it grows a port per name. What is wired in here is what the Macro node on the calling board publishes, and the flow carries on from there.
+
+A macro has exactly one of these, and it stands where an End would.
+
+Plus one **input per name** in *Answers*, typed as the shape says.
+
+**On the card:** **Answers**.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `in` | `flow` | Any number of wires; every branch inside the macro can finish here. |
+
+**Read more:** [Macros](/overviews/boards-and-nodes/#macros)

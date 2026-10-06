@@ -1,0 +1,15 @@
+# This file's only job is to be *here*.
+#
+# pnpm walks up looking for a workspace root, and the landing page has one at
+# `website/pnpm-workspace.yaml`. Without this file, installing in `docs-site/`
+# would be an install into that root — one lockfile for two projects that share
+# no dependency, and a Vercel build for the landing page that resolves the docs
+# site's tree as well. The nearest workspace root wins, so declaring one here
+# keeps the two installs apart.
+#
+# `allowBuilds` is the reason the parent has one too: both are ordinary native
+# builds that are genuinely needed, so they are allowed rather than left to
+# prompt. sharp is what Astro's image pipeline uses; esbuild is Vite's.
+allowBuilds:
+  esbuild: true
+  sharp: true

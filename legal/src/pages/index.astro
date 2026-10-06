@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import { documents, versionOf, formatDate, isPending } from "../manifest";
+
+const now = new Date();
+---
+
+<Base
+  title="Legal"
+  description="The agreements and notices that govern Ripple Effect, the website and the hosted service."
+>
+  <h1 class="title">Legal</h1>
+  <p class="standfirst">
+    The agreements and notices that govern Ripple Effect. Each one has a link
+    that never changes and, underneath it, a copy of every version that has ever
+    been in force — so a version you accepted stays where it was.
+  </p>
+
+  <ul class="cards">
+    {
+      documents.map((document) => {
+        const version = versionOf(document, document.current);
+        const pending = isPending(version, now);
+        return (
+          <li>
+            <a href={`/${document.slug}/`}>
+              <h2>{document.title}</h2>
+              <p>{document.summary}</p>
+              <small>
+                Version {document.current} ·{" "}
+                {pending
+                  ? `takes effect ${formatDate(version.effective)}`
+                  : `in force since ${formatDate(version.effective)}`}
+              </small>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Base>

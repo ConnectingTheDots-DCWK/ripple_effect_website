@@ -1,0 +1,364 @@
+/*
+ * The house style, reduced to what a document needs.
+ *
+ * The hexes are carried **verbatim** from `src/app/globals.css` in the
+ * landing page, the same way `docs-site/src/styles/tokens.css` carries them —
+ * so a diff between the three is a real diff and not a rounding error. Only
+ * the tokens a page of prose actually uses are here; the accents, the chart
+ * ramp and the node colours are not, because nothing on this site is
+ * coloured by category.
+ *
+ * Two house rules apply and both are visible: the page is the grey one and a
+ * card sits lighter on it, in both modes; and there are no gradients and no
+ * glass anywhere. A legal document is the one page on any site where
+ * decoration is actively unwelcome.
+ *
+ * The typeface is the system stack rather than Geist. The rest of the estate
+ * loads a webfont because it is selling something; this site has to render
+ * the same terms to somebody on a bad connection, behind a proxy that strips
+ * font requests, or printing to paper, and a document that reflows because a
+ * font arrived late is a document whose page numbers moved.
+ */
+
+:root {
+  --background: #f3f5f9;
+  --foreground: #15171c;
+  --card: #ffffff;
+  --muted: #edeff4;
+  --muted-foreground: #5a6070;
+  --border: #dfe3eb;
+  --primary: #4a57e0;
+  --caution: #a07708;
+
+  --measure: 34rem;
+  --radius: 0.625rem;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0f13;
+    --foreground: #e8eaef;
+    --card: #14171c;
+    --muted: #1a1d23;
+    --muted-foreground: #99a0ae;
+    --border: #262a32;
+    --primary: #a8b1fa;
+    --caution: #e3b341;
+
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0 1.25rem 6rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+.shell {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+/* Header ------------------------------------------------------------- */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: baseline;
+  justify-content: space-between;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.masthead a {
+  color: inherit;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.masthead nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.masthead nav a {
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+
+.masthead nav a:hover,
+.masthead nav a[aria-current="page"] {
+  color: var(--foreground);
+}
+
+/* The document ------------------------------------------------------- */
+
+.title {
+  margin: 2.5rem 0 0;
+  font-size: 1.875rem;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+}
+
+.standfirst {
+  margin: 0.75rem 0 0;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+
+.stamp {
+  margin: 1.5rem 0 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.stamp b {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.stamp--pending {
+  border-left: 3px solid var(--caution);
+}
+
+.prose {
+  margin-top: 2.5rem;
+}
+
+.prose h2 {
+  margin: 2.75rem 0 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 1.1875rem;
+  font-weight: 620;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+}
+
+.prose h3 {
+  margin: 2rem 0 0;
+  font-size: 1rem;
+  font-weight: 620;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote {
+  margin: 1rem 0 0;
+  text-wrap: pretty;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose a {
+  color: var(--primary);
+  text-underline-offset: 0.2em;
+}
+
+.prose strong {
+  font-weight: 620;
+}
+
+.prose hr {
+  margin: 2.5rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/*
+ * A `---` immediately before a `##` would draw two rules a few pixels apart,
+ * because every section heading already draws its own. The documents keep the
+ * `---` because it is what makes the raw Markdown readable — and the raw
+ * Markdown is the document — so the collapsing happens here instead.
+ */
+.prose hr + h2 {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.prose blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+.prose code {
+  padding: 0.1em 0.35em;
+  border-radius: 0.3rem;
+  background: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/*
+ * Tables read as data here, so they get lines rather than stripes.
+ *
+ * `display: block` plus `overflow-x` so a wide one scrolls inside itself
+ * rather than widening the page — the retention table in the privacy notice
+ * has four columns and the sub-processors list has four of its own.
+ */
+.prose table {
+  display: block;
+  width: 100%;
+  margin: 1.25rem 0 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+/*
+ * And where the window can afford it, a table steps outside the measure.
+ *
+ * 34rem is chosen for prose and is genuinely too narrow for a four-column
+ * table of legal bases and retention periods — the one place on this site
+ * where a reader is comparing across a row rather than reading down. The
+ * breakout is 4rem each side, which fits from 52rem up: at that width the
+ * gutter beside the measure is already 9rem.
+ */
+@media (min-width: 52rem) {
+  .prose table {
+    width: calc(100% + 8rem);
+    margin-left: -4rem;
+  }
+}
+
+.prose th,
+.prose td {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  background: var(--muted);
+  font-weight: 620;
+}
+
+/* Index -------------------------------------------------------------- */
+
+.cards {
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards li + li {
+  margin-top: 0.75rem;
+}
+
+.cards a {
+  display: block;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards a:hover {
+  border-color: var(--muted-foreground);
+}
+
+.cards h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 620;
+}
+
+.cards p {
+  margin: 0.3rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.cards small {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+/* Footer ------------------------------------------------------------- */
+
+.colophon {
+  max-width: var(--measure);
+  margin: 4rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.colophon a {
+  color: inherit;
+}
+
+/* Print -------------------------------------------------------------- */
+
+@media print {
+  :root {
+    --background: #fff;
+    --foreground: #000;
+    --card: #fff;
+    --border: #999;
+    --muted-foreground: #333;
+    --primary: #000;
+  }
+
+  body {
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  .masthead nav {
+    display: none;
+  }
+
+  .prose h2,
+  .prose h3 {
+    break-after: avoid;
+  }
+
+  .prose table,
+  .prose blockquote {
+    break-inside: avoid;
+  }
+}

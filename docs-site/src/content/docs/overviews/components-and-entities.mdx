@@ -1,0 +1,118 @@
+---
+title: Components and entities
+description: A component is a bag of typed attributes in a JSON file. An entity is one the story has made — a sword rather than the idea of a sword.
+sidebar:
+  order: 4
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A **component** is a character, a weapon, a place, a faction: a name, an
+optional cover picture, and an ordered list of typed attributes. There is
+deliberately no schema behind it — add what this story needs.
+
+An **entity** is one the story has made. A component says what a goblin is;
+an entity is *this* goblin, with its own hit points, that a later board can
+find again by name. Nothing a playthrough makes is written into your story:
+entities live in the campaign window, and a saved game is what carries them
+past closing it.
+
+<Shot name="component" />
+
+## The file
+
+```json
+{
+  "name": "Goblin",
+  "cover": "art/goblin.png",
+  "attributes": [
+    { "label": "HP",    "type": "int",      "value": 7 },
+    { "label": "Alive", "type": "bool",     "value": true },
+    { "label": "Bio",   "type": "markdown", "value": "A small, angry thing." },
+    { "label": "Loot",  "type": "list<asset>", "items": ["art/gold.png"] }
+  ]
+}
+```
+
+An attribute can be any of the **twenty-four declared types** — the same set
+every editor in the app offers. Eight kinds of thing: `int`, `float`, `bool`,
+`string`, `markdown`, `asset` (a path to a file), `componentRef` (a path to
+another component) and `json`. And three ways to have one: on its own,
+`list<…>` of it, or `map<…>` from names to it. Those wire names, because a
+script reading the file should not have to know what the code calls them.
+
+Numbers and booleans are JSON numbers and booleans, never strings; a `json`
+attribute is stored decoded; `list<asset>` and `list<componentRef>` carry
+their paths under `items` and everything else is a `value`. The older
+spellings go on reading forever — `assetList`, `componentList`, `numberList`
+— and are written in the new form the next time you touch the type menu.
+
+Paths in the file — the cover, a `list<asset>` item — are measured from the
+project root, so a folder can be renamed and a component dragged into it and
+every picture still points where it did. A component file is **format 3**: an
+older one is lifted when it is opened or moved, and a build that predates a
+format refuses a newer component rather than misreading it.
+
+A cover picked from outside the project is copied into `.ripple/external/`
+first, so the file never records a path that only works on one machine.
+Copying in is a switch — *Toggle importing outside assets*, from the palette
+— and with it off the file is linked instead. A cover still outside the project
+says so where it is: a caution under the field, with **Copy into project**
+beside it, and Messages names every such link when the project is opened,
+since a project cloned onto a machine that has not got the file should hear
+about it on every open rather than once on the day the link was made.
+
+The editor is a form over this: a name, a cover, and a row per attribute with
+its type and its value. Rows reorder by drag.
+
+## On a board
+
+Drag a `*.component.json` out of the file tree onto a board and it becomes a
+**Component** node with one typed output per attribute, plus one carrying the
+whole component as a map. The node has two modes, and it says which it is in:
+
+- **Reference** is a window onto the file. Outputs, and nothing else.
+- **Entity** makes the story a *thing*, keyed by the name on the node. Two
+  nodes with two names are two independent swords; a node on a later board
+  naming the same entity is the sword the first board made. Attribute inputs
+  appear alongside the outputs, which is why there is no Set/Get pair — a
+  second node naming the same entity later in the story *is* the setter.
+
+A Component node whose name is wired from upstream makes one entity per name
+it is handed, so a loop forging a sword a turn forges a sword a turn.
+
+Three more nodes work on entities:
+
+- **Spawn** makes many at once. Point it at a component, say how many, and
+  choose how they are told apart — numbers or letters, and what goes between.
+  "Goblin" with numbers and a dash makes Goblin-1, Goblin-2, and so on, and
+  hands their names on as a list so a script can give each one its own hit
+  points. It makes the same ones every time: coming back to a Spawn node finds
+  the goblins it already made rather than six more, so a paused campaign
+  resumes into the encounter it left. A second wave wants a different name.
+- **Delete Entity** forgets one by name — the goblin is dead, the potion is
+  drunk. Deleting a name nothing answers to is not an error; it removes
+  nothing and the story carries on. The component file is untouched, so a node
+  naming it later makes a fresh one.
+- **Entity Exists** answers whether the campaign still has one. Wire that into
+  an If and the story decides for itself what a missing sword means.
+
+## In the campaign window
+
+{/* TODO(shots): <Shot name="entitiesPanel" /> */}
+
+The **Entities** panel shows everything the story has made, grouped under the
+component each came from, with a count on each heading and a search line that
+finds one by name — or a component's name to find everything made from it.
+Every row has a bin on it. Nothing is asked first: a playthrough is ephemeral
+and the component file is untouched, so what is lost is what this session did
+to that one sword. Doing it offers **Start over** from then on.
+
+## From Python
+
+`component_get("Goblin")` answers the whole definition, types and all;
+`entity_create`, `entity_set`, `entity_rename` and `entity_delete` do from a
+Script node what only a node on the board could do before. A passage may read
+and not write — a state change should be something you can point at on the
+canvas. The whole surface is in the
+[reference](/reference/python/components-and-entities/).

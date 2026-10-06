@@ -1,0 +1,71 @@
+---
+import "../styles/legal.css";
+import { documents } from "../manifest";
+
+interface Props {
+  title: string;
+  description: string;
+  /** The slug of the document being shown, so the nav can mark it. */
+  current?: string;
+  /**
+   * Set on a frozen version. A superseded document that search engines index
+   * and serve above the living one is the failure mode this exists to stop:
+   * the canonical points at the stable slug, and `noindex` keeps the archive
+   * out of the results entirely.
+   */
+  archived?: boolean;
+  canonical?: string;
+}
+
+const { title, description, current, archived = false, canonical } = Astro.props;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — Ripple Effect</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {archived && <meta name="robots" content="noindex, follow" />}
+    <meta property="og:title" content={`${title} — Ripple Effect`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonicalUrl} />
+  </head>
+  <body>
+    <header class="masthead">
+      <a href="/">Ripple Effect · Legal</a>
+      <nav>
+        {
+          documents.map((d) => (
+            <a href={`/${d.slug}/`} aria-current={d.slug === current ? "page" : undefined}>
+              {d.title}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+
+    <main class="shell">
+      <slot />
+    </main>
+
+    <footer class="colophon">
+      <p>
+        ConnectingTheDots — a trade name of William Karol Di Cioccio, sole
+        trader, VAT IT02224180667, Italy. Questions about any of these
+        documents: <a href="mailto:legal@ripplefx.app"
+          >legal@ripplefx.app</a
+        >. Help with the application itself:
+        <a href="mailto:support@ripplefx.app">support@ripplefx.app</a>.
+      </p>
+      <p>
+        <a href="https://ripplefx.app">ripplefx.app</a> ·
+        <a href="https://docs.ripplefx.app">Documentation</a>
+      </p>
+    </footer>
+  </body>
+</html>

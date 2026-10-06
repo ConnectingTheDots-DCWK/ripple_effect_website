@@ -1,0 +1,88 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import {
+  documents,
+  versionOf,
+  entryId,
+  formatDate,
+  isPending,
+  legal,
+} from "../manifest";
+
+// The living page for each document: the stable link, always showing whatever
+// the manifest names as current. This is the URL to give out — it is the one
+// that survives a version bump.
+export function getStaticPaths() {
+  return documents.map((document) => ({
+    params: { slug: document.slug },
+    props: { document },
+  }));
+}
+
+const { document } = Astro.props;
+const version = versionOf(document, document.current);
+const entry = await getEntry("documents", entryId(document.slug, document.current));
+if (!entry) {
+  throw new Error(
+    `legal: ${document.slug} ${document.current} is in the manifest but ${version.source} does not exist`,
+  );
+}
+const { Content } = await render(entry);
+
+const pending = isPending(version);
+const superseded = document.versions.filter((v) => v.version !== document.current);
+---
+
+<Base title={document.title} description={document.summary} current={document.slug}>
+  <h1 class="title">{document.title}</h1>
+  <p class="standfirst">{document.summary}</p>
+
+  <p class={pending ? "stamp stamp--pending" : "stamp"}>
+    <b>Version {document.current}</b> —
+    {
+      pending ? (
+        <>
+          published, and takes effect on {formatDate(version.effective)}.
+          {
+            /*
+             * What binds in the meantime depends on whether there is anything
+             * to bind. Saying "the previous version" on a first version would
+             * point at a document that does not exist, which is exactly the
+             * kind of sentence this site is meant not to contain.
+             */
+            superseded.length > 0
+              ? " Until then the version below it is the one that binds."
+              : " It is the first version of this document, and binds from that date."
+          }
+        </>
+      ) : (
+        <>in force since {formatDate(version.effective)}.</>
+      )
+    }
+    <br />
+    This version will always be at{" "}
+    <a href={`/${version.path}/`}>{legal.origin}/{version.path}/</a>, whatever
+    replaces it here.
+  </p>
+
+  <div class="prose">
+    <Content />
+  </div>
+
+  {
+    superseded.length > 0 && (
+      <div class="prose">
+        <h2>Earlier versions</h2>
+        <ul>
+          {superseded.map((v) => (
+            <li>
+              <a href={`/${v.path}/`}>Version {v.version}</a> — in force from{" "}
+              {formatDate(v.effective)}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</Base>

@@ -1,0 +1,6 @@
+# sharp is what next/image uses to resize the screenshots at build time;
+# unrs-resolver is eslint's native module resolver. Both are ordinary native
+# builds and both are needed, so they are allowed rather than left to prompt.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

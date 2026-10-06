@@ -1,0 +1,87 @@
+---
+/**
+ * A screenshot in a frame, or an honest gap where one is missing.
+ *
+ * The docs-site twin of the landing page's `Screenshot` component, with the
+ * same three states decided by which files exist under `src/assets/screenshots/`:
+ * neither draws the brief in a dashed frame, one file renders in both
+ * themes, two render as a pair with one hidden per theme. It takes no
+ * `theme` prop for the reason the landing page's does not — a call site that
+ * could pin an image to a theme is a call site that eventually will.
+ *
+ * The pair is hidden with Starlight's own `light:sl-hidden` / `dark:sl-hidden`
+ * utilities, which key on `[data-theme]` on `<html>`. That is this site's
+ * theme mechanism; the landing page's `.dark` class does not exist here and
+ * a Tailwind `dark:` variant would work but would be a second spelling of
+ * the same thing.
+ *
+ * `not-content` on the figure keeps Starlight's sibling-spacing rules off the
+ * inside of it; the figure itself still takes its place in the flow.
+ *
+ * A hairline, a radius and no browser chrome: these are shots of a desktop
+ * application taken on Linux, and a fake window around one would be a
+ * picture of a product that does not exist.
+ */
+import { Image } from 'astro:assets';
+import { shots, type ShotName } from '../shots';
+
+interface Props {
+  name: ShotName;
+  /** Rendered under the frame. Optional; the alt text is always there. */
+  caption?: string;
+}
+
+const { name, caption } = Astro.props;
+const shot = shots[name];
+// `astro check` types the props of an `.astro` file but not of an MDX page
+// that uses it, so a misspelt name reaches here at build time. Say which.
+if (!shot) throw new Error(`<Shot name="${name}">: no such shot in src/shots.ts`);
+
+// Build-time presence check. `eager` so the map is plain metadata rather
+// than a map of loaders, and so a missing file is a missing key rather than
+// a failed import somewhere downstream.
+const files = import.meta.glob<ImageMetadata>('/src/assets/screenshots/*.png', {
+  eager: true,
+  import: 'default',
+});
+const dark = files[`/src/assets/screenshots/${shot.slug}-dark.png`];
+const light = files[`/src/assets/screenshots/${shot.slug}-light.png`];
+
+const frame = 'overflow-hidden rounded-lg border border-border bg-card';
+const sizes = '(max-width: 48rem) 100vw, 48rem';
+// No `width`/`height` props: Astro reads each file's own dimensions off the
+// import, and the captures are not all one size — a component's is wide and
+// short, the file tree's nearly square — so a shared pair would squash them
+// into the wrong box. `h-auto` is not decoration either: this site skips
+// Tailwind's preflight (see `styles/index.css`), so nothing else resets the
+// `height` attribute Astro still emits, and `w-full` alone stretched every
+// shot to it.
+const image = 'block h-auto w-full';
+---
+
+<figure class="not-content my-6">
+  {
+    !dark && !light ? (
+      <div
+        class={`${frame} flex aspect-16/10 flex-col items-center justify-center gap-3 border-dashed p-8 text-center`}
+      >
+        <p class="font-mono text-xs text-primary">screenshots/{shot.slug}-dark.png</p>
+        <p class="max-w-md text-sm text-muted-foreground">{shot.brief}</p>
+      </div>
+    ) : dark && light ? (
+      <>
+        <div class={`${frame} dark:sl-hidden`}>
+          <Image src={light} alt={shot.alt} sizes={sizes} class={image} />
+        </div>
+        <div class={`${frame} light:sl-hidden`}>
+          <Image src={dark} alt={shot.alt} sizes={sizes} class={image} />
+        </div>
+      </>
+    ) : (
+      <div class={frame}>
+        <Image src={(dark ?? light)!} alt={shot.alt} sizes={sizes} class={image} />
+      </div>
+    )
+  }
+  {caption && <figcaption class="mt-2 text-center text-sm text-muted-foreground">{caption}</figcaption>}
+</figure>

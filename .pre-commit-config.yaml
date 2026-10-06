@@ -1,0 +1,25 @@
+# One hook: a secret scan, because this repository is public.
+#
+#   pre-commit install    once, per clone
+#
+# TruffleHog over what is staged, failing on any finding, unverified ones
+# included; CI's `.github/workflows/secrets.yml` runs the same scan over
+# everything pushed, so a commit made with `--no-verify` is still caught. The
+# binary is per machine, like `pre-commit`: the release download from
+# https://github.com/trufflesecurity/trufflehog/releases, checked against its
+# checksums.txt, or `brew install trufflehog`. Without it the hook fails and
+# says so rather than letting the commit through unscanned.
+#
+# There are no exclusions, and the history scans clean. A token-shaped string
+# that is a deliberate fake gets an `--exclude-paths` file naming it, on
+# review — never a pattern that widens.
+
+repos:
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: secret scan
+        entry: bash tool/trufflehog/scan.sh
+        language: system
+        pass_filenames: false
+        always_run: true

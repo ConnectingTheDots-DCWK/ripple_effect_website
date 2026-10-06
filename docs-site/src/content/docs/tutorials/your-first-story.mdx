@@ -1,0 +1,167 @@
+---
+title: Your first story
+description: From an empty folder to a playable branch — a project, a board, three passages, a choice, and the play button.
+sidebar:
+  order: 2
+---
+
+import { FileTree, Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+This takes about ten minutes and ends with a story you can play: a traveller
+at a gate, two ways through it, and an ending. Along the way you will see
+where everything you make lands on disk, which is the thing worth
+understanding first.
+
+You need the app installed — the [download page](https://ripplefx.app/download)
+has the installers, and [Installing](/setup/installing/) says what to click
+when your platform stops an app it does not know. If you would rather read a
+finished story first, *New project → Templates* makes you a copy of one; this
+page builds a small one from nothing, because where each thing lands is the
+point.
+
+<Steps>
+
+1. **Make a project.**
+
+   Press **New project** on the home screen. Give it a title — *The Gate* will
+   do — pick where the folder should go, and choose the language you are
+   writing in. The language is offered from your computer's settings, but it
+   is your choice: it decides the name of the file every passage is written
+   into.
+
+   {/* TODO(shots): <Shot name="newProject" /> */}
+
+   The app creates the folder and writes exactly one thing into it:
+
+   <FileTree>
+   - the_gate/
+     - .ripple/
+       - project.json
+   </FileTree>
+
+   That is the project. There is no scaffold and no convention; everything
+   else in the folder will be yours.
+
+2. **Make a board.**
+
+   In the file tree on the left, press **+** and choose **Board**. Name it
+   `gate`. It opens on the canvas holding one node, **Start**, which is where
+   the story begins — a board has exactly one.
+
+   {/* TODO(shots): <Shot name="firstBoard" /> */}
+
+   On disk you now have `gate.graph.json`. It is JSON, and you could open it in
+   a text editor, though there is no reason to.
+
+3. **Write the first passage.**
+
+   Press the **Narration** button on the quickbar along the top of the board.
+   A card lands on the canvas reading *Empty — double-click to write*, so
+   double-click it.
+
+   The Passage dialog asks for a title — *At the gate* — and which passage the
+   card reads. Press **New** to make one, and write:
+
+   ```markdown
+   The gate is shut, and the guard on the wall has seen you.
+   ```
+
+   Close the dialog. The writing is already saved: everything in the app
+   writes as you work, and the dialog only decides the title and which passage
+   the card points at.
+
+   Beside the board there is now a folder the app shows as one file:
+
+   <FileTree>
+   - the_gate/
+     - gate.graph.json
+     - gate-at-the-gate.loc.narr.bdl/
+       - en-US.md
+       - touch.json
+   </FileTree>
+
+   `en-US.md` — or whichever language you chose — is your sentence, as plain
+   Markdown. A translation would be a second `.md` beside it. The folder is
+   named after the board and the title, so passages sort beside the board
+   they belong to.
+
+4. **Wire it in.**
+
+   Drag from the port on the right of **Start** to the port on the left of
+   your passage. The story now has a first page.
+
+5. **Give the passage two choices.**
+
+   Drag from the passage's first output port and let go over empty canvas.
+   The Create menu opens where you dropped it, already wired to whatever you
+   pick — choose **Narration**, double-click the new card, title it *Talk to
+   the guard*, press **New** and write a line. Do it again from the passage's
+   second port (a spare appears beneath each one you wire) for *Climb the
+   wall*.
+
+   Now click each choice's row on the first card. A choice has a **name**,
+   which is what the card shows so you can find the branch on a wide board,
+   and its **words**, which are what the reader is offered — in every language
+   the story is written in. Give the first one *Call up to the guard* and the
+   second *Look for another way*.
+
+   {/* TODO(shots): <Shot name="firstPassage" /> */}
+
+6. **End it.**
+
+   Right-click on empty canvas, choose **End**, and wire both branches into it.
+   An End accepts any number of wires, so every branch can finish at the same
+   place — or add a second End and give the wall-climber a different fate.
+
+7. **Play it.**
+
+   Press the play button on the quickbar. The campaign window opens on your
+   first passage with the two choices beneath it as tiles. Pick one, read the
+   next passage, and reach the end.
+
+   {/* TODO(shots): <Shot name="firstPlay" /> */}
+
+   What you just played is exactly what an exported campaign plays: the same
+   engine, with no preview copy that could disagree with it.
+
+</Steps>
+
+## What you have
+
+<FileTree>
+- the_gate/
+  - .ripple/
+    - project.json
+    - registry.json
+    - workspace.json
+  - gate.graph.json
+  - gate-at-the-gate.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+  - gate-talk-to-the-guard.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+  - gate-climb-the-wall.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+</FileTree>
+
+A board, three passages, and the app's index in `.ripple/`. Every file is plain
+text, and the whole folder is a git repository waiting to happen — open the
+**Changes** tab beside Files and press the button to start keeping a history,
+if you like. It needs a name and an email address and nothing else.
+
+## Where to go next
+
+- **A second board.** Make one, put a passage on it, and hand the story over
+  with a **Jump** from the first board — then open *Script navigation* from the
+  left panel's footer to see the two boards drawn as a map.
+- **A dice roll.** Right-click, pick **Dice roller**, type `1d20`, and wire its
+  total into a **Comparator** and an **If** to decide whether the climb works.
+  The [boards overview](/overviews/boards-and-nodes/) lists every node.
+- **A macro.** Press **+**, choose **Macro**, and write a stretch of story
+  between its Macro In and Macro Out — then drag the file onto your board and
+  it runs there. Write a shop once and call it from every town.
+- **A second language.** Project settings adds one; every passage gains an
+  empty file for it, and the reader picks the language in the campaign window.

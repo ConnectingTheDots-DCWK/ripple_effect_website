@@ -1,0 +1,90 @@
+---
+title: What Ripple Effect is
+description: The shape of the tool in one page — boards, passages, choices, and the folder underneath all of it.
+sidebar:
+  order: 1
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Ripple Effect is a desktop application for writing interactive stories as
+graphs. You lay passages out on a canvas, wire each choice to what it leads to,
+and press play to walk the result. Where ArcWeave gives you boards, connections
+and components in a browser, Ripple Effect gives you the same shapes as a native
+app over a folder on your own disk — and adds a visual scripting layer around
+them: loops, conditions, arithmetic, dice, state machines and Python, so a
+story can compute as well as branch.
+
+It is aimed at tabletop prep, game design documents, quest and dialogue trees,
+and anything else where the interesting part of a document is the paths through
+it.
+
+<Shot name="board" caption="A board: passages, the choices between them, and a Start." />
+
+## What you do in it
+
+- **Write on boards.** A board is one thread of story — a chapter, a
+  conversation, an encounter — drawn as cards and the wires between them. A
+  passage is a card; a choice is a wire. A *Jump* hands the story to another
+  board, and a *macro* is a stretch of story written once and called from
+  anywhere. → [Boards and nodes](/overviews/boards-and-nodes/)
+- **Write in more than one language.** Every passage is one file per
+  language, and the app tells you which translations have fallen behind.
+  → [Passages and languages](/overviews/passages-and-languages/)
+- **Give the story things to remember.** Components are the characters,
+  items and places; console variables are the numbers and flags; state
+  machines are the shapes — a door that is locked, then open. A board reads
+  and changes all three. → [Components](/overviews/components-and-entities/),
+  [Console variables](/overviews/console-variables/),
+  [State machines](/overviews/state-machines/)
+- **Let it compute.** Dice, comparisons, loops and Python — in a node on the
+  board, or inside a sentence, so a passage can say *the goblin has 3 hit
+  points left* without forking. → [Python scripting](/overviews/python-scripting/)
+- **Give it a sound.** A passage names a soundscape — music and sound on a
+  timeline, in a file of its own — that stays in force until another replaces
+  it, and a node or a script plays a sound once while the story carries on.
+  → [Soundscapes and sounds](/overviews/soundscapes-and-sounds/)
+- **Play it.** The play button runs the story from any node, with the same
+  engine an exported campaign runs, and a trace beside it saying what the
+  story did. → [Playing a campaign](/overviews/playing-a-campaign/)
+- **Ship it.** Export compiles the project into a campaign a runtime plays
+  with no editor near it, or copies the project for a translator.
+  → [Exporting](/overviews/exporting/)
+- **Keep a history.** Git is built in: what changed, side by side, and a
+  conflict shown rather than decided for you.
+  → [Version control](/overviews/version-control/)
+- **Bring an assistant.** The app is an MCP server, so Claude Code, Cursor and
+  the rest can read the project, play it and — once you allow it — write into
+  it. → [Working with an AI assistant](/overviews/working-with-an-ai-assistant/)
+
+Underneath all of it, a project is a folder of ordinary files — Markdown,
+JSON, `.py` — that opens without the app. That is what makes the version
+control honest and what lets any other tool read what you wrote. The
+[workspace overview](/overviews/the-workspace/) says exactly what is in the
+folder.
+
+## Where to go next
+
+<CardGrid>
+  <LinkCard
+    title="Installing"
+    description="Linux, Windows and macOS, and what to do when the installer is stopped."
+    href="/setup/installing/"
+  />
+  <LinkCard
+    title="Your first story"
+    description="From an empty folder to a playable branch, step by step."
+    href="/tutorials/your-first-story/"
+  />
+  <LinkCard
+    title="The workspace"
+    description="The folder, the file tree, the tabs, the palette — how the app is laid out."
+    href="/overviews/the-workspace/"
+  />
+  <LinkCard
+    title="Licensing"
+    description="What is yours, what is not permitted, and which parts are open source."
+    href="/about/licensing/"
+  />
+</CardGrid>

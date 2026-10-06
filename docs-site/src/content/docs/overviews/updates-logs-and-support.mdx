@@ -1,0 +1,105 @@
+---
+title: Updates, logs and support
+description: How the app updates itself, what it writes down about its own runs and where, and what a bug report carries.
+sidebar:
+  order: 14
+---
+
+import Shot from '../../../components/Shot.astro';
+
+## Updating
+
+**After the first install, the app installs its own updates.** Once per launch
+it asks the website whether a newer release exists. When one does, the notice
+can do the update: it fetches the installer for the way *this* copy was
+installed — the `.deb`, the `.rpm`, the Windows Setup or the `.dmg` — checks
+it against the checksum the release publishes, hands it to Setup, Finder or
+your package manager, and closes so that can happen. On Windows, Setup offers
+to reopen the app when it has finished; on macOS and Linux you start it again
+yourself.
+
+**Nothing is installed behind your back.** You get the ordinary installer
+window and can still say no to it. A download that does not match its
+checksum is thrown away. Where the app cannot tell how it arrived, it opens
+the download page instead, exactly as before.
+
+It will not close over unsaved work: a file that changed on disk while you
+were editing it stops the update and says which one.
+
+Nothing is code-signed yet, so the installer will ask on Windows and macOS the
+same way it did the first time. [Installing](/setup/installing/) says what
+each platform asks, and what to do about the one refusal that is not a click
+away.
+
+## The session log
+
+Ripple Effect keeps a diary of each run, and **it stays on your machine**.
+Nothing uploads it, there is no switch that would, and when you want to report
+a bug you decide what to hand over.
+
+**One thing can carry a copy of it away, and it asks you first.** If the app
+crashes, the next launch shows you the crash report it saved — every file in
+it, its size, and what each one contains — and sends it only if you answer
+*Send report*. The session's logs are among those files. There is no
+&ldquo;always send&rdquo; setting and no &ldquo;never send&rdquo; one:
+the question is asked once per crash, at the moment you can actually see what
+it is about, and whichever way you answer is final for that report. [What the
+app sends](/about/what-the-app-sends/) goes through it in full.
+
+**There are no usage statistics.** Nothing counts what you do, how often you
+open a board or how long you spend in one. Anonymous statistics are planned,
+and the shape is decided already: opt-in, with the complete list of what would
+be sent in front of the question rather than behind a link, switchable off
+afterwards, and carrying nothing you wrote.
+
+**It tidies up after itself.** A session where nothing went wrong is deleted
+the next time you start the app, so the folder holds the runs worth something
+and not a file for every time you opened a project. If the app falls over
+before it can write its own verdict, the next launch reads that file properly
+rather than guessing.
+
+**Private things are taken out before anything is written down.** Your
+username and home folder, the location of the project you have open, e-mail
+addresses, network addresses and anything shaped like a password or a key are
+replaced. Times are recorded in UTC rather than your local clock. No list of
+rules can know that a board's name is private, so a glance before you post is
+still worth it.
+
+The logs live in the app's own support directory — the platform's application
+data folder — and the support window opens it for you, naming which file is
+the session you just had.
+
+## Reporting a bug
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+The support button in the app bar opens the support window. **Reporting a bug
+fills the form in for you**: the version, your operating system, and which
+installer this copy came from arrive already answered, along with the
+technical details, so a report starts from what you actually saw rather than
+from four questions. It opens the right form in the public support
+repository, [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support),
+which is also where questions and feature requests go.
+
+Three buttons under Support: copy the package details, copy the device
+details, and open the logs folder.
+
+## Messages
+
+The **Messages** tab is a different thing from the log, and the two are kept
+apart on purpose. Messages is what the app says to *you* about *your folder*:
+a translation that has fallen behind, a picture a passage points at that is
+not there, a board with no way in, a file written by a newer version. It is
+scoped to the open project and cleared when another one opens. The log is
+what the app says about *itself*, for whoever reads a bug report.
+
+## Files from a newer version
+
+A project file written by a newer Ripple Effect is never half-read. An older
+copy of the app says it cannot read the file, tells you to update, and writes
+nothing to it — a strip across the top of the project says what could not be
+read, and Messages keeps the note with the file's path. This holds for the
+index, the project's settings, a component, a board and a saved game. Things
+that only cache something — a bundle's translation timestamps, the list of
+recent projects — rebuild by looking at the folder again, so those are never a
+reason to stop.

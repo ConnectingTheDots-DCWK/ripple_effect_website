@@ -1,0 +1,100 @@
+---
+title: Version control
+description: A history of your own project, built into the app — save points, storylines, a backup button, and what happens when two people change the same passage.
+sidebar:
+  order: 12
+---
+
+import Shot from '../../../components/Shot.astro';
+
+The formats are plain text so that a project can be a repository. Since 1.2
+you do not have to bring your own: git is built into the app, behind a
+**Changes** tab beside Files and Messages, and a first-time user needs a name
+and an email address and nothing else. No command line, no per-platform setup,
+nothing to install.
+
+The words are the app's own — *save point*, *storyline*, *back up*, *set
+aside* — but the history underneath is an ordinary git repository, and
+anything that reads one reads this.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Starting a history
+
+Starting one writes a short list of things to leave out — without touching an
+ignore file you already had, and adding only what is missing — keeps line
+endings consistent for co-authors on other platforms, and takes a first save
+point of everything. Files too large to ever take back out again are left out
+and named rather than committed and regretted.
+
+The one thing of the app's that is ignored is `.ripple/workspace.json`, which
+is per-machine. Everything else in `.ripple/` travels, and should: the
+registry is what keeps a Jump pointing at the right board after a rename.
+
+## What changed
+
+The Changes tab lists everything in two groups — **ready to save**, and **not
+yet included** — and clicking a file shows it side by side against the version
+before it. Every text file gets a diff, boards and components included.
+
+**Coloured dots in the file tree**, on files and on the folders holding them,
+so a changed chapter can be followed down without opening anything. The list
+keeps up on its own as files change, anywhere in the project, whether or not
+the folder is open in the tree. Right-click any file in the tree to see what
+changed in it without going through the list.
+
+## Save points, history, storylines
+
+A **save point** is written in the box at the foot of the tab: a line saying
+what changed, and a longer note when there is more to say. Taking the last
+one back leaves every file exactly where it is.
+
+**History**, beside Changes, is what was saved, by whom, and how long ago.
+
+**Storylines** are branches: start one, rename it, move between them, delete
+one. Moving with unsaved work asks first and offers to set it aside; a deleted
+storyline can be put back.
+
+**Set work aside** and come back to it: name what you are half-way through,
+put it out of the way, and the project goes back to its last save point.
+
+## Backing up
+
+Say where the project should be kept — a web address, or just a folder on a
+shared drive — and one button does the rest. It tells you what it is about to
+do before it does it: *check for changes, get 3 changes, back up 2 save
+points*. A web address asks for a sign-in key once and remembers it; a folder
+needs nothing at all.
+
+Two things the app says because nobody is asked them in time: the repository
+has to exist on the site before you can back up to it, and *public* really
+does mean anyone can read your drafts.
+
+Backing up is a separate decision from keeping a history. A project can have
+a history and never leave the machine.
+
+## When two people changed the same passage
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+**Nothing is touched until you say.** Both versions are shown side by side and
+you pick which to keep, or write the sentence yourself. Your files are left
+exactly as they were while you decide, so leaving it for later costs nothing.
+An assistant connected over MCP is refused a document with a conflict pending
+for the same reason: a tool that picked a side would be making your decision.
+
+## Undo is undoable
+
+Undoing changes to a file keeps what is thrown away first, and the message
+offering it back stays in the Messages tab after the notification has gone.
+Everything you have undone is listed in one place, so the safety net is
+something you can look at rather than a notification you had four seconds to
+catch.
+
+## The app shares the folder
+
+A file another program changes underneath the app — a pull from a co-author,
+an editor writing the same passage — is noticed rather than overwritten, and
+autosave never writes over a change it did not make. That is the rule the
+whole feature rests on: version control that could be undone by the editor's
+own autosave would be worse than none.

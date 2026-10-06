@@ -1,0 +1,231 @@
+/*
+ * The content column — prose, asides, cards, badges, tables.
+ *
+ * Same layer and the same three moves as `chrome.css`: a hairline, a radius
+ * from `AppRadius`, a tonal fill. The landing page has no shadows and no
+ * gradients, and neither does this.
+ */
+
+@layer ripple {
+	/* ------------------------------------------------------------------
+	 * Type
+	 *
+	 * The landing page sets every heading `font-semibold tracking-tight`.
+	 * Starlight's defaults are heavier and wider, which is most of why the
+	 * two sites read as different products at a glance.
+	 * --------------------------------------------------------------- */
+
+	.content-panel h1,
+	.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+
+	.sl-markdown-content :is(h2, h3, h4, h5, h6) {
+		color: var(--foreground);
+	}
+
+	.sl-markdown-content a:not(:where(.not-content *)) {
+		color: var(--primary);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 4px;
+		transition: color var(--motion-fast) var(--motion-curve);
+	}
+
+	.sl-markdown-content a:not(:where(.not-content *)):hover {
+		color: color-mix(in oklab, var(--primary) 80%, var(--foreground));
+	}
+
+	.sl-markdown-content strong {
+		color: var(--foreground);
+		font-weight: 600;
+	}
+
+	/* Inline code is a chip, the way it is everywhere else in the product:
+	   hairline, small radius, the muted fill. */
+	.sl-markdown-content code:not(:where(.not-content *)) {
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		background-color: var(--muted);
+		padding: 0.125rem 0.3125rem;
+		font-size: var(--sl-text-code-sm);
+	}
+
+	.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) code {
+		font-size: inherit;
+	}
+
+	/* A code *block* already has its own frame from Expressive Code, so the
+	   chip treatment has to be undone inside one. */
+	.sl-markdown-content pre code {
+		border: 0;
+		border-radius: 0;
+		background-color: transparent;
+		padding: 0;
+	}
+
+	.sl-markdown-content blockquote:not(:where(.not-content *)) {
+		border-inline-start: 2px solid var(--border);
+		color: var(--muted-foreground);
+		font-style: normal;
+	}
+
+	.sl-markdown-content hr:not(:where(.not-content *)) {
+		border-color: var(--border);
+	}
+
+	/* ------------------------------------------------------------------
+	 * Tables — hairline, no zebra, a quieter header. The app's own tables
+	 * are read the same way: the rule between rows is the structure.
+	 * --------------------------------------------------------------- */
+
+	.sl-markdown-content table:not(:where(.not-content *)) {
+		border-collapse: collapse;
+	}
+
+	.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+		border: 0;
+		border-bottom: 1px solid var(--border);
+		padding: 0.5rem 0.75rem;
+	}
+
+	.sl-markdown-content th:not(:where(.not-content *)) {
+		color: var(--muted-foreground);
+		font-size: var(--sl-text-sm);
+		font-weight: 500;
+	}
+
+	/* ------------------------------------------------------------------
+	 * Asides
+	 *
+	 * Starlight draws these as a thick coloured rule down the left edge.
+	 * The house shape for "a block of content that is not the page" is a
+	 * card: hairline all the way round, `--radius-md`, and a tint of the
+	 * hue rather than a bar of it. One rule does all four variants, keyed
+	 * off a local custom property.
+	 * --------------------------------------------------------------- */
+
+	.starlight-aside {
+		--aside-hue: var(--sl-color-blue);
+		border: 1px solid color-mix(in oklab, var(--aside-hue) 32%, var(--border));
+		border-inline-start-width: 1px;
+		border-radius: var(--radius-md);
+		background-color: color-mix(in oklab, var(--aside-hue) 8%, var(--background));
+		padding: 1rem 1.25rem;
+		color: var(--foreground);
+	}
+
+	.starlight-aside--note {
+		--aside-hue: var(--sl-color-blue);
+	}
+	.starlight-aside--tip {
+		--aside-hue: var(--sl-color-purple);
+	}
+	.starlight-aside--caution {
+		--aside-hue: var(--sl-color-orange);
+	}
+	.starlight-aside--danger {
+		--aside-hue: var(--sl-color-red);
+	}
+
+	.starlight-aside__title {
+		align-items: center;
+		color: color-mix(in oklab, var(--aside-hue) 65%, var(--foreground));
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	.starlight-aside__icon {
+		font-size: 1.125rem;
+	}
+
+	.starlight-aside__content a {
+		color: color-mix(in oklab, var(--aside-hue) 65%, var(--foreground));
+	}
+
+	/* ------------------------------------------------------------------
+	 * Cards
+	 *
+	 * `<Card>` and `<LinkCard>` become the landing page's card exactly: the
+	 * lighter surface, a hairline, `--radius-lg`, and the accent arriving
+	 * only on hover for the one that is a link.
+	 * --------------------------------------------------------------- */
+
+	.sl-markdown-content .card {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		background-color: var(--card);
+		padding: 1.5rem;
+		box-shadow: none;
+	}
+
+	.sl-markdown-content .card .title {
+		align-items: center;
+		color: var(--foreground);
+		font-size: var(--sl-text-h5);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	/* Starlight cycles the icon's square through orange, green, red and blue
+	 * by position in the grid, which put a coloured box round an accent-coloured
+	 * icon. The house rule is that accent is a pointer, so the square is the
+	 * accent's own tint and the icon sits on it. */
+	.sl-markdown-content .card {
+		--sl-card-border: color-mix(in srgb, var(--primary) 35%, transparent);
+		--sl-card-bg: color-mix(in srgb, var(--primary) 12%, transparent);
+	}
+
+	.sl-markdown-content .card .icon {
+		color: var(--primary);
+		border-radius: calc(var(--radius-sm) / 2);
+	}
+
+	.sl-markdown-content .card .body {
+		color: var(--muted-foreground);
+		font-size: var(--sl-text-body-sm);
+	}
+
+	.sl-markdown-content .sl-link-card {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		background-color: var(--card);
+		box-shadow: none;
+		transition: border-color var(--motion-base) var(--motion-curve);
+	}
+
+	.sl-markdown-content .sl-link-card:hover {
+		border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+		background-color: var(--card);
+	}
+
+	.sl-markdown-content .sl-link-card .title {
+		color: var(--foreground);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	.sl-markdown-content .sl-link-card .description {
+		color: var(--muted-foreground);
+	}
+
+	.sl-markdown-content .sl-link-card .icon {
+		color: var(--primary);
+	}
+
+	/* ------------------------------------------------------------------
+	 * Badges
+	 *
+	 * Two fixes. The radius becomes the chip radius the rest of the product
+	 * uses; and the family becomes `--sl-font-mono` — Starlight hard-codes
+	 * `--sl-font-system-mono` here, so a badge was the one place on the site
+	 * still rendering in the platform's monospace instead of Geist Mono.
+	 * --------------------------------------------------------------- */
+
+	.sl-badge {
+		border-radius: 0.375rem;
+		font-family: var(--sl-font-mono);
+		font-weight: 500;
+	}
+}

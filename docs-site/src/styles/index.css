@@ -1,0 +1,37 @@
+/*
+ * The single stylesheet entry. `astro.config.mjs` names this file and nothing
+ * else, so the order below is the order, in one place.
+ *
+ * **`@layer` first, and the last name wins.** A cascade layer beats every
+ * earlier layer regardless of selector specificity or source order, which is
+ * how everything here overrides Starlight without a single `!important`.
+ * Starlight authors into sub-layers of `starlight`; Tailwind into `theme`,
+ * `components` and `utilities`; `ripple` is ours and is declared last.
+ *
+ * That ordering is load-bearing in a way that is easy to undo. Starlight's
+ * Tailwind bridge rewrites every `--sl-color-*` from Tailwind's own palette
+ * **inside `@layer utilities`** — so `tokens.css` has to be in a layer after
+ * that one or the whole theme silently reverts to zinc and indigo. It is why
+ * `ripple` exists at all.
+ *
+ * The corollary: a Tailwind utility class written in one of our own components
+ * lands in `utilities` and therefore *loses* to anything in `ripple`. Rules in
+ * `ripple` target Starlight's own markup, which we do not control the classes
+ * of; our components are styled with utilities. Keep that line and the two
+ * never meet.
+ */
+@layer base, starlight, theme, components, utilities, ripple;
+
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@import './tokens.css';
+@import './chrome.css';
+@import './content.css';
+
+/* Tailwind scans for class names from here. */
+@source '../**/*.{astro,html,js,jsx,md,mdx,ts,tsx}';
