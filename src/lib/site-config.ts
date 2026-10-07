@@ -151,8 +151,16 @@ export const siteConfig = {
   copyright: "© 2026 ConnectingTheDots. All rights reserved.",
 } as const;
 
-/** Where the releases actually are. Private — see `src/lib/releases.ts`. */
+/**
+ * Where the releases actually are. Private — see `src/lib/releases.ts`.
+ *
+ * **Change this in the same deploy as any move of the repository.** GitHub
+ * redirects a moved repository's API, but `signedAssetUrl` asks with
+ * `redirect: "manual"` to read the signed asset URL out of the 302, and a
+ * 301 from the old address arrives there instead — every download and every
+ * installed editor's update would fail until this agreed.
+ */
 export const releaseRepo = {
-  owner: "WilliamKarolDiCioccio",
+  owner: "ConnectingTheDots-DCWK",
   name: "ripple_effect",
 } as const;
