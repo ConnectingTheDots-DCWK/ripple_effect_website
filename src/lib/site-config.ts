@@ -56,8 +56,10 @@ export const siteConfig = {
     // Deliberately not where the code is: the source repository is private, so
     // a link to it would be a 404 for whoever clicked it. This mirrors
     // AppInfo.repository, which makes the same choice for the same reason.
-    support:
-      process.env.NEXT_PUBLIC_GITHUB_URL ?? supportUrl,
+    // It is `go.ts`'s `supportRepo` and nothing else: an environment
+    // override here once kept a renamed repository's old address alive on
+    // every build, and the issues and discussions links never read it.
+    support: supportUrl,
     issues: `${supportUrl}/issues`,
     discussions: `${supportUrl}/discussions`,
     // The licence, which is now the EULA on the legal site rather than the
