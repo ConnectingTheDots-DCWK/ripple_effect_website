@@ -3,13 +3,6 @@ import type { MetadataRoute } from "next";
 import { allPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/site-config";
 
-if (siteConfig.urlIsFallback) {
-  console.warn(
-    `NEXT_PUBLIC_SITE_URL is not set. Canonical links, the sitemap, og:url and the ` +
-      `RSS feed will all claim this site lives at ${siteConfig.url}.`
-  );
-}
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = ["", "/download", "/pricing", "/privacy", "/blog"].map(
     (path) => ({

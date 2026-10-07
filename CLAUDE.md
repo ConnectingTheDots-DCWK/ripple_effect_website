@@ -348,25 +348,27 @@ two words somebody forgot to join up."*
 
 ## What search engines are told
 
-### The canonical origin is one environment variable
+### The canonical origin is one constant
 
-`NEXT_PUBLIC_SITE_URL`. Everything absolute is built from it: the canonical
-link on every page, every entry in the sitemap, `og:url`, every `<guid>` in the
-feed, and every URL inside the structured data.
+`siteConfig.url`, `https://get.ripplefx.app`. Everything absolute is built
+from it: the canonical link on every page, every entry in the sitemap,
+`og:url`, every `<guid>` in the feed, and every URL inside the structured
+data.
 
-**Leaving it unset does not merely default — it lies.** The fallback is the
-Vercel subdomain, so a site served from its real domain would spend every page
-telling Google that the authoritative copy lives somewhere else, which splits
-whatever authority it has across two hostnames. `siteConfig.urlIsFallback`
-exists for exactly this, and `src/app/sitemap.ts` prints a warning at build
-time beside the one `releases.ts` prints for a missing token. **A build that
-says `NEXT_PUBLIC_SITE_URL is not set` is a build that should not be
-promoted.**
+**It was an environment variable, `NEXT_PUBLIC_SITE_URL`, and stopped being
+one.** It earned its keep while there was no domain and while the hosting
+moved. Its failure mode was the worst one on the site: unset, it fell back to
+the Vercel subdomain, and every page then told search engines that the real
+copy lived somewhere else. A build warned about it, and a warning is something
+a person has to read. A constant is reviewed in a diff instead.
 
-The fallback deliberately still points at the Vercel subdomain rather than at
-the intended domain. A canonical naming a hostname that does not resolve yet
-is worse than one naming the address the page is actually being served from;
-the warning is the mechanism, not the default.
+**The canonical is not `ripplefx.app`, and that is deliberate.** The bare
+domain is the address every build of the app has compiled in — the update
+check, every `/go/` link, the engine's downloads — so it is kept for ever, as
+a single permanent 308 to here, and `www` does the same. A canonical has to
+name the address that answers rather than one that redirects. Content may
+link to `ripplefx.app` freely; only the site's statement about itself names
+`get`.
 
 ### Canonicals are per page, and cannot be inherited
 

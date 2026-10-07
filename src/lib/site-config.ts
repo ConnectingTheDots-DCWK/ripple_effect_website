@@ -15,22 +15,22 @@ export const siteConfig = {
   /** The binary name, which is also how the wordmark is split. */
   slug: "ripple_effect",
 
-  url: (
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://ripple-effect.vercel.app"
-  ).replace(/\/$/, ""),
-
   /**
-   * Whether `url` above is the fallback rather than a deliberate answer.
+   * The canonical origin: what the canonical link, every sitemap entry, every
+   * `og:url`, every RSS `<guid>` and the structured data are built from.
    *
-   * **This is the single most expensive thing on the site to get wrong.**
-   * `url` is what the canonical link, every sitemap entry, every `og:url` and
-   * every RSS `<guid>` is built from — so an unset variable does not merely
-   * default, it tells search engines that the real address of this content is
-   * a domain you are moving away from, *while serving the page from the one
-   * you moved to*. `src/app/sitemap.ts` says so at build time, next to the
-   * warning `releases.ts` prints for a missing token.
+   * **A constant, not an environment variable.** It was one while the site had
+   * no domain and while the hosting moved, and an unset variable fell back to
+   * a domain the site was leaving, which every page would then have named as
+   * its real address. The site has its domain now. Changing it is a code
+   * change, reviewed like one, and not a value someone has to remember to set
+   * on the right Vercel project.
+   *
+   * Not `ripplefx.app`: that is the address every build of the app has
+   * compiled in, and it is kept for ever as a permanent redirect here. A
+   * canonical has to be the address that answers, not one that redirects.
    */
-  urlIsFallback: !process.env.NEXT_PUBLIC_SITE_URL,
+  url: "https://get.ripplefx.app",
 
   /** AppInfo.tagline, unchanged. */
   tagline:
