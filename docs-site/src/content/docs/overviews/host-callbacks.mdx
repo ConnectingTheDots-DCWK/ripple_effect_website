@@ -73,9 +73,34 @@ fields the event you picked can use.
 | `entity.renamed` | something the story made is renamed |
 | `entity.field.changed` | an attribute of something the story made moves |
 | `machine.state.entered` | a state machine enters a state |
+| `node.entered` | the flow arrives at a card |
+| `node.exited` | a card's turn is over |
+| `node.failed` | the story breaks at a card |
 
 Those words are what the programmer matches on, so they are the same in every
 language and are written exactly like that in their code.
+
+### Watching the cards themselves
+
+The last three are the finest grain there is: they fire on every turn a card
+takes, whatever kind of card it is. Aim one at a board and a card and you are
+told each time the story runs through it — which is the shape of a quest
+counter, an analytics event, or a game reacting to a scene it knows by name.
+
+Three things worth knowing before you use them:
+
+- **A passage exits once the reader has chosen**, not when it appears.
+  `node.entered` fires as the flow arrives, which for a passage is just
+  before it is shown; `node.exited` fires once the reader has answered and
+  the turn is finished.
+- **Going round twice is two callbacks.** A loop that runs a card four times
+  fires four times. The *only when it becomes a value* condition is about
+  values, and a turn has no value to hold.
+- **A card inside a macro cannot be picked.** A macro is spliced into the
+  board that calls it, so its cards are not on any canvas under their own
+  names. Aim at the card that *calls* the macro, which is what the picker
+  offers.
+
 
 ## Aiming one
 
