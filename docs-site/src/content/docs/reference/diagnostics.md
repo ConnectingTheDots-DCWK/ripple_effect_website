@@ -210,6 +210,26 @@ value arrives.
 The editor will not let you type a name like this, so you will only see this on
 a board written by an older version or edited by hand.
 
+### `W.GE.16`
+
+**A host callback watches something that is no longer there.**
+
+A callback on the *Host callbacks* page names a board, and optionally a node on
+it. Delete the board, or delete the card, and the declaration is left pointing
+at nothing: it is dropped from the compiled campaign, or it simply never fires,
+and whatever registered for that name is never told.
+
+This is the only message here that is not about a card, because a declaration
+lives in a file of its own and is on no board. It names the callback instead,
+and carries the board when that board is still in the project, so you can open
+it and look.
+
+A callback aimed at a console variable or a component that has gone is said
+when the campaign is **built** rather than here — that check needs the
+project's variables and its index, which the analysis does not have. A node is
+the other way round: nothing checks it when the campaign is built, so this is
+the only place it is ever said.
+
 ## A playthrough
 
 These are things the engine noticed while the story was actually running. They
