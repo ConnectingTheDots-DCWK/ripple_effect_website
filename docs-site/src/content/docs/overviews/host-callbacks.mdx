@@ -1,0 +1,142 @@
+---
+title: Host callbacks
+description: Named triggers a project publishes, so a game that embeds the story can react to what happens in it.
+sidebar:
+  order: 12
+---
+
+A compiled campaign is meant to be played by something — a game engine, an
+app, a terminal. **Host callbacks** are how the story tells that something what
+just happened in it, at whatever grain the author chooses.
+
+The author declares a **named trigger**: a name, and the occasion that fires
+it. Whoever embeds the story registers a function against that name. The two
+are written on opposite sides of a boundary and are joined by nothing but the
+name, which is the whole design and the thing to understand before anything
+else on this page.
+
+## What you declare, and what a programmer writes
+
+You declare the trigger. They write the code.
+
+Opening the **Host callbacks** page — the button on the activity bar, or the
+command palette — and naming `chapterTwoBegan` says one thing: *there is an
+extension point in this story, and it is called `chapterTwoBegan`*. There is
+no code field on that page and never will be. Nothing you type there changes
+what the story does.
+
+On the other side, in the game, somebody writes the handler and registers it
+under that name. When the story reaches the occasion, the engine says
+`chapterTwoBegan` happened and hands over what it knows; their function runs,
+in their engine, on their schedule.
+
+So a callback **cannot change the story**. It is a notification, not a hook:
+the story carries on exactly as it would with nobody listening. Anything that
+should change what happens next belongs on the board — a Script node, a
+variable, a branch.
+
+:::caution[A name is a published API]
+The name is the only thing joining your declaration to their code. Renaming it
+breaks their build, and nothing in the editor can warn them — the breakage
+lands in a codebase this app has never seen. Agree the names once, early, and
+treat a rename the way you would treat renaming a function somebody calls.
+:::
+
+## Declaring one
+
+Name it on the left, and the pane on the right is where you aim it.
+
+A name is what a programmer will type, so it reads like an identifier —
+`chapterTwoBegan`, `achievementHit`, `guardWentAlert`. It has to be unique in
+the project, and it cannot hold a line break.
+
+Then pick the **event**: what has to happen for the callback to fire. Most
+events can be aimed at one thing in particular, and the pane offers only the
+fields the event you picked can use.
+
+## The events
+
+| event | fires when |
+| --- | --- |
+| `story.started` | a playthrough begins |
+| `story.ended` | the story reaches an End |
+| `story.failed` | the story stops because something went wrong |
+| `board.entered` | the story arrives on a board |
+| `passage.shown` | a passage is put in front of the reader |
+| `choice.taken` | the reader takes a choice |
+| `soundscape.changed` | the soundscape in force changes |
+| `delay.started` | a Delay node begins waiting |
+| `delay.elapsed` | a Delay node's wait is over |
+| `cvar.changed` | a console variable moves |
+| `entity.spawned` | the story makes something |
+| `entity.removed` | the story forgets something |
+| `entity.renamed` | something the story made is renamed |
+| `entity.field.changed` | an attribute of something the story made moves |
+| `machine.state.entered` | a state machine enters a state |
+
+Those words are what the programmer matches on, so they are the same in every
+language and are written exactly like that in their code.
+
+## Aiming one
+
+Left alone, a callback fires at **every** occasion of its event — every board
+entered, everything the story spawns. That is often what you want: the
+notification carries which board, which entity, which value, and the game
+filters on its own side.
+
+Where it is cheaper to say so here, the pane lets you:
+
+- **A board**, and then optionally **a node** on it. So
+  `passage.shown` can mean *this one passage* rather than every passage.
+- **A console variable**, which `cvar.changed` cannot do without — watching
+  every variable in the project is almost never what anybody means.
+- **A component**, for the entity events, and an **attribute** name for
+  `entity.field.changed`. The attribute is required; the component is not, so
+  `hp` with no component picked watches everything the story made that has an
+  `hp`.
+- **A state machine instance**, which `machine.state.entered` cannot do
+  without, and optionally the **state** to wait for.
+
+### Only when a value is reached
+
+A `cvar.changed` callback can carry a condition: *only when it becomes this
+value*. Tick the box and type the value — the field is the variable's own
+type, so you cannot type something it could never hold.
+
+:::note[A value is entered, not held]
+The condition fires on the **transition**, not on the state. Setting `score`
+to 100 when it is already 100 fires nothing. Dropping to 50 and climbing back
+to 100 fires again.
+:::
+
+## What is gone is dropped, and said
+
+A callback aimed at a board, a variable or a component the project no longer
+has is **left out of the compiled campaign**, with a warning, and the field in
+the pane says so. The declaration stays in the file: restoring the board from
+version control brings the callback back.
+
+A **node** is the exception. Whether a node id is on a board is not checked
+when the campaign is built, so a callback naming one that is gone travels
+intact and simply never fires. The pane says so where it can, which is while
+the board it names is open in front of it.
+
+## What it is not
+
+- **Not a way to run your own code inside the story.** That is Python — see
+  [Python scripting](/overviews/python-scripting/).
+- **Not sound cues.** A `soundscape.changed` says which soundscape came into
+  force, and nothing finer: not a loop, not a fade, not a marker on a
+  timeline. Those are the mixer's own business and the reasons are recorded
+  with the decision rather than here.
+- **Not ordered against the game's frames.** The engine hands over a batch of
+  everything a move led to, the callbacks among it, and the game decides when
+  to run them. A callback arrives before the page it is about is drawn; past
+  that, when a handler runs is the game's to schedule.
+
+## What travels
+
+The declarations are part of the project, so they travel with it: a project
+copy carries `.ripple/callbacks.json`, and a compiled campaign carries the
+table a host dispatches from. Nothing about a handler travels, because no
+handler was ever here.
