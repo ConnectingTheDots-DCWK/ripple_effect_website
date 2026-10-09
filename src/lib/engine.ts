@@ -25,7 +25,20 @@ export type EngineProblem =
   | "contract"
   | "bridge"
   | "target"
+  | "variant"
   | "unreachable";
+
+/**
+ * The two builds of every engine release — `python`, with the interpreter,
+ * and `no-python` — ADR *the-interpreter-is-a-seam*. The editor always asks
+ * for `python`; another host asks for the one it was built against.
+ */
+export const engineVariants = ["python", "no-python"] as const;
+export type EngineVariant = (typeof engineVariants)[number];
+
+export function isEngineVariant(name: string): name is EngineVariant {
+  return (engineVariants as readonly string[]).includes(name);
+}
 
 export type EngineOffer =
   | {
@@ -77,6 +90,7 @@ function compare(a: number[], b: number[]): number {
 export async function offerEngine(query: {
   contract: string;
   target: string;
+  variant: EngineVariant;
   bridge: number;
   current: string;
   channel: EngineChannel;
@@ -153,10 +167,14 @@ export async function offerEngine(query: {
 
   // Read for routing only; the editor verifies the signature before it
   // believes any of this.
+  // Schema 2: one table of targets per variant (engine-distribution.md §3).
   const manifest = JSON.parse(manifestText) as {
     contract: string;
     bridge: { hash: number };
-    targets: Record<string, { archive: string; sha256: string; size: number }>;
+    variants?: Record<
+      string,
+      Record<string, { archive: string; sha256: string; size: number }>
+    >;
   };
   if (manifest.contract !== query.contract) {
     return { available: false, problem: "contract" };
@@ -164,7 +182,9 @@ export async function offerEngine(query: {
   if (manifest.bridge.hash !== query.bridge) {
     return { available: false, problem: "bridge" };
   }
-  const entry = manifest.targets[query.target];
+  const targets = manifest.variants?.[query.variant];
+  if (!targets) return { available: false, problem: "variant" };
+  const entry = targets[query.target];
   if (!entry) return { available: false, problem: "target" };
 
   return {

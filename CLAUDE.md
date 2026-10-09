@@ -459,7 +459,9 @@ which can read a private repository and is used for nothing else.
 
 **`/api/engine` is the one engine route, and it serves discovery only**
 (`src/lib/engine.ts`). An installed editor asks it which engine patch of its
-contract, platform and bridge hash is the newest above what it has; it reads
+contract, platform, variant and bridge hash is the newest above what it has —
+the variant is `python` or `no-python`, the two builds every release carries,
+and the editor always asks for `python`; it reads
 the *public* `ripple_engine_releases` (no token needed, `RIPPLE_EFFECT_METADATA`
 used for the rate limit when set), skips drafts, candidates and anything in `withheld`,
 and hands back the manifest's exact text and its signature. The archive itself
