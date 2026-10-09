@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { offerEngine } from "@/lib/engine";
+import { isEngineVariant, offerEngine } from "@/lib/engine";
 
 export const runtime = "nodejs";
 
@@ -8,9 +8,11 @@ export const runtime = "nodejs";
  * The newest engine patch an installed editor may take — discovery only;
  * the bytes come from GitHub through `/go/engine`. See `src/lib/engine.ts`.
  *
- * `?contract=1.5&target=<rust triple>&bridge=<hash>&current=<version>`, and
- * `&channel=rc` from a build made to test the patch path, which is offered
- * release candidates too. Anything else is the stable channel.
+ * `?contract=1.5&target=<rust triple>&variant=python&bridge=<hash>&current=<version>`,
+ * and `&channel=rc` from a build made to test the patch path, which is
+ * offered release candidates too. Anything else is the stable channel.
+ * `variant` is `python` or `no-python`, `python` when absent — the editor,
+ * the one client today, always sends it — and anything else is a 400.
  */
 export async function GET(request: Request) {
   const query = new URL(request.url).searchParams;
@@ -21,10 +23,18 @@ export async function GET(request: Request) {
       { status: 400 },
     );
   }
+  const variant = query.get("variant") ?? "python";
+  if (!isEngineVariant(variant)) {
+    return NextResponse.json(
+      { available: false, problem: "variant" },
+      { status: 400 },
+    );
+  }
   return NextResponse.json(
     await offerEngine({
       contract: query.get("contract") ?? "",
       target: query.get("target") ?? "",
+      variant,
       bridge,
       current: query.get("current") ?? "",
       channel: query.get("channel") === "rc" ? "rc" : "stable",
