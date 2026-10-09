@@ -16,7 +16,7 @@ Read a code left to right: **how loud it is**, **what it is about**, and
 ```
 W.GE.05
 │  │  └ the fifth rule about the shape of a board
-│  └─── GE: boards. RT: a playthrough.
+│  └─── GE: boards. RT: a playthrough. EX: an export.
 └────── E a problem · W worth a look · I a record
 ```
 
@@ -256,3 +256,33 @@ version of `I.GE.10`.
 
 **A card with several ways out had no behaviour,** so the story stopped there
 rather than guessing which way to go.
+
+## An export
+
+These appear only when you export a campaign with **Needs no Python** ticked,
+for a game or a player that was built without the Python interpreter. Each one
+is a place the story would run Python, and **any one of them stops the
+export**: nothing is written until the list is empty. Untick the box and the
+same project exports as it always did — none of these is wrong on a board, only
+for a player that cannot run it.
+
+### `E.EX.01`
+
+**A Script node, in an export that needs no Python.** A player without the
+interpreter would stop the story when it reached this card.
+
+Move what the script does onto cards that do not need Python — a console
+variable set and read by its own nodes, a branch on a value — or export with
+the box unticked for a player that has the interpreter. A Script node inside a
+macro is reported on the card that calls the macro.
+
+### `E.EX.02`
+
+**A passage that runs Python, in an export that needs no Python.** The
+passage has a `ripple` code block or an inline `{{ … }}` in its text, in at
+least one of its languages, and a player without the interpreter would show a
+warning in its place. The message says how many there are across every
+language.
+
+Replace each with the text it would have produced, or split the passage so
+that a choice or a branch picks between versions of it.
