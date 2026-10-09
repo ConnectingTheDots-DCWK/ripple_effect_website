@@ -89,6 +89,32 @@ The bundle format is a published contract, and the runtime that plays it —
 built from it plays a campaign in a terminal with neither Flutter nor Dart
 installed, which is how the claim is checked.
 
+## For a player without Python
+
+The engine that plays a campaign comes in two builds: one with the Python
+interpreter in it, and a much smaller one without. A game or a player built
+on the smaller one can play
+any campaign, but a Script node stops the story where it stands and a passage
+shows a warning where its Python was.
+
+**Needs no Python**, under *Campaign*, makes that a promise you can check
+before anybody plays it. With it ticked, the export looks for every Script
+node and every passage with a `ripple` code block or an inline `{{ … }}` in
+any of its languages, and **stops if it finds one**. Each is listed in
+Messages — [`E.EX.01`](/reference/diagnostics/#eex01) for a Script node,
+[`E.EX.02`](/reference/diagnostics/#eex02) for a passage — and opens its card,
+and the dialog stays open so you can untick the box or change the cards and
+try again. A campaign that passes carries no scripts at all.
+
+If the whole project is meant for such a player, say so once instead: turn
+**Python** off under *Capabilities* in the project's settings. Every card that
+runs Python is then marked as an error on its board as you write, Play refuses
+to start while any is left, and the export's box is ticked for you and cannot
+be unticked.
+
+Every campaign also says in its manifest whether it needs Python, under
+`needs`, so a program loading one can tell before it starts.
+
 ## Passages as HTML
 
 Below the line in the export dialog — the controls above it decide what

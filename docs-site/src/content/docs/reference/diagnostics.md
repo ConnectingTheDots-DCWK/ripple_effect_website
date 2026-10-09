@@ -16,7 +16,7 @@ Read a code left to right: **how loud it is**, **what it is about**, and
 ```
 W.GE.05
 │  │  └ the fifth rule about the shape of a board
-│  └─── GE: boards. RT: a playthrough.
+│  └─── GE: boards. RT: a playthrough. EX: an export.
 └────── E a problem · W worth a look · I a record
 ```
 
@@ -210,6 +210,26 @@ value arrives.
 The editor will not let you type a name like this, so you will only see this on
 a board written by an older version or edited by hand.
 
+### `W.GE.16`
+
+**A host callback watches something that is no longer there.**
+
+A callback on the *Host callbacks* page names a board, and optionally a node on
+it. Delete the board, or delete the card, and the declaration is left pointing
+at nothing: it is dropped from the compiled campaign, or it simply never fires,
+and whatever registered for that name is never told.
+
+This is the only message here that is not about a card, because a declaration
+lives in a file of its own and is on no board. It names the callback instead,
+and carries the board when that board is still in the project, so you can open
+it and look.
+
+A callback aimed at a console variable or a component that has gone is said
+when the campaign is **built** rather than here — that check needs the
+project's variables and its index, which the analysis does not have. A node is
+the other way round: nothing checks it when the campaign is built, so this is
+the only place it is ever said.
+
 ## A playthrough
 
 These are things the engine noticed while the story was actually running. They
@@ -236,3 +256,38 @@ version of `I.GE.10`.
 
 **A card with several ways out had no behaviour,** so the story stopped there
 rather than guessing which way to go.
+
+## An export
+
+These appear only when a campaign has to play without Python, for a game or a
+player that was built without the interpreter: when you export with **Needs no
+Python** ticked, or — from the moment you switch it — when the project has
+**Python** turned off under *Capabilities* in its settings. Each one is a
+place the story would run Python, and **any one of them stops the export**,
+and the campaign from playing when the project has it off. With Python off in
+the project they are on the cards as you draw, as errors. None of these is
+wrong on a board, only for a player that cannot run it: tick the box off or
+turn Python back on and the same project plays and exports as it always did.
+
+### `E.EX.01`
+
+**A Script node, in a campaign that has to play without Python.** A player without the
+interpreter would stop the story when it reached this card.
+
+Move what the script does onto cards that do not need Python — a console
+variable set and read by its own nodes, a branch on a value — or export with
+the box unticked for a player that has the interpreter. A Script node inside a
+macro is reported on the card that calls the macro when you export, and on the
+macro's own board while you edit.
+
+### `E.EX.02`
+
+**A passage that runs Python, in a campaign that has to play without
+Python.** The
+passage has a `ripple` code block or an inline `{{ … }}` in its text, in at
+least one of its languages, and a player without the interpreter would show a
+warning in its place. The message says how many there are across every
+language.
+
+Replace each with the text it would have produced, or split the passage so
+that a choice or a branch picks between versions of it.

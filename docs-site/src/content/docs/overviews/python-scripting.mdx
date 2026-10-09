@@ -63,6 +63,18 @@ everything a Script node may, because you are standing in for the nodes the
 story did not run — which is exactly what *Play from here* needs, since a run
 begun part-way through a board starts with nothing made.
 
+## Turning it off
+
+A project written for a game or a player built without the interpreter can
+say so: turn **Python** off under *Capabilities* in the project's settings.
+Every Script node and every passage with a `{{ … }}` or a `ripple` block is
+then marked as an error on its card, and listed in Messages, as you write —
+[`E.EX.01`](/reference/diagnostics/#eex01) and
+[`E.EX.02`](/reference/diagnostics/#eex02) — and the campaign will not play
+or export until there are none. Turn it back on and nothing about the project
+has changed. [Exporting](/overviews/exporting/#for-a-player-without-python)
+says what the smaller player does with a campaign that still has Python in it.
+
 ## What the sandbox allows
 
 It is Python, and it is not all of Python. There is no `class`, no `import`
