@@ -106,6 +106,12 @@ Messages — [`E.EX.01`](/reference/diagnostics/#eex01) for a Script node,
 and the dialog stays open so you can untick the box or change the cards and
 try again. A campaign that passes carries no scripts at all.
 
+If the whole project is meant for such a player, say so once instead: turn
+**Python** off under *Capabilities* in the project's settings. Every card that
+runs Python is then marked as an error on its board as you write, Play refuses
+to start while any is left, and the export's box is ticked for you and cannot
+be unticked.
+
 Every campaign also says in its manifest whether it needs Python, under
 `needs`, so a program loading one can tell before it starts.
 

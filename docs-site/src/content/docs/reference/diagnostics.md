@@ -259,26 +259,31 @@ rather than guessing which way to go.
 
 ## An export
 
-These appear only when you export a campaign with **Needs no Python** ticked,
-for a game or a player that was built without the Python interpreter. Each one
-is a place the story would run Python, and **any one of them stops the
-export**: nothing is written until the list is empty. Untick the box and the
-same project exports as it always did — none of these is wrong on a board, only
-for a player that cannot run it.
+These appear only when a campaign has to play without Python, for a game or a
+player that was built without the interpreter: when you export with **Needs no
+Python** ticked, or — from the moment you switch it — when the project has
+**Python** turned off under *Capabilities* in its settings. Each one is a
+place the story would run Python, and **any one of them stops the export**,
+and the campaign from playing when the project has it off. With Python off in
+the project they are on the cards as you draw, as errors. None of these is
+wrong on a board, only for a player that cannot run it: tick the box off or
+turn Python back on and the same project plays and exports as it always did.
 
 ### `E.EX.01`
 
-**A Script node, in an export that needs no Python.** A player without the
+**A Script node, in a campaign that has to play without Python.** A player without the
 interpreter would stop the story when it reached this card.
 
 Move what the script does onto cards that do not need Python — a console
 variable set and read by its own nodes, a branch on a value — or export with
 the box unticked for a player that has the interpreter. A Script node inside a
-macro is reported on the card that calls the macro.
+macro is reported on the card that calls the macro when you export, and on the
+macro's own board while you edit.
 
 ### `E.EX.02`
 
-**A passage that runs Python, in an export that needs no Python.** The
+**A passage that runs Python, in a campaign that has to play without
+Python.** The
 passage has a `ripple` code block or an inline `{{ … }}` in its text, in at
 least one of its languages, and a player without the interpreter would show a
 warning in its place. The message says how many there are across every
