@@ -1,0 +1,59 @@
+# Do `legal/manifest.json` and the documents under `legal/en/` agree?
+#
+# The sibling of `legal-links.yml`, and the division between them is the one
+# that file argues for at length: it checks the *origin*, so it cannot run on a
+# pull request without reporting the deployed site as a verdict on the change.
+# This checks the *change*, so it can and must.
+#
+# Vercel already runs `pnpm check` for the `legal` directory on every pull
+# request, which runs the same guard. This exists anyway, for two reasons: a
+# red X on the pull request should not depend on a deployment platform's build
+# succeeding for unrelated reasons, and a deploy can be skipped while a merge
+# cannot.
+#
+# `fetch-depth: 0` is load-bearing. The guard's last rule compares `versions`
+# against `origin/main` to catch a published version being dropped, and on a
+# shallow clone it degrades to a printed note instead of a check.
+
+name: Legal check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "legal/**"
+      - ".github/workflows/legal-check.yml"
+  pull_request:
+    paths:
+      - "legal/**"
+      - ".github/workflows/legal-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: The manifest and the documents agree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+
+      # The guard imports nothing but `node:` built-ins, so there is no
+      # install step and nothing to cache. `astro check` would need one; it
+      # runs on Vercel, where the dependencies are already there.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Make origin/main available
+        # On a pull request the checkout leaves a detached HEAD with no local
+        # `origin/main` ref, which is the one thing the removal rule needs.
+        run: git fetch --no-tags origin main:refs/remotes/origin/main || true
+
+      - name: check_legal
+        working-directory: legal
+        run: node tool/check_legal.mjs

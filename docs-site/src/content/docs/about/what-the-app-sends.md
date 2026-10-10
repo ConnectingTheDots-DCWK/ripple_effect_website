@@ -13,14 +13,18 @@ The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal
 version, with legal bases and retention periods. This page is the same facts
 in the order you would want to read them.
 
-## Nothing, until you accept the licence
+## Nothing, until you accept the licence — from 1.6
 
-From version 1.6 the app asks you to accept the [End-User Licence
-Agreement](https://legal.ripplefx.app/eula/) at first launch, and **makes no
-network request of any kind until you have**. Not an update check, not
-anything. If you close that window, nothing has been sent.
+**From version 1.6** the app will ask you to accept the [End-User Licence
+Agreement](https://legal.ripplefx.app/eula/) at first launch and **make no
+network request of any kind until you have** — not an update check, not
+anything. Closing that window will mean nothing has been sent.
 
-Earlier builds do not ask, and make the update check below on first launch.
+**The build you are running today does not ask.** That window is part of 1.6
+and is not built yet, so this release makes the update check below on first
+launch like any other. It is written here in the future tense on purpose: the
+licence describes the same thing, and a page claiming a dialog the software
+does not have is worse than a page admitting the gap.
 
 ## An update check, once per launch
 
