@@ -1,7 +1,14 @@
 ---
 import { getEntry, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import { documents, entryId, effectiveClause, legal } from "../../manifest";
+import {
+  documents,
+  entryId,
+  effectiveClause,
+  isPending,
+  legal,
+  stampNote,
+} from "../../manifest";
 
 /**
  * A version, pinned.
@@ -56,13 +63,19 @@ const isCurrent = version.version === document.current;
   <h1 class="title">{document.title}</h1>
   <p class="standfirst">{document.summary}</p>
 
-  <p class={version.frozen ? "stamp" : "stamp stamp--pending"}>
-    <b>Version {version.version}</b> — {effectiveClause(version)}
-    {
-      version.frozen
-        ? " This page is a fixed copy and will not change."
-        : " It is not yet in force and may still be corrected; this page is fixed once it is."
+  <p
+    class={
+      /*
+       * `stamp--pending` says "not in force yet", so it belongs to the one
+       * state that is: a future-dated version that nobody is bound by.  An
+       * unfrozen version that *is* in force gets the plain stamp, and
+       * `stampNote` is what says it can still be corrected.
+       */
+      !version.frozen && isPending(version) ? "stamp stamp--pending" : "stamp"
     }
+  >
+    <b>Version {version.version}</b> — {effectiveClause(version)}{" "}
+    {stampNote(version)}
     <br />
     {
       /*

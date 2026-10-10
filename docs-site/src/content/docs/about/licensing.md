@@ -13,12 +13,27 @@ The licence is the **End-User Licence Agreement**, and it lives at
 the authority; this page is what it says in plain words, and where the two
 differ the document is right.
 
-:::note[If you have used Ripple Effect before version 1.6]
+:::note[If you have used Ripple Effect before version 1.5]
 The EULA **replaces** the short Ripple Effect Licence that shipped with
 earlier builds — it does not sit on top of it, so there is one document rather
-than two. A build earlier than 1.6 stays under that old licence for as long as
-you use it; the EULA governs from the first build that asks you to accept it.
-Everything the old licence permitted, the EULA permits.
+than two. A build earlier than 1.5 stays under that old licence for as long as
+you use it; the EULA governs from the first build that asks you to accept it,
+which is 1.5. Everything the old licence permitted, the EULA permits.
+
+That old notice is still published, unchanged, at
+[legal.ripplefx.app/v/ripple-effect-licence-1.0](https://legal.ripplefx.app/v/ripple-effect-licence-1.0/),
+because a licence that governs a build somebody is still running has to be
+readable. The set of builds under it is closed: 1.4 was the last release that
+did not ask.
+:::
+
+:::note[From 1.5 the app asks, and sends nothing first]
+At first launch the app shows you the Agreement, and makes **no network
+request of any kind** until you accept it — not an update check, not anything.
+It is not a window over a running app: until you answer, the app underneath it
+has not been started, so there is nothing there to make a request. The Privacy
+Notice is shown alongside it, to read rather than to accept; you cannot
+meaningfully agree to being told something.
 :::
 
 ## What you may do

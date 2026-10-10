@@ -95,23 +95,30 @@ const faq = [
     q: "Does it phone home?",
     a: (
       <>
-        Twice without asking, and both are nameable. Once per launch it asks
-        this site whether a newer version exists — a plain request for the
-        release number, carrying nothing about you or your project — and the
-        About box fetches the contributor list from api.github.com if you open
-        it. There is no account, no sync, and no background telemetry of any
-        kind: nothing counts what you do, and nothing you write leaves the
-        machine.
+        Not until you have accepted the licence — from version 1.5 the app asks
+        at first launch and makes no request of any kind before you answer.
+        After that, three without asking, and all three are nameable. Once per
+        launch it asks this site whether a newer version exists, a plain request
+        for the release number carrying nothing about you or your project. Once
+        per launch, unless you switch it off in Settings, it asks whether a fix
+        exists for its engine. And the About box asks this site for the
+        contributor list if you open it, which the site fetches from GitHub on
+        its own behalf — their pictures are the exception, loaded from GitHub by
+        your own machine. There is no account and no sync, nothing records which
+        boards you open or how long you spend in them, and nothing you write
+        leaves the machine.
         <br />
         <br />
-        The one exception asks first, every time. After a crash, the next
-        launch shows you the report it saved — every file, its size and what is
-        in it — and sends it only if you say yes to that report. There is no
+        Two things go further, and both are yours to decide. After a crash, the
+        next launch shows you the report it saved — every file, its size and what
+        is in it — and sends it only if you say yes to that report. There is no
         &ldquo;always send&rdquo; setting and no &ldquo;never send&rdquo; one,
         because the moment you can actually judge the question is when you can
-        see what would go. Anonymous usage statistics are planned on the same
-        terms: opt-in, with the complete list of what would be sent in front of
-        the question, and switchable off afterwards.{" "}
+        see what would go. And anonymous usage statistics are opt-in on the same
+        terms: asked once, with the complete list of what would be sent in front
+        of the question, neither answer preselected, and switchable off
+        afterwards. They record that the app was in use on a given day, never
+        what you did with it.{" "}
         <a
           href={siteConfig.legal.privacy}
           target="_blank"

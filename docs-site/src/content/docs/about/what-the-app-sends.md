@@ -6,25 +6,26 @@ sidebar:
 ---
 
 Ripple Effect works on files on your own disk and needs no network to do it.
-This page is the complete list of what leaves your machine anyway — four
-things, three of them trivial and one of them asked for every time.
+This page is the complete list of what leaves your machine anyway — six
+things: three the app asks the website without being told to, one you have to
+switch on, one asked for every single time, and one that is only ever
+something you did yourself.
 
 The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal
 version, with legal bases and retention periods. This page is the same facts
 in the order you would want to read them.
 
-## Nothing, until you accept the licence — from 1.6
+## Nothing, until you accept the licence
 
-**From version 1.6** the app will ask you to accept the [End-User Licence
-Agreement](https://legal.ripplefx.app/eula/) at first launch and **make no
+**From version 1.5** the app asks you to accept the [End-User Licence
+Agreement](https://legal.ripplefx.app/eula/) at first launch and **makes no
 network request of any kind until you have** — not an update check, not
-anything. Closing that window will mean nothing has been sent.
+anything. Close that window and nothing has been sent.
 
-**The build you are running today does not ask.** That window is part of 1.6
-and is not built yet, so this release makes the update check below on first
-launch like any other. It is written here in the future tense on purpose: the
-licence describes the same thing, and a page claiming a dialog the software
-does not have is worse than a page admitting the gap.
+It is not a banner over a running application: until you answer, the app
+underneath has not been built, so there is nothing there to make a request.
+A build earlier than 1.5 does not ask, and makes the update check below on
+first launch like any other; it stays under the short licence it shipped with.
 
 ## An update check, once per launch
 
@@ -37,10 +38,57 @@ internet, the server sees the address it came from, which is how the internet
 works rather than something the app chose to send. Nothing distinguishes one
 installation from another, because nothing in the request is unique to one.
 
+## Engine fixes, unless you switch them off
+
+Once per launch, half a minute after the app has started, it asks
+`ripplefx.app` whether a fix exists for the engine it is running. The request
+carries that engine's version, its milestone, your platform and an identifier
+of the interface between the app and its engine — and nothing about you. A fix
+that exists is downloaded, checked against our signature, and used from the
+next launch; it never changes what the app can do.
+
+*Engine updates*, under **Settings ▸ Updates**, switches this off along with
+the update check above. Versions before 1.5 did not ask at all.
+
 ## A list of contributors, when you open the About box
 
-The About box shows who has contributed, and fetches that list from GitHub's
-public API when you open it. Nothing about you goes with it.
+The About box shows who has contributed, and asks `ripplefx.app` for that
+list when you open it. The site fetches it from GitHub on its own behalf and
+keeps it for an hour, so your request does not reach GitHub. Nothing about
+you goes with it beyond the app's name and version. Versions before 1.5 asked
+GitHub's public API directly.
+
+**Their pictures come from GitHub.** Each contributor's avatar is loaded from
+`avatars.githubusercontent.com`, by your machine and not through the site, so
+opening the About box does make a request to GitHub for the images — and one
+of those addresses is built into the app, so it is made even when the list
+itself cannot be fetched. GitHub sees the address it came from, as any image
+host would. It is named in the [sub-processors
+list](https://legal.ripplefx.app/subprocessors/) as an independent controller
+for requests made to it.
+
+## Usage statistics, if you switch them on
+
+From version 1.5 the app can send anonymous usage statistics, and it is
+**opt-in**: you are asked once, with the complete list of what would be sent
+in front of the question rather than behind a link; neither answer is
+preselected; and you can turn it off afterwards in the app's settings. No text
+you wrote is ever included, and adding a new thing to the list means asking
+again. No build before 1.5 collected any.
+
+What a row carries is whether the app was in use on a given day, the day, a
+random identifier for the installation, the app's version and your operating
+system. Nothing about your projects, and nothing about what you did in them.
+
+Turning it off does something worth understanding before you rely on it.
+While it is on, the app holds a random identifier it made when you switched it
+on — so the data is *pseudonymous*, and while that identifier exists you can
+give it to us and have the rows deleted. **Turning it off destroys the
+identifier**, which stops collection and severs the only link between you and
+what was already sent. After that nobody can connect those rows to you,
+including us — so there is nothing left to delete, and nothing we could hand
+back if you asked. Switching it on again mints a new identifier; you are a new
+installation and nothing joins the two.
 
 ## A crash report — if you say yes to that report
 
@@ -89,37 +137,42 @@ crashes from one computer can be told apart from crashes from different ones.
 It is not derived from your hardware or anything about you, it is used for
 nothing else, and if you never send a report it never leaves your machine.
 
+## Whatever you send yourself
+
+The sixth is not really the app's: it is yours, and it is here because it
+still puts bytes on the wire.
+
+- **Version-control pushes** go to the repository you configured, with
+  credentials you supplied. Those credentials live in your operating system's
+  own credential store, and never in a file of ours.
+- **Opening a documentation or support page** hands a URL to your browser.
+  From version 1.5 that goes through a redirect on `ripplefx.app`, which sees
+  the request and nothing else; what your browser does next is between you and
+  wherever it went.
+- **A picture in a document, referenced by address.** If a Markdown document
+  points at an image by `http` or `https` — rather than at a file in the
+  project — then drawing that document fetches it from whoever is hosting it,
+  and that host sees the request. **This includes a project somebody sent
+  you**, whose documents you did not write: an image small enough to be
+  invisible is still a request, and the app does not ask before making it.
+  A picture that lives in the project folder is read from your disk and
+  involves no network at all.
+
 ## What never leaves
 
 - **Your work.** Passages, boards, projects, components, scripts, exports —
   none of it is sent anywhere. There is no background sync.
-- **Usage statistics.** Nothing counts what you do, which boards you open or
-  how long you spend. There are none, opt-in or otherwise.
+- **What you do in the app.** Which boards you open, how long you spend, what
+  you click: none of it is recorded or sent, with or without the statistics
+  above switched on. The statistics say *that* the app was used on a day, and
+  nothing about how.
 - **The session log**, unless it goes inside a crash report you sent. It is
   written on your machine, with private things replaced as they are written,
   and a run where nothing went wrong is deleted the next time you start the
   app. See [Updates, logs and
   support](/overviews/updates-logs-and-support/).
-- **Your version-control credentials.** They live in your operating system's
-  own credential store, and pushes go to a repository you configured.
 
 ## What is planned, and on what terms
-
-**Anonymous usage statistics** will be **opt-in**. The shape is decided
-already: you are asked once, with the complete list of what would be sent in
-front of the question rather than behind a link; neither answer is
-preselected; and you can turn it off afterwards. No text you wrote would ever
-be included, and adding a new thing to the list means asking again.
-
-Turning it off does something worth understanding before you rely on it.
-While it is on, the app holds a random identifier it made when you switched it
-on — so the data is *pseudonymous*, and while that identifier exists you can
-give it to us and have the rows deleted. **Turning it off destroys the
-identifier**, which stops collection and severs the only link between you and
-what was already sent. After that nobody can connect those rows to you,
-including us — so there is nothing left to delete, and nothing we could hand
-back if you asked. Switching it on again mints a new identifier; you are a new
-installation and nothing joins the two.
 
 **An account** is for the [hosted
 service](https://legal.ripplefx.app/terms/) — media storage, real-time

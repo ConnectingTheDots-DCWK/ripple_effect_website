@@ -86,9 +86,11 @@ check is what keeps them in step.
 What that check covers today is the snapshot, the frozen digests and the
 `LICENSE` copy. The Dart *literals* — `apps/editor/lib/src/legal_documents.dart`
 and the acceptance record — are specified in that repository's
-`docs/specs/legal-documents.md` §6 and **are not built yet**; they land with
-the acceptance page in 1.6, and the same check grows to cover them. This
-paragraph previously said a test already compared them, which was never true.
+`docs/specs/legal-documents.md` §6 and land with the acceptance page in
+**1.5**, and the same check grows to cover them. This paragraph previously
+said a test already compared them while none existed, and then that they were
+owed in 1.6; the gate moved forward to 1.5 so that the Agreement would not
+have to disclaim a release nobody had been asked about.
 
 A document that is **drafted but not published** is simply absent from the
 manifest — and, because this repository is public, is not in it at all: an
@@ -121,15 +123,16 @@ Whichever it is, the amendment article in each document is what the reader is
 owed, and it is the same in all of them.
 
 **What a version comes into force by is `effectiveOn`, and it is not the same
-for all four**, because they are not accepted the same way. A document's own
+for all of them**, because they are not accepted the same way. A document's own
 amendment article says which, and the manifest records it:
 
 | | `effectiveOn` | `effectiveFrom` | Why |
 | --- | --- | --- | --- |
-| **EULA** | `acceptance` | the app version that first asks (`1.6`) | It is accepted, so it takes effect per installation at the moment somebody does. No date can describe that. |
+| **EULA** | `acceptance` | the app version that first asks (`1.5`) | It is accepted, so it takes effect per installation at the moment somebody does. No date can describe that. |
 | **Terms** | `date` | an ISO date | They govern a website with no versions, accepted by use. A date is the only anchor there is — and it is theirs alone. |
 | **Privacy** | `processing` | — | Not an agreement: an information duty under arts. 13–14, discharged when the processing starts. Each section names its release. |
 | **Sub-processors** | `publication` | — | A list of facts, not terms. In force as published, kept current, with thirty days' notice before a new provider starts. |
+| **Ripple Effect Licence** | `superseded` | the last app version it governed (`1.4`) | Replaced rather than amended. It governs the builds it shipped with, for as long as they are used, and is `frozen` because a superseded notice has nothing left to correct. |
 
 **A new feature is usually not a new version.** The EULA defines "the
 Software" as including *every component shipped with it*, so a part of the
@@ -153,8 +156,7 @@ processing that has already happened.
    `/v/` paths against each other.
 6. In the application repository: update `legal/versions.json` and run
    `melos run legal:check`. If the bump is major, the `LegalDocument` version
-   literal moves with it too once that exists (1.6) — a release of the app,
-   not just of this site. The EULA has **two** further frozen copies, the
+   literal moves with it too — a release of the app, not just of this site. The EULA has **two** further frozen copies, the
    `LICENSE` file in that repository and in `ripple_effect_support`; the
    release checklist names all three.
 

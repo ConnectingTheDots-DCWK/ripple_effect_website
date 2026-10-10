@@ -47,7 +47,13 @@ const documents = defineCollection({
      * version as often as it is a date, and `z.coerce.date()` on "1.6" is a
      * silent `Invalid Date` rather than an error.
      */
-    effectiveOn: z.enum(["acceptance", "date", "processing", "publication"]),
+    effectiveOn: z.enum([
+      "acceptance",
+      "date",
+      "processing",
+      "publication",
+      "superseded",
+    ]),
     effectiveFrom: z.string().nullable().default(null),
     /** The language this version is written in. */
     language: z.string().default("en"),

@@ -35,8 +35,19 @@ import manifest from "../manifest.json";
  *   the release in each section. `effectiveFrom` is null. The Privacy Notice.
  * - `publication` — a list rather than terms: current as published, kept
  *   current as it changes. `effectiveFrom` is null. Sub-processors.
+ * - `superseded` — a document that was in force for the builds it shipped
+ *   with and has been replaced. `effectiveFrom` is the last application
+ *   version it governed. The Ripple Effect Licence, which the EULA replaced
+ *   from 1.5: it is published so that whoever still runs an older build can
+ *   read what governs them, and it is `frozen` because a superseded notice
+ *   has nothing left to correct.
  */
-export type EffectiveOn = "acceptance" | "date" | "processing" | "publication";
+export type EffectiveOn =
+  | "acceptance"
+  | "date"
+  | "processing"
+  | "publication"
+  | "superseded";
 
 export interface DocumentVersion {
   version: string;
@@ -143,7 +154,41 @@ export function effectiveClause(version: DocumentVersion, now: Date = new Date()
       );
     case "publication":
       return `in force as published, and kept current as the list changes.`;
+    case "superseded":
+      return (
+        `in force for the builds it shipped with — Ripple Effect ` +
+        `${version.effectiveFrom} and earlier — and replaced by the ` +
+        `End-User Licence Agreement for every release after it.`
+      );
   }
+}
+
+/**
+ * The sentence after the effective clause on a `/v/` page: whether this text
+ * can still change.
+ *
+ * **Three states, not two.** The first version of this keyed only on `frozen`,
+ * and so told a reader of the Privacy Notice and of the Sub-processors list
+ * that the document was "not yet in force" — both are in force and neither is
+ * frozen. For the sub-processors it contradicted `effectiveClause`'s own "in
+ * force as published" one sentence earlier. *In force* and *closed to
+ * correction* are different facts about a version, and only the second of them
+ * is `frozen`; a version can be either without the other.
+ */
+export function stampNote(version: DocumentVersion, now: Date = new Date()): string {
+  if (version.frozen) return `This page is a fixed copy and will not change.`;
+  if (isPending(version, now)) {
+    return (
+      `It is not yet in force and may still be corrected; this page is fixed ` +
+      `once it is.`
+    );
+  }
+  return (
+    `It is not yet closed to correction: until somebody first accepts this ` +
+    `version or its text is declared final, a mistake in it is corrected where ` +
+    `it stands rather than reissued. This page is fixed the moment either ` +
+    `happens, and says so when it is.`
+  );
 }
 
 /** The same thing in a few words, for a list of versions. */
@@ -159,6 +204,8 @@ export function effectiveShort(version: DocumentVersion, now: Date = new Date())
       return `per processing`;
     case "publication":
       return `as published`;
+    case "superseded":
+      return `superseded after ${version.effectiveFrom}`;
   }
 }
 

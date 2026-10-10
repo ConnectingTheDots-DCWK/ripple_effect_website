@@ -91,7 +91,13 @@ if (!existsSync("manifest.json") || !existsSync("en")) {
 }
 
 const manifest = JSON.parse(readFileSync("manifest.json", "utf8"));
-const kinds = new Set(["acceptance", "date", "processing", "publication"]);
+const kinds = new Set([
+  "acceptance",
+  "date",
+  "processing",
+  "publication",
+  "superseded",
+]);
 
 /** Every version entry, flattened, with its document beside it. */
 const entries = manifest.documents.flatMap((document) =>
@@ -168,7 +174,13 @@ for (const { document, version } of entries) {
   if (!kinds.has(version.effectiveOn)) {
     fail("an unknown effectiveOn", `${where}: ${JSON.stringify(version.effectiveOn)}`);
   }
-  const needsFrom = version.effectiveOn === "acceptance" || version.effectiveOn === "date";
+  // `superseded` names the last application version it governed, so it needs
+  // one for the same reason `acceptance` does: the sentence on the page is
+  // built from it.
+  const needsFrom =
+    version.effectiveOn === "acceptance" ||
+    version.effectiveOn === "date" ||
+    version.effectiveOn === "superseded";
   if (needsFrom && typeof version.effectiveFrom !== "string") {
     fail(
       "effectiveOn needs an effectiveFrom",
