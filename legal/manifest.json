@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "origin": "https://legal.ripplefx.app",
   "documents": [
     {
@@ -11,7 +11,10 @@
       "versions": [
         {
           "version": "1.0",
-          "effective": "2026-10-15",
+          "effectiveOn": "acceptance",
+          "effectiveFrom": "1.6",
+          "frozen": false,
+          "sha256": null,
           "path": "v/eula-1.0",
           "source": "en/eula/1.0.md"
         }
@@ -26,7 +29,10 @@
       "versions": [
         {
           "version": "1.0",
-          "effective": "2026-10-15",
+          "effectiveOn": "date",
+          "effectiveFrom": "2026-10-15",
+          "frozen": false,
+          "sha256": null,
           "path": "v/terms-1.0",
           "source": "en/terms/1.0.md"
         }
@@ -41,7 +47,10 @@
       "versions": [
         {
           "version": "1.0",
-          "effective": "2026-10-15",
+          "effectiveOn": "processing",
+          "effectiveFrom": null,
+          "frozen": false,
+          "sha256": null,
           "path": "v/privacy-1.0",
           "source": "en/privacy/1.0.md"
         }
@@ -56,7 +65,10 @@
       "versions": [
         {
           "version": "1.0",
-          "effective": "2026-10-15",
+          "effectiveOn": "publication",
+          "effectiveFrom": null,
+          "frozen": false,
+          "sha256": null,
           "path": "v/subprocessors-1.0",
           "source": "en/subprocessors/1.0.md"
         }

@@ -5,7 +5,8 @@ import {
   documents,
   versionOf,
   entryId,
-  formatDate,
+  effectiveClause,
+  effectiveShort,
   isPending,
   legal,
 } from "../manifest";
@@ -39,26 +40,19 @@ const superseded = document.versions.filter((v) => v.version !== document.curren
   <p class="standfirst">{document.summary}</p>
 
   <p class={pending ? "stamp stamp--pending" : "stamp"}>
-    <b>Version {document.current}</b> —
+    <b>Version {document.current}</b> — {effectiveClause(version)}
     {
-      pending ? (
-        <>
-          published, and takes effect on {formatDate(version.effective)}.
-          {
-            /*
-             * What binds in the meantime depends on whether there is anything
-             * to bind. Saying "the previous version" on a first version would
-             * point at a document that does not exist, which is exactly the
-             * kind of sentence this site is meant not to contain.
-             */
-            superseded.length > 0
-              ? " Until then the version below it is the one that binds."
-              : " It is the first version of this document, and binds from that date."
-          }
-        </>
-      ) : (
-        <>in force since {formatDate(version.effective)}.</>
-      )
+      /*
+       * Only a dated version can be pending, and only then is there a gap to
+       * explain. What binds in that gap depends on whether there is anything
+       * to bind: saying "the previous version" on a first version would point
+       * at a document that does not exist, which is exactly the kind of
+       * sentence this site is meant not to contain.
+       */
+      pending &&
+        (superseded.length > 0
+          ? " Until then the version below it is the one that binds."
+          : " It is the first version of this document, and binds from that date.")
     }
     <br />
     This version will always be at{" "}
@@ -77,8 +71,7 @@ const superseded = document.versions.filter((v) => v.version !== document.curren
         <ul>
           {superseded.map((v) => (
             <li>
-              <a href={`/${v.path}/`}>Version {v.version}</a> — in force from{" "}
-              {formatDate(v.effective)}
+              <a href={`/${v.path}/`}>Version {v.version}</a> — {effectiveShort(v)}
             </li>
           ))}
         </ul>

@@ -1,6 +1,13 @@
-# One hook: a secret scan, because this repository is public.
+# Two hooks, and both are about this repository being public.
 #
 #   pre-commit install    once, per clone
+#
+# The second is the legal guard. `legal/` holds published agreements, and the
+# two mistakes available there are both silent: committing a draft into a
+# public tree, and editing a version that has been frozen. `legal/README.md`
+# says why each matters; the guard is `legal/tool/check_legal.mjs` and it
+# imports nothing but `node:` built-ins, so the hook needs no install and runs
+# in milliseconds. It is scoped to `legal/`, so nothing else pays for it.
 #
 # TruffleHog over what is staged, failing on any finding, unverified ones
 # included; CI's `.github/workflows/secrets.yml` runs the same scan over
@@ -23,3 +30,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: legal-check
+        name: the legal manifest and the documents agree
+        entry: bash -c 'cd legal && node tool/check_legal.mjs'
+        language: system
+        files: ^legal/
+        pass_filenames: false

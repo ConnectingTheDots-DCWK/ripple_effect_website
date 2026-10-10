@@ -1,11 +1,17 @@
 # Does every legal URL still resolve?
 #
 # This is the first workflow in this repository, and it exists because nothing
-# else checks these URLs. The application carries the same version numbers as
-# literals and has a test that compares them against `legal/manifest.json` —
-# but that test resolves against a submodule its CI never checks out, so it
-# only ever runs on somebody's laptop. And a file existing in this tree is not
-# a page existing at the origin.
+# else checks these URLs. The application keeps its own snapshot of these
+# version numbers and holds it against `legal/manifest.json` with `melos run
+# legal:check` — but that resolves against a submodule its CI never checks
+# out, so it only ever runs on somebody's laptop. And a file existing in this
+# tree is not a page existing at the origin.
+#
+# (This comment used to say the application had a *test* comparing version
+# *literals*. It did not: the literals are specified for 1.6 and unbuilt. A
+# comment in the only automated check claiming a check that did not exist is
+# the exact failure this file is meant to prevent, so it is worth the
+# correction being visible.)
 #
 # The frozen paths are the point. `/v/eula-1.0/` is a promise that the text
 # somebody accepted stays where it was, and a promise nothing checks is a
@@ -38,10 +44,14 @@ on:
 # site and reports them as a verdict on the change, which is worse than not
 # running. Before the first deploy it simply fails, which is what it did.
 #
-# What a PR needs is `legal`'s own build, which already refuses a manifest
-# naming a file that does not exist: `getStaticPaths` throws. That check is
-# real, runs on every PR through Vercel, and is about the change rather than
-# about production.
+# What a PR needs is `legal`'s own build and its own guard, which are about
+# the change rather than about production: `getStaticPaths` throws on a
+# manifest naming a file that does not exist, and `legal/tool/check_legal.mjs`
+# catches the five things the build cannot see — a draft nobody indexed, a
+# `source` read nowhere but an error message, front matter contradicting the
+# index, an edit to a frozen version, a dropped `versions` entry. Vercel runs
+# both on every PR for this directory, and `legal-check.yml` runs them again so
+# a red X does not depend on a deployment.
 
 permissions:
   contents: read

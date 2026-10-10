@@ -1,21 +1,28 @@
 ---
 import { getEntry, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import { documents, entryId, formatDate, legal } from "../../manifest";
+import { documents, entryId, effectiveClause, legal } from "../../manifest";
 
 /**
  * A version, pinned.
  *
  * Every version of every document gets one of these, including the one
- * currently in force, and the promise attached to it is that it never changes
- * again. That is what makes "you accepted version 1.0 on 15 October" a
- * statement somebody can check: the application records a version, and this
- * is the page that version resolves to for as long as the record is worth
- * anything.
+ * currently in force, and the promise attached to a *frozen* one is that it
+ * never changes again. That is what makes "you accepted version 1.0 on 15
+ * October" a statement somebody can check: the application records a version,
+ * and this is the page that version resolves to for as long as the record is
+ * worth anything.
+ *
+ * **The promise is conditional, and the page says which it is.** A version
+ * nobody has accepted and that has not been declared final may still be
+ * corrected — that is the point of `frozen` in the manifest, and ADR
+ * *a-licence-follows-the-product*. Printing "this will not change" over a
+ * version that can is the one sentence this page must never contain, because
+ * it is the sentence a reader would rely on.
  *
  * The path is built from the manifest's `path` rather than composed here, so
- * there is exactly one spelling of it and the application's test can compare
- * against the same string.
+ * there is exactly one spelling of it and the application's snapshot can
+ * compare against the same string.
  */
 export function getStaticPaths() {
   return documents.flatMap((document) =>
@@ -49,22 +56,34 @@ const isCurrent = version.version === document.current;
   <h1 class="title">{document.title}</h1>
   <p class="standfirst">{document.summary}</p>
 
-  <p class="stamp">
-    <b>Version {version.version}</b>, effective {formatDate(version.effective)}. This
-    page is a fixed copy and will not change.
+  <p class={version.frozen ? "stamp" : "stamp stamp--pending"}>
+    <b>Version {version.version}</b> — {effectiveClause(version)}
+    {
+      version.frozen
+        ? " This page is a fixed copy and will not change."
+        : " It is not yet in force and may still be corrected; this page is fixed once it is."
+    }
     <br />
     {
+      /*
+       * "Current" and "in force" are not the same thing and must not be
+       * written as though they were. `current` is the version this slug
+       * renders; whether it binds anybody is what `effectiveOn` decides, and
+       * for an unfrozen version the answer is not yet. Saying "the version in
+       * force" here put that claim two sentences away from its own
+       * contradiction.
+       */
       isCurrent ? (
         <>
-          It is also the version in force. The living link is{" "}
+          It is also the current version — the one{" "}
           <a href={`/${document.slug}/`}>
             {legal.origin}/{document.slug}/
-          </a>
-          .
+          </a>{" "}
+          renders.
         </>
       ) : (
         <>
-          <b>This version has been superseded.</b> The one in force is version{" "}
+          <b>This version has been superseded.</b> The current one is version{" "}
           {document.current}, at{" "}
           <a href={`/${document.slug}/`}>
             {legal.origin}/{document.slug}/

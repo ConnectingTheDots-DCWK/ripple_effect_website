@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { documents, versionOf, formatDate, isPending } from "../manifest";
+import { documents, versionOf, effectiveShort } from "../manifest";
 
 const now = new Date();
 ---
@@ -20,17 +20,13 @@ const now = new Date();
     {
       documents.map((document) => {
         const version = versionOf(document, document.current);
-        const pending = isPending(version, now);
         return (
           <li>
             <a href={`/${document.slug}/`}>
               <h2>{document.title}</h2>
               <p>{document.summary}</p>
               <small>
-                Version {document.current} ·{" "}
-                {pending
-                  ? `takes effect ${formatDate(version.effective)}`
-                  : `in force since ${formatDate(version.effective)}`}
+                Version {document.current} · {effectiveShort(version, now)}
               </small>
             </a>
           </li>

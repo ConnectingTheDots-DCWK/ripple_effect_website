@@ -29,6 +29,26 @@ its source when a diff reaches both. It has its own
 [`CLAUDE.md`](docs-site/CLAUDE.md), which is the authority for it; nothing in
 this file describes it.
 
+**`legal/` is a third, and it is the one to be careful in** — Astro, its own
+Vercel project with that directory as its Root Directory, at
+`legal.ripplefx.app`. It serves the four published agreements and notices:
+the EULA, the Terms of Service, the Privacy Notice and the Sub-processors
+list. [`legal/README.md`](legal/README.md) is the authority for it and should
+be read before touching anything under it, because two of the mistakes
+available there are silent and neither is a build error:
+
+- **A document committed under `legal/en/` is published**, routed or not —
+  this repository is public, so a draft here is one `git clone` away from
+  anybody. Drafts are version-controlled in the *application* repository,
+  which is private, at `docs/legal-drafts/`.
+- **A version marked `frozen` in `legal/manifest.json` never changes again.**
+  Somebody may have accepted it, and the application records what they
+  accepted by URL.
+
+`pnpm check` in `legal/` runs `tool/check_legal.mjs`, which fails both. The
+decision behind the scheme is ADR *a-licence-follows-the-product* in the
+application repository; nothing else in this file describes `legal/`.
+
 **It is named in this project's `tsconfig.json` `exclude` and in
 `eslint.config.mjs`'s `globalIgnores`, and both entries have to be there.**
 Neither tool stops at a directory boundary on its own. TypeScript's

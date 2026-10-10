@@ -16,9 +16,9 @@ differ the document is right.
 :::note[If you have used Ripple Effect before version 1.6]
 The EULA **replaces** the short Ripple Effect Licence that shipped with
 earlier builds — it does not sit on top of it, so there is one document rather
-than two. It takes effect on the date the EULA states, and use before that
-date is governed by the old licence. Everything the old licence permitted, the
-EULA permits.
+than two. A build earlier than 1.6 stays under that old licence for as long as
+you use it; the EULA governs from the first build that asks you to accept it.
+Everything the old licence permitted, the EULA permits.
 :::
 
 ## What you may do
@@ -98,9 +98,26 @@ unaffected.
 ## Changes to the agreement
 
 The EULA is versioned. A **minor** version changes the wording without
-changing the terms and takes effect when it is published. A **major** version
-changes the terms, is published at least **thirty days** before it takes
-effect, and you are asked to accept it then — in the app and on the website.
+changing the terms and applies when it is published. A **major** version
+changes the terms: you are told in the app and on the website, and asked to
+accept it no sooner than **thirty days** after that. Until you do, the version
+you accepted is the one that governs you.
+
+**The licence carries no effective date, and that is deliberate.** It takes
+effect for your installation when you accept it, so the only moment that
+matters is the one at which you were asked. Nothing about a release of the app
+is scheduled around a date on a document.
+
+**A new feature is not a new version.** The licence covers Ripple Effect
+including every component shipped with it, so a part of the app that did not
+exist when you accepted the agreement is already covered. What makes a new
+version is a change to what the agreement *says* — what you may do, what we
+owe you, who is liable for what.
+
+**A version nobody has accepted yet can still be corrected**, which is how a
+typo gets fixed without putting a dialog in front of everybody. Once a version
+has been accepted, or published as final, the text at its own address never
+changes again — and the version you accepted is never altered.
 
 Every version that has ever been in force stays published at its own permanent
 address, so the version you accepted is still readable after it has been
