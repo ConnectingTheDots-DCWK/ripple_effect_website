@@ -132,6 +132,7 @@ amendment article says which, and the manifest records it:
 | **Terms** | `date` | an ISO date | They govern a website with no versions, accepted by use. A date is the only anchor there is — and it is theirs alone. |
 | **Privacy** | `processing` | — | Not an agreement: an information duty under arts. 13–14, discharged when the processing starts. Each section names its release. |
 | **Sub-processors** | `publication` | — | A list of facts, not terms. In force as published, kept current, with thirty days' notice before a new provider starts. |
+| **Runtime Licence** | `release` | the first engine version it governs (`1.5.0`) | A licence for the engine as a component of somebody else's software. A version attaches to the engine releases published while it is current and **stays with them**, so a game shipped with one release is never re-licensed under its developer. |
 | **Ripple Effect Licence** | `superseded` | the last app version it governed (`1.4`) | Replaced rather than amended. It governs the builds it shipped with, for as long as they are used, and is `frozen` because a superseded notice has nothing left to correct. |
 
 **A new feature is usually not a new version.** The EULA defines "the

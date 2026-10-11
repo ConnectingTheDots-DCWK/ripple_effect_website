@@ -21,6 +21,24 @@
       ]
     },
     {
+      "slug": "runtime",
+      "title": "Runtime Licence",
+      "summary": "What you may do with the Ripple Effect engine when you build it into your own software and ship it.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effectiveOn": "release",
+          "effectiveFrom": "1.5.0",
+          "frozen": false,
+          "sha256": null,
+          "path": "v/runtime-1.0",
+          "source": "en/runtime/1.0.md"
+        }
+      ]
+    },
+    {
       "slug": "terms",
       "title": "Terms of Service",
       "summary": "What governs this website and the hosted service an account gives you.",

@@ -35,6 +35,10 @@ import manifest from "../manifest.json";
  *   the release in each section. `effectiveFrom` is null. The Privacy Notice.
  * - `publication` — a list rather than terms: current as published, kept
  *   current as it changes. `effectiveFrom` is null. Sub-processors.
+ * - `release` — a licence that attaches to the engine releases published
+ *   while it is current and stays with them. `effectiveFrom` is the first
+ *   engine version it governs. The Runtime Licence: an integrator who shipped
+ *   a game with one release must never find it re-licensed under them.
  * - `superseded` — a document that was in force for the builds it shipped
  *   with and has been replaced. `effectiveFrom` is the last application
  *   version it governed. The Ripple Effect Licence, which the EULA replaced
@@ -47,6 +51,7 @@ export type EffectiveOn =
   | "date"
   | "processing"
   | "publication"
+  | "release"
   | "superseded";
 
 export interface DocumentVersion {
@@ -154,6 +159,12 @@ export function effectiveClause(version: DocumentVersion, now: Date = new Date()
       );
     case "publication":
       return `in force as published, and kept current as the list changes.`;
+    case "release":
+      return (
+        `governs every engine release published from Ripple Effect Engine ` +
+        `${version.effectiveFrom} while it is current, and stays with those ` +
+        `releases afterwards.`
+      );
     case "superseded":
       return (
         `in force for the builds it shipped with — Ripple Effect ` +
@@ -204,6 +215,8 @@ export function effectiveShort(version: DocumentVersion, now: Date = new Date())
       return `per processing`;
     case "publication":
       return `as published`;
+    case "release":
+      return `engine releases from ${version.effectiveFrom}`;
     case "superseded":
       return `superseded after ${version.effectiveFrom}`;
   }

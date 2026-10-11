@@ -52,6 +52,7 @@ const documents = defineCollection({
       "date",
       "processing",
       "publication",
+      "release",
       "superseded",
     ]),
     effectiveFrom: z.string().nullable().default(null),

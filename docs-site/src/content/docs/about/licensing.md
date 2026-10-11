@@ -138,6 +138,34 @@ Every version that has ever been in force stays published at its own permanent
 address, so the version you accepted is still readable after it has been
 replaced.
 
+## Building the engine into your own software
+
+The engine that plays a story is published on its own as well — native
+libraries, command-line tools and WebAssembly components — so that a game, a
+story player or another tool can play campaigns made here. **That engine is
+under a different licence**, the [Runtime
+Licence](https://legal.ripplefx.app/runtime/), because the agreement for the
+application forbids exactly what an integrator needs to do: ship it to other
+people.
+
+- **It is free and royalty-free**, for any product, commercial or not. No
+  fee, no revenue threshold, no registration.
+- **You redistribute it unmodified, as part of your product** — not on its
+  own.
+- **The only credit asked for** is its `NOTICE` text wherever your product
+  lists the third-party software it uses. No logo, no splash screen.
+- **Your users get terms that protect it** as far as yours do: no reverse
+  engineering beyond what the law allows, and our liability disclaimed.
+- **A version of the licence stays with the releases it came with.** A product
+  you shipped with one engine release is never re-licensed under you; a later
+  licence governs later releases only.
+- **Bindings are yours.** A library that calls the engine from another
+  language can be under any licence, an open-source one included — ours are
+  MIT — while the engine it carries stays under the Runtime Licence.
+- **It may not be used to build a replacement for itself**: no engine,
+  runtime or authoring tool that plays or writes the same campaigns, built
+  with the engine, its documentation or its test material.
+
 ## The premium tier
 
 A paid tier is planned: media storage, real-time collaboration and team

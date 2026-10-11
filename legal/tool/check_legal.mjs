@@ -96,6 +96,7 @@ const kinds = new Set([
   "date",
   "processing",
   "publication",
+  "release",
   "superseded",
 ]);
 
@@ -180,6 +181,7 @@ for (const { document, version } of entries) {
   const needsFrom =
     version.effectiveOn === "acceptance" ||
     version.effectiveOn === "date" ||
+    version.effectiveOn === "release" ||
     version.effectiveOn === "superseded";
   if (needsFrom && typeof version.effectiveFrom !== "string") {
     fail(
