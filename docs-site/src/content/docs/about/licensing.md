@@ -150,12 +150,16 @@ people.
 
 - **It is free and royalty-free**, for any product, commercial or not. No
   fee, no revenue threshold, no registration.
-- **You redistribute it unmodified, as part of your product** — not on its
-  own.
+- **You redistribute it unmodified in function, as part of your product** —
+  not on its own. Signing it, stripping its symbols, wrapping it in a
+  framework or transpiling its WebAssembly is all fine; changing what it does,
+  or passing it off as your own, is not.
 - **The only credit asked for** is its `NOTICE` text wherever your product
   lists the third-party software it uses. No logo, no splash screen.
-- **Your users get terms that protect it** as far as yours do: no reverse
-  engineering beyond what the law allows, and our liability disclaimed.
+- **Your users get no more than you have.** The `NOTICE` already tells them
+  so, which is enough for a product shipped with no terms; if yours has terms,
+  they must not contradict it, and the licence's annex has a clause you can
+  paste.
 - **A version of the licence stays with the releases it came with.** A product
   you shipped with one engine release is never re-licensed under you; a later
   licence governs later releases only.
