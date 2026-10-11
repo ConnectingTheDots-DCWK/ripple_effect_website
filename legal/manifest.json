@@ -12,11 +12,29 @@
         {
           "version": "1.0",
           "effectiveOn": "acceptance",
-          "effectiveFrom": "1.6",
+          "effectiveFrom": "1.5",
           "frozen": false,
           "sha256": null,
           "path": "v/eula-1.0",
           "source": "en/eula/1.0.md"
+        }
+      ]
+    },
+    {
+      "slug": "runtime",
+      "title": "Runtime Licence",
+      "summary": "What you may do with the Ripple Effect engine when you build it into your own software and ship it.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effectiveOn": "release",
+          "effectiveFrom": "1.5.0",
+          "frozen": false,
+          "sha256": null,
+          "path": "v/runtime-1.0",
+          "source": "en/runtime/1.0.md"
         }
       ]
     },
@@ -71,6 +89,24 @@
           "sha256": null,
           "path": "v/subprocessors-1.0",
           "source": "en/subprocessors/1.0.md"
+        }
+      ]
+    },
+    {
+      "slug": "ripple-effect-licence",
+      "title": "Ripple Effect Licence",
+      "summary": "The short notice that governed Ripple Effect 1.4 and earlier, replaced by the Agreement from 1.5.",
+      "current": "1.0",
+      "languages": ["en"],
+      "versions": [
+        {
+          "version": "1.0",
+          "effectiveOn": "superseded",
+          "effectiveFrom": "1.4",
+          "frozen": true,
+          "sha256": "8753ad0724ba13ceef909e8bc70a3f2871166d6b1b1123dd1f09f7a38c457ef3",
+          "path": "v/ripple-effect-licence-1.0",
+          "source": "en/ripple-effect-licence/1.0.md"
         }
       ]
     }

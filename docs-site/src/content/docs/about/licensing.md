@@ -13,12 +13,27 @@ The licence is the **End-User Licence Agreement**, and it lives at
 the authority; this page is what it says in plain words, and where the two
 differ the document is right.
 
-:::note[If you have used Ripple Effect before version 1.6]
+:::note[If you have used Ripple Effect before version 1.5]
 The EULA **replaces** the short Ripple Effect Licence that shipped with
 earlier builds — it does not sit on top of it, so there is one document rather
-than two. A build earlier than 1.6 stays under that old licence for as long as
-you use it; the EULA governs from the first build that asks you to accept it.
-Everything the old licence permitted, the EULA permits.
+than two. A build earlier than 1.5 stays under that old licence for as long as
+you use it; the EULA governs from the first build that asks you to accept it,
+which is 1.5. Everything the old licence permitted, the EULA permits.
+
+That old notice is still published, unchanged, at
+[legal.ripplefx.app/v/ripple-effect-licence-1.0](https://legal.ripplefx.app/v/ripple-effect-licence-1.0/),
+because a licence that governs a build somebody is still running has to be
+readable. The set of builds under it is closed: 1.4 was the last release that
+did not ask.
+:::
+
+:::note[From 1.5 the app asks, and sends nothing first]
+At first launch the app shows you the Agreement, and makes **no network
+request of any kind** until you accept it — not an update check, not anything.
+It is not a window over a running app: until you answer, the app underneath it
+has not been started, so there is nothing there to make a request. The Privacy
+Notice is shown alongside it, to read rather than to accept; you cannot
+meaningfully agree to being told something.
 :::
 
 ## What you may do
@@ -122,6 +137,34 @@ changes again — and the version you accepted is never altered.
 Every version that has ever been in force stays published at its own permanent
 address, so the version you accepted is still readable after it has been
 replaced.
+
+## Building the engine into your own software
+
+The engine that plays a story is published on its own as well — native
+libraries, command-line tools and WebAssembly components — so that a game, a
+story player or another tool can play campaigns made here. **That engine is
+under a different licence**, the [Runtime
+Licence](https://legal.ripplefx.app/runtime/), because the agreement for the
+application forbids exactly what an integrator needs to do: ship it to other
+people.
+
+- **It is free and royalty-free**, for any product, commercial or not. No
+  fee, no revenue threshold, no registration.
+- **You redistribute it unmodified, as part of your product** — not on its
+  own.
+- **The only credit asked for** is its `NOTICE` text wherever your product
+  lists the third-party software it uses. No logo, no splash screen.
+- **Your users get terms that protect it** as far as yours do: no reverse
+  engineering beyond what the law allows, and our liability disclaimed.
+- **A version of the licence stays with the releases it came with.** A product
+  you shipped with one engine release is never re-licensed under you; a later
+  licence governs later releases only.
+- **Bindings are yours.** A library that calls the engine from another
+  language can be under any licence, an open-source one included — ours are
+  MIT — while the engine it carries stays under the Runtime Licence.
+- **It may not be used to build a replacement for itself**: no engine,
+  runtime or authoring tool that plays or writes the same campaigns, built
+  with the engine, its documentation or its test material.
 
 ## The premium tier
 

@@ -61,6 +61,12 @@ export const goLinks: readonly GoLink[] = [
     destination: `${support}/graphs/contributors`,
   },
   { source: "/go/licence", destination: "https://legal.ripplefx.app/eula/" },
+  // The engine as a component of somebody else's software. Named in the
+  // NOTICE every engine release archive carries, which outlives any page.
+  {
+    source: "/go/runtime-licence",
+    destination: "https://legal.ripplefx.app/runtime/",
+  },
 
   { source: "/go/funding", destination: "https://buymeacoffee.com/wilielmus" },
   { source: "/go/survey", destination: "https://tally.so/r/2EWdND" },

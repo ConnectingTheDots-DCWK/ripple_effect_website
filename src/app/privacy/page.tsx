@@ -158,12 +158,24 @@ export default function PrivacyPage() {
         <Section title="The app itself">
           <p>
             Ripple Effect works on files on your own disk and needs no network
-            to do it. Nothing you write is sent anywhere, and there is no
-            background telemetry: no usage statistics, no performance
-            measurements, nothing counting what you do.
+            to do it. Nothing you write is sent anywhere, and nothing counts
+            what you do: there are no performance measurements and no record of
+            which boards you open or how long you spend in them. From version
+            1.5 the app can send anonymous usage statistics, and they are{" "}
+            <strong>opt-in</strong> — asked once, with the complete list of what
+            would be sent in front of the question, neither answer preselected,
+            and switchable off afterwards. No build before 1.5 collected any.
           </p>
           <p>
-            A few requests leave the machine without being asked for. Once per
+            <strong>
+              From version 1.5 the app asks you to accept the licence at first
+              launch, and makes no network request of any kind until you have.
+            </strong>{" "}
+            Everything below happens after that, and only then.
+          </p>
+          <p>
+            A few requests then leave the machine without your having to ask
+            for them. Once per
             launch it asks this site whether a newer version exists — a plain
             request for a release number, carrying nothing about you, your
             projects or what you were doing. From version 1.5 it also asks,
@@ -173,7 +185,11 @@ export default function PrivacyPage() {
             is downloaded from GitHub and used from the next launch. And if you
             open the About box, it asks this site for the contributor list,
             which the site fetches from GitHub on its own behalf — versions
-            before 1.5 asked api.github.com directly. All of them reach this
+            before 1.5 asked api.github.com directly. Their pictures are the one
+            exception: each contributor&apos;s avatar is loaded from
+            avatars.githubusercontent.com by your machine rather than through
+            this site, so opening the About box does make a request to GitHub
+            for the images. The rest reach this
             site the way any other request does, so an address and a
             browser-style identifier appear in a server log; nothing
             distinguishes one installation from another, because nothing in

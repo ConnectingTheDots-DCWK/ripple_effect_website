@@ -231,15 +231,29 @@ Stated because the template actively invites all four:
    is not on the roadmap is an invention.**
 4. **No invented numbers.** No download counts, no user counts, no stars.
 
-**And one position rather than a prohibition: telemetry.** There is none in
-the app today, and it is coming. Everywhere the site speaks of it — the FAQ,
-the privacy page, both pricing cards, the documentation site's *Updates, logs
-and support* page — says the same thing in the same tense: planned, opt-in,
-anonymous, off until switched on, and used only for internal usage
-statistics, performance and stability measurements, and crash reports. When
-it ships, those four places change together, and the privacy page says what
-is collected; until then none of them may say it exists, and none of them may
-say it never will.
+**And one position rather than a prohibition: telemetry.** It ships in **1.5**
+and it is **opt-in**. Everywhere the site speaks of it — the FAQ, the privacy
+page, both pricing cards, and the documentation site's *Updates, logs and
+support* and *What the app sends* pages — says the same thing in the same
+tense: anonymous, opt-in, off until switched on, asked once with the complete
+list in front of the question rather than behind a link, neither answer
+preselected, and recording that the app was in use on a given day rather than
+anything about what was done with it. Those five places change together, and
+`legal/en/privacy/1.0.md` §4.5 is what every one of them paraphrases — where
+a page disagrees with it, the page is wrong. **No page may say there are
+none**, which is what all five said until 2026-10-10 while the feature was
+built and about to ship, and none may call it planned.
+
+Two more facts about the app the site has to keep straight, for the same
+reason and found the same way. **From 1.5 the app asks you to accept the
+licence at first launch and makes no network request of any kind before you
+answer** — so a page listing what leaves the machine says that first, in the
+present tense, and not as something a later version will do. And that list is
+**six** things rather than four: the update check, the engine-fix check, the
+contributor list and the pictures that go with it, a crash report, usage
+statistics, and whatever you sent yourself — including an image a document
+references by address. `legal/en/privacy/1.0.md` §4 is the one that counts,
+and §3 states the number.
 
 **All four apply to a blog post as much as to a page**, and a post is the
 easiest place on the site to drift — it is prose, and nobody diffs prose

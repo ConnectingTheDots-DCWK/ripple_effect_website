@@ -87,13 +87,13 @@ export default function PricingPage() {
             {/*
               Not a feature: the terms the tier comes on, and now the
               documents that state them. "Opt-in telemetry" used to be here as
-              a promise about something that did not exist; what exists is a
-              crash report asked for one report at a time, so that is what it
-              says.
+              a promise about something that did not exist; it exists from 1.5
+              and is opt-in, so the line names it alongside the crash report
+              that is asked for one report at a time.
             */}
             <p className="mt-8 border-t border-border pt-6 text-xs text-muted-foreground">
               No account, no sync. Crash reports are asked for one at a time;
-              anonymous usage statistics will be opt-in.
+              anonymous usage statistics are opt-in.
               <br />
               <a
                 href={siteConfig.legal.eula}
