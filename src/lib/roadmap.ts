@@ -82,8 +82,8 @@ export const roadmap: Milestone[] = [
   {
     version: "1.4",
     codename: "Elven Choir",
-    note: "Current",
-    tone: "current",
+    note: "Shipped",
+    tone: "shipped",
     // The plan said "multimedia in campaigns, soundtrack and sound effects";
     // what shipped is soundscapes as files of their own with a timeline
     // editor, a Play sound node and `play_sound` from Python, and the rest
@@ -98,9 +98,17 @@ export const roadmap: Milestone[] = [
   {
     version: "1.5",
     codename: "Multiclassing",
-    tone: "planned",
+    note: "Current",
+    tone: "current",
+    // The plan said "the core story engine ported to Rust, with bindings";
+    // what shipped is that engine, released on its own for desktop, phones
+    // and the web with a JavaScript binding over it, and around it the
+    // changelog's 1.5.0 section — a workspace laid out like a code editor's,
+    // a board that says what is wrong with it, and the first translation.
     features: [
-      "The core story engine ported to Rust, with bindings for game engines and other third-party integration",
+      "The story engine in Rust, released on its own for desktop, phones and the web, with host callbacks",
+      "A workspace like a code editor's: docking tabs, find and replace in project, a menu bar, Zen Mode",
+      "Boards that say what is wrong with them, passages that take arguments, and the app in Italian",
     ],
   },
   {

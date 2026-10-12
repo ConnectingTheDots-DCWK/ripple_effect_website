@@ -13,8 +13,8 @@
           "version": "1.0",
           "effectiveOn": "acceptance",
           "effectiveFrom": "1.5",
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "ac1e97bb3346cdd547b2e7b17c997b6a6a4a4d5c9ba4dcd9502a558d54dcad50",
           "path": "v/eula-1.0",
           "source": "en/eula/1.0.md"
         }
@@ -31,8 +31,8 @@
           "version": "1.0",
           "effectiveOn": "release",
           "effectiveFrom": "1.5.0",
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "7ff9eb48cdf6f5169c38bd9986259d9ae5afcf81fa7ef96d49b5e59259b9ca8e",
           "path": "v/runtime-1.0",
           "source": "en/runtime/1.0.md"
         }
