@@ -1,5 +1,5 @@
-These four read a list — and a piece of text, which they read the same way. A list is itself; everything else is its text, one character at a time. So the same three cards work on `["bread", "rope"]` and on `"hi"`, and what comes out is the kind that went in: appending `!` to `hi` gives `hi!`, not a list of three letters.
+These four cards read a list or a piece of text, and read both the same way. A list is itself; any other value is its text, one character at a time. The same card works on `["bread", "rope"]` and on `"hi"`, and the result is the kind that went in: appending `!` to `hi` gives `hi!`.
 
-An index counts from zero, and from the end when it is negative — `-1` is the last item. Nothing here ever stops the story: an index past either end is an ordinary thing to reach inside a loop.
-
-A map is the one thing these three do not read. It has no order for an index to mean, so they hand it back untouched and answer nothing — the [Maps](#maps) cards below are what read one.
+- An index counts from zero, and from the end when it is negative: `-1` is the last item.
+- An index past either end does not stop the story; it is an ordinary thing to reach inside a loop.
+- A map has no order for an index to mean. Insert and Remove hand it back untouched, At answers nothing and Size counts none. The [Maps](#maps) cards read maps.

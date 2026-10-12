@@ -1,5 +1,5 @@
-These seven read a map: a set of names, each holding a value. **A map is itself; everything else is an empty map** — point one of them at a list, at a number or at nothing and that is what it sees.
+These seven cards read a map: a set of names, each holding a value. A map is itself; any other value is read as an empty map.
 
-Which is also how a map is made, there being no card that holds one the way a Text node holds a word: a **Set** with nothing wired to its subject hands you back a map of one pair, and a chain of them is a map.
-
-A name is always text. A name that is not there never stops the story — **Get** answers nothing and says so on `found`, and **Remove** hands the map back as it was.
+- A name is always text.
+- No card holds a map as a literal. A **Set** with nothing wired to its subject returns a map of one pair, and a chain of Set cards builds a larger one.
+- A name that is not present does not stop the story. **Get** answers nothing and reports it on `found`; **Remove** returns the map unchanged.
