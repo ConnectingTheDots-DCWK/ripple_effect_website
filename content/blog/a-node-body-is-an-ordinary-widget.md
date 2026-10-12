@@ -124,15 +124,23 @@ that still starts a wire is worse than one that is plainly not there yet.
 
 ## Caches, and the bug that taught the most
 
-Connection geometry is built once and cached. The interesting part is what the
-cache keys on.
+Connection geometry is built once and cached. The interesting part is what
+each cache keys on, because the same key is right for one and wrong for the
+other.
 
-The obvious key is the controller's revision number, which moves whenever
-anything is edited. It is also wrong, and wrong in a way that looks right:
+The geometry cache does key on the controller's revision number, which moves
+for edits but not for panning and zooming. A drag moves it on every pointer
+event, so each curve also remembers its endpoints (and waypoints) and keeps its
+path while they have not moved. A revision miss there costs a walk over the
+connections, and the expensive part, the curve, is rebuilt only where an end
+moved.
+
+The lookup of which ports are wired is the other cache, and there the revision
+is the obvious key. It is also wrong, and wrong in a way that looks right:
 dragging a node bumps the revision on every pointer event, so a memo keyed on
-it misses on every frame of every drag — the one situation where you needed it.
-Keying the connected-ports lookup on the connections map's *identity* instead
-took it from 26.4 node bodies rebuilt per frame down to 0.7.
+it misses on every frame of every drag, the one situation where you needed it.
+Keying it on the connections map's *identity* instead took it from 26.4 node
+bodies rebuilt per frame down to 0.7.
 
 There is a second half to that fix which is easy to miss: the memo also has to
 hand back **the previous `Set` instance** for any node whose set is unchanged.
@@ -152,9 +160,13 @@ sales pitch. The graph is immutable and edited copy-on-write, so an edit copies
 the node map — about 390 µs a frame while dragging at five thousand nodes.
 Removing that means trading the immutable snapshot for in-place mutation, and
 the model's guarantees along with it, which has not looked worth it yet. There
-are no resize handles: comments size themselves to their text and group frames
-size themselves to their members, so nothing on the canvas is resized by hand.
-Groups do not nest, and a node belongs to at most one.
+were no resize handles when this was written: comments size themselves to
+their text and group frames size themselves to their members. Groups do not
+nest, and a node belongs to at most one.
+
+*Update, fl_nodes_v2 0.3.0 (September 2026): a node whose definition sets
+`resizable` has a corner grip and can be resized by hand. Comments and groups
+still size themselves.*
 
 ## Where it is
 
