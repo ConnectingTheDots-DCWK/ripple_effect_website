@@ -118,29 +118,10 @@ export function SiteFooter() {
           </nav>
         ))}
       </div>
-      <div className="mx-auto mt-12 flex max-w-6xl flex-col items-center justify-between gap-2 border-t border-border px-4 pt-6 text-xs text-muted-foreground md:flex-row lg:px-8">
-        <span className="flex items-center gap-2">
-          {siteConfig.copyright}
-          <span aria-hidden>·</span>
-          {/*
-            The canonical notice, not this site's own page. Somebody who looks
-            for "privacy" in a footer bottom bar is looking for the document,
-            and the narrower page is one row up under Legal.
-          */}
-          <a
-            href={siteConfig.legal.privacy}
-            rel="noopener"
-            target="_blank"
-            className="transition-colors hover:text-foreground"
-          >
-            Privacy
-          </a>
-        </span>
-        <span>
-          Proprietary software. The source is not published; the node editor
-          underneath it is.
-        </span>
-      </div>
+      {/* The notice alone. The Privacy Notice is under Legal, one row up. */}
+      <p className="mx-auto mt-12 max-w-6xl border-t border-border px-4 pt-6 text-center text-xs text-muted-foreground lg:px-8">
+        {siteConfig.copyright}
+      </p>
     </footer>
   );
 }

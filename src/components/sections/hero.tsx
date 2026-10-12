@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRightIcon, TriangleAlertIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Screenshot } from "@/components/screenshot";
 import { HeroDownload } from "@/components/hero-download";
 import { Cover } from "@/components/cover";
 import { BlurFade } from "@/components/velora/blur-fade";
@@ -69,7 +68,7 @@ export async function Hero() {
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance lg:text-5xl">
               Interactive narrative design,{" "}
               <span className="block">
-                made with ❤️ — and it&rsquo;s{" "}
+                and it&rsquo;s{" "}
                 <FlipWords
                   words={["free", "fast", "local", "yours"]}
                   className="text-primary"
@@ -126,10 +125,6 @@ export async function Hero() {
               Early days — you may still meet the odd rough edge.
             </p>
           </div>
-        </BlurFade>
-
-        <BlurFade delay={0.15} className="mt-14">
-          <Screenshot name="board" priority beam />
         </BlurFade>
       </div>
     </section>

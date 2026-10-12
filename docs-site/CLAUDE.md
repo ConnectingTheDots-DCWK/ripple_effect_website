@@ -159,10 +159,9 @@ in `src/content/i18n/<lang>.json` and that collection is already declared.
 ## Two components are overridden, and only two
 
 `SiteTitle`, because the name of the product is in it. Starlight renders
-`title` as a single run of text in the accent colour, which produces "Ripple
-Effect" in indigo — a different name in a different shape from the one on every
-other surface. The app's rule is that the underscore is coloured rather than
-swallowed, and the mark is drawn from the same three-ring table as
+`title` as a single run of text in the accent colour, and the app's wordmark is
+the display name with the second word in the accent, beside the mark — the
+shape every other surface has. The mark is drawn from the same three-ring table as
 `apps/editor/lib/src/widgets/app_brand.dart` rather than imported, because there is no logo
 file to import. `title` in the config stays "Ripple Effect": that is what
 belongs in a `<title>`, a search result and a browser tab.

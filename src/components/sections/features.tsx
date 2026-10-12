@@ -102,16 +102,13 @@ export function Features() {
     <section id="features" className="scroll-mt-16 py-16 lg:py-24">
       <div className="mx-auto max-w-6xl px-4 lg:px-8">
         <BlurFade>
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-semibold tracking-tight text-balance lg:text-4xl">
-              A canvas that knows what a story is
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground text-pretty">
-              The editor supplies geometry, wiring, selection, undo and
-              execution. Everything above it — passages, choices, chapters,
-              components — is there because a branching story needs it.
-            </p>
-          </div>
+          <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance lg:text-4xl">
+            A canvas that knows what a story is
+          </h2>
+          {/* The board, whole, before the seven close-ups of what is on it.
+              It used to close the hero, framed by a travelling light; down
+              here it is the picture the heading is about. */}
+          <Screenshot name="board" className="mt-10" />
         </BlurFade>
 
         <div className="mt-16 space-y-20 lg:space-y-28">

@@ -3,7 +3,6 @@ import path from "node:path";
 
 import Image from "next/image";
 
-import { BorderBeam } from "@/components/velora/border-beam";
 import { cn } from "@/lib/utils";
 import { SHOT_HEIGHT, SHOT_WIDTH, shots, type ShotName } from "@/lib/screenshots";
 
@@ -17,13 +16,11 @@ function Frame({
   name,
   theme,
   priority,
-  beam,
   className,
 }: {
   name: ShotName;
   theme: "dark" | "light";
   priority: boolean;
-  beam: boolean;
   className?: string;
 }) {
   const shot = shots[name];
@@ -38,7 +35,6 @@ function Frame({
         sizes="(max-width: 1024px) 100vw, 1024px"
         className="w-full"
       />
-      {beam && <BorderBeam size={140} duration={7} />}
     </div>
   );
 }
@@ -70,13 +66,10 @@ function Frame({
 export function Screenshot({
   name,
   priority = false,
-  beam = false,
   className,
 }: {
   name: ShotName;
   priority?: boolean;
-  /** The travelling border light. For the hero only — see CLAUDE.md. */
-  beam?: boolean;
   className?: string;
 }) {
   const shot = shots[name];
@@ -106,7 +99,6 @@ export function Screenshot({
         name={name}
         theme={dark ? "dark" : "light"}
         priority={priority}
-        beam={beam}
         className={className}
       />
     );
@@ -119,8 +111,7 @@ export function Screenshot({
           name={name}
           theme="light"
           priority={priority}
-          beam={beam}
-          className={className}
+            className={className}
         />
       </div>
       <div className="hidden dark:block">
@@ -128,8 +119,7 @@ export function Screenshot({
           name={name}
           theme="dark"
           priority={priority}
-          beam={beam}
-          className={className}
+            className={className}
         />
       </div>
     </>

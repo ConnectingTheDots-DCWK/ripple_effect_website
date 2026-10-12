@@ -110,8 +110,7 @@ export default function OpengraphImage() {
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <OgMark size={44} color="#e8eaef" />
             <span style={{ fontSize: 30, fontWeight: 600, display: "flex" }}>
-              <span>ripple</span>
-              <span>_effect</span>
+              {siteConfig.name}
             </span>
           </div>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
 /*
@@ -57,16 +58,16 @@ export function RippleMark({
 }
 
 /**
- * The wordmark, with the app's one rule about it:
- *
- * > The underscore is coloured rather than swallowed: it is half the name, and
- * > a `ripple effect` that has lost it reads as two words somebody forgot to
- * > join up.
+ * The wordmark, transcribed from the app's `AppBrand`: the display name — *Ripple
+ * Effect*, the name a person reads — with the second word in the accent. It
+ * used to be the package name, `ripple_effect`, with the underscore coloured;
+ * that is an identifier, and the brand stopped being one.
  */
 export function Wordmark({ className }: { className?: string }) {
+  const [first, second] = siteConfig.name.split(" ");
   return (
     <span className={cn("font-semibold tracking-tight", className)}>
-      ripple<span className="text-primary">_effect</span>
+      {first} <span className="text-primary">{second}</span>
     </span>
   );
 }
