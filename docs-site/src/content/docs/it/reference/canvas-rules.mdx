@@ -1,0 +1,242 @@
+---
+title: Regole della lavagna e della navigazione
+description: Le regole che il canvas di una lavagna fa rispettare, i due tipi di porta e di collegamento, e come si comportano la navigazione Script, le tracce e la vista unita.
+sidebar:
+  order: 3
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+<Shot name="board" />
+
+## Start
+
+| Regola | Comportamento |
+| --- | --- |
+| Numero | Una lavagna ha esattamente una scheda **Start**. |
+| Menu Crea | Non offre una seconda scheda Start. |
+| Due Start | Gioca rifiuta la lavagna e nomina entrambe le schede Start. |
+| Dove inizia una lavagna | La scheda che è lo Start. La navigazione Script disegna la stessa risposta che usa il runner. |
+
+## Creare e modificare le schede
+
+| Azione | Risultato |
+| --- | --- |
+| Clic destro sul canvas vuoto | Il menu Crea. Ogni scheda si crea da qui: un passaggio, una scheda Jump, una scheda Script, un ciclo, un componente. |
+| Rilascia un collegamento sul canvas vuoto | Si apre lo stesso menu; la scheda che scegli viene collegata alla porta da cui partiva il collegamento. |
+| Clic destro su una scheda, *Informazioni su questa scheda* | A cosa serve la scheda, cosa fa ogni controllo, cosa accetta o restituisce ogni porta, e un link alla pagina della documentazione, resi come Markdown. Il [riferimento dei nodi](/it/reference/nodes/) è scritto a partire dallo stesso testo. |
+| Clic destro su una scheda, *Modifica i metadati…* | Un elenco di nomi, tipi e valori. Finché ce ne sono, sull'intestazione della scheda compare una piccola etichetta. |
+| La barra degli strumenti della lavagna | Non ha un pulsante *aggiungi un passaggio*. Le schede si creano solo dal menu Crea o rilasciando un collegamento sul canvas vuoto. |
+| Annulla, Ripeti | Nel menu Modifica e con le rispettive combinazioni di tasti. |
+| Scheda delle scorciatoie | Visualizza ▸ Scheda delle scorciatoie la riporta. |
+
+{/* TODO(shots): <Shot name="nodeMenu" /> */}
+
+### Metadati della scheda
+
+- Nulla sulla lavagna li legge.
+- Viaggiano con la scheda in una campagna compilata e verso un agente.
+- Una scheda copiata arriva con le sue note.
+- I tipi di voce sono `int`, `float`, `bool` e `string`, una lista di ciascuno, e `json` per qualsiasi cosa annidata. È un elenco più corto di quello dei tipi di una porta: una scheda memorizza il valore e non il suo tipo, quindi l'editor deduce il tipo dalla forma del valore. `asset`, `componentRef`, `entity` e `markdown` non sono offerti, perché una volta scritti ciascuno è una semplice stringa.
+- Una versione dell'editor precedente a questa funzione, che risalva una lavagna di questo tipo, mantiene ogni collegamento e ogni campo e perde le note.
+
+{/* TODO(shots): <Shot name="metadataEditor" /> */}
+
+### Selettori
+
+Ogni selettore di qualcosa che hai creato si apre con un campo di ricerca già attivo. Digitando si restringe per nome o per percorso, che compare sotto ogni nome. Le voci sono in ordine alfabetico.
+
+| Selettore | Sceglie |
+| --- | --- |
+| Jump | Una lavagna. |
+| Component | Un componente. |
+| Script | Un file `.py`. |
+| Narration | Un passaggio o un soundscape. |
+| State machine | Un diagramma. |
+| Scheda `cvar` | Una variabile. |
+
+L'eccezione è il selettore di scheda di un Jump, che mantiene l'ordine di lettura di una lavagna.
+
+### Collegamenti
+
+| Impostazione | Disegno dei collegamenti |
+| --- | --- |
+| Predefinita | Curvi. |
+| Impostazioni ▸ Collegamenti ▸ Ad angolo retto | Ogni collegamento su ogni canvas è fatto di tratti dritti con angoli arrotondati. Un punto di passaggio su un collegamento diventa allora un angolo e si allinea ai vicini mentre lo trascini. |
+
+### Dimensione del testo
+
+Le schede restano della dimensione con cui sono state disegnate, qualunque sia la dimensione del testo del desktop. Lo zoom cambia la dimensione di una lavagna. Il resto dell'app cresce con l'impostazione, fino al doppio.
+
+## Schede Narration
+
+Una scheda Narration contiene un passaggio e fa crescere una porta di uscita per ogni scelta. Collegando l'ultima uscita ne compare una nuova libera sotto di essa.
+
+### Campi della scelta
+
+Fai clic sulla riga di una scelta nella scheda per modificarla.
+
+| Campo | Significato |
+| --- | --- |
+| Nome | L'etichetta che mostra la scheda, così un ramo si trova su una lavagna ampia. |
+| Parole | Ciò che viene offerto al lettore, in ogni lingua in cui è scritta la storia. Una scelta senza nulla nella lingua del lettore ripiega sulla lingua in cui è stata scritta la storia. |
+| Volte | Vuoto: la scelta può essere fatta quante volte il lettore vuole. Un numero: il limite. |
+| Didascalia del collegamento | Un'annotazione per l'autore. Nessun lettore la vede. |
+| Ingresso condizione | Un piccolo ingresso sulla riga di ogni scelta collegata. Vedi sotto. |
+
+### Volte
+
+| Regola | Comportamento |
+| --- | --- |
+| Una volta che una sessione di gioco ha percorso il cammino quel numero di volte | La scelta resta a schermo, in grigio e non premibile. |
+| Aspetto sulla scheda | Il limite è mostrato come `×3` alla fine della riga della scelta. |
+| Ambito del conteggio | L'intera campagna. Saltare altrove e tornare, o salvare e caricare, ritrova il cammino consumato com'era. |
+| Ricominciare | Riapre il cammino. |
+| Macro | Il conteggio è per chiamata: una macro chiamata da due punti ha un budget separato per ciascuno. |
+| Nessun numero impostato | La scelta non ricorda nulla. |
+
+### Ingresso condizione
+
+| Regola | Comportamento |
+| --- | --- |
+| Il `bool` collegato è vero | La scelta viene offerta. |
+| Il `bool` collegato è falso | La scelta è in grigio e non premibile, come un cammino esaurito. |
+| Con *Volte* | Entrambe si applicano alla stessa scelta. |
+| Schede nel flusso che porta al passaggio | Vengono eseguite su ogni cammino che vi arriva, quindi la risposta è aggiornata. |
+| Forma che funziona | Una scheda Do all con una catena per ramo, con `completed` collegato al passaggio. |
+| Schede appese a lato della lavagna | Calcolate una volta prima che la storia inizi, danno la stessa risposta per sempre, e il pannello Messaggi nomina la scelta. |
+| Un Comparator che legge un lancio di dadi | Segue la stessa regola. |
+
+### Finestra Legge
+
+La riga *Legge* sta in fondo alla scheda, accanto al soundscape che la scheda porta con sé. Mostra quanti nomi vengono passati al passaggio e apre la finestra che li dichiara.
+
+| Regola | Comportamento |
+| --- | --- |
+| Dichiarazione | Ingressi con nome e tipo, ciascuno con un valore predefinito facoltativo. |
+| Porte | La scheda ottiene una porta per ciascuno. |
+| Uso nel passaggio | Python li legge per nome: `You owe {{ gold }} crowns.` |
+| Uno slot con un valore predefinito e nulla collegato | Usa il valore predefinito. |
+| A chi appartengono i nomi | Alla scheda, non al file del passaggio. Un passaggio può essere un modello letto da due schede. |
+| Un nome che la scheda non fornisce | Compare un piccolo avviso dove si trovava; il resto viene reso. |
+| Completamento dei nomi | Offerto mentre digiti se aperta da una lavagna. Non offerto se aperta nella propria scheda del documento. |
+| Nomi validi | Nomi che Python può leggere. |
+
+## Jump
+
+| Regola | Comportamento |
+| --- | --- |
+| Destinazione memorizzata | L'id di catalogo della lavagna di destinazione, non il suo percorso. Rinominare o spostare una lavagna non rompe mai un collegamento. |
+| Freccia sulla scheda | Apre la lavagna a cui punta il Jump. |
+
+## Porte e collegamenti
+
+Ogni porta è di uno dei due tipi. Il canvas li disegna distinti.
+
+| | Controllo | Dati |
+| --- | --- | --- |
+| Trasporta | La storia. | Valori: un numero, un nome, una lista di goblin, lo stato in cui si trova una macchina. |
+| Forma | Triangolo, che punta nella direzione del flusso. | Punto. |
+| Tooltip | Nessuno. | Il tipo che accetta: `number`, `list<string>`, oppure `anything` per le porte che accettano qualsiasi cosa venga data, come i due lati di un Comparator. |
+| Esempi | L'ingresso `exec`; le scelte, i rami, il `first` e l'`again` di un gate, e il `completed` di una scheda che ha semplicemente fatto qualcosa. | Qualsiasi porta che trasporta un valore. |
+| Direzione di valutazione | Spinta. | Letta: la scheda riceve ciò che la scheda all'altro capo ha pubblicato per ultima. |
+| Ruolo del collegamento | Un passo della storia. | Una domanda che la scheda all'estremità pone quando arriva il suo turno. |
+
+- La storia è il cammino da Start lungo i collegamenti di controllo.
+- Due rami che convergono su una scheda la eseguono due volte. Nulla aspetta entrambi.
+- È un solo motore, che la campagna sia giocata nell'app o distribuita.
+
+### Valutazione
+
+| Regola | Comportamento |
+| --- | --- |
+| Una scheda che legge un ingresso dati | Ottiene ciò che la scheda collegata ad esso ha pubblicato per ultimo: in questo turno, in uno precedente, nel priming prima della storia, o nulla. Leggere non esegue nessuna scheda. |
+| Una scheda che non è stata eseguita su questo cammino | La sua uscita contiene il valore di un turno precedente, o nulla. `W.GE.06` lo segnala. |
+| Priming | Prima che una storia inizi, il motore percorre all'indietro i collegamenti dati a partire da tutto ciò che lo Start può raggiungere. Le schede che la storia non raggiunge mai vengono eseguite una volta prima della storia, in ordine di dipendenza. |
+| Conseguenza del priming | Un Number in un Set variable, una String nel nome di un Component o un Get variable in un Output non richiede alcun collegamento `exec`. |
+| Un valore che dipende da qualcosa che la storia fa | Deve trovarsi nel flusso dopo di essa. Un Comparator appeso a un Dice roller viene calcolato in priming prima che ci sia un lancio, e risponde per un totale che non esisteva ancora. Collega il `completed` del roller al Comparator e quello del Comparator all'If. |
+
+### La storia va solo avanti
+
+Leggere un valore non fa mai eseguire una scheda. La scheda legge **ciò che la scheda collegata ad essa ha pubblicato l'ultima volta che ha avuto un turno**: in questo turno, in un passaggio precedente, nel priming prima che la storia iniziasse, o nulla. Nulla viene recuperato eseguendo una scheda all'indietro.
+
+| Stato di un valore | Significato | Controllo |
+| --- | --- | --- |
+| Calcolato lungo il cammino | Le sue schede sono nel flusso subito prima di ciò che le legge, quindi ogni cammino verso quel passaggio le esegue. Per più valori, metti un **Do all** davanti al passaggio con una catena per valore e il suo `completed` collegato. | Nessuno. Questo è lo stato previsto. |
+| Calcolato prima della storia | Nulla nel flusso lo raggiunge, quindi è stato calcolato in priming e dà la stessa risposta a ogni visita. Dà la stessa risposta a ogni visita. | [`W.GE.05`](/it/reference/diagnostics/#wge05) ovunque le schede di un valore calcolato in priming leggano qualcosa che la storia cambia. |
+| Rimasto da un altro cammino | Le sue schede sono nel flusso, ma la strada con cui il lettore è arrivato qui questa volta non è passata da esse, quindi il valore è quello di un turno precedente. Da quale visita provenga non si può stabilire. | [`W.GE.06`](/it/reference/diagnostics/#wge06) quando non ogni percorso verso la scheda che legge esegue la scheda che produce il valore. Si può rispondere scheda per scheda con *È intenzionale*. |
+
+### Segni sulla lavagna
+
+- Una scheda su cui il motore ha qualcosa da dire porta un alone del colore corrispondente alla gravità.
+- Un piccolo segno alla fine della sua intestazione ha un tooltip che nomina il controllo e il motivo.
+- Sono segnalati solo problemi e avvertenze.
+- I record completi sono nel pannello Messaggi, dove si possono filtrare.
+- Premendo Gioca si controlla ogni lavagna, e una segnalazione nomina le schede che riguarda. Ogni controllo è nel [riferimento della diagnostica](/it/reference/diagnostics/).
+
+### Collegamenti che tornano indietro
+
+| Collegamento | Significato |
+| --- | --- |
+| Collegamento di controllo verso una scheda precedente | Un ciclo. |
+| Collegamento dati di ritorno verso la scheda che lo alimenta | Legge la risposta precedente di quella scheda. |
+| Cicli | Nulla ne rifiuta uno. |
+
+## Navigazione Script
+
+<Shot name="overview" />
+
+Si apre dal primo pulsante nel piè di pagina del pannello a sinistra.
+
+| Elemento | Significato |
+| --- | --- |
+| Scheda | Una per lavagna. |
+| Uscita | Una per ogni via d'uscita dalla lavagna. |
+| Etichetta della freccia | La scheda da cui esce. Per un Jump in mezzo a un capitolo, dove atterra: `Down → The cellar`. |
+| Marcatori | Dove un filo inizia e finisce. |
+| Modifica | Nulla si può spostare o ricollegare. |
+| Disposizione | Calcolata per te; lo stesso progetto si dispone in modo identico ogni volta che viene aperto. |
+
+## Tracce
+
+<Shot name="trace" />
+
+| Gesto | Risultato |
+| --- | --- |
+| Scegli due passaggi su una lavagna | Ogni percorso tra di loro si illumina a colori, una tonalità per tratto lineare, e il resto della lavagna finisce sotto un velo. |
+| Lo stesso gesto sulla panoramica delle lavagne | Traccia tra due capitoli. |
+| **Traccia ciò che porta qui** su un passaggio | Ogni percorso che vi arriva, da ovunque inizi la storia. |
+
+| Ciclo di vita | Comportamento |
+| --- | --- |
+| Confermare una traccia | La conclude. La lavagna conserva i suoi percorsi con accanto solo la croce, e il clic successivo è un clic normale. |
+| Più lavagne | Due lavagne possono mostrare ciascuna una traccia contemporaneamente. |
+| Modificare la lavagna | Ne elimina la traccia. |
+| Un percorso che arriva attraverso un Jump | La lavagna non può disegnarlo; la risposta apre la vista unita. |
+
+## Vista unita
+
+{/* TODO(shots): <Shot name="mergedTrace" /> */}
+
+Ogni lavagna sul percorso su un unico canvas, con la contabilità tra due passaggi attraversata invece che disegnata. È in sola lettura, come la navigazione Script.
+
+| Elemento del percorso | Disegno |
+| --- | --- |
+| Una scelta che esegue uno script e torna al passaggio da cui era partita | Una freccia di ritorno a quel passaggio. |
+| I rami di un Do all | Uno dopo l'altro sul percorso verso `completed`, non una biforcazione. I loro passaggi sono sul percorso e il conteggio delle vie d'ingresso non li considera alternative. |
+| L'estremità di un collegamento diramata in più punti | Trattata come un Do all. |
+| Una macro chiamata sul percorso | Il percorso entra al suo interno: i passaggi contenuti nella macro sono disegnati dove avviene la chiamata, in ogni punto in cui viene chiamata. |
+| Un *If*, uno *Switch*, un lancio o un ciclo su una freccia | La freccia nomina quella scheda e la direzione presa, ad esempio `Hit? → true`, accanto alle parole della scelta se ce n'era una. |
+
+| Interazione | Comportamento |
+| --- | --- |
+| Aprire una vista unita | Rimuove la traccia di ogni lavagna. |
+| Finché ce n'è una aperta | I due pulsanti di traccia di una lavagna restano in attesa, e ne dicono il motivo, finché non viene chiusa. |
+
+## Vedi anche
+
+- [Come costruire una lavagna](/it/how-to/work-on-the-canvas/)
+- [Come tracciare i percorsi tra due passaggi](/it/how-to/trace-a-route/)
+- [Lavagne, schede e macro](/it/explanation/boards-nodes-and-macros/)
+- [Come viene eseguita una storia](/it/explanation/how-a-story-runs/)
+- [Rileggere una storia lunga](/it/explanation/reading-a-story-back/)

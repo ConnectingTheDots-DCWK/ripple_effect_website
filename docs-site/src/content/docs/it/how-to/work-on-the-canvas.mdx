@@ -1,0 +1,106 @@
+---
+title: Come costruire una lavagna
+description: "Costruisci una lavagna creando schede, aggiungendo il suo Start, dando un nome alle scelte e collegando la storia e i valori che legge."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+<Shot name="board" />
+
+## Aggiungere una scheda
+
+Fai clic con il tasto destro su una parte vuota del canvas e scegli la scheda dal menu Crea: un passaggio, un Jump, uno Script, un ciclo, un componente.
+
+Per creare una scheda già collegata, trascina un collegamento da una porta e rilascialo su un punto vuoto del canvas. Si apre lo stesso menu, e la scheda che scegli arriva collegata alla porta da cui hai trascinato.
+
+Annulla e Ripeti si trovano nel menu Modifica e sulle loro scorciatoie da tastiera. **Visualizza ▸ Scheda delle scorciatoie** riporta la scheda delle scorciatoie.
+
+In qualsiasi selettore di qualcosa che hai creato — la lavagna di un Jump, il componente di un Component, il `.py` di uno Script, il passaggio o il soundscape di una scheda Narration, il diagramma di una State machine, una variabile di una scheda `cvar` — il campo di ricerca si apre con il focus. Scrivi per restringere l'elenco per nome o per percorso, che compare sotto ogni nome. I selettori sono in ordine alfabetico; il selettore di schede di un Jump mantiene l'ordine di lettura della lavagna.
+
+Una scheda Jump ha una freccia che apre la lavagna a cui punta.
+
+Per capire a cosa serve una scheda, fai clic con il tasto destro su di essa e scegli *Informazioni su questa scheda*. Elenca che cosa fa ogni controllo e che cosa riceve o restituisce ogni porta, e rimanda alla pagina della documentazione.
+
+## Aggiungere lo Start
+
+Una lavagna ha esattamente uno **Start**. Fai clic con il tasto destro su una parte vuota del canvas e scegli **Start** dal menu Crea; il menu non ne offre un secondo. Una lavagna con due Start viene rifiutata quando premi Gioca, con entrambi indicati per nome.
+
+## Dare un nome a una scelta e scriverne le parole
+
+Una scheda Narration ha una porta di uscita per ogni scelta. Collega l'ultima e sotto compare una nuova porta libera.
+
+<Steps>
+
+1. Fai clic sulla riga di una scelta nella scheda.
+2. Inserisci un **nome**. La scheda lo mostra come etichetta della scelta, così un ramo si ritrova anche su una lavagna molto ampia.
+3. Inserisci le sue **parole** — ciò che viene offerto al lettore — in ogni lingua in cui è scritta la storia. Una scelta senza testo nella lingua del lettore ripiega sulla lingua in cui è stata scritta la storia.
+
+</Steps>
+
+Per limitare quante volte si può scegliere una scelta, o per offrirla solo finché vale una condizione, vedi [Come limitare una scelta](/it/how-to/limit-a-choice/).
+
+## Allegare le tue note a una scheda
+
+<Steps>
+
+1. Fai clic con il tasto destro sulla scheda e scegli *Modifica i metadati…*.
+2. Aggiungi voci, ciascuna con un nome, un tipo e un valore. Un piccolo contrassegno compare nell'intestazione della scheda finché ne contiene.
+
+</Steps>
+
+Nulla sulla lavagna legge i metadati; sono tuoi, per uno stato, una nota di chi revisiona o un segno per uno strumento tuo. Viaggiano con il nodo in una campagna compilata e verso un assistente IA, e un nodo copiato arriva con le sue note.
+
+{/* TODO(shots): <Shot name="nodeMenu" /> */}
+{/* TODO(shots): <Shot name="metadataEditor" /> */}
+
+## Tracciare i collegamenti con il giusto tipo di porta
+
+Collega un triangolo a un triangolo e un punto a un punto: le porte di controllo sono triangoli che puntano nella direzione in cui scorre il flusso e portano la storia, le porte dati sono punti e portano un valore. Fermati con il puntatore su una porta di valore per vedere che cosa accetta: `number`, `list<string>` oppure `anything`.
+
+## Collegare la storia e lasciare i valori appesi ad essa
+
+<Steps>
+
+1. Collega un unico percorso di controllo da Start attraverso le schede che la storia attraversa: `exec` in ingresso, una scelta, un ramo o `completed` in uscita.
+2. Collega ogni valore alla scheda che lo legge: un Number a un Set variable, una String al nome di un Component, un Get variable a un Output. Nessuno di questi richiede un collegamento `exec`.
+
+</Steps>
+
+Metti nel flusso, dopo di essa, qualsiasi scheda il cui valore dipende da qualcosa che la storia fa, come descritto sotto. [Come procede una storia](/it/explanation/how-a-story-runs/) spiega perché.
+
+## Far dipendere un valore da qualcosa che la storia fa
+
+Una scheda il cui valore dipende da qualcosa che la storia fa deve trovarsi nel flusso dopo di essa. Un Comparator appeso a un Dice roller, per esempio, viene calcolato prima che ci sia un tiro da confrontare.
+
+<Steps>
+
+1. Collega `completed` del roller al Comparator.
+2. Collega `completed` del Comparator all'If.
+
+</Steps>
+
+Per più valori contemporaneamente, usa un **Do all**:
+
+<Steps>
+
+1. Metti un **Do all** davanti al passaggio e una catena di schede per ogni valore sui suoi rami.
+2. Collega la porta `completed` del Do all al passaggio.
+
+</Steps>
+
+Un ramo viene eseguito fino alla fine del suo collegamento prima che inizi il successivo, e un passaggio non termina un collegamento, quindi un passaggio su un ramo trattiene i rami successivi finché non è stato letto. Sembra un Set che non è mai scattato; tenere la storia su `completed` lo evita. Vedi [Come eseguire più lavori prima di un passaggio](/it/how-to/order-jobs-before-a-passage/).
+
+Se l'app contrassegna una scheda con [`W.GE.05`](/it/reference/diagnostics/#wge05) o [`W.GE.06`](/it/reference/diagnostics/#wge06), un valore viene letto da prima della storia o da un altro percorso. A `W.GE.06` si può rispondere scheda per scheda con *È intenzionale*; vedi il [riferimento delle diagnostiche](/it/reference/diagnostics/).
+
+## Disegnare i collegamenti ad angolo retto
+
+I collegamenti sono curvi per impostazione predefinita. In **Impostazioni ▸ Collegamenti**, scegli **Ad angolo retto** per disegnare ogni collegamento di ogni canvas come tratti rettilinei con angoli arrotondati. Un punto di passaggio su un collegamento diventa allora un angolo, e si allinea ai vicini mentre lo trascini.
+
+## Vedi anche
+
+- [Lavagne, nodi e macro](/it/explanation/boards-nodes-and-macros/) — che cos'è una lavagna e perché il canvas disegna due tipi di collegamento.
+- [Come procede una storia](/it/explanation/how-a-story-runs/) — due tipi di collegamento, e perché la storia va solo in avanti.
+- [Regole di lavagne e navigazione](/it/reference/canvas-rules/) — le regole che il canvas applica.
+- [Nodi](/it/reference/nodes/) — ogni nodo, che cosa accetta e che cosa restituisce.
+- [Diagnostiche](/it/reference/diagnostics/) — i controlli codificati sulla forma di una lavagna.

@@ -1,0 +1,213 @@
+---
+title: File del progetto e cartella .ripple
+description: Ogni tipo di file di cui l'app è proprietaria, cosa contiene ciascun file in .ripple/, i tipi di attributo dichiarati e il formato su disco di un componente e di un passaggio.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Un progetto è una cartella. L'app non vi scrive alcuno scheletro e non impone alcuna struttura. I suoi dati di servizio sono confinati in un'unica directory, `.ripple/`, alla radice del progetto. Ogni file di cui l'app è proprietaria è testo semplice.
+
+## Tipi di file
+
+Tre tipi sono JSON con un nome che ne indica il genere dentro `.json`, così gli strumenti ordinari continuano a leggerli. Una state machine è un diagramma mermaid e uno script è Python.
+
+| Schema | Contiene |
+| --- | --- |
+| `*.graph.json` | Una lavagna: schede, collegamenti e le scelte su di essi |
+| `*.macro.graph.json` | Una macro: una lavagna che un'altra lavagna può chiamare |
+| `*.component.json` | Un componente: un nome, una copertina e un elenco ordinato di attributi tipizzati |
+| `*.soundscape.json` | Un soundscape: una timeline di clip che un passaggio riproduce |
+| `*.fsm.mmd` | Una state machine, come `stateDiagram-v2` di mermaid |
+| `*.loc.narr.bdl/` | Un passaggio in più lingue: una cartella di normali file `.md` |
+| `*.py` | Uno script che una scheda Script esegue |
+| `.ripple/` | I dati di servizio dell'app |
+
+Ogni file di cui l'app è proprietaria porta un `version` intero, tranne tre. Uno script è un file `.py` e una state machine è un diagramma mermaid la cui intestazione è la sua versione, perché nessuno dei due è in un formato nostro. Nemmeno un passaggio Markdown ne porta una; la porta il `touch.json` nella sua cartella.
+
+Un percorso all'interno di un file è misurato dalla radice del progetto, con barre dirette, e non contiene mai `..`, tranne un collegamento nel testo di un passaggio (vedi [Passaggi](#passaggi)). Un percorso esterno al progetto è scritto in forma assoluta. Lo stato per cartella in `.ripple/` è scritto con percorsi relativi e ordinati.
+
+## La cartella .ripple
+
+Nulla di ciò che l'app conserva su un progetto viene scritto dentro la tua storia. Vive in `.ripple/`, accanto ai tuoi file.
+
+<FileTree>
+- my-story/
+  - .ripple/
+    - project.json il titolo, la descrizione, la copertina e le lingue
+    - registry.json l'indice di lavagne, componenti e altri file, e dei loro id
+    - workspace.json il layout, i documenti aperti, la barra laterale e i Messaggi, e quali cartelle erano aperte
+    - cvars.json le variabili di console dichiarate dal progetto
+    - callbacks.json i callback dell'host dichiarati dal progetto
+    - lints.json le diagnostiche a cui l'autore ha risposto
+    - saves/ sessioni di gioco in pausa e con segnalibro
+    - export/ profili di esportazione
+    - external/ immagini e audio scelti da fuori del progetto, copiati dentro
+  - chapters/
+    - the_gates.graph.json
+    - the_gates_opening.loc.narr.bdl/
+      - en-US.md
+      - it-IT.md
+      - touch.json
+    - tavern.soundscape.json
+  - music/
+    - tavern.ogg
+  - items/
+    - sword.component.json
+  - scripts/
+    - damage.py
+  - notes.md
+</FileTree>
+
+| Voce | Contiene | Controllo di versione |
+| --- | --- | --- |
+| `project.json` | Il titolo, la descrizione, la copertina e le lingue | Viaggia con il progetto |
+| `registry.json` | L'indice di ogni file del progetto, per id di catalogo; le lavagne da cui una storia può iniziare; i collegamenti tra le lavagne | Viaggia con il progetto |
+| `workspace.json` | Il layout, i documenti aperti, la barra laterale e i Messaggi, e quali cartelle erano aperte. Per macchina | Ignorato dal controllo di versione integrato |
+| `cvars.json` | Le variabili di console dichiarate dal progetto. Vedi [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/) | Viaggia con il progetto |
+| `callbacks.json` | I callback dell'host con nome: un nome, un evento e ciò a cui l'evento è destinato. Vedi [Callback dell'host](/it/reference/host-callbacks/) | Viaggia con il progetto |
+| `lints.json` | Ciò a cui l'autore ha risposto riguardo alle lavagne, per una scheda e una regola, con chiave il nome del lint. Scritto anche quando è vuoto. Non catalogato. Una versione che questa build non conosce, o un file che non ha questa forma, si legge come nessuna risposta data, quindi l'avviso ritorna | Viaggia con il progetto |
+| `saves/` | Sessioni di gioco in pausa e con segnalibro, un file per slot | Ignorato dal controllo di versione integrato: una sessione di gioco è un fatto sulla tua lettura, non sulla storia |
+| `export/` | Profili di esportazione, come `<name>.profile.json`. Vedi [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/) | Viaggia con il progetto |
+| `external/` | Immagini e audio scelti da fuori del progetto, copiati dentro | Viaggia con il progetto |
+
+### Il registro
+
+`registry.json` ha un `version`, `roots` (le lavagne da cui una storia può iniziare, per id; scritte dall'autore, mai derivate), `links` (dove portano i Jump delle lavagne, derivati dalle lavagne e messi in cache) e `entries` (ogni file trovato dall'ultima scansione: `id`, `kind`, `name`, `path`).
+
+- Un Jump memorizza l'id di catalogo della destinazione; gli id vivono nel registro.
+- Un id è composto da 32 caratteri esadecimali minuscoli, coniato una sola volta quando un file viene visto per la prima volta e conservato finché il percorso è noto.
+- Un file viene indicizzato non appena si trova nella cartella, che l'abbia creato l'app o no, così che un selettore possa proporlo. Un file importato da fuori del progetto viene elencato appena arriva.
+- Nulla sotto una cartella il cui nome inizia con un punto viene indicizzato, né un file il cui nome inizia con un punto, né nulla fuori dalla cartella del progetto. L'unica eccezione è un file direttamente sotto `.ripple/external/`.
+- Ciò che un'esportazione o una campagna compilata porta con sé è deciso da ciò che punta a un file, non dall'indice, quindi l'indice non aggiunge nulla a nessuna delle due.
+
+| `kind` | File | Riconosciuto da |
+| --- | --- | --- |
+| `board` | `*.graph.json` | Suffisso |
+| `macro` | `*.macro.graph.json` | Suffisso, verificato prima di `board` |
+| `component` | `*.component.json` | Suffisso |
+| `script` | `*.py` | Estensione |
+| `narrationBundle` | `*.loc.narr.bdl/`, una directory | Suffisso |
+| `machine` | `*.fsm.mmd` | Suffisso |
+| `soundscape` | `*.soundscape.json` | Suffisso |
+| `audio` | Un'estensione audio; vedi [Tipi di visualizzatore](#tipi-di-visualizzatore) | Estensione |
+| `asset` | Qualsiasi altra cosa: un'immagine, un video, un PDF, una nota sciolta | Un file che non è nessuno dei precedenti |
+
+`name` è il nome del file senza estensione per ogni tipo tranne `asset` e `audio`, che mantengono il nome completo (`map.png`). `path` è relativo alla radice.
+
+### File da fuori del progetto
+
+Un'immagine o un suono scelti da fuori del progetto vengono copiati in `.ripple/external/`, non in una cartella che l'app inventa in cima alla storia. La copia è un interruttore, **Importazione di risorse esterne**, una riga con spunta del menu File e un comando della paletta; con l'interruttore disattivato il file viene collegato. Un collegamento che esce dal progetto viene segnalato sul campo e nei Messaggi a ogni apertura del progetto.
+
+## Tipi di visualizzatore
+
+I visualizzatori riconoscono un file dal solo nome, in minuscolo. I suffissi composti vengono verificati per primi, e quello di una macro prima di quello di una lavagna.
+
+| Tipo | Corrisponde a |
+| --- | --- |
+| `macro` | `.macro.graph.json` |
+| `graph` | `.graph.json` |
+| `component` | `.component.json` |
+| `soundscape` | `.soundscape.json` |
+| `narrationBundle` | `.loc.narr.bdl` |
+| `machine` | `.fsm.mmd` |
+| `script` | `.py` |
+| `pdf` | `.pdf` |
+| `svg` | `.svg` |
+| `raster` | `.png` `.jpg` `.jpeg` `.gif` `.webp` `.bmp` |
+| `audio` | `.mp3` `.wav` `.ogg` `.oga` `.flac` `.m4a` `.aac` `.opus` |
+| `markdown` | `.md` `.markdown` |
+| `text` | Tutto il resto |
+
+Un file di testo oltre i 4 MiB viene rifiutato dal visualizzatore di testo, e un `<locale>.md` oltre i 4 MiB viene saltato dal lettore dei passaggi.
+
+## Componenti
+
+```json
+{
+  "version": 3,
+  "name": "Goblin",
+  "cover": "art/goblin.png",
+  "attributes": [
+    { "label": "HP",    "type": "int",         "value": 7 },
+    { "label": "Alive", "type": "bool",        "value": true },
+    { "label": "Bio",   "type": "markdown",    "value": "A small, angry thing." },
+    { "label": "Loot",  "type": "list<asset>", "items": ["art/gold.png"] }
+  ]
+}
+```
+
+| Chiave | Regola |
+| --- | --- |
+| `version` | Formato 3. Un file più vecchio viene aggiornato quando lo apri o lo sposti; una build precedente a un formato rifiuta un componente più recente invece di leggerlo male |
+| `name` | Stringa, predefinita `""` |
+| `cover` | Stringa facoltativa; relativa alla radice, assoluta quando è fuori dal progetto |
+| `attributes` | Ordinati. Ognuno ha `label` (predefinita `""`), `type` (predefinito `string`) e `value`. `list<asset>` e `list<componentRef>` portano i loro percorsi sotto `items` |
+
+### Tipi dichiarati
+
+Un tipo dichiarato è una base con una molteplicità, scritto `base`, `list<base>` o `map<base>`. Una mappa ha sempre chiavi di tipo stringa. Otto basi con tre molteplicità formano i ventiquattro tipi che ogni editor dell'app offre. Lo stesso insieme descrive gli attributi dei componenti, le forme delle schede, i valori presi dalle macro e le variabili di console.
+
+| Base | Predefinito | Significato |
+| --- | --- | --- |
+| `int` | `0` | Numero intero |
+| `float` | `0.0` | Numero |
+| `bool` | `false` | Vero o falso |
+| `string` | `""` | Testo |
+| `markdown` | `""` | Testo, modificato come Markdown |
+| `asset` | `""` | Un percorso verso un file |
+| `componentRef` | `""` | Un percorso verso un altro componente |
+| `json` | `{}` | Qualsiasi valore JSON, memorizzato decodificato |
+
+- Numeri e booleani sono numeri e booleani JSON, mai stringhe.
+- Un attributo il cui tipo questa build non sa nominare conserva ciò con cui è arrivato.
+- `number` ed `entity` vengono letti ma mai offerti. `number` è la grafia più vecchia di un numero; `entity` è un nome e si legge come `string`.
+- Le grafie più vecchie si leggono per sempre e vengono scritte nella forma nuova la prossima volta che tocchi il menu dei tipi: `assetList` come `list<asset>`, `componentList` come `list<componentRef>`, `numberList` come `list<number>`, `boolList` come `list<bool>`, `stringList` come `list<string>`.
+- Se un attributo porta `items` lo decide il suo tipo, mai il suo contenuto.
+- La coercizione non genera mai errori. Un `int` da un float si arrotonda, da un booleano vale 0 o 1, da una stringa si interpreta, altrimenti vale 0. Un `float` allo stesso modo, altrimenti 0.0. Un `bool` da un numero è vero se diverso da zero e da una stringa è vero se è una tra `true`, `yes`, `1`, `on`. Una `string` da una mappa o da una lista è il suo JSON. Un `json` da nulla è `{}`. Un `list<T>` o `map<T>` coercisce voce per voce.
+- Un intero vale al massimo 2⁵³ − 1.
+- Un componente scritto da una versione successiva conserva i suoi percorsi, sia nelle liste sia nelle mappe, quando lo apri e lo salvi.
+
+I percorsi in un componente, la copertina e ogni voce di `list<asset>`, sono misurati dalla radice del progetto.
+
+Uno slot `asset` o `componentRef` memorizza il percorso. Il suo chip è contrassegnato quando il file è fuori dal progetto o manca.
+
+## Passaggi
+
+Un passaggio su disco è un passaggio localizzato: una cartella, l'unico tipo di file nostro che è una directory, che l'app mostra come un unico documento.
+
+<FileTree>
+- chapters/
+  - the_gates.graph.json
+  - reaching_the_gates.loc.narr.bdl/
+    - en-US.md il passaggio, nella lingua in cui è scritta la storia
+    - it-IT.md la sua traduzione
+    - touch.json quando ciascuno è stato toccato l'ultima volta, così che un clone possa dire quale è più vecchio
+</FileTree>
+
+| Regola | Valore |
+| --- | --- |
+| Nome | Il nome della cartella senza `.loc.narr.bdl` |
+| Nome quando lo crea l'app | `<board>-<passage title>`, accanto alla lavagna: `gate.graph.json` e `gate-at-the-gate.loc.narr.bdl/`, così i passaggi si ordinano accanto alla lavagna a cui appartengono |
+| Un file di lingua | `<locale>.md`, dove `<locale>` è esattamente un id di locale noto. Nessuna normalizzazione |
+| Qualsiasi altra cosa nella cartella | `README.md`, `en.md`, una sottocartella: segnalata come non riconosciuta e mai letta |
+| Lingue lette | Ogni lingua trovata, che il progetto l'abbia attivata o no |
+| Limite di dimensione | Un `<locale>.md` oltre i 4 MiB viene saltato. Un file illeggibile non fa fallire il passaggio |
+| Collegamenti nel testo | Un collegamento scritto dall'app inizia con `/` ed è misurato dalla radice del progetto: `![map](/art/map.png)`. Un collegamento scritto a mano senza la barra è relativo alla cartella madre del bundle: `![](../art/map.png)` accanto a `chapters/the_gates.graph.json` significa `art/map.png` |
+| `touch.json` | `{ "version": 1, "touched": { "<locale>": "<ISO 8601, UTC>" } }`, chiavi ordinate. Una cache: un problema di lettura la fa leggere come vuota, e una scansione la ricostruisce |
+
+<Shot name="localisation" />
+
+Vedi [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/) per ciò che contiene un passaggio.
+
+## Soglia di versione
+
+Un file di una build più recente viene rifiutato dove è scritto dall'autore e letto come vuoto dove è una cache. Un documento che l'autore non può riavere, come l'indice, le impostazioni del progetto, un componente o una lavagna, ferma l'app invece di essere letto a metà e riscritto sopra. Una cache che una scansione della cartella ricostruisce, semplicemente si ricostruisce. `touch.json` e `lints.json` sono cache.
+
+## Vedi anche
+
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/)
+- [Componenti ed entità](/it/explanation/components-and-entities/)
+- [Passaggi e traduzioni](/it/explanation/passages-and-translations/)
+- [Come creare o importare un progetto](/it/how-to/create-or-import-a-project/)
+- [Come tenere una cronologia e fare il backup di un progetto](/it/how-to/keep-a-history-and-back-up/)

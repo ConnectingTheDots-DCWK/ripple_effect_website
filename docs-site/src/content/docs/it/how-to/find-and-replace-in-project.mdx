@@ -1,0 +1,67 @@
+---
+title: Come cercare e sostituire in un progetto
+description: "Cerca in ogni lavagna, componente, passaggio e variabile di un progetto una parola o un modello, e sostituiscilo in un solo risultato, in un file o ovunque, con un'anteprima."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Trovare una parola o un modello
+
+<Steps>
+
+1. Apri la sezione **Cerca** della barra laterale con `Ctrl+Maiusc+F`, oppure esegui *Cerca nel progetto* dalla paletta dei comandi.
+
+2. Scrivi nel campo **Cerca nel progetto**. La ricerca parte 300 ms dopo l'ultimo tasto premuto, e una ricerca più recente sostituisce quella ancora in corso.
+
+3. Imposta le opzioni che ti servono con i tre interruttori accanto al campo: **Maiuscole/minuscole**, **Parola intera** e **Usa un'espressione regolare**.
+
+4. Per restringere la ricerca, apri **File e categorie**:
+   - **File da includere** e **File da escludere** accettano modelli glob separati da virgole, come `chapters/, *.md`.
+   - Gli interruttori delle categorie sono **Lavagne e componenti**, **Narrazione**, **Variabili di console** e **Altro testo**, che comprende note, script e state machine.
+
+5. Leggi i risultati, raggruppati per file. La riga di stato indica i totali, per esempio *3 risultati in 2 file*. Fai clic su un risultato per aprire il documento in corrispondenza del punto trovato. **Cancella** svuota il campo e i risultati, e **Comprimi tutto** richiude ogni file.
+
+</Steps>
+
+Ogni risultato dice dove si trova, per esempio *Testo in italiano di una scelta in «At the gate»*, *Campo «Backstory»* o *Riga 12, inglese*. Gli id e i riferimenti non corrispondono mai.
+
+Un risultato contrassegnato da **nome** è qualcos'altro che vi fa riferimento per nome: il nome di una variabile, uno stato o un evento di una state machine, un'istanza, uno slot o una chiave dei metadati. Viene trovato e segnalato, e Sostituisci lo lascia com'è.
+
+Se la riga di stato dice *Questo non è un modello valido*, correggi l'espressione regolare. Se dice *Fermata a N risultati. Restringi la ricerca per vedere il resto.*, aggiungi modelli da includere o da escludere, oppure disattiva alcune categorie.
+
+Una riga sotto i risultati, *N file non sono stati letti*, elenca i file che la ricerca non ha potuto leggere; passaci sopra con il puntatore per vedere quali.
+
+## Sostituire ciò che hai trovato
+
+<Steps>
+
+1. Scrivi il nuovo testo in **Sostituisci con**, sotto il campo di ricerca. Ogni risultato mostra ora ciò che diventerebbe, barrato e seguito dalla sostituzione. Una sostituzione vuota elimina la corrispondenza. Con un'espressione regolare, nella sostituzione si possono usare `$1` e gli altri gruppi di cattura.
+
+2. Passa con il puntatore su un risultato o su un file per vederne le azioni. Per controllare l'effetto su un file, scegli **Anteprima della sostituzione** sul file. Si apre in una scheda del documento che mostra **Adesso** e **Dopo la sostituzione**. Per una lavagna, un componente o le variabili di console mostra solo le stringhe che cambiano, ciascuna sotto la propria posizione. L'anteprima segue il campo della sostituzione mentre lo riscrivi, e non viene salvata con la disposizione.
+
+3. Usa **Nascondi** su un risultato o su un file per togliere dall'elenco ciò che non vuoi sostituire.
+
+4. Sostituisci alla scala che ti serve:
+   - **Sostituisci** su un risultato, per cambiare solo quella corrispondenza.
+   - **Sostituisci in questo file** sulla riga di un file.
+   - **Sostituisci tutto**, che chiede conferma. La finestra di dialogo indica il numero di corrispondenze e di file e quanti nomi restano come sono; conferma con **Sostituisci**.
+
+5. Leggi la riga di stato. Dopo ogni sostituzione la ricerca viene rieseguita, quindi l'elenco è ciò che resta.
+
+</Steps>
+
+Le sostituzioni vengono scritte attraverso gli editor aperti, quindi le annulli lì. Le sostituzioni di una lavagna, per quante siano, sono un solo passo di annullamento.
+
+## Quando una sostituzione non viene applicata
+
+La riga di stato lo segnala in due casi:
+
+- **Il testo è cambiato dopo la ricerca.** Il risultato viene saltato e contato: *1 saltata: il suo testo è cambiato dopo la ricerca*. Cerca di nuovo.
+- **Il file è cambiato sul disco mentre c'erano modifiche non salvate.** Non viene sovrascritto: *1 file è cambiato sul disco e non è stato salvato; la sostituzione è nel suo editor aperto*. La sostituzione si trova in quell'editor, non salvata.
+
+## Vedi anche
+
+- [La finestra dell'area di lavoro, i menu e la paletta](/it/reference/workspace-window/)
+- [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/)
+- [Variabili di console](/it/explanation/console-variables/)
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/)

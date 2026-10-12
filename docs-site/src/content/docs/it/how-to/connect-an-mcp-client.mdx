@@ -1,0 +1,103 @@
+---
+title: Come collegare un assistente AI (client MCP)
+description: Attiva l'accesso degli agenti, copia la configurazione e incollala in Claude Code, Claude Desktop, Cursor o un altro client MCP.
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Usa questa guida per puntare un client MCP (Claude Code, Claude Desktop, Cursor o qualunque altro che esegua server locali) al progetto che hai aperto in Ripple Effect.
+
+<Steps>
+
+1. **Attiva l'accesso degli agenti.**
+
+   Apri l'ingranaggio nella barra dell'app, presente in ogni schermata, e scegli la pagina **Agenti**; il comando Agenti della paletta dei comandi apre la stessa pagina. Attiva **Consenti agli agenti di raggiungere questa app**. Da questo momento un assistente può leggere il progetto e giocarlo, ma non modificare nulla.
+
+   Lascia disattivato **Consenti agli agenti di modificare i file** finché non vuoi che un assistente modifichi dei file. Ha effetto solo mentre il primo interruttore è attivo, e la sola lettura è già utile di per sé. Con l'interruttore disattivato, uno strumento che scrive risponde `refused`.
+
+   Entrambi gli interruttori riguardano l'app, non un singolo progetto: l'app serve il progetto che è aperto in quel momento.
+
+   {/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+2. **Copia la configurazione.**
+
+   Premi **Copia configurazione client** nella pagina. Negli appunti finisce il blocco che la maggior parte dei client legge, già puntato al posto giusto sulla tua macchina:
+
+   ```json
+   {
+     "mcpServers": {
+       "ripple_effect": {
+         "command": "/opt/ripple_effect/ripple_effect_mcp",
+         "args": []
+       }
+     }
+   }
+   ```
+
+   Il percorso è quello di un piccolo programma installato accanto all'app, che il client avvia e che parla con l'app al suo posto. Copialo dalla pagina invece di digitarlo: l'app si installa in un posto diverso su ogni piattaforma.
+
+3. **Incollalo dove il tuo client lo legge.**
+
+   <Tabs syncKey="client">
+     <TabItem label="Claude Code">
+       Un solo comando, con il percorso preso dalla pagina:
+
+       ```sh
+       claude mcp add ripple_effect -- /opt/ripple_effect/ripple_effect_mcp
+       ```
+
+       Su Windows, dove il percorso contiene uno spazio, mettilo tra virgolette. `claude mcp list` mostra che è registrato; `/mcp` dentro una sessione mostra se si è connesso.
+     </TabItem>
+     <TabItem label="Claude Desktop">
+       Settings → Developer → **Edit Config** apre `claude_desktop_config.json`; incolla il blocco. Se il file ha già un oggetto `mcpServers`, aggiungi la voce `ripple_effect` al suo interno invece di incollare un secondo oggetto. Riavvia Claude Desktop e gli strumenti compaiono. Claude Desktop non ha una versione per Linux.
+     </TabItem>
+     <TabItem label="Cursor">
+       Incolla il blocco in `.cursor/mcp.json` nel progetto da cui lavori, oppure in `~/.cursor/mcp.json` per tutti i progetti. Cursor lo elenca in Settings → MCP, dove si può attivare e disattivare.
+     </TabItem>
+     <TabItem label="Altri client">
+       Ogni client MCP che esegue server locali accetta un comando e un elenco di argomenti. Il comando è il percorso presente nel blocco e l'elenco di argomenti è vuoto. La maggior parte legge la chiave `mcpServers` esattamente come sopra; controlla la documentazione del tuo client per sapere quale file vuole.
+     </TabItem>
+   </Tabs>
+
+4. **Chiedigli qualcosa.**
+
+   Un client con il bridge configurato compare nell'elenco **Connessi** della pagina non appena l'accesso è attivo; non aspetta la sua prima richiesta. La barra dell'app non mostra nulla per gli agenti finché non ci sono novità. Mentre un client è connesso, lì compare il suo contrassegno, con nome e versione nel suggerimento. Se l'app non ha potuto aprire la propria connessione locale, il contrassegno compare invece nel colore di errore. In entrambi i casi apre la pagina Agenti.
+
+   Una buona prima richiesta è `project_outline`, la forma dell'intera storia in una ventina di righe, oppure chiedi *di cosa parla questo progetto?* e lascia che sia l'assistente a trovare quello strumento.
+
+   {/* TODO(shots): <Shot name="agentConnected" /> */}
+
+</Steps>
+
+## Se dice che l'app non è in esecuzione
+
+Finché l'app è chiusa o l'accesso degli agenti è disattivato, ogni chiamata a uno strumento risponde:
+
+```text
+ripple_effect is not running, or agent access is switched off.
+Open the project in ripple_effect and switch on "Let agents reach this app" under Settings → Agents.
+```
+
+Apri il progetto e attiva l'accesso nella pagina Agenti delle Impostazioni. Il client non ha bisogno di essere riavviato. L'assistente vede comunque l'elenco completo degli strumenti, quindi può dirti che cosa sarebbe in grado di fare prima che l'app sia attiva.
+
+## Trovare il programma a mano
+
+Se ti serve il percorso senza aprire l'app, è questo:
+
+| Piattaforma | Percorso |
+| --- | --- |
+| Linux, `.deb` | `/opt/ripple_effect/ripple_effect_mcp` |
+| Linux, `.rpm` | `/usr/share/ripple-effect/ripple_effect_mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\Ripple Effect\ripple_effect_mcp.exe` |
+| macOS | `/Applications/Ripple Effect.app/Contents/MacOS/ripple_effect_mcp` |
+
+Non è nel tuo `PATH` di proposito: l'app si installa in tre posti diversi su tre piattaforme, e nessuna riga di comando è valida su tutte. La connessione tra il programma e l'app è un canale locale privato che solo il tuo account può aprire, mai una porta di rete.
+
+Una build avviata dai sorgenti non ha un programma di questo tipo accanto; `melos run editor:mcp:bridge` ne crea uno e stampa dove l'ha messo.
+
+## Vedi anche
+
+- [Lavorare con un assistente AI](/it/explanation/working-with-an-assistant/): che cosa ti offre l'accesso degli agenti e perché è disattivato per impostazione predefinita.
+- [Che cosa può leggere, giocare e scrivere un assistente](/it/reference/mcp-permissions/): che cosa concede ciascun interruttore.
+- [Strumenti MCP](/it/reference/mcp-tools/): ogni strumento, con ciò che accetta.

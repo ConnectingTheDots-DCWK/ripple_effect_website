@@ -1,0 +1,62 @@
+---
+title: Le state machine
+description: "Perché in Ripple Effect una state machine è un disegno mermaid in un file a sé, come viene condivisa in una storia e perché un runtime non ha bisogno di alcun parser per eseguirla."
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Alcuni stati sono una *forma* più che un valore. Una porta è chiusa a chiave, poi sbloccata, poi aperta; una missione viene offerta, poi accettata, poi completata; una guardia resta calma finché non viene provocata. Potresti tenere ognuno di questi stati in una [variabile di console](/it/explanation/console-variables/) che contiene un numero o una parola, e per un singolo flag è lo strumento giusto. Una forma è un'altra cosa: conta quali mosse sono consentite da dove ti trovi, mentre una variabile registra soltanto dove sei. Regole come «non puoi aprire una porta chiusa a chiave» finiscono sparse in ogni passaggio che tocca la variabile.
+
+Una state machine mette le regole in un posto solo. In Ripple Effect quel posto è un disegno.
+
+{/* TODO(shots): <Shot name="fsmEditor" /> */}
+
+## Una macchina è prima di tutto un'immagine
+
+Una macchina è un file `*.fsm.mmd` che contiene uno `stateDiagram-v2` di mermaid. Ogni freccia si legge `From --> To : event`, e l'inizio è `[*]`. La stessa porta, scritta per esteso:
+
+```text
+stateDiagram-v2
+    [*] --> Locked
+    Locked --> Unlocked : key
+    Unlocked --> Open : push
+    Open --> Unlocked : pull
+    Unlocked --> Locked : lock
+```
+
+L'editor mostra il testo da un lato e l'immagine dall'altro, ridisegnata mentre scrivi, con ogni problema sulla sua riga. Finché il testo non è valido, disegna l'ultima macchina che lo era, in grigio. Un'immagine del testo così com'è digitato sarebbe l'immagine di una macchina che non esiste, e svuotare il pannello a ogni freccia scritta a metà farebbe sfarfallare la modifica.
+
+## Perché il formato è di mermaid
+
+Il formato è di mermaid, non nostro. Ogni altro file che l'app possiede porta una `version` nostra; questo no, perché l'intestazione `stateDiagram-v2` è la versione che gli ha dato mermaid. Lo stesso file viene visualizzato su GitHub, in un plugin per editor e ovunque lo faccia mermaid, e la sintassi completa è il [riferimento sui diagrammi di stato](https://mermaid.js.org/syntax/stateDiagram.html) di mermaid.
+
+L'app legge un sottoinsieme di mermaid e rifiuta il resto, indicando la riga. [File di state machine](/it/reference/state-machine-file/) elenca ciò che viene accettato e ciò che viene rifiutato. Un caso è un avviso e non un rifiuto: una freccia senza evento viene disegnata e conservata, ma nulla può mai nominarla, quindi non può mai scattare, e l'editor lo segnala.
+
+## Un solo lettore, così l'immagine è ciò che viene eseguito
+
+Un unico lettore analizza il diagramma. L'editor disegna a partire da esso, e il compilatore usa lo stesso lettore per scrivere la tabella delle transizioni che una campagna porta con sé. Due lettori sarebbero due opinioni su cosa sia una macchina, e l'immagine smetterebbe di essere ciò che fa la storia. Poiché ce n'è uno solo, un file che si disegna è un file che si esegue.
+
+## Una macchina su una lavagna
+
+Una macchina non fa nulla finché una lavagna non la pilota. Trascina il file su una lavagna e diventa una scheda **State machine**; la scheda riceve un evento e risponde con lo stato in cui si trova la macchina dopo di esso. In questo modo la macchina partecipa al flusso della storia, invece di essere un sistema separato che gira accanto.
+
+Le due uscite della scheda, **changed** e **unchanged**, esistono perché un evento che non corrisponde a nulla è una cosa normale. **changed** scatta quando una freccia è scattata o la macchina è stata reimpostata; **unchanged** scatta in tutti gli altri casi. Spingere una porta chiusa a chiave non è un errore nella storia; è un momento che l'autore potrebbe voler narrare. Quindi un evento per cui lo stato corrente non ha alcuna freccia lascia la macchina dov'è e prende **unchanged**, e cosa farne è una decisione che spetta ai passaggi a valle. Collegare l'uscita **state** a una scheda **Switch**, una riga per stato, è il modo in cui la storia si ramifica in base a dove si trova la macchina. [Aggiungere una macchina a una lavagna](/it/how-to/add-a-state-machine/) ti guida passo per passo.
+
+## Istanze condivise
+
+Una macchina ricorda per tutta la sessione di gioco, tra lavagne e tra salvataggi, nello stesso modo in cui lo fanno i gate FlipFlop e Once. Ricominciare la reimposta. Questo solleva una domanda: se due schede nominano la stessa macchina, la condividono?
+
+Per impostazione predefinita sì. Due schede in qualsiasi punto della storia pilotano la stessa macchina, a meno che a una non venga dato un nome di **instance**; se lasciato vuoto, l'istanza è il nome stesso della macchina. Due porte vogliono due istanze della macchina della porta, e il nome dell'istanza è il modo di dirlo senza copiare il file. Una missione vuole un'istanza sola.
+
+## In una partita salvata e in un'esportazione
+
+Un salvataggio porta ciò che ogni macchina ricorda, quindi una sessione di gioco ripresa trova la porta dove l'avevi lasciata. Un salvataggio senza dati di macchina si legge come se non ricordasse nulla.
+
+Una campagna compilata porta ogni macchina come tabella delle transizioni, quindi un runtime non ha bisogno di alcun parser mermaid. Cosa contiene una campagna è spiegato in [cos'è un'esportazione](/it/explanation/what-an-export-is/).
+
+## Vedi anche
+
+- [Come aggiungere una state machine a una lavagna](/it/how-to/add-a-state-machine/) lo applica sulla tela.
+- [File di state machine](/it/reference/state-machine-file/) elenca ciò che il lettore accetta e rifiuta.
+- [Schede](/it/reference/nodes/) ha le porte e i campi della scheda State machine.
+- [Variabili di console](/it/explanation/console-variables/) tratta l'altro modo in cui una storia ricorda.

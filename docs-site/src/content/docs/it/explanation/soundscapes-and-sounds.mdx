@@ -1,0 +1,81 @@
+---
+title: Soundscape e suoni singoli
+description: Perché una storia ha due forme di suono, un file con una timeline e un singolo segnale, e come il runtime decide che cosa sta suonando mentre un host lo riproduce.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Una storia può contenere suono in due forme, e la differenza sta in che cosa sono, non in quanto sono forti o lunghe. Un **soundscape** è ciò che suona *sotto* una scena: musica, pioggia su un tetto, una campana al secondo minuto. È disposto su una timeline, conservato in un file a sé e identificato dal passaggio a cui appartiene. Un **suono** è un file riprodotto una sola volta, subito, da una scheda o da uno script, mentre la storia prosegue dritta.
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## L'audio appartiene al progetto, non a una scheda
+
+Ogni file audio nella cartella del progetto è nel registro: un `.ogg`, `.mp3`, `.wav`, `.flac`, `.m4a`, `.aac` o `.opus` messo in un punto qualsiasi della cartella compare in ogni selettore senza passare da una finestra di dialogo dei file. È lo stesso atteggiamento che l'app ha verso il resto di un progetto: una vista su una cartella, non una struttura imposta. *Importa* serve per un file che si trova altrove, e lo copia in `.ripple/external/` come si fa con un'immagine scelta da fuori del progetto. Un file audio si apre anche in una scheda del documento tutta sua, con riproduzione, pausa e una barra di scorrimento.
+
+## Un soundscape è un file
+
+Un soundscape è un `*.soundscape.json`: una timeline di clip su un unico orologio. La timeline ha una durata e può ripetersi in loop, ed è questo che segue una clip *Loop*. Tenerlo in un file a sé, anziché come campi di una scheda, è ciò che permette a più passaggi di nominare lo stesso soundscape e di modificarlo come timeline anziché come modulo. Una clip indica il suo audio tramite l'id di catalogo, come una scheda Narration indica il soundscape, perciò rinominare o spostare un file non rompe mai una clip. Il file usa millisecondi interi ovunque e riporta ogni valore predefinito per esteso, e una versione precedente dell'app rifiuta un file più recente invece di leggerlo a metà. [File Soundscape](/it/reference/soundscape-file/) elenca le chiavi.
+
+### L'immagine è il suono
+
+Ogni clip è disegnata come un blocco con la forma del suo suono all'interno: la parte del file che riproduce. Questa scelta conta per come si usa l'editor. Tirare un bordo sposta l'immagine insieme al suono, così rifili su un battito a occhio anziché digitando un numero e ascoltando. La forma compare un istante dopo la clip, perché leggere la forma di un file richiede di decodificarlo.
+
+La modalità di riproduzione di una clip dice come si comporta quando la timeline ricomincia. Ripetizione automatica è quella che ignora la fine della timeline e si ripete finché il soundscape suona, il che si addice alla musica. La sua pausa ne stabilisce il carattere: senza pausa, la ripetizione è senza interruzioni, un sottofondo; con una pausa, la clip è una campana che suona ogni tanto con un ritmo suo, lungo tutto il soundscape. [File Soundscape](/it/reference/soundscape-file/) definisce ogni modalità e la pausa.
+
+### Una dissolvenza è una durata, non un momento
+
+Le dissolvenze di una clip sono disegnate sulla clip e le tiri tu. Ciò che le due rampe lasciano della clip è la forma che vedi: una salita all'inizio, una discesa alla fine, e la parte silenziosa ombreggiata sopra la forma d'onda. Le rampe hanno delle maniglie che puoi trascinare; [Come aggiungere il suono a una storia](/it/how-to/add-sound-to-a-story/) spiega i passaggi. Una clip in Ripetizione automatica mostra la stessa forma a ogni ripetizione, perché è lì che fa la rampa.
+
+I campi del pannello indicano per quanto dura una rampa, non quando inizia, ed è per questo che una dissolvenza di un quarto di secondo si legge `0.25 s` e non `0:00.250`. Scriverla come durata è ciò che mantiene il disegno e il numero la stessa cosa: la maniglia e il campo modificano un solo valore. Un orologio digitato lì viene comunque capito.
+
+Poiché una clip in Ripetizione automatica fa la rampa a ogni giro, con pausa o senza, un file che non si ripete in modo pulito può comunque servire da sottofondo: la dissolvenza copre la giuntura.
+
+Una clip le cui due rampe messe insieme durano più della clip stessa è consentita, e suona come appare. Sale e scende senza mai raggiungere il massimo, perché le due rampe valgono quanto la più bassa delle due anziché moltiplicarsi. Il modello non limita nulla; la forma disegnata è la regola.
+
+Lo stesso ragionamento vale per la timeline nel suo insieme. Anche la sua dissolvenza in entrata e in uscita sono durate: l'intero soundscape sale quando inizia e scende quando viene sostituito. Il suo volume è quello del file, e il volume di ogni clip è relativo a esso, quindi non c'è un secondo master da tenere allineato. Una clip oltre la durata della timeline è lecita e ombreggiata, dato che la durata è un campo che potresti allungare subito dopo. Ciò che sta oltre viene tagliato durante la riproduzione anziché rifiutato nell'editor.
+
+### Le corsie sono per te
+
+Le corsie possono avere un nome, come *Bed* o *Weather*, ed essere bloccate. Una corsia bloccata non accetta clip, quindi un sottofondo disposto una volta resta dov'è mentre tutto il resto si sposta attorno. Sono strumenti di lavoro per chi scrive.
+
+Silenzia e solo sono per le tue orecchie, non per il file. Ogni intestazione di corsia ha una **M** e una **S**, e una clip può essere silenziata da sola dal suo pannello; le clip silenziate sono disegnate sbiadite e lo dicono. Nulla di tutto ciò viene salvato e nulla raggiunge la storia. Un soundscape riproduce ogni clip che contiene, perché ciò che un soundscape dice è ciò che la storia riprodurrà.
+
+La scheda del documento ascolta in anteprima attraverso lo stesso componente con cui suona la campagna, quindi una modifica si sente dove si trova l'orologio: un cursore del guadagno è in tempo reale, e una clip trascinata non fa ripartire il sottofondo sotto di essa. L'intero file ha un solo annulla, quello della barra degli strumenti, quindi un bordo tirato sulla timeline e un volume digitato nel pannello condividono un'unica cronologia.
+
+## Che cosa suona, e quando
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+Un soundscape si sceglie su una scheda **Narration**, in una riga sotto le scelte, e da lì suona **in ogni passaggio successivo che non ne porta uno suo**. Una taverna continua a essere una taverna. Nominare di nuovo lo stesso soundscape in un passaggio successivo non lo fa ripartire.
+
+Due soundscape non suonano mai insieme. Il vecchio finisce la sua dissolvenza prima che il nuovo cominci la propria. La riga ha altre due risposte oltre a un soundscape. *Silenzio* interrompe subito ciò che sta suonando. Un passaggio con *Nessuno* non cambia nulla. E un soundscape contrassegnato come **legato** appartiene al suo passaggio: si ferma quando la storia va avanti, anziché restare in vigore. Legato serve per il suono che fa parte di una sola pagina, come un fuoco che non dovrebbe seguire il lettore fuori dalla stanza.
+
+Una partita salvata ricorda che cosa suonava, così un caricamento fa sentire la taverna prima di mostrare la pagina. Un soundscape legato ritorna solo al suo passaggio. Vedi [Come funziona una storia](/it/explanation/how-a-story-runs/) per capire dove si colloca tra gli altri stati di una storia.
+
+### Il runtime decide, l'host riproduce
+
+Quale soundscape sia in vigore lo decide il **runtime**, e il runtime non riproduce nulla. Comunica a chi ospita la storia quale soundscape è in vigore, e l'host lo riproduce con ciò che ha. La finestra di gioco lo riproduce attraverso il mixer dell'app. Il player da riga di comando stampa una riga a ogni cambio e non sente nulla, ed è conforme.
+
+Questa divisione è il motivo per cui la regola descritta sopra può essere la stessa ovunque. Ogni regola su ciò che è in vigore viene eseguita una sola volta, nel motore, ed è verificata dalle stesse fixture qualunque sia l'host che le riproduce. Un host senza altoparlanti, o un gioco con il proprio middleware audio, prende la risposta e fa il rendering a modo suo. [Che cos'è un'esportazione](/it/explanation/what-an-export-is/) spiega che cosa porta con sé una campagna compilata per quell'host.
+
+## Un suono, una volta
+
+Un suono singolo è l'altra metà della divisione. Nulla lo aspetta. La scheda **Play sound** riproduce un file, una volta, a un certo volume e a una certa velocità, e la sua porta `completed` scatta nel momento in cui il suono viene avviato, non quando finisce. Una porta sbatte e il passaggio successivo è già visibile. Ciò discende dal fatto che il suono è un evento e non uno stato: non c'è nulla che la storia debba trattenere fino alla fine.
+
+La stessa chiamata è disponibile da una scheda Script come `play_sound("sfx/bell.ogg")`, con il percorso scritto come nel progetto o come nel bundle, e con `volume` e `speed` per nome. Non c'è modo di fermare un suono, di aspettarlo o di chiedere che cosa sta suonando. Una funzione che si potesse attendere è una che un autore attenderebbe, quindi un'attivazione è per costruzione fire and forget (la lanci e te ne dimentichi).
+
+Gli snippet di un passaggio non possono usarlo, ed è una regola, non una circostanza. Non è la regola che impedisce a un passaggio di scrivere un'entità: un suono non cambia alcuno stato, *accade*. Gli snippet vengono rieseguiti a ogni ridisegno e a ogni cambio di lingua, quindi una campana suonata dalla prosa suonerebbe di nuovo per un lettore che ha cambiato lingua, senza alcuna scheda sulla lavagna a spiegare perché. Un suono che appartiene a quel punto va su una scheda Play sound prima del passaggio, o in una scheda Script.
+
+Nemmeno Python può mettere in vigore un soundscape. Ciò che suona sotto un passaggio si imposta sul passaggio, come un documento che l'intero progetto può riutilizzare, e uno script che potesse impostarne uno sarebbe un cambio di stato senza alcuna scheda sul canvas a cui rimandare.
+
+## Ascoltarlo
+
+L'intestazione della finestra della campagna ha un pulsante **Disattiva audio**, che viene ricordato tra una sessione e l'altra. È del lettore e appartiene alla campagna: l'anteprima di un soundscape nella sua scheda non viene mai silenziata da esso, perché chi sta modificando un soundscape ha chiesto di sentirlo.
+
+## Vedi anche
+
+- [Come aggiungere il suono a una storia](/it/how-to/add-sound-to-a-story/): creare un soundscape, collegarlo a un passaggio, far partire un suono.
+- [File Soundscape](/it/reference/soundscape-file/): le chiavi che porta un soundscape.
+- [Suoni in Python](/it/reference/python/sounds/): la chiamata `play_sound` e i suoi argomenti.
+- [Schede](/it/reference/nodes/): la scheda Play sound.

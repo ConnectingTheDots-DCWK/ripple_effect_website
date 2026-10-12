@@ -1,0 +1,111 @@
+---
+title: Come giocare e testare una campagna
+description: Premi Gioca, leggi una storia nella lingua scelta, gestisci avvisi e cicli fuori controllo, parti da qualsiasi scheda e ispeziona una sessione di gioco.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+## Giocare una lavagna
+
+<Steps>
+
+1. Apri la lavagna e premi **Gioca** in basso a destra. Si apre la finestra della campagna, che esegue la storia a partire dalla scheda Start di quella lavagna, seguendo le schede Jump da una lavagna all'altra finché un percorso non raggiunge una scheda End.
+
+   <Shot name="play" />
+
+2. Leggi il passaggio. Viene mostrato come Markdown, con il suo Python già eseguito, e le scelte che ne partono sono i riquadri sottostanti. Premi un riquadro per seguirlo.
+
+3. Premi **Ricomincia** quando vuoi giocare di nuovo. È disponibile dal primo passaggio fino a un finale, e un finale offre anche *Rigioca*.
+
+</Steps>
+
+Gioca re-indicizza il progetto prima di compilare, quindi la sessione di gioco è aggiornata senza bisogno di esportare prima. [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/) spiega il motivo.
+
+## Leggere in un'altra lingua
+
+Scegli la lingua dall'intestazione della finestra della campagna. Puoi cambiarla anche a metà passaggio. Un passaggio privo di testo nella lingua scelta lo dice, invece di ripiegare su un'altra.
+
+## Rispondere al modulo di una scheda Input
+
+Quando la storia raggiunge una scheda **Input**, compila il modulo e premi Invio in un campo per continuare. I campi sono elencati in [La finestra della campagna e le partite salvate](/it/reference/campaign-window/).
+
+{/* TODO(shots): <Shot name="inputForm" /> */}
+
+## Gestire gli avvisi
+
+Gli avvisi di compilazione, come un tiro che non può variare o una macro a cui manca una delle estremità, compaiono in **Messaggi** quando premi Gioca, non solo quando esporti. Compaiono lì anche i controlli delle lavagne eseguiti dal motore: Gioca controlla ogni lavagna, e una segnalazione indica le schede a cui si riferisce.
+
+<Steps>
+
+1. Apri **Messaggi** e leggi la segnalazione. Cerca il codice nel [riferimento della diagnostica](/it/reference/diagnostics/).
+
+2. Correggi la lavagna oppure, per `W.GE.06`, scegli **È intenzionale** sulla segnalazione per confermarla per quella scheda.
+
+</Steps>
+
+Se il progetto ha disattivato **Python** (impostazioni del progetto, *Capacità*), ogni scheda Script e ogni passaggio che contiene Python è contrassegnato come errore ed elencato in Messaggi. La campagna non si avvia finché ne resta anche uno.
+
+## Alzare il limite di cicli
+
+Un ciclo da cui nulla esce interrompe la campagna e ti mostra la scheda andata fuori controllo. Per impostazione predefinita una scheda di ciclo può compiere 512 giri in una lavagna.
+
+<Steps>
+
+1. Apri le Impostazioni e trova **Riproduzione**.
+
+2. Scegli 128, 512, 2.048, 8.192 oppure Nessuno per non avere alcun limite.
+
+</Steps>
+
+Le *Iterazioni massime* di una scheda For continuano ad applicarsi per prime quando sono più basse.
+
+## Giocare da una scheda
+
+<Steps>
+
+1. Fai clic con il tasto destro su una scheda qualsiasi di una lavagna.
+
+2. Scegli **Gioca da qui**. La campagna parte da quella scheda invece che dalla scheda Start.
+
+3. Prepara ciò che la storia avrebbe già dovuto produrre, usando la console nella finestra della campagna. Può fare tutto ciò che può fare una scheda Script.
+
+</Steps>
+
+{/* TODO(shots): <Shot name="playFromHere" /> */}
+
+L'esecuzione parte senza nulla di già creato, e la finestra lo segnala. Solo una scheda Start avvia una storia da sola; Gioca da qui è il modo per partire da qualsiasi altro punto.
+
+## Ispezionare e modificare una sessione di gioco
+
+Apri un pannello dalla stretta striscia lungo il bordo destro della finestra: Entità, Variabili, Console o Traccia. Cosa mostra ciascuno è in [La finestra della campagna e le partite salvate](/it/reference/campaign-window/).
+
+- Per cambiare un valore a mano, apri **Variabili** e modificalo.
+- Per leggere i passi della storia stessa, apri **Traccia**. Usa il suo interruttore per mostrare tutto ciò che sta sotto.
+- Per conservare le righe semplici, premi **Copia** in **Traccia**.
+
+{/* TODO(shots): <Shot name="tracePanel" /> */}
+
+### Trovare la scheda dietro una riga di traccia
+
+<Steps>
+
+1. Tocca una riga in **Traccia**. La storia va in pausa, la finestra si chiude e la lavagna si apre con quella scheda selezionata e centrata.
+
+2. Premi Riprendi per riportare la storia in primo piano.
+
+</Steps>
+
+Una riga che riguarda qualcosa all'interno di una macro ti porta alla scheda che l'ha chiamata, perché è quella che si trova sulla lavagna.
+
+## Cambiare la finestra
+
+Un pulsante nell'intestazione porta la finestra ai bordi dell'app e la riporta indietro; anche Esc la riporta indietro. Il pulsante **Disattiva audio** accanto viene ricordato da una sessione all'altra.
+
+## Vedi anche
+
+- [Come salvare e riprendere una sessione di gioco](/it/how-to/save-and-resume-a-campaign/)
+- [Come tracciare i percorsi tra due passaggi](/it/how-to/trace-a-route/)
+- [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/)
+- [La finestra della campagna e le partite salvate](/it/reference/campaign-window/)
+- [Diagnostica](/it/reference/diagnostics/)

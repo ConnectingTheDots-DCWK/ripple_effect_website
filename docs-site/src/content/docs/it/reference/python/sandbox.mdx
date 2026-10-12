@@ -1,0 +1,95 @@
+---
+title: La sandbox e i suoi limiti
+description: Cosa ha e cosa non ha la sandbox Python, da dove si possono chiamare le funzioni host e i limiti entro cui gira uno script.
+sidebar:
+  order: 5
+---
+
+Gli script, gli snippet dei passaggi, la console e `python_eval` girano in un interprete Python ristretto, non in CPython. Questa pagina elenca cosa manca, da dove si possono chiamare le funzioni dell'app e i limiti a cui è soggetto uno script.
+
+## Il rapporto fa fede
+
+I limiti dell'interprete cambiano da una versione all'altra, quindi l'app li verifica invece di documentarli. Il **rapporto sulla sandbox**, dietro il pulsante `i` della console, esegue una serie di piccoli snippet nell'interprete reale e riporta l'esito riga per riga. `python_capabilities` restituisce lo stesso testo a un agente ([Strumenti MCP](/it/reference/mcp-tools/#python_capabilities)).
+
+Dove questa pagina e il rapporto non concordano, ha ragione il rapporto.
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+| Gruppo verificato | Domanda | Righe |
+| --- | --- | --- |
+| Linguaggio | Quali istruzioni ed espressioni accetta il parser | `def`, `lambda`, `class`, decoratori, `yield`, `match`, f-string, formattazione con `%`, comprehension, espressioni condizionali, `:=`, confronto concatenato, unpacking, `*args` e `**kwargs`, `global`, closure, ricorsione, `try` / `except` / `raise` / `finally`, `assert`, `while` / `break` / `continue`, `for` / `else`, slicing, letterali set, bytes e a tripla virgoletta, operatori bit a bit, `//` `**` `%` |
+| Moduli | Cosa può raggiungere `import` | `json`, `math`, `re`, `datetime`, `sys`, `os`, `random`, `collections`, `itertools`, `functools`, `statistics`, `string`, `time`, `copy`, `typing`, `dataclasses`, `enum`, `decimal`, `hashlib`, `base64`, `uuid`, `textwrap`, `operator` e la rete (`requests`, `urllib`) |
+| Funzioni integrate | Nomi e metodi disponibili senza importare nulla | `len`, `range`, `enumerate`, `zip`, `sorted` (con e senza `key=`), `reversed`, `map`, `filter`, `sum`, `min`, `max`, `abs`, `round`, `any`, `all`, `str`, `int`, `float`, `bool`, `list`, `dict`, `set`, `tuple`, `isinstance`, `type`, `repr`, `hex`, `chr`, `ord`, `divmod`, `pow`, `print`, `dir`, `eval`, `exec`, `open`, `input` e i metodi di `str`, `dict` e `list` di uso comune |
+| Funzioni host | Verifiche sulla forma della chiamata: da dove si possono chiamare le funzioni dell'app | Le sette forme di chiamata in [Funzioni host](#funzioni-host) |
+
+Ogni riga indica se è supportata o no, con le parole dell'interprete quando non lo è. Una funzionalità mancante non è un difetto del progetto. Oltre ai quattro gruppi verificati, il rapporto ha una sezione **Cosa questa app rende disponibile** che elenca le funzioni rese disponibili, in ordine di dichiarazione, e una sezione **Limiti** (vedi [Limiti](#limiti)). Il rapporto può essere copiato come testo.
+
+### Assenze e limiti noti
+
+Sono le righe a cui il rapporto associa un suggerimento, riportato accanto a ciascuna. Il suggerimento compare quando la verifica di quella riga fallisce; la riga `random` nomina anche le schede Dice roller e Weighted branch, cosa che il suggerimento del rapporto non fa.
+
+| Non supportato o limitato | In alternativa |
+| --- | --- |
+| `class` | Usa un dict. Un componente o un'entità passa come dict: `component_get("Goblin")["HP"]`, mai `goblin.hp`. |
+| `random` | Collega una scheda Random number o Random string. Anche le schede Dice roller e Weighted branch coprono il caso sulla lavagna. |
+| `yield` (generatori) | Costruisci e restituisci una lista. |
+| `match` | Una catena di `if` / `elif`. |
+| Formattazione con `%`, `str.format` | Usa una f-string. |
+| `collections` (dove il rapporto dice di no) | Un semplice `dict` copre la maggior parte dei casi. |
+| `statistics` (dove il rapporto dice di no) | `sum(xs) / len(xs)`. |
+| Rete (`requests`, `urllib`) | Nessuna. La sandbox non ha rete. |
+| `open`, il filesystem | Uno script legge la storia tramite le funzioni host, non dal disco. |
+| `os` | Importabile, ma le chiamate che toccano un disco non sono collegate. |
+| `input` | Un passaggio fa domande al lettore; uno script no. |
+| `dir()`, `inspect` | Nessuna. Nulla dentro la sandbox può elencare ciò che la sandbox contiene, ed è per questo che il rapporto pone una domanda alla volta. |
+
+Uno snippet ha la forma di Python, ma non è portabile come Python.
+
+## Funzioni host
+
+Tutto ciò che l'app rende disponibile è una **funzione host**: presente senza `import`, senza alcun modulo da cui importarla. Le righe Funzioni host del rapporto chiedono da dove si può chiamarne una. Le verifiche sono scritte in modo da non cambiare nulla.
+
+| Forma di chiamata | Funziona | Altrimenti |
+| --- | --- | --- |
+| A livello superiore | sì | |
+| Dentro un `def` | sì | |
+| Dentro una comprehension | sì | |
+| Dentro `map()` o `filter()` | no | Riscrivila come comprehension. |
+| Dentro `sorted(key=…)` | no | Costruisci prima, in una comprehension, una lista di coppie `(key, name)`, poi ordina quella. |
+| Con argomenti per nome | sì | Ogni argomento opzionale dell'API è solo per nome. |
+| Intercettare un rifiuto | sì | Un rifiuto arriva come `RuntimeError`. |
+
+```python
+pairs = [(entity_get(n)["HP"], n) for n in entity_names()]
+weakest = sorted(pairs)[0][1]
+```
+
+Il valore restituito da una funzione host è una copia: `e = entity_get("Mira"); e["HP"] -= 3` viene eseguito e non cambia nulla, e per scrivere uno script usa `entity_set`. Vedi [Le letture sono copie](/it/reference/python/).
+
+## Limiti
+
+| Limite | Valore | Oltre il limite |
+| --- | --- | --- |
+| Tempo | 2000 ms (due secondi), controllato a ogni istruzione | Lo script viene interrotto con un `Timeout`; la storia prosegue. |
+| Memoria | 64 MB, circa | `MemoryError` |
+| Profondità di ricorsione | 200 frame | `RecursionError` |
+| Script fuori controllo | 3 per sessione di gioco | Vedi sotto. |
+
+Il rapporto segnala ogni limite come applicato.
+
+### Script fuori controllo
+
+Uno script interrotto dal limite di tempo non viene riavviato nella stessa sessione di gioco. La corrispondenza avviene sul sorgente dello script, non sul suo nome: il nome di uno snippet è lo stesso per ogni passaggio, e il sorgente di una scheda Script include i suoi ingressi, quindi la stessa scheda con ingressi diversi è uno script diverso.
+
+Dopo che tre script distinti sono stati interrotti in una sessione di gioco, non parte più nessuno script. Uno script che arriva a questo punto contiene un ciclo infinito.
+
+## Interprete
+
+L'interprete è monty; [Open source](/it/about/open-source/) dice di chi è. Una campagna può essere costruita senza Python: vedi [Opzioni di esportazione](/it/reference/export-options/).
+
+## Vedi anche
+
+- [Riferimento Python](/it/reference/python/): le funzioni, le cinque superfici e le frasi di rifiuto.
+- [Python in una storia](/it/explanation/python-in-a-story/): perché Python è una superficie dell'host.
+- [Come eseguire Python in una storia](/it/how-to/script-a-passage/): scrivere uno script e leggerne il risultato.
+- [Come costruire una campagna senza Python](/it/how-to/turn-python-off/): lasciare l'interprete fuori da una build.

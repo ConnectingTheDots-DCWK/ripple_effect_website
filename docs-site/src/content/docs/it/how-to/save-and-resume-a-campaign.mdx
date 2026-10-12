@@ -1,0 +1,54 @@
+---
+title: Come salvare e riprendere una sessione di gioco
+description: Salva una sessione di gioco con un nome, mettila in pausa e riprendila, e apri una partita salvata dal segnalibro o dalla paletta dei comandi.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Salvare una sessione di gioco con un nome
+
+Salvare non conclude la sessione di gioco, e puoi salvare tutte le volte che vuoi.
+
+<Steps>
+
+1. Nella finestra della campagna, seleziona il segnalibro nell'intestazione.
+2. Digita un nome nella finestra **Salva questa sessione di gioco**. **Salva** resta non disponibile finché il nome è vuoto.
+3. Seleziona **Salva**. L'app mostra *Salvato come «nome».* e la sessione di gioco prosegue.
+
+</Steps>
+
+## Interrompere una sessione di gioco e riprenderla
+
+Seleziona **Metti in pausa** nella finestra della campagna per interrompere una sessione di gioco. La pausa scrive un salvataggio automatico in `.ripple/saves/`, elencato come **Dove ti sei fermato** nella stessa lista dei salvataggi con nome e riscritto a ogni pausa. [Come giocare e provare una campagna](/it/how-to/play-a-campaign/) spiega come mettere in pausa e riprendere.
+
+Mettere in pausa e riprendere nella stessa sessione di lavoro ti restituisce la lavagna che hai appena modificato. Un salvataggio aperto più tardi viene confrontato con la storia così com'è in quel momento, ed è per questo che può essere rifiutato.
+
+## Aprire una partita salvata
+
+<Steps>
+
+1. Seleziona il segnalibro accanto a Gioca, oppure esegui **Apri una partita salvata…** dalla paletta dei comandi.
+2. Scegli un salvataggio. La lista mostra il passaggio in cui ciascuno è in attesa e quanto tempo fa è stato scritto.
+3. Se una sessione di gioco è in corso, l'app chiede **Aprire questo gioco salvato?** Aprire un salvataggio scarta la campagna in corso, quindi salva prima quella sessione di gioco se vuoi poterla riavere.
+4. Seleziona **Apri**.
+
+</Steps>
+
+{/* TODO(shots): <Shot name="savedGames" /> */}
+
+Un salvataggio registra il punto in cui sei e tutto ciò che la storia ha prodotto. [La finestra della campagna e le partite salvate](/it/reference/campaign-window/) elenca cosa contiene, e [Come funziona una storia](/it/explanation/how-a-story-runs/) spiega come si comportano i conteggi delle scelte e le macro.
+
+## Quando una partita salvata viene rifiutata
+
+Un salvataggio registra un punto in una lavagna. Se nel frattempo la storia è stata riscritta e quel punto non esiste più, il salvataggio resta in elenco con il motivo accanto e non viene toccato. Apri un altro salvataggio, oppure avvia una nuova sessione di gioco e salvala.
+
+Una build più vecchia della tua rifiuta un salvataggio più recente invece di riportare una variabile `json` al suo valore predefinito. Aggiorna l'app per aprirlo.
+
+I salvataggi sono esclusi dal controllo di versione.
+
+## Vedi anche
+
+- [Come giocare e provare una campagna](/it/how-to/play-a-campaign/)
+- [La finestra della campagna e le partite salvate](/it/reference/campaign-window/)
+- [Come funziona una storia](/it/explanation/how-a-story-runs/)
+- [File del progetto e cartella .ripple](/it/reference/project-files/)

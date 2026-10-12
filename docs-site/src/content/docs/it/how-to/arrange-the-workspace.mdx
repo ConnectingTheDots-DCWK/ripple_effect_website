@@ -1,0 +1,51 @@
+---
+title: Come organizzare l'area di lavoro
+description: "Dividi, raggruppa e ridimensiona i documenti, comprimi la barra laterale, mostra o nascondi Messaggi, entra nella Modalità Zen e riporta i suggerimenti."
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+## Affianca due documenti
+
+- Per mettere una lavagna accanto al passaggio a cui è collegata, trascina la sua scheda fuori dalla barra delle schede e rilasciala accanto all'altro documento.
+- Per raggruppare invece un documento in schede, rilascialo sulla barra di quel gruppo.
+- Per ridimensionare, trascina un divisore.
+
+Il tuo layout viene ricordato per progetto in `.ripple/workspace.json`.
+
+## Dai ai documenti tutta la larghezza
+
+<Shot name="files" />
+
+Fai clic sull'icona della barra delle attività della sezione già visibile — **File**, **Modifiche** o **Cerca** — per comprimere la barra laterale. Fai clic sull'icona di una sezione qualsiasi per scegliere di nuovo cosa mostra la barra laterale.
+
+## Chiudi e riapri Messaggi
+
+- Chiudi Messaggi con la sua croce.
+- Riaprilo, sotto i documenti, dal pulsante Messaggi in fondo alla barra delle attività, che riporta il conteggio, dal menu **Visualizza**, oppure con *Mostra o nascondi i messaggi* nella paletta dei comandi (`Ctrl+Maiusc+P`).
+
+Per cambiare come si legge Messaggi:
+
+- Per vedere prima tutto ciò che non va, passa il raggruppamento da ciò di cui parla un messaggio a quanto è grave.
+- Per comprimere un gruppo, fai clic sul conteggio nella sua intestazione.
+- Per nascondere un tipo di messaggio, disattiva il suo chip: problemi, avvisi o registrazioni. Il raggruppamento e i chip vengono ricordati.
+- Per mettere a tacere una scelta deliberata che il controllo non può giudicare, spunta *È intenzionale* sulla sua riga. Resta registrata.
+- Per leggere di un messaggio del motore, fai clic sul suo codice per aprire la sua pagina in [Diagnostica](/it/reference/diagnostics/). Per trovare le schede che un messaggio nomina, fai clic sul messaggio.
+
+## Dai la finestra a un solo documento
+
+Premi `F11` (`Ctrl+Cmd+F` su Mac), oppure scegli *Visualizza ▸ Modalità Zen*. La barra dell'app, la barra laterale, Messaggi e le schede spariscono. Gli stessi tasti li riportano.
+
+- Un banner in alto nomina il documento quando entri e ogni volta che cambia. Quando il puntatore raggiunge il bordo superiore, mostra un pulsante *Esci dalla modalità Zen*.
+- `Ctrl+Tab` e `Ctrl+Maiusc+Tab` passano da un documento all'altro — tutti quelli aperti, in qualunque gruppo si trovino. Fuori dalla Modalità Zen gli stessi tasti scorrono le schede del gruppo in cui ti trovi.
+
+## Riporta i suggerimenti
+
+Ogni suggerimento compare una sola volta, la prima volta che apri quel tipo di elemento. Per rivederne uno, esegui *Mostra il suggerimento per…* dalla paletta dei comandi. Per riattivarli tutti, scegli *Aiuto ▸ Risoluzione dei problemi ▸ Mostra di nuovo ogni suggerimento*.
+
+## Vedi anche
+
+- [La finestra dell'area di lavoro, i menu e la paletta](/it/reference/workspace-window/) — cosa contiene ogni parte della finestra.
+- [File del progetto e cartella .ripple](/it/reference/project-files/) — cosa registra `workspace.json`.
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/) — perché il layout viene ricordato per progetto e per macchina.
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/) — cosa finisce in Messaggi e perché.

@@ -1,0 +1,121 @@
+---
+title: Dichiarazioni delle variabili di console
+description: "I tipi che una variabile di console può avere, il file .ripple/cvars.json che le dichiara, gli ambiti per lavagna, le versioni e cosa portano con sé un salvataggio o un'esportazione."
+---
+
+Un progetto dichiara le proprie [variabili di console](/it/explanation/console-variables/) in `.ripple/cvars.json`, che si modifica nella pagina **Variabili Console**. Questa pagina elenca cosa contiene una dichiarazione e quali formati la trasportano.
+
+{/* TODO(shots): <Shot name="cvarsPage" /> */}
+
+## La pagina Variabili Console
+
+| Elemento | Comportamento |
+| --- | --- |
+| Si raggiunge da | I pulsanti del progetto nella barra delle attività, oppure la paletta dei comandi. |
+| Riga | Un nome, un tipo e un valore predefinito, più una colonna **Lavagne**. |
+| Rinominare | Libero per ogni lavagna che nomina la variabile: una scheda memorizza l'id della variabile, non il suo nome. Uno script che usava il vecchio nome smette di funzionare. |
+| Dimenticare | Chiede prima conferma. Una scheda che nomina una variabile dimenticata segnala che la variabile non esiste più. |
+
+## Tipi
+
+Ventiquattro tipi, e nessun altro: gli otto tipi di base da soli, come `list<…>` e come `map<…>`. Gli stessi ventiquattro sono offerti da ogni altro editor dell'app.
+
+| Tipo | Contiene | Predefinito |
+| --- | --- | --- |
+| `int` | Un numero intero. | `0` |
+| `float` | Un numero. | `0.0` |
+| `bool` | `true` o `false`. | `false` |
+| `string` | Testo. | testo vuoto |
+| `markdown` | Testo con un renderer. | testo vuoto |
+| `asset` | Un percorso a un file del progetto. | testo vuoto |
+| `componentRef` | Un percorso a un componente. | testo vuoto |
+| `json` | Qualsiasi valore JSON. | `{}` |
+| `list<…>` | Un elenco ordinato di uno qualsiasi degli otto tipi di base. | `[]` |
+| `map<…>` | Nomi associati a uno qualsiasi degli otto tipi di base. | `{}` |
+
+Nel file un tipo si scrive in forma canonica: `int`, `list<int>`, `map<string>`.
+
+- `markdown`, `asset` e `componentRef` accettano gli stessi valori di `string`. Dicono a cosa serve la variabile, e questo decide il campo che la pagina disegna.
+- `json` contiene un elenco o un oggetto così com'è, quindi un `list<json>` è un elenco di elenchi se è questo che riceve.
+- Ogni tipo rifiuta un valore vuoto (null).
+
+Le scritture vengono convertite al tipo dichiarato quando non si perde nulla, e rifiutate altrimenti. La tabella delle conversioni si trova in [Variabili di console](/it/reference/python/console-variables/).
+
+### Variabili che contengono percorsi
+
+Una variabile di tipo `asset` o `componentRef`, da sola, in un elenco o in una mappa, si compila per nome.
+
+| Dove | Controllo |
+| --- | --- |
+| La pagina Variabili Console | Digita qualche lettera e scegli tra i file del progetto, con il percorso completo accanto a ciascuno. La scelta è un chip che mostra il nome; passandoci sopra compare il percorso, che è ciò che la variabile memorizza. Un chip il cui file è fuori dal progetto o non c'è più è contrassegnato. |
+| Il valore tipizzato di una scheda Set variable, sulla scheda | Un menu a tendina con ricerca dei file del progetto. |
+| Il pannello della finestra della campagna | Un campo di testo: non c'è alcun progetto da proporre. |
+
+## `.ripple/cvars.json`
+
+Il file sta accanto alle impostazioni del progetto e viaggia con il progetto. Non è catalogato e non si apre come documento nel pannello del visualizzatore.
+
+```json
+{
+  "version": 3,
+  "cvars": [
+    { "id": "4f2a…", "name": "gold", "type": "int", "default": 10 },
+    { "id": "9c11…", "name": "tags", "type": "list<string>", "default": [], "scope": ["28cf…"] }
+  ]
+}
+```
+
+| Chiave | Regola |
+| --- | --- |
+| `version` | Obbligatoria. Un file senza `version` è danneggiato, non vecchio. |
+| `cvars` | Array di oggetti; se manca, si legge come nessuna. |
+| `id` | Stringa obbligatoria. |
+| `name` | Stringa obbligatoria, senza spazi ai bordi, non vuota e univoca nel file. Un nome ripetuto viene rifiutato perché dichiarato due volte. |
+| `type` | Uno dei ventiquattro tipi, scritto in forma canonica. Qualsiasi altra cosa viene rifiutata. |
+| `default` | Convertito a `type` con la regola del runtime; rifiutato se non è compatibile. |
+| `scope` | Array di id di lavagna, ciascuno una sola volta, con l'ordine mantenuto. Assente o vuoto significa dovunque; scritto solo se non vuoto. |
+
+Il lettore è rigoroso: ogni errore nomina `cvars[i].<key>`.
+
+Un file scritto da una versione più recente viene rifiutato, e la pagina lo dice; un file danneggiato si legge come vuoto e non viene mai sovrascritto. Cambiare il tipo di una variabile mantiene il valore predefinito se è ancora compatibile, altrimenti prende quello del nuovo tipo (`3` diventa `3.0`; `"three"` diventa `0`).
+
+### Versioni
+
+| Versione | Aggiunto |
+| --- | --- |
+| 1 | Il primo file. |
+| 2 | `scope`. |
+| 3 | I ventiquattro tipi. |
+
+Un file di versione 1 si legge come versione 2 senza ambiti. Ogni incremento riporta la nuova versione sul documento e non cambia nient'altro; ognuno esiste perché una versione più vecchia rifiuti il file invece di leggerlo e riscriverlo senza ciò che non sapeva nominare. Qualsiasi versione più vecchia di quella del file lo rifiuta, anche quando nessuna variabile ha un ambito.
+
+## Ambito
+
+La colonna **Lavagne** è un menu con ricerca delle lavagne del progetto, con una casella accanto a ciascuna. Mostra *Dovunque* finché non si seleziona una lavagna.
+
+| Aspetto | Comportamento |
+| --- | --- |
+| Memorizzato come | Id di catalogo delle lavagne, così una lavagna rinominata o spostata mantiene il suo ambito. |
+| Get variable, Set variable, Variable branch | Offrono le variabili con ambito sulla lavagna della scheda e quelle senza alcun ambito. |
+| Una scheda che nomina già una variabile con ambito altrove | Mantiene il nome e mostra *Non in ambito di questa lavagna* sotto di esso. |
+| Una scheda che non sa su quale lavagna si trova | Offre tutte le variabili. |
+| Una lavagna che non esiste più | Il suo id resta nel file, e la pagina mostra *Una delle lavagne che menziona è scomparsa* sotto il campo. Conta come una lavagna su cui nessuna scheda può trovarsi. |
+| Cosa un ambito non cambia | Un ambito decide dove una variabile viene offerta, non dove viene letta: la campagna contiene ogni variabile ovunque, uno script può nominarne una qualsiasi da qualsiasi punto, e nulla di un ambito arriva in un bundle. |
+
+## Salvataggi, agenti ed esportazioni
+
+| Contesto | Cosa trasporta le dichiarazioni |
+| --- | --- |
+| Partita salvata | Ogni variabile, per valore e non per tipo. Un salvataggio fatto prima che il progetto avesse una variabile la contiene al valore predefinito; una variabile aggiunta mentre una campagna è in pausa c'è alla ripresa; una rimossa non c'è più. Formato di salvataggio 5. |
+| Versione più vecchia e salvataggio più recente | Rifiutato del tutto, così una variabile `json` non viene mai riportata silenziosamente al valore predefinito. |
+| Campagna compilata | Le dichiarazioni nella forma propria del bundle. |
+| Esportazione del progetto (scaffold) | `.ripple/cvars.json` accanto alle impostazioni del progetto, così ogni scheda punta ancora alla sua variabile. |
+| MCP | `project_info` restituisce le dichiarazioni, con un ambito risolto in percorsi di lavagna e tutto ciò che non si risolve più scartato. `campaign_state` restituisce i valori attuali. Un agente può far puntare una scheda variabile a una variabile per nome. |
+
+## Vedi anche
+
+- [Variabili di console](/it/explanation/console-variables/): cos'è una variabile e perché le schede non richiedono alcun collegamento.
+- [Come dichiarare e delimitare una variabile di console](/it/how-to/declare-console-variables/)
+- [Variabili di console](/it/reference/python/console-variables/): le funzioni Python e la tabella delle conversioni.
+- [File del progetto e cartella .ripple](/it/reference/project-files/)
+- [Strumenti MCP](/it/reference/mcp-tools/)

@@ -1,0 +1,190 @@
+---
+title: "Controlli di impostazioni, accessibilità e aggiornamenti"
+description: "Ogni pagina e opzione della finestra Impostazioni, cosa cambiano Contrasto e Visione dei colori, i controlli degli aggiornamenti del motore e la pagina Assistenza."
+---
+
+L'ingranaggio nella barra dell'app, in ogni schermata, apre la finestra Impostazioni. Le impostazioni appartengono all'app, non a un progetto, quindi ti seguono da un progetto all'altro.
+
+Ogni opzione è una scelta tra poche voci con un nome, disegnata come controllo segmentato con la scelta attuale evidenziata, e una riga sotto il controllo spiega cosa significa quella scelta. Una scelta ha effetto non appena la premi; non c'è Applica. L'eccezione al controllo segmentato è *Lingua*, un menu a tendina.
+
+La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app.
+
+## Pagine
+
+La finestra ha sei pagine lungo una barra sulla sinistra. Ogni pagina ha la stessa altezza, ed entrambe le colonne scorrono.
+
+| Pagina | Descrizione nella barra | Contiene |
+| --- | --- | --- |
+| *Generale* | Aspetto, accessibilità, lingua | Come l'app appare, si legge e riproduce |
+| *Controllo dati* | Cosa lascia questo computer | *Statistiche di utilizzo* |
+| *Aggiornamenti* | Correzioni del motore | *Aggiornamenti del motore*, *Usa il motore incluso* |
+| *Agenti* | Assistenti che raggiungono l'app | La connessione dell'assistente; vedi [Strumenti MCP](/it/reference/mcp-tools/) |
+| *Assistenza* | Domande, bug, idee | [La pagina Assistenza](#pagina-assistenza) |
+| *Informazioni* | Versione, crediti, licenze | La finestra Informazioni |
+
+*Agenti*, *Assistenza* e *Informazioni* sono pagine della finestra più che impostazioni. I comandi *Agenti*, *Assistenza* e *Informazioni* della paletta dei comandi aprono le rispettive pagine, e lo fa anche il segno degli agenti nella barra dell'app.
+
+*Documentazione* è la prima tra i rimandi nella finestra Informazioni. I pannelli che spiegano una funzione (il pannello delle variabili, la pagina degli agenti, la sandbox Python, la finestra di esportazione, l'editor dei metadati e la barra dell'editor delle state machine) dicono cosa stai guardando e rimandano alla pagina della documentazione che contiene il resto.
+
+## Generale
+
+Le righe, nell'ordine della pagina.
+
+| Riga | Scelte | Significato |
+| --- | --- | --- |
+| *Lingua* | *Sistema*, poi ogni lingua disponibile con il proprio nome | La lingua dei menu, delle finestre di dialogo, dei messaggi e dei suggerimenti dell'app |
+| *Aspetto* | *Sistema*, *Chiaro*, *Scuro* | *Sistema* segue il sistema operativo; le altre sono sempre quel tema |
+| *Collegamenti* | *Curvi*, *Ad angolo retto* | Come vengono disegnati i collegamenti su una lavagna |
+| *Contrasto* | *Standard*, *Elevato* | Quanto nettamente si separano testo e controlli; vedi [Contrasto](#contrasto) |
+| *Visione dei colori* | *Disatt.*, *Protan*, *Deutan*, *Tritan* | Quali palette vengono sostituite; vedi [Visione dei colori](#visione-dei-colori) |
+| *Riproduzione* | *128*, *512*, *2,048*, *8,192*, *Nessuno* | Il limite di cicli |
+
+### Lingua
+
+- Ogni lingua è elencata con il proprio nome, così si riesce a trovarla anche quando l'app ne mostra una che non si sa leggere.
+- *Sistema* segue la lingua del sistema operativo e indica quale lingua risolve in quel momento.
+- L'impostazione riguarda solo la lingua dell'app. Il testo e le lingue di un progetto si impostano nelle impostazioni del progetto; vedi [Pagine, scelte, lingue e tempo di lettura](/it/reference/passages/).
+- La riga compare solo in una versione che include più di una lingua.
+- Una lingua memorizzata che questa versione non offre viene letta come *Sistema*.
+- L'italiano è al momento l'unica lingua oltre all'inglese. È stato redatto da un modello e controllato a campione, non letto riga per riga, quindi segnala tutto ciò che suona strano.
+
+### Aspetto
+
+*Sistema* segue qualunque cosa sia impostata nel sistema operativo. *Chiaro* e *Scuro* sono sempre quel tema. L'aspetto è indipendente da Contrasto e Visione dei colori, quindi tema scuro e contrasto *Elevato* possono essere attivi insieme.
+
+L'aspetto predefinito è sobrio e monocromatico: il pulsante principale di ogni vista è riempito con il colore del testo, e anche la selezione, il focus e la scheda attiva sono disegnati con quello, sia nel tema chiaro sia in quello scuro. Il colore è riservato a ciò che ti comunica: le famiglie di schede, i percorsi tracciati, i segni del controllo di versione e gli avvisi. I collegamenti in Markdown sono sottolineati, e l'icona dell'app è una piastra scura con il simbolo in bianco.
+
+### Collegamenti
+
+| Scelta | Collegamenti |
+| --- | --- |
+| *Curvi* | Curvano da porta a porta. Fai doppio clic su un collegamento per aggiungere un punto di passaggio e trascinalo per instradare il collegamento. |
+| *Ad angolo retto* | Corrono in tratti rettilinei e girano ad angolo retto. Un punto di passaggio è un angolo; se lo trascini, si allinea con i vicini. |
+
+### Riproduzione
+
+*Riproduzione* è il limite di cicli: quante volte una scheda di ciclo può girare prima che una campagna si fermi con un errore e ti offra la scheda. Viene contato per ciclo e per lavagna; saltare altrove e tornare fa ripartire il conteggio.
+
+| Scelta | Comportamento |
+| --- | --- |
+| *128*, *512*, *2,048*, *8,192* | La campagna si ferma con un errore a quel conteggio |
+| *Nessuno* | Una scheda di ciclo può girare all'infinito; una scheda *While* da cui nulla esce non finisce mai e non ferma la campagna |
+
+## Contrasto
+
+| Scelta | Effetto |
+| --- | --- |
+| *Standard* | Testo e controlli superano la soglia di accessibilità consueta. |
+| *Elevato* | Il testo del corpo e delle didascalie raggiunge il grado di accessibilità più rigoroso (AAA). Ogni campo di testo, pulsante, chip, interruttore e casella di controllo ha un bordo ben visibile. Il testo attenuato, i bordi dei controlli e le linee sottili sono più marcati. |
+
+I colori restano gli stessi e la pagina non cambia forma.
+
+## Visione dei colori
+
+| Scelta | Palette ricolorate per |
+| --- | --- |
+| *Disatt.* | I colori della casa |
+| *Protan* | Protanopia e protanomalia |
+| *Deutan* | Deuteranopia e deuteranomalia, la forma più comune |
+| *Tritan* | Tritanopia e tritanomalia |
+
+Una modalità ricolora tutto ciò per cui l'app usa il colore per distinguere:
+
+- le famiglie di schede su una lavagna;
+- i percorsi tracciati;
+- i segni che il controllo di versione mette sui file;
+- i colori di stato;
+- l'evidenziazione della sintassi;
+- il diff, che smette di essere rosso e verde.
+
+Le palette sono scelte in modo che cose con la stessa forma non condividano lo stesso colore, e sono verificate con una simulazione di tutti e otto i tipi di daltonismo. I grigi neutri non cambiano.
+
+### Limiti
+
+- Tre punti distinguono le categorie solo per tonalità e nient'altro: la minimappa della lavagna e quella della panoramica, dove una famiglia è un rettangolo di pochi pixel senza icona né etichetta; i percorsi tracciati; e una clip di soundscape troppo stretta per riportare scritta la propria modalità. Una modalità di visione dei colori li migliora senza renderli leggibili per tutti.
+- Non esiste una modalità per nessuno dei due tipi acromatici di daltonismo.
+- L'app non ha supporto per lo screen reader.
+
+Vedi [Cosa dichiarano e cosa non dichiarano le impostazioni di accessibilità](/it/explanation/accessibility-limits/).
+
+## Dimensione del testo
+
+La dimensione del testo non è un'impostazione dell'app.
+
+| Parte | Comportamento |
+| --- | --- |
+| Interfaccia | Segue la dimensione del testo del sistema, fino al doppio |
+| Schede su una lavagna | Restano alla dimensione con cui sono state disegnate; lo zoom ingrandisce la lavagna |
+
+## Controllo dati
+
+| Riga | Scelte | Comportamento |
+| --- | --- | --- |
+| *Statistiche di utilizzo* | *Disattivate*, *Attivate* | *Disattivate* finché non le porti su *Attivate*. L'elenco completo di ciò che viene inviato è mostrato sotto il controllo, e l'identificatore è mostrato mentre sono attive. Non viene inviato nulla finché non sono rimaste attive per un'ora. |
+
+Disattivarle distrugge l'identificatore. Per far cancellare ciò che è stato inviato, scrivi all'indirizzo mostrato nella pagina, indicando l'identificatore, prima di disattivarle. Riattivarle avvia una nuova installazione. Ciò che viene inviato è elencato in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+## Aggiornamenti
+
+La parte dell'app che riproduce e compila le campagne può essere corretta senza un nuovo programma di installazione. Una correzione viene scaricata in background, verificata rispetto a una firma prima di essere considerata affidabile e usata dall'avvio successivo. Se l'app va in crash con una correzione, la correzione viene messa da parte automaticamente. Una correzione non cambia mai ciò che l'app può fare.
+
+Un pulsante nella barra dell'app compare mentre una correzione sta arrivando, e di nuovo quando è pronta, con la versione a cui passa.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Aggiornamenti del motore*: *Attivati* | Le correzioni vengono scaricate in background e usate dall'avvio successivo. |
+| *Aggiornamenti del motore*: *Disattivati* | Il motore resta quello fornito con questa versione, oppure l'ultima correzione già scaricata. |
+| *Usa il motore incluso* | Rimuove le correzioni già scaricate. Dall'avvio successivo viene usato il motore incluso, e la pagina lo conferma. |
+
+Mentre una correzione è in uso la pagina riporta *Motore in esecuzione* seguito dalla sua versione, una correzione scaricata dopo l'installazione di questa versione. Il pulsante del motore apre una finestra con due stati. Mentre una correzione viene scaricata, dice che la correzione è in fase di download e verifica e che nulla cambia fino al prossimo avvio dell'app. Quando la correzione è pronta, dice che è stata scaricata e verificata, ha effetto al prossimo avvio e che non c'è niente da installare. Cosa contiene la richiesta è in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+## Pagina Assistenza
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+Si apre con *Impostazioni ▸ Assistenza* oppure con *Supporto e feedback* nel menu Aiuto. Bug, domande e idee vanno al repository pubblico di assistenza, `ripple_effect_support`, su GitHub.
+
+| Voce | Cosa fa |
+| --- | --- |
+| *Fai una domanda* | Apre le Discussions: utilizzo, idee, mostrare ciò che hai realizzato |
+| *Segnala un bug* | Apre il modulo per i bug con versione, sistema operativo e origine del programma di installazione già compilati, e i dettagli tecnici inseriti |
+| *Richiedi una nuova funzionalità* | Apre una nuova issue etichettata come miglioramento |
+| *Sfoglia gli issue aperti* | Mostra se un problema è già noto |
+
+*Cosa allegare* compare solo finché esiste una cartella di sessione:
+
+| Voce | Cosa fa |
+| --- | --- |
+| *Salva questa sessione come file zip* | Raccoglie il log e i rapporti della sessione in un unico file da allegare a una issue. La sua riga di dettaglio riporta l'id della sessione. |
+
+La pagina indica cosa viene sostituito prima che venga scritto qualsiasi cosa: nome utente e cartella home, la posizione del progetto, indirizzi e-mail, indirizzi IP e qualsiasi cosa abbia la forma di una chiave o di un token. Gli orari sono registrati in UTC. Nulla carica questi file; l'unica eccezione è un rapporto di crash, di cui l'app chiede prima conferma e che invia solo se rispondi di sì.
+
+### Menu Aiuto
+
+Il resto di ciò che potresti allegare, e i suggerimenti, si trovano nel menu Aiuto anziché nella pagina. Sono tutti anche comandi della paletta dei comandi.
+
+| Voce | Cosa fa |
+| --- | --- |
+| *Mostra di nuovo ogni suggerimento* | Ogni suggerimento compare ancora una volta, quando raggiungi ciò di cui parla |
+| *Risoluzione dei problemi* ▸ *Copia le informazioni sul pacchetto* | Copia quale build è e come è stata installata |
+| *Risoluzione dei problemi* ▸ *Copia le informazioni sul dispositivo* | Copia il sistema operativo sottostante |
+| *Risoluzione dei problemi* ▸ *Apri la cartella di questa sessione* | Apre il log, i rapporti di crash e le informazioni sulla build |
+
+**Collegamenti che l'app apre:** quelli per segnalare un bug, fare una domanda, il sondaggio, la documentazione, la licenza e l'Informativa sulla privacy passano da un indirizzo su `ripplefx.app`, che reindirizza a dove si trova la risorsa.
+
+## Primo avvio
+
+Dopo le pagine dell'accordo, il primo avvio mostra due pagine. Entrambe si possono saltare, e tutto ciò che contengono si trova poi in Impostazioni.
+
+| Pagina | Contenuto |
+| --- | --- |
+| Prima | Aspetto, *Contrasto*, *Visione dei colori* e come vengono disegnati i collegamenti, accanto a una piccola anteprima dell'app che cambia mentre scegli |
+| Seconda | La domanda sulle *Statistiche di utilizzo* senza nessuna risposta preselezionata e l'elenco completo di ciò che verrebbe inviato, come viene chiesto dei rapporti di crash e un cenno alle donazioni |
+
+## Vedi anche
+
+- [Come cambiare la lingua, il contrasto e la visione dei colori dell'app](/it/how-to/change-app-language-contrast-and-colour/)
+- [Cosa dichiarano e cosa non dichiarano le impostazioni di accessibilità](/it/explanation/accessibility-limits/)
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/)
+- [Come segnalare un bug](/it/how-to/report-a-bug/)
+- [Il log di sessione e i rapporti](/it/reference/session-log/)

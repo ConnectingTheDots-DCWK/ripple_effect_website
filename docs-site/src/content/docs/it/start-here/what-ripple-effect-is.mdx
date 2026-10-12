@@ -1,0 +1,51 @@
+---
+title: Che cos'è Ripple Effect
+description: La forma dello strumento in una pagina, e perché lavagne, passaggi, scelte e una normale cartella stanno insieme nel modo in cui lo fanno.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Ripple Effect è un'applicazione desktop per scrivere storie interattive sotto forma di grafi. Disponi i passaggi su una tela, colleghi ogni scelta a ciò a cui porta e premi Gioca per percorrere il risultato. È pensato per la preparazione di sessioni di gioco da tavolo, per i documenti di game design, per le missioni e gli alberi di dialogo, e per qualsiasi altro caso in cui la parte interessante di un documento sono i percorsi che lo attraversano.
+
+<Shot name="board" caption="Una lavagna: i passaggi, le scelte tra di essi e uno Start." />
+
+## Ramificare, e poi calcolare
+
+Dove ArcWeave ti offre lavagne, connessioni e componenti in un browser, Ripple Effect ti offre le stesse forme come app nativa su una cartella del tuo disco. Le forme sono familiari di proposito: una storia che si ramifica è più facile da tenere a mente quando assomiglia a ciò che è, un insieme di luoghi e delle vie che li uniscono.
+
+La sola ramificazione non basta per una storia che deve ricordare delle cose, perciò attorno a quelle forme c'è uno strato di scripting visuale: cicli, condizioni, aritmetica, dadi, macchine a stati e Python. Lo scopo di questo strato è che una storia possa calcolare oltre che ramificarsi. Un passaggio può dire *al goblin restano 3 punti ferita* senza biforcarsi in un passaggio per ogni numero di punti ferita, perché il numero è conservato in una variabile di console o in un componente, non nella forma del grafo.
+
+## Le parti, e a cosa serve ciascuna
+
+Una **lavagna** è un filo di storia: un capitolo, una conversazione, uno scontro, disegnato con schede e i collegamenti tra di loro. Un passaggio è una scheda e una scelta è un collegamento. Ci sono due modi per unire le lavagne: una scheda *Jump* passa la storia a un'altra lavagna, mentre una *macro* è un tratto di storia scritto una volta e richiamato da qualsiasi punto. [Lavagne, schede e macro](/it/explanation/boards-nodes-and-macros/) spiega in cosa i due si differenziano.
+
+Ogni passaggio è un file per lingua, quindi scrivere in più lingue fa parte della forma di un progetto e non è un componente aggiuntivo, e l'app ti dice quali traduzioni sono rimaste indietro. Il ragionamento è in [Passaggi e traduzioni](/it/explanation/passages-and-translations/).
+
+Una storia ha anche bisogno di cose da ricordare, e l'app offre tre luoghi diversi per farlo perché sono tipi diversi di fatto. I componenti sono i personaggi, gli oggetti e i luoghi. Le variabili di console sono i numeri e i flag. Le macchine a stati sono le forme: una porta chiusa a chiave, poi aperta. Una lavagna legge e modifica tutti e tre; vedi [Componenti ed entità](/it/explanation/components-and-entities/), [Variabili di console](/it/explanation/console-variables/) e [Le state machine](/it/explanation/state-machines/).
+
+Il calcolo può stare in una scheda sulla lavagna, oppure dentro una frase. [Python in una storia](/it/explanation/python-in-a-story/) spiega perché esistono entrambi. Un passaggio nomina un soundscape, cioè musica e suoni su una linea temporale in un file a sé, che resta in vigore finché un altro non lo sostituisce, mentre una scheda o uno script riproduce un suono una volta sola e la storia prosegue. Vedi [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/).
+
+## Giocare e distribuire usano lo stesso motore
+
+Il pulsante Gioca esegue la storia da qualsiasi scheda, con accanto una traccia che dice cosa ha fatto la storia. Usa lo stesso motore che esegue una campagna esportata, ed è per questo che una sessione di gioco nell'editor è una prova sulla storia distribuita e non un'approssimazione; [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/) ne espone l'argomento.
+
+L'esportazione poi compila il progetto in una campagna che un runtime esegue senza alcun editor accanto, oppure copia il progetto per un traduttore. Sono cose diverse con scopi diversi, descritte in [Cos'è un'esportazione](/it/explanation/what-an-export-is/). Un gioco che incorpora la storia può essere informato su ciò che vi accade tramite callback dell'host con nome, descritte in [Callback dell'host](/it/explanation/host-callbacks/).
+
+## Orientarsi in una storia lunga
+
+Una storia di una certa dimensione diventa difficile da tenere a mente. La sezione Cerca trova, e sostituisce, una parola o un pattern in tutto il progetto, in ciò che hai scritto e non nel JSON sottostante. La Navigazione Script e la traccia dei percorsi mostrano come le lavagne si passano la storia. [Rileggere una storia lunga](/it/explanation/reading-a-story-back/) spiega a cosa serve ciascuna vista.
+
+Git è integrato, così puoi vedere cosa è cambiato, affiancato, e un conflitto viene mostrato anziché deciso al posto tuo. [Cronologia, condivisione e conflitti](/it/explanation/history-and-sharing/) spiega come funzionano cronologia, condivisione e conflitti.
+
+L'app è anche un server MCP, quindi Claude Code, Cursor e gli altri possono leggere il progetto, giocarlo e, una volta che lo consenti, scriverci dentro. Cosa può fare un assistente, e come lavorarci insieme, è spiegato in [Lavorare con un assistente IA](/it/explanation/working-with-an-assistant/).
+
+## Perché un progetto è una cartella
+
+Sotto a tutto, un progetto è una cartella di normali file (Markdown, JSON, `.py`) che si apre anche senza l'app. Questa scelta rende onesto il controllo di versione, perché git vede esattamente ciò che hai scritto, e permette a qualsiasi altro strumento di leggerlo. Il costo è che ciò che appartiene al progetto è conservato in quei file, e in una cartella `.ripple` accanto a essi, anziché in un database, quindi l'app deve attenersi a un formato che sa spiegare. [Un progetto è una cartella](/it/explanation/projects-are-folders/) ne ripercorre le conseguenze, e [File del progetto e cartella .ripple](/it/reference/project-files/) dice esattamente cosa contiene.
+
+## Vedi anche
+
+- [La tua prima storia](/it/tutorials/your-first-story/): da una cartella vuota a un ramo giocabile, passo dopo passo.
+- [Come installare Ripple Effect](/it/how-to/install-the-app/): Linux, Windows e macOS, e cosa fare quando il programma di installazione viene bloccato.
+- [La finestra di lavoro, i menu e la paletta](/it/reference/workspace-window/): come è organizzata l'app.
+- [Licenze](/it/about/licensing/): cosa è tuo, cosa non è consentito.

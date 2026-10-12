@@ -1,0 +1,186 @@
+---
+title: File Soundscape
+description: "Tipi di file audio, formato del file soundscape, proprietà dei clip e della timeline, scorciatoie dell'editor, regola per stabilire quale soundscape è in vigore e dove si trovano i file."
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## File audio
+
+Ogni file audio nella cartella del progetto è nel registro e in ogni selettore.
+
+| Proprietà | Valore |
+| --- | --- |
+| Estensioni | `.mp3`, `.wav`, `.ogg`, `.oga`, `.flac`, `.m4a`, `.aac`, `.opus` |
+| Tipo nel registro | `audio` |
+| Nome nel registro | Il nome completo del file, estensione inclusa |
+| File esterno | *Importa un file…* lo copia in `.ripple/external/` |
+| Si apre come | Una scheda con riproduzione, pausa e barra di scorrimento |
+
+## File soundscape
+
+| Proprietà | Valore |
+| --- | --- |
+| Nome | `*.soundscape.json` |
+| Contenuto | Una timeline di clip su un unico orologio, disposti in tracce |
+| Tipo nel registro | `soundscape` |
+| `version` del formato | 1 |
+| Creato da | Il menu **+** dell'albero dei file |
+| Richiamato da | Una scheda Narration, tramite id del catalogo |
+
+Un clip indica il proprio audio tramite id del catalogo, quindi rinominare o spostare un file audio non rompe mai un clip. Il file contiene millisecondi interi ovunque e ogni valore predefinito è scritto per esteso. Un file scritto da una versione più recente viene rifiutato anziché letto a metà.
+
+### Proprietà della timeline
+
+Si modificano dietro l'ingranaggio nella barra degli strumenti dell'editor.
+
+| Proprietà | Chiave | Predefinito | Significato |
+| --- | --- | --- | --- |
+| Durata | `length` | `30000` | Durata della timeline in millisecondi. Un clip oltre questo limite è ammesso e viene ombreggiato; ciò che sta oltre viene tagliato durante la riproduzione. |
+| Ripeti cronologia | `loop` | `false` | Indica se la timeline si ripete. |
+| Dissolvenza in entrata | `fadeIn` | `0` | Durata dell'aumento di volume dell'intero soundscape quando inizia. Il file memorizza millisecondi interi; il campo dell'editor accetta anche una durata come `0.25 s` e un orologio digitato. |
+| Dissolvenza in uscita | `fadeOut` | `0` | Durata della discesa di volume dell'intero soundscape quando viene sostituito. |
+| Volume | `volume` | `1.0` | Guadagno, da 0 a 1. Il volume di ogni clip è relativo a questo. |
+| Legato al passaggio | `tied` | `false` | Il soundscape si interrompe quando la storia va avanti. Vedi [Quale soundscape è in vigore](#quale-soundscape-è-in-vigore). |
+
+### Proprietà dei clip
+
+Si modificano nel pannello a destra quando un clip è selezionato.
+
+| Proprietà | Chiave | Predefinito | Significato |
+| --- | --- | --- | --- |
+| File | `audio` | obbligatorio | Quale file audio riproduce, scelto per nome o per cartella; il percorso è mostrato sotto il campo. |
+| Da, A | `clipStart`, `clipEnd` | `0`, `null` | La parte del file riprodotta, come orologi nel formato `m:ss.mmm`. `clipEnd` è `null` oppure almeno `clipStart`. |
+| Riproduzione | `mode` | `once` | Vedi sotto. |
+| Pausa | `interval` | `0` | Solo per la ripetizione automatica. Un silenzio tra una riproduzione e la successiva. Disattivata, la ripetizione è senza interruzioni. Attivata, le riproduzioni seguono il ritmo proprio del clip lungo tutto il soundscape, indipendentemente dalla timeline, e la traccia mostra dove cade ogni riproduzione. |
+| Volume | `volume` | `1.0` | Il guadagno proprio del clip, da 0 a 1, relativo a quello della timeline. |
+| Velocità | `speed` | `1.0` | Velocità di riproduzione, maggiore di 0. |
+| Dissolvenza in entrata, Dissolvenza in uscita | `fadeIn`, `fadeOut` | `0` | Per quanto tempo sale o scende a ciascuna estremità di ogni riproduzione. Il file memorizza millisecondi interi; il campo dell'editor accetta una durata come `0.25 s` o un orologio digitato. |
+| Traccia | `lane` | | Indice intero della traccia. |
+| Posizione | `start` | | Dove inizia il clip sulla timeline, in millisecondi. |
+| Id | `id` | obbligatorio | Id del clip, come stringa. |
+
+| Riproduzione | Comportamento |
+| --- | --- |
+| *Una volta* (`once`) | Nella sua posizione durante il primo passaggio della timeline, e mai più. |
+| *Loop* (`loop`) | A ogni passaggio di una timeline in ripetizione, tagliato dove finisce la timeline. |
+| *Ripetizione automatica* (`auto`) | Ancora e ancora finché il soundscape suona, a prescindere da dove finisce la timeline. |
+
+Un clip in ripetizione automatica sale e scende a ogni giro del clip, con o senza pausa, quindi un file che non si ripete in modo pulito può essere usato come base: la dissolvenza copre la giunzione.
+
+Quando le due rampe di un clip insieme durano più del clip stesso, il clip sale e scende senza raggiungere il volume pieno. Le due rampe si combinano come la più bassa delle due, non come il loro prodotto.
+
+### Tracce
+
+| Proprietà | Chiave | Significato |
+| --- | --- | --- |
+| Nome | `lanes.<n>.name` | Si imposta con un doppio clic sull'intestazione della traccia, o dal suo menu con il clic destro, per esempio *Bed* o *Weather*. |
+| Bloccata | `lanes.<n>.locked` | Una traccia bloccata non accetta clip; una base disposta una volta resta dove è stata messa. |
+
+Una traccia senza nome e non bloccata non viene scritta. Le chiavi delle tracce sono stringhe di numeri interi.
+
+### Valori e tolleranze
+
+| Valore | Regola |
+| --- | --- |
+| Tempi | Millisecondi interi, mai negativi. |
+| `volume` | Da 0 a 1; se assente vale 1. |
+| `speed` | Maggiore di 0; se assente vale 1. |
+| `length` | Se assente vale 30000. |
+| `loop`, `tied` | Se assenti valgono `false`. |
+| `tracks`, `lanes` | Se assenti sono vuoti. |
+| Scalari | Decodificati in modo rigoroso: `"loop": "yes"` viene rifiutato. |
+| `audio` | Un id del catalogo di una voce `audio`. |
+
+### Esempio
+
+```json
+{
+  "version": 1,
+  "length": 30000, "loop": false, "fadeIn": 0, "fadeOut": 0, "volume": 1.0, "tied": false,
+  "tracks": [
+    { "id": "bed", "audio": "bc68e337…", "lane": 0, "start": 0, "clipStart": 0, "clipEnd": null,
+      "volume": 1.0, "speed": 1.0, "fadeIn": 0, "fadeOut": 0, "mode": "auto", "interval": 0 }
+  ],
+  "lanes": { "0": { "name": "Bed", "locked": true } }
+}
+```
+
+## Controlli dell'editor
+
+### Aggiungere e modificare i clip
+
+| Azione | Effetto |
+| --- | --- |
+| *Aggiungi clip* | Propone l'audio del progetto, cercato per nome o per cartella, con ogni riga che mostra dove si trova il file; oppure *Importa un file…* se non ce n'è ancora nessuno. |
+| Doppio clic sull'area vuota | La stessa proposta. |
+| Trascinare un suono dall'albero dei file | Il clip viene posato dove lo rilasci. |
+| Trascinare un blocco | Sposta il clip. |
+| Tirare uno dei bordi di un blocco | Rifila il clip. |
+| Trascinare una maniglia di dissolvenza | Si muove insieme alla pendenza: verso l'interno allunga la rampa, di nuovo verso l'angolo la elimina. |
+| Selezionare un clip | Lo modifica nel pannello a destra. |
+| Doppio clic sull'intestazione di una traccia | Dà un nome alla traccia. |
+| Clic destro sull'intestazione di una traccia | Dà un nome alla traccia, oppure la blocca. |
+| Clic destro altrove | Duplica o elimina un clip, ne aggiunge uno qui, seleziona tutto ciò che c'è su una traccia, adatta al pannello, sceglie l'altezza delle righe delle tracce, annulla e ripristina. |
+
+Ogni blocco di clip disegna al proprio interno la forma del suo suono, cioè la parte del file che riproduce, quindi rifilare sposta l'immagine insieme al suono. La forma compare dopo che il file è stato decodificato. Il blocco disegna anche le rampe del clip: una salita all'inizio, una discesa alla fine, e la parte silenziosa ombreggiata sopra la forma d'onda. Un clip in ripetizione automatica mostra la stessa forma a ogni ripetizione.
+
+### Muto e solo
+
+Ogni intestazione di traccia ha **M** e **S**; il menu della traccia li riporta entrambi a parole. Un clip può essere silenziato dal suo pannello, e un clip silenziato è disegnato sbiadito. Muto e solo non vengono salvati e non arrivano alla storia: un soundscape riproduce ogni clip che contiene.
+
+### Anteprima
+
+| Input | Effetto |
+| --- | --- |
+| Spazio | Riproduci e metti in pausa. |
+| Maiusc+Spazio | Ferma. |
+| Il righello, o qualsiasi area vuota | Barra di scorrimento. |
+| Annulla nella barra degli strumenti | Un solo annulla per l'intero file; un bordo rifilato sulla timeline e un volume digitato nel pannello condividono la stessa cronologia. |
+
+L'anteprima suona attraverso lo stesso percorso di una campagna. Un cursore del guadagno è in tempo reale, e un clip trascinato non fa ripartire la base che c'è sotto.
+
+## Quale soundscape è in vigore
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+Una scheda **Narration** ha una riga soundscape sotto le sue scelte.
+
+| Risposta | Effetto |
+| --- | --- |
+| Un soundscape | Suona da quel passaggio in poi, attraverso ogni passaggio successivo che non ne porta uno proprio. Indicare di nuovo lo stesso non lo fa ripartire. |
+| *Silenzio* | Interrompe subito ciò che sta suonando. |
+| *Nessuno* | Non cambia nulla. |
+
+- Due soundscape non suonano mai insieme: il vecchio finisce la propria dissolvenza prima che il nuovo inizi la sua.
+- Un soundscape contrassegnato come **legato** appartiene al proprio passaggio e si interrompe quando la storia va avanti.
+- Una partita salvata ricorda cosa stava suonando. Un caricamento lo ripristina prima che la pagina venga vista; un soundscape legato torna solo al proprio passaggio.
+- Il runtime segnala quale soundscape è in vigore e non riproduce nulla; è l'host a renderlo. La finestra della campagna lo rende attraverso il mixer dell'app. Vedi [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/).
+
+### Disattivare l'audio
+
+L'intestazione della finestra della campagna ha un pulsante **Disattiva audio**, che viene ricordato tra una sessione e l'altra. Appartiene alla campagna: l'anteprima di un soundscape nella sua scheda non viene mai silenziata da esso. Il volume di un soundscape è quello del file e quello di ogni clip è relativo a esso; non esiste un secondo volume principale.
+
+## Dove si trovano i file
+
+<FileTree>
+- my-story/
+  - .ripple/
+    - external/
+      - rain.ogg un file esterno portato dentro con Importa un file…
+  - music/
+    - tavern.ogg
+  - chapters/
+    - the_gates.graph.json richiama tavern tramite id
+    - tavern.soundscape.json
+</FileTree>
+
+## Vedi anche
+
+- [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/) spiega le due forme che il suono prende in una storia.
+- [Come aggiungere il suono a una storia](/it/how-to/add-sound-to-a-story/) mette in pratica questi controlli.
+- [Sounds](/it/reference/python/sounds/) documenta `play_sound` da Python.
+- [Schede](/it/reference/nodes/) documenta la scheda Play sound.
+- [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/) dice cosa contiene una campagna compilata.

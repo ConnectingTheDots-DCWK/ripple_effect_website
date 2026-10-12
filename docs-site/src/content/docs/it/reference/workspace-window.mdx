@@ -1,0 +1,185 @@
+---
+title: La finestra di lavoro, i menu e la paletta
+description: Le parti della schermata iniziale e della finestra del progetto, i menu, le scorciatoie, Cerca nel progetto, la paletta dei comandi, i suggerimenti e il pannello Messaggi.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="home" /> */}
+
+## Schermata iniziale
+
+Una griglia dei progetti che l'app conosce. Un progetto che un altro programma ha spostato o eliminato scompare dalla griglia.
+
+| Controllo | Azione |
+| --- | --- |
+| **Nuovo progetto** | Chiede un titolo, una posizione, una descrizione e una copertina facoltative e la lingua in cui scrivi. La lingua di partenza viene dalle impostazioni del computer e si può cambiare. Crea la cartella e un solo file al suo interno, `.ripple/project.json`. |
+| **Importa una cartella** | Apre una directory esistente. Se è già stata un progetto, titolo, descrizione, copertina e lingua arrivano già compilati e al suo interno non viene scritto nulla. In caso contrario, le dai un nome. |
+
+La finestra Nuovo progetto ha una barra sulla sinistra:
+
+| Voce | Risultato |
+| --- | --- |
+| *Vuoto* | Un progetto vuoto. |
+| **Modelli** | Elenca i progetti di esempio inclusi in questa versione e copia quello scelto dove indichi. Il primo è *The City Of Elsenmar*: tre capitoli, due lingue, personaggi e oggetti come componenti, dadi, variabili e Python nella prosa. |
+
+{/* TODO(shots): <Shot name="newProject" /> */}
+{/* TODO(shots): <Shot name="templates" /> */}
+
+Nella pagina iniziale la barra dei menu contiene solo **File** e **Aiuto**.
+
+## Finestra del progetto
+
+<Shot name="files" />
+
+| Parte | Posizione | Contenuto |
+| --- | --- | --- |
+| Barra delle attività | Striscia stretta di icone lungo il lato sinistro | Sceglie cosa mostra la barra laterale; in basso ha quattro pulsanti e un interruttore per i Messaggi. |
+| Barra laterale | Accanto alla barra delle attività | **File**, **Modifiche** o **Cerca**. Un clic sulla sezione già visibile richiude la barra laterale. |
+| Area degli editor | Al centro | I documenti aperti, in un'area di aggancio. |
+| Messaggi | Sotto i documenti | Vedi [Messaggi](#messaggi). |
+
+### Pulsanti della barra delle attività
+
+I quattro pulsanti in basso restano visibili sia che la barra laterale sia aperta sia che non lo sia.
+
+| Pulsante | Apre |
+| --- | --- |
+| *Navigazione Script* | Come le lavagne si passano la storia. |
+| *Esporta progetto* | Impacchetta il progetto per una build o per un traduttore. |
+| *Impostazioni progetto* | Pagine lungo una barra: *Generale*, *Lingue*, *Radici della narrazione*, *Capacità*. |
+| *Variabili Console* | La pagina in cui un progetto dichiara le sue variabili tipizzate. |
+
+Un quinto controllo in fondo alla barra delle attività mostra o nasconde i Messaggi e ne riporta il conteggio. Non è uno dei quattro.
+
+### Albero dei file
+
+| Funzione | Dettaglio |
+| --- | --- |
+| Selezione e modifica | Selezione multipla, taglia, copia, incolla, rinomina, elimina, cartelle che si aprono durante il trascinamento, trascinamento per spostare. |
+| Tasti | `Ctrl+X`, `Ctrl+C`, `Ctrl+V`, `Ctrl+A` (`Cmd` su Mac), `Canc`, `F2` per rinominare, `Esc` per annullare la selezione. |
+| Pulsante **+** | Crea una lavagna, un macro, un componente, uno script, una state machine, un soundscape, un passaggio localizzato o una nota, e qualsiasi altro tipo tramite l'estensione che digiti. |
+| Altri file | Un PDF, un'immagine, un foglio di calcolo o un suono compare nell'albero e si apre. |
+
+### Schede dell'editor
+
+- Una scheda è una vista. Una lavagna chiusa conserva la sua camera, la sua pila di annullamento e le modifiche non salvate.
+- Le schede seguono le rinomine e si chiudono quando il loro file viene eliminato.
+- Aprire un file dall'albero, o arrivarci da una lavagna, fa scorrere la sua scheda fino a renderla visibile.
+- I documenti aperti, la loro disposizione e lo stato in cui hai lasciato la barra laterale e i Messaggi vengono ricordati per progetto in `.ripple/workspace.json`.
+
+### Aggancio
+
+| Gesto | Risultato |
+| --- | --- |
+| Trascina una scheda fuori dalla sua striscia | La affianca a un altro documento. |
+| Rilascia una scheda su un'altra striscia | La aggiunge lì come scheda. |
+| Trascina un divisore | Ridimensiona. |
+| Trascina una scheda lungo la sua striscia | Le schede vicine fanno spazio in tempo reale; l'ordine mostrato è l'ordine mantenuto al rilascio. |
+
+Un rilascio che lascerebbe tutto dov'è non si illumina come bersaglio. L'aggancio è `fl_panel`; vedi [Open source](/it/about/open-source/).
+
+### Editor dei documenti
+
+| Documento | Editor |
+| --- | --- |
+| Lavagna | Canvas |
+| Passage | Editor Markdown con anteprima dal vivo |
+| Componente | Editor degli attributi |
+| Script | Editor accanto a una console Python |
+| State machine | Editor accanto al suo diagramma |
+| Soundscape | Timeline |
+| File audio | Riproduci, pausa e barra di scorrimento |
+| Qualsiasi altro | Testo semplice, immagine o PDF |
+
+Ogni editor riempie la sua scheda sotto una barra uguale in tutte le schede: i controlli a sinistra e, all'estrema destra, se il file è scritto (*Salvato* o *Non salvato*, a parole) e un pulsante che rilegge il file dal disco.
+
+## Modalità Zen
+
+| Proprietà | Dettaglio |
+| --- | --- |
+| Entrare | `F11` (`Ctrl+Cmd+F` su Mac) oppure *Visualizza ▸ Modalità Zen*. Gli stessi tasti la fanno lasciare. |
+| Nascosti | La barra dell'app, la barra laterale, i Messaggi e le schede. |
+| Banner | Un piccolo banner in alto indica il documento all'ingresso e ogni volta che cambia. Ha un pulsante *Esci dalla modalità Zen* quando il puntatore raggiunge il bordo superiore. |
+| `Ctrl+Tab`, `Ctrl+Maiusc+Tab` | In modalità Zen, passano da un documento aperto all'altro, in qualunque gruppo si trovi. Fuori da essa, scorrono le schede del gruppo in cui ti trovi. |
+
+## Barra dei menu
+
+In un progetto la barra dell'app contiene **File**, **Modifica**, **Visualizza**, **Campagna**, **Modifiche** e **Aiuto**. Nella pagina iniziale contiene **File** e **Aiuto**. Insieme offrono tutto ciò che offre la paletta dei comandi, con la scorciatoia accanto a ogni riga e un segno di spunta accanto a ogni opzione attiva.
+
+| Menu | Contenuto |
+| --- | --- |
+| **File** | *Nuovo file…*, *Nuova cartella…*, *Vai al file…*, *Salva*, *Salva tutto*; il sottomenu *Questo file* (*Ricarica dal disco*, *Mantieni la mia versione*, *Rinomina questo file…*, *Elimina questo file…*, *Mostra questo file nel gestore file*, *Copia percorso*); *Chiudi scheda*, *Chiudi le altre schede*, *Chiudi tutte le schede*; *Impostazioni progetto…*, *Esporta progetto…*; il sottomenu *Progetto* (*Mostra la cartella del progetto*, *Ricarica i file*, *Riindizza il progetto*, *Importazione di risorse esterne*); *Chiudi il progetto*. *Impostazioni…* apre la finestra delle impostazioni. Nella pagina iniziale: *Nuovo progetto…*, *Importa una cartella…*, impostazioni. |
+| **Modifica** | Annulla, ripeti, taglia, copia, incolla, duplica, seleziona tutto. Agiscono sul campo di testo in cui stai scrivendo o sulla lavagna che hai davanti. Duplica vale solo per le lavagne. |
+| **Visualizza** | *Paletta dei comandi*, *Mostra i file*, *Mostra le modifiche*, *Cerca nel progetto*, *Ignora i messaggi che possono essere ignorati*, *Modalità Zen*, e le opzioni *Barra laterale*, *Messaggi*, *Minimappa*, *Scheda delle scorciatoie*, *Creazione al rilascio*, *Modalità prestazioni*, *File nascosti*, ciascuna con la spunta quando è attiva. |
+| **Campagna** | *Gioca alla campagna…*, *Apri una partita salvata…*, *Riprendi la campagna*, *Interrompi la campagna*, *Traccia ciò che porta qui*, *Navigazione Script*, *Variabili Console*, *Callback dell'host*, *Cosa può e non può fare questo Python*. |
+| **Modifiche** | *Vedi cosa è cambiato in questo file*, *Segna tutto come pronto*, *Salva un punto di salvataggio…*, *Annulla l'ultimo punto di salvataggio*, *Metti da parte questo lavoro…*, *Nuova Storyline…*, *Passa a un'altra Storyline…*, *Controlla le modifiche*, *Ottieni le modifiche dal backup*, *Esegui il backup ora*. |
+| **Aiuto** | Documentazione, novità, suggerimenti, risoluzione dei problemi, assistenza e informazioni. *Risoluzione dei problemi* contiene *Mostra di nuovo ogni suggerimento* e le righe che copiano i rapporti sul pacchetto e sul dispositivo e aprono la cartella di questa sessione. |
+
+Annulla e Ripeti stanno in Modifica e non nella barra degli strumenti della lavagna. Un clic destro, o un collegamento rilasciato su un canvas vuoto, crea qualsiasi scheda. La scheda delle scorciatoie si ripristina da *Visualizza ▸ Scheda delle scorciatoie*.
+
+## Cerca nel progetto
+
+Apri la sezione **Cerca** della barra laterale con `Ctrl+Maiusc+F` (`Cmd+Maiusc+F` su Mac), oppure esegui *Cerca nel progetto* dalla paletta.
+
+| Opzione | Effetto |
+| --- | --- |
+| Maiuscole/minuscole, parola intera, espressioni regolari | Interruttori di ricerca standard. |
+| File da includere e da escludere | Limitano i file in cui si cerca. |
+| Interruttori | Lavagne e componenti, narrazione, variabili di console, tutto il resto. |
+
+Le lavagne e i componenti vengono letti per ciò che vi hai scritto (il titolo di un nodo, il testo di una scelta in ogni lingua, il valore di un campo), mai per il loro JSON. Ogni risultato dice dove si trova, per esempio *Testo della scelta (italiano) in «At the gate»*, *Campo «Backstory»*, *Riga 12, inglese*. I nomi a cui rimandano altre cose, come quello di una variabile o di uno stato, sono contrassegnati. Un clic su un risultato apre il documento in corrispondenza del risultato.
+
+### Sostituisci
+
+Sotto il campo di ricerca c'è un campo di sostituzione. Scrivendoci si vede cosa diventerebbe ogni risultato.
+
+| Azione | Dettaglio |
+| --- | --- |
+| Sostituisci uno, sostituisci quelli di un file, sostituisci tutto | Sostituisci tutto chiede prima conferma e mostra i conteggi. |
+| Anteprima | Mostra come apparirebbe un file dopo. Per una lavagna o un componente, solo le parole che cambiano. |
+| Annulla | Le sostituzioni vanno negli editor aperti e si annullano lì; quelle di una lavagna in un solo passo. |
+| Lasciati stare | I nomi a cui rimanda qualcos'altro; un risultato il cui testo è cambiato dopo la ricerca; un file che nel frattempo un altro programma ha modificato. Ciascuno viene segnalato nel pannello. |
+
+## Paletta dei comandi
+
+{/* TODO(shots): <Shot name="palette" /> */}
+
+| Proprietà | Dettaglio |
+| --- | --- |
+| Aprire | `Ctrl+Maiusc+P` (`Cmd+Maiusc+P` su Mac), oppure *Visualizza ▸ Paletta dei comandi*. |
+| Contenuto | Ogni comando dell'app, per nome, da qualsiasi punto di un progetto. |
+| Filtro | Tollera gli errori di battitura. |
+| Ambito | Offre solo ciò che può essere eseguito. |
+| Comandi solo da paletta | Alcuni comandi non hanno un pulsante, per esempio *Mostra il suggerimento per…* e *Segui il sistema*. |
+| *Usati di recente* | Finché non scrivi nulla, viene offerto per primo l'ultimo comando eseguito. Viene ricordato tra un avvio e l'altro. |
+
+## Suggerimenti
+
+La prima volta che apri ciascun tipo di elemento (la schermata iniziale, una lavagna, un pacchetto, un componente, la finestra della campagna) compare una volta un breve suggerimento che ne indica i termini. Non c'è nessun tour. Un suggerimento si richiama dalla paletta (*Mostra il suggerimento per…*); *Aiuto ▸ Risoluzione dei problemi ▸ Mostra di nuovo ogni suggerimento* li riattiva tutti.
+
+## Messaggi
+
+I Messaggi sono ciò che l'app ti dice sul progetto aperto, per esempio una traduzione rimasta indietro rispetto all'originale. Vengono cancellati quando si apre un altro progetto. Sono distinti dal log di sessione; vedi [Il log di sessione e i rapporti](/it/reference/session-log/).
+
+| Proprietà | Dettaglio |
+| --- | --- |
+| Posizione | Sotto i documenti, un terzo della loro altezza, con un conteggio accanto al nome. |
+| Chiudere | La croce sul pannello. |
+| Riaprire | Il pulsante in fondo alla barra delle attività (riporta il conteggio), oppure il menu Visualizza. |
+| Raggruppamento | Per argomento (Lavagne, Traduzioni, Controllo di versione), con un conteggio su ogni intestazione che si può comprimere; oppure per gravità, con tutto ciò che è rotto per primo. |
+| Chip | Tre, che attivano e disattivano problemi, avvisi e registrazioni. |
+| Ricordati | Il raggruppamento e i chip. |
+| Messaggi del motore | Portano il loro codice. Il codice apre l'intestazione di quella regola in [Diagnostics](/it/reference/diagnostics/). |
+| Messaggi che nominano schede | Un clic su uno apre la lavagna e solleva quelle schede dal canvas. `Esc`, o la croce nella barra degli strumenti, rimette a posto il canvas. |
+| *È intenzionale* | Una spunta sull'unico controllo che può sbagliarsi su una scelta deliberata (`W.GE.06`). Resta spuntata. |
+
+La maggior parte dei messaggi non ha un codice: sono l'app che riferisce su un file, una traduzione o qualcosa che non è riuscita a fare. I messaggi con codice sono il motore che legge la forma delle tue lavagne.
+
+## Vedi anche
+
+- [Come organizzare l'area di lavoro](/it/how-to/arrange-the-workspace/)
+- [Come cercare e sostituire in un progetto](/it/how-to/find-and-replace-in-project/)
+- [Diagnostics](/it/reference/diagnostics/)
+- [File del progetto e cartella .ripple](/it/reference/project-files/)
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/)

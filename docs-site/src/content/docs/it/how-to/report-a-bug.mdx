@@ -1,0 +1,38 @@
+---
+title: Come segnalare un bug
+description: Apri il modulo precompilato per i bug dalla pagina Assistenza e allega come file zip il log e i rapporti della sessione.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+<Steps>
+
+1. Apri **Impostazioni ▸ Assistenza**, oppure scegli *Supporto e feedback* nel menu Aiuto.
+
+2. Scegli **Segnala un bug**. Il modulo per i bug si apre nel repository pubblico di assistenza, [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), con la versione, il tuo sistema operativo e il programma di installazione da cui proviene questa copia già indicati, insieme ai dettagli tecnici.
+
+3. Descrivi nel modulo quello che hai visto.
+
+4. Sotto *Cosa allegare*, scegli **Salva questa sessione come file zip**. Il log e i rapporti della sessione vengono raccolti in un unico file e si apre la cartella in cui è stato scritto. La riga indica la sessione con il suo id, così una conversazione di assistenza può riferirsi all'esecuzione giusta.
+
+5. Allega lo zip alla segnalazione prima di inviarla.
+
+</Steps>
+
+:::caution
+L'app rimuove i dettagli privati dal log prima di scriverlo, ma non può sapere che il nome di una lavagna è privato. Leggi il contenuto dello zip prima di pubblicarlo. Nulla carica questi file: sei tu a decidere cosa allegare. L'unica eccezione è un rapporto di crash, di cui l'app chiede prima il permesso e che invia solo se rispondi di sì. [Il log di sessione e i rapporti](/it/reference/session-log/) elenca cosa viene rimosso.
+:::
+
+## Altri modi per fornire dettagli
+
+- **Aiuto ▸ Risoluzione dei problemi** copia le informazioni sul pacchetto (quale build è e come è stata installata) e quelle sul dispositivo (il sistema operativo), e apre la cartella di questa sessione. *Mostra di nuovo ogni suggerimento* si trova nel menu Aiuto stesso. Le voci di Risoluzione dei problemi e *Mostra di nuovo ogni suggerimento* sono anche nella paletta dei comandi; vedi [la finestra di lavoro, i menu e la paletta](/it/reference/workspace-window/).
+- **Fai una domanda** apre GitHub Discussions, **Richiedi una nuova funzionalità** apre un nuovo issue con l'etichetta enhancement, e **Sfoglia gli issue aperti** elenca i problemi noti, così puoi controllare se il tuo è già presente.
+
+## Vedi anche
+
+- [La finestra di lavoro, i menu e la paletta](/it/reference/workspace-window/)
+- [Impostazioni, accessibilità e controlli degli aggiornamenti](/it/reference/settings/)
+- [Il log di sessione e i rapporti](/it/reference/session-log/)
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/)

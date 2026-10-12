@@ -1,0 +1,90 @@
+---
+title: Come esportare una copia del progetto o una campagna
+description: "Scegli tra una copia del progetto e una campagna compilata, imposta Includi i media, rimuovi media e collegamenti e scrivi i passaggi in HTML con un profilo."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+## Apri la finestra di esportazione
+
+Scegli *Esporta progetto* nel pannello del progetto, oppure *Esporta progetto…* dalla Paletta dei comandi. L'interruttore del formato nella finestra chiede una di due cose:
+
+- **Copia del progetto**, una cartella che si apre di nuovo come progetto. Usala per passare una storia a un traduttore o per conservarne una copia. Include `.ripple/`.
+- **Campagna**, una campagna compilata pronta per essere riprodotta dal runtime. Nulla al suo interno si apre nell'editor. Usala per un gioco o un player.
+
+Gli avvisi, come i media lasciati fuori, compaiono in Messaggi. Un'immagine a cui il testo rimanda dall'esterno del progetto finisce in `media/external/` in una copia del progetto.
+
+## Esporta una copia del progetto
+
+<Steps>
+
+1. Scegli **Copia del progetto**.
+
+2. In **Includi i media**, attiva i tipi che devono viaggiare: **Immagini**, **Video**, **Audio**. Lascia disattivato un tipo per mandare a un traduttore la storia e tenerti la colonna sonora.
+
+   Con un tipo disattivato, i suoi file vengono elencati e lasciati indietro. I passaggi, le lavagne e i soundscape puntano comunque dove sarebbero stati i file, così potrai rimetterli a posto più tardi.
+
+3. Attiva **File Zip** per scrivere un unico archivio invece di una cartella.
+
+4. Se vuoi, rimuovi i media o i collegamenti dal testo. Vedi [Rimuovi media e collegamenti](#rimuovi-media-e-collegamenti).
+
+5. Scegli **Esporta**, poi seleziona la destinazione nella finestra di sistema (*Esporta qui*, oppure *Archivio zip* se crei uno zip).
+
+</Steps>
+
+## Esporta una campagna
+
+<Steps>
+
+1. Scegli **Campagna**.
+
+2. Imposta **Includi i media** e **File Zip** come per una copia del progetto.
+
+3. Se la riprodurrà un gioco o un player costruito senza l'interprete Python, spunta **Non richiede Python** dopo aver seguito [Come esportare per un player senza Python](/it/how-to/export-for-a-player-without-python/).
+
+4. In **Esporta le pagine come**, lascia Markdown oppure scegli HTML (vedi sotto).
+
+5. Scegli **Esporta**, poi seleziona la destinazione.
+
+</Steps>
+
+I media lasciati fuori da una campagna sono indicati in Messaggi. Cosa contiene una campagna, cartella per cartella, è in [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/).
+
+## Scrivi i passaggi in HTML
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+Solo per le campagne. I controlli sopra la linea nella finestra decidono cosa viaggia; quelli sotto decidono in cosa si trasforma il testo. L'editor e la vista di gioco restano in Markdown.
+
+<Steps>
+
+1. Accanto a **Esporta le pagine come**, scegli HTML. Ogni passaggio viene scritto come frammento HTML per lingua, pronto da inserire in una pagina.
+
+2. Apri il menu a discesa **Profilo**. Senza profilo ogni elemento esce nudo, un semplice `<p>` o `<em>` (*Nessuno — elementi semplici*). Scegli *Trova un profilo* per sceglierne uno esistente, oppure *Nuovo profilo* per crearne uno.
+
+3. Nel profilo, assegna una classe a ogni tipo di elemento. I tipi sono elencati a sinistra (*Nella pagina*), con il Markdown che ciascuno rappresenta in un tooltip, e a destra c'è un campo **Classe CSS**. Un paragrafo, un titolo, un'enfasi, un collegamento, una cella di tabella e uno snippet Python possono avere ciascuno una classe. Lascia vuoto un campo per non avere alcun attributo.
+
+4. Scegli **Esporta**, poi seleziona la destinazione.
+
+</Steps>
+
+Il profilo viene salvato mentre scrivi, in `.ripple/export/<name>.profile.json`. Un nome è un nome di file: lettere, cifre, spazi e trattini. Fai il commit del file insieme alla storia, così una build lo riproduce. Un profilo serve per quante esportazioni vuoi. *Elimina profilo* rimuove solo quel file.
+
+## Rimuovi media e collegamenti
+
+Due interruttori sotto **I passaggi**; funzionano sia su una copia del progetto sia su una campagna.
+
+- **Rimuovi i media** toglie dal testo le immagini, i video e l'audio incorporati, per un lettore che non può mostrarli. Ha un interruttore figlio per ogni tipo.
+- **Rimuovi i collegamenti** riduce i collegamenti a documenti e al web alle sole parole.
+
+Un collegamento a un'immagine è un'immagine, non un collegamento, e dipende da **Rimuovi i media**. Nessuno dei due interruttori cambia ciò che viaggia accanto ai passaggi; quello resta **Includi i media**. La rimozione per un tipo che non è nell'esportazione è disattivata, perché non c'è nulla da rimuovere, e torna com'era quando il tipo ritorna.
+
+## Vedi anche
+
+- [Cos'è un'esportazione](/it/explanation/what-an-export-is/): perché una campagna viene compilata anziché copiata.
+- [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/): ogni interruttore e cosa contiene un bundle.
+- [Come esportare per un player senza Python](/it/how-to/export-for-a-player-without-python/)
+- [Diagnostica](/it/reference/diagnostics/): i codici dell'esportazione in Messaggi.

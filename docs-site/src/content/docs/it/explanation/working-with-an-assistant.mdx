@@ -1,0 +1,75 @@
+---
+title: Lavorare con un assistente IA
+description: Perché Ripple Effect è un server MCP, perché i suoi strumenti sono quelli dell'app e perché le scritture di un assistente passano dalle stesse sessioni delle tue.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Ripple Effect è un **server MCP**, quindi Claude Code, Claude Desktop, Cursor e qualsiasi altro strumento che parli il protocollo possono lavorare nella cartella insieme a te, invece di ricevere testo incollato. Il progetto poggia su quattro decisioni: il canale è privato, gli strumenti sono quelli dell'app e non del bridge, una scrittura è lo stesso atto chiunque la compia, e il log registra che qualcosa è accaduto senza registrare cosa.
+
+{/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+## Perché un server
+
+Un progetto è fatto di normali file, quindi un assistente con la cartella aperta può già leggerne la maggior parte. Quello a cui i file da soli non sanno rispondere è cosa porta a cosa tra le lavagne, quali traduzioni sono rimaste indietro, cosa può davvero fare il Python incorporato e cosa fa la storia quando viene giocata. Queste risposte vivono nell'app in esecuzione, e il server è il modo in cui un assistente le chiede.
+
+## Un canale privato, disattivato per impostazione predefinita
+
+Il server è un canale locale privato che solo il tuo account può aprire. Non è mai una porta di rete. Collegare un client è un copia e incolla, che [Come collegare un assistente IA](/it/how-to/connect-an-mcp-client/) descrive passo per passo.
+
+L'accesso è disattivato finché non lo attivi, in due passaggi, nella pagina **Agenti** della finestra Impostazioni. **Consenti agli agenti di raggiungere questa app** mette il server in ascolto: un assistente può allora leggere il progetto e giocarlo. **Consenti agli agenti di modificare i file** dipende dal primo ed è disattivato in modo indipendente. Entrambi sono disattivati per impostazione predefinita.
+
+La separazione segue la differenza di conseguenze. Leggere è utile di per sé e non può toccare nulla, quindi è la prima cosa che puoi concedere. Scrivere cambia la tua storia, quindi è una decisione a parte, e un progetto può essere condiviso con un assistente per revisioni, domande e prove di gioco senza mai offrirgli la possibilità di modificarlo.
+
+## Perché gli strumenti sono dell'app e non del bridge
+
+Il programma che un client avvia è un bridge sottile. Non porta con sé un elenco di strumenti: chiede all'app in esecuzione cosa offre nel momento in cui un client lo avvia, e l'app risponde per questa versione e per questo progetto. I tipi di scheda che l'aggiunta di una scheda accetta sono un'enumerazione letta dalla tavolozza dell'editor stesso, con i nomi delle schede accanto. Ogni argomento `locale` indica le lingue in cui è scritto il progetto, e `cvar` indica le variabili che dichiara. Uno strumento di scrittura dice nella sua descrizione quando l'interruttore di modifica è disattivato, e ogni descrizione termina con un collegamento alla propria pagina.
+
+Il motivo è il disallineamento. Un elenco scritto nel bridge descrive l'app che esisteva quando è stato scritto; un elenco letto dall'app descrive quella che stai usando. Lo stesso ragionamento è alla base dello strumento `node_types`, che elenca ogni tipo di scheda di questa versione e, interrogato su uno, lo descrive per intero: i campi da compilare e le porte da collegare. Legge la tavolozza nel momento in cui viene interrogato.
+
+Il client viene informato appena qualcosa di tutto questo cambia: un progetto aperto, un interruttore attivato, una lingua o una variabile dichiarata. Un aggiornamento dell'app viene quindi visto da un client già in esecuzione, e un client con il bridge configurato compare nella pagina Agenti non appena l'accesso degli agenti è attivo, invece che alla sua prima chiamata. Un client il cui bridge è precedente alla 1.4 ha bisogno di un riavvio, una volta sola.
+
+## Leggere: la forma del progetto, su richiesta
+
+Ciò che un assistente può leggere è scelto per rispondere alle domande che solleva una storia lunga: la forma dell'intero progetto in una ventina di righe, poi qualsiasi lavagna come riepilogo compatto e, oltre ai singoli documenti, cosa porta a cosa, ogni percorso tra due passaggi e cosa è obsoleto o sbagliato. [Strumenti MCP](/it/reference/mcp-tools/) li elenca.
+
+È lo stesso argomento di [Rileggere una storia ampia](/it/explanation/reading-a-story-back/): un progetto troppo grande per essere tenuto sotto gli occhi si legge meglio come riepiloghi e risposte che come tutti i file, e un assistente si trova nella stessa posizione in cui ti trovi tu. Anche i metadati di una scheda gli arrivano, come una riga `meta` sotto la scheda nella lettura di una lavagna; aggiungere o cambiare una scheda richiede un oggetto `metadata` che sostituisce quello che la scheda aveva.
+
+## Giocare: la storia pubblicata, non una simulazione
+
+Un assistente gioca con lo stesso runner che usa il pulsante Gioca, con lo stesso Python e gli stessi valori dei componenti, per le ragioni spiegate in [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/). Avvia una campagna, compie scelte e legge lo stato. Poiché è un programma e non una persona, può anche percorrere **ogni** ramo e riferire ciò che nessuno ha il tempo di rivedere: quali finali sono raggiungibili, quali passaggi non sono raggiunti da nulla, dove un percorso resta senza collegamento e quali jump sono rotti.
+
+Una sessione di gioco non scrive nulla, e gioca le lavagne così come sono su disco, non come sono a metà modifica in una scheda del documento, per cui una visita completa riferisce su ciò che verrebbe salvato ed esportato. Legge la stessa traccia che mostra la finestra di gioco, riga per riga con la lavagna e la scheda da cui ogni riga proviene, e prosegue da dove ha letto per ultimo. Una scheda Input gli arriva come una diapositiva a sé che elenca i campi richiesti, e lui compila il modulo con un valore per nome; un'esplorazione non presidiata ne attraversa una con ogni campo vuoto.
+
+## Scrivere: attraverso le sessioni, una volta che lo consenti
+
+Con il secondo interruttore attivo, un assistente può scrivere: passaggi e relative traduzioni, schede e collegamenti, componenti, script, soundscape e i file stessi. [Strumenti MCP](/it/reference/mcp-tools/) li elenca tutti.
+
+La proprietà importante è che nessuna di queste è un percorso separato verso il disco. Ogni scrittura passa dalle sessioni dell'app, le stesse da cui passa la tua digitazione. Ne derivano tre conseguenze che altrimenti dovresti costruire a parte. Aggiungere un passaggio è un singolo annullamento. Il salvataggio automatico lo vede, quindi non va perso né sovrascritto. Il controllo di versione lo elenca, quindi compare nelle modifiche come qualsiasi altra cosa. Una seconda via che scrivesse direttamente i file avrebbe bisogno di una risposta propria a ciascuna di queste, e l'app avrebbe due modi di sbagliare. Tutto ciò che è cambiato in questa sessione è elencato nella pagina Agenti, e ogni modifica viene pubblicata in Messaggi mentre avviene.
+
+{/* TODO(shots): <Shot name="agentConnected" /> */}
+
+### Cosa viene rifiutato in scrittura
+
+Un rifiuto è o una decisione che spetta a te o una protezione che mantiene coerente il progetto. Un documento con due versioni in attesa è un conflitto, e scegliere un lato significherebbe decidere al posto tuo; gli id del registro e del catalogo non vengono mai scritti direttamente, così una rinomina non può lasciare un Jump che punta al nulla. L'eliminazione di un file non si può annullare, quindi è protetta anziché subordinata a una conferma: non viene eliminato nulla fuori dal progetto, nulla in `.ripple/` e nulla con modifiche non salvate.
+
+[Cosa può leggere, giocare e scrivere un assistente](/it/reference/mcp-permissions/) è il riferimento per l'elenco completo.
+
+## Sapere chi è collegato
+
+La barra dell'app tiene solo ciò che ha novità, e il simbolo degli agenti è una di queste cose. Mentre un client è collegato, il suo simbolo compare lì (quello di Claude, di OpenAI, di Gemini o un semplice robot per tutti gli altri), e premerlo apre la pagina Agenti. Se non è stato possibile aprire la connessione locale, al suo posto compare una spina nel colore dell'errore, con *Gli agenti non possono raggiungere questa app* nel suggerimento. Con l'interruttore disattivato, o attivo ma senza nessuno collegato, la barra non mostra nulla.
+
+## Cosa l'app annota e cosa no
+
+Ogni chiamata a uno strumento, lettura di una risorsa e prompt di un client lascia una riga nel log della sessione: quale client, quale strumento, quali *nomi* di argomento ha passato, quanto tempo ha richiesto e se è riuscita. Il contenuto degli argomenti non viene mai registrato. Un percorso verrebbe oscurato, ma un passaggio che hai scritto no, e un elenco di esclusioni di ciò che va ripulito è giusto solo fino al giorno in cui manca un caso. Il log può dire che un assistente ha scritto in una lavagna ma non cosa ha scritto; ogni modifica viene inoltre pubblicata in Messaggi. Vedi [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/).
+
+## I prompt e la documentazione
+
+Due prompt, uno per scrivere un passaggio e uno per modificare una lavagna, possono essere consegnati a un assistente con il passaggio o la lavagna già al loro interno. Esistono perché portano le due cose che un assistente sbaglia per prime: che il Python nella prosa è monty e non CPython, quindi un attributo è `component("X")["attr"]`, e che l'id di una scheda è numerato su un'intera lavagna e non per tipo. Questo sito pubblica inoltre la propria documentazione come testo semplice per gli assistenti; [Strumenti MCP](/it/reference/mcp-tools/) ne indica i file.
+
+## Vedi anche
+
+- [Come collegare un assistente IA (client MCP)](/it/how-to/connect-an-mcp-client/): il copia e incolla che collega un client.
+- [Strumenti MCP](/it/reference/mcp-tools/): ogni strumento e argomento.
+- [Cosa può leggere, giocare e scrivere un assistente](/it/reference/mcp-permissions/): i permessi per intero.
+- [Come giocare e testare una campagna](/it/how-to/play-a-campaign/): il runner che un assistente condivide con te.
