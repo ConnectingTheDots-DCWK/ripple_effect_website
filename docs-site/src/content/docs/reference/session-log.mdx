@@ -1,0 +1,188 @@
+---
+title: The session log and reports
+description: What a session folder holds, what is redacted and recorded, what the crash-report dialog lists, what usage statistics carry, and where the files live.
+---
+
+Each run of the app writes a **session**: a folder of log files and two small records. No setting uploads the session log. The one thing that sends session files is the crash report, which asks first; usage statistics send a separate small record and no log, and are off until switched on. What each carries is listed below, and in [What the app sends](/about/what-the-app-sends/).
+
+## Where the files live
+
+| | |
+| --- | --- |
+| Location | `diagnostics/sessions/<date>/<id>/` inside the application-support directory (the platform's application data folder) |
+| `<date>` | The day the session started, in UTC, as `YYYY-MM-DD` |
+| `<id>` | Eight lowercase hexadecimal characters |
+| Open the current one | **Help ▸ Troubleshooting ▸ Open this session's folder** |
+| Id shown | **Settings ▸ Support**, under the row *Open this session's folder*, as *This session is* followed by the id |
+| Pack the current one | **Settings ▸ Support ▸ Save this session as a zip**: the session's log and reports in one file |
+
+All of these are also in the command palette.
+
+## Files in a session folder
+
+Each file has exactly one writer. A writer with nothing to say does not create its file, so an absent `engine.log` means the engine never started, and an absent `flutter.log` means no framework error was reported.
+
+| File | Written by | Written | Holds |
+| --- | --- | --- | --- |
+| `session.json` | the app | at open, at the first error, at close | When the session started and ended, its verdict, the error counts |
+| `metadata.json` | the app | at open, and again once the engine reports | Version and build of the app, operating system, a short allowlist of device fields, the engine's version and whether it was built with Python |
+| `editor.log` | the app | continuously | Every record the app writes |
+| `flutter.log` | the app | on a framework error | Errors the app reported; also in `editor.log` |
+| `platform.log` | the app | on an unhandled platform error | Errors the operating system reported to the app; also in `editor.log` |
+| `engine.log` | the engine (the part that plays and compiles campaigns) | continuously | The engine's own records, with the same redaction. A crash in it records the file and line it came from, in a release build too |
+
+A log file that outgrows 16 MiB continues into a numbered part in the same folder: `editor.log`, `editor.2.log`, `editor.3.log`. Parts are kept and deleted with their session.
+
+### `session.json`
+
+| Key | Meaning |
+| --- | --- |
+| `version` | Integer, currently 1 |
+| `id` | The folder's name |
+| `startedAt` | UTC timestamp |
+| `endedAt` | Present only once the session closed in an orderly way |
+| `pid` | The process id |
+| `verdict` | `clean`, `abnormal`, or absent |
+| `errors`, `fatals` | Counts of records at those levels |
+
+The file is written at open, again the first time a record at `ERROR` or `FATAL` is written (the verdict becomes `abnormal`), and at close. A crash writes what happened and closes off the session in one go, so the file is complete even when the app is not. Unknown keys are ignored; a file from a newer version is neither parsed nor deleted.
+
+## The record line
+
+One record is one line, in fixed columns:
+
+```
+2026-09-08T14:03:11.482Z  ERROR  workspace   could not open the project  {path: <path>/act1, ms: 12}
+```
+
+| Column | Content |
+| --- | --- |
+| 1 | UTC timestamp, `YYYY-MM-DDTHH:MM:SS.mmmZ`. Times are never in the local clock |
+| 2 | Level: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL` |
+| 3 | The feature that wrote it |
+| 4 | The message, then optional fields as `{key: value}` |
+
+| Continuation marker | Carries |
+| --- | --- |
+| four spaces, `\|` | The rest of a multi-line message |
+| four spaces, `!` | The error |
+| four spaces, `#` | One stack frame each |
+| four spaces, `…` | A notice that the record was cut |
+
+Every line after the first begins with four spaces, so only the first line of a record starts at column 0. A record is capped at 8192 characters. Warnings and above reach the file at once, together with the records written just before them.
+
+### The `call` field
+
+A record about work that crosses between the app and the engine carries an integer `call`, and both sides write the same one, for a start and for an outcome. A compile is written down this way, so the two halves can be read together:
+
+```
+editor.log   INFO   compile     Compiling a campaign  {call: 1}
+engine.log   INFO   compiler    compiling a campaign  {call: 1, chars: 162}
+engine.log   INFO   compiler    compiled              {call: 1, ms: 2, chars: 133}
+```
+
+## What is recorded
+
+| Kind | What a line says | Not recorded |
+| --- | --- | --- |
+| Network requests | Checking for an update, fetching the contributor list and downloading an installer each log where the request went, what came back and how long it took | The query string (everything after the `?`) and any response content |
+| MCP calls | Every tool call, resource read and prompt an MCP client makes: which client, which tool, which argument names, how long it took and whether it worked | Argument contents |
+| Background workers | The version-control worker, and on Windows agent traffic, each record that they failed | |
+
+## What is redacted
+
+Every string written to any of the six files is redacted before it reaches a file. The rules run in this order:
+
+| # | Matches | Becomes |
+| --- | --- | --- |
+| 1 | Credentials: GitHub tokens (`ghp_`, `gho_`, `ghu_`, `ghs_`, `ghr_`, `github_pat_`), `sk-` keys, `Bearer`, `Basic` and `Token` headers, `key=value` where the key admits it is a secret | `<redacted>`, keeping the scheme or key name |
+| 2 | User-info in a URL (`://user:pass@`) | `://<redacted>@` |
+| 3 | The folders of known projects, longest first | `<project>` |
+| 4 | Your home folder | `~` |
+| 5 | E-mail addresses, including accented and non-Latin local parts | `<email>` |
+| 6 | Your account name, as a whole word, when it has at least 3 characters (including names ending in an accented letter) | `<user>` |
+| 7 | Any other absolute path, keeping the last segment | `<path>/act1.graph.json` |
+| 8 | IP addresses, except `127.0.0.1`, `0.0.0.0` and `::1` | `<ip>` |
+
+The app's own install directories are exempt from rule 7. 
+:::caution
+No list of rules can know that a board's name is private, so look through a log before posting it.
+:::
+
+## Retention
+
+At startup the app judges every earlier session from `session.json` alone, without reading a log file.
+
+| `endedAt` | `verdict` | Outcome |
+| --- | --- | --- |
+| present | `clean` | deleted |
+| present | `abnormal` | kept |
+| absent | `abnormal` | kept |
+| absent | absent | deleted |
+| unreadable, or a `version` it does not know | | kept, until the age cap |
+
+Kept sessions are capped at twenty and thirty days, newest first. The session in progress is never considered.
+
+## The crash report
+
+If the app crashed, the next launch shows a dialog titled *Ripple Effect closed unexpectedly*, with the date and time of the crash. It is asked once per crash, and only about the newest crash. If the app cannot reach its server when it would ask, the question is deferred to a later launch and says it is about an earlier crash; it is never asked mid-session.
+
+| Control | Effect |
+| --- | --- |
+| *Send report* | Sends the report. The answer is final for that report |
+| *Don't send* | Keeps it on the computer. The answer is final for that report |
+| *Ask me later* | Leaves the question owed; also what closing the app with the dialog open does |
+| *Show files* | Opens the files so you can read them before answering |
+
+There is no setting that sends crash reports automatically and none that refuses them. If a send fails, the dialog names the kind of failure (no connection, the server turned it down, or something else) and offers *Ask me later* as well.
+
+The dialog lists each file in the report, its size, and what it contains. The report is the memory snapshot plus these session files, as they exist at the crash.
+
+| File | What the dialog says it holds |
+| --- | --- |
+| minidump | A snapshot of the app at the moment it crashed: what each part was running, the libraries loaded, the processor's state and small pieces of the memory around them. It names your operating system and processor, and on Linux and macOS the command line and environment variables the app was started with |
+| `session.json` | When that run started, and whether anything had gone wrong before the crash |
+| `metadata.json` | The app's version and how it was installed, your operating system and version, and your device's model |
+| `editor.log` | What the app recorded during that run |
+| `engine.log` | What the story engine recorded during that run |
+| `flutter.log` | Errors the app reported during that run |
+| `platform.log` | Errors the operating system reported to the app during that run |
+
+When a log is large, only its end is sent, and the dialog marks the file *last X of Y*. Only the first part of a rolled log is attached.
+
+Alongside the files: the app's version, whether you were on the home screen or in a project (never which one), the id of the run so it can be matched with its logs, and a random number the crash reporter made for this installation. The dialog states that there is no account and no name in the report. It also shows a report id: quote it when writing to the address shown in the dialog to ask for a sent report to be deleted.
+
+The files are masked as in the table above before the dialog opens, and the folders of every known project are masked too. The one thing no masking can promise: the memory snapshot may hold fragments of whatever text the app was working on at that moment.
+
+## Usage statistics
+
+Off until switched on. The switch is **Settings ▸ Data control ▸ Usage statistics**, *Off* or *On*, and the first-launch pages ask the same question with neither answer preselected. While it is on, the row shows the identifier and lists everything that is sent.
+
+| Field | Content |
+| --- | --- |
+| Use | That this installation was in use today: one record a day at most |
+| Day | The day it was sent, in UTC, never the time |
+| Identifier | A random identifier for this installation, shown in the row while statistics are on |
+| Version | The app's version |
+| Operating system | The family: Linux, macOS or Windows |
+
+Nothing is sent until the switch has been on for an hour. Nothing you write, no file or project names and no network address is included, and no account is involved. Switching off destroys the identifier, so rows already sent can no longer be tied to you; switching on again starts a new installation. To have rows sent under an identifier deleted, write to the address shown in the row with the identifier before switching off. The governing text is the Privacy Notice, section 4.5.
+
+## Reporting a bug
+
+| Control | Where |
+| --- | --- |
+| Support page | **Settings ▸ Support**, or *Support and feedback* in the Help menu |
+| Copy the package details, copy the device details, open this session's folder | **Help ▸ Troubleshooting** |
+| *Show every tip again* | The Help menu itself |
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+The support page opens the matching form, filled in with the version, your operating system and which installer this copy came from, in the public repository [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), which is also where questions and feature requests go. The steps are in [How to report a bug](/how-to/report-a-bug/).
+
+## Related
+
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/): why the log and Messages are kept apart, and what stays on the machine
+- [How to report a bug](/how-to/report-a-bug/)
+- [What the app sends](/about/what-the-app-sends/)
+- [Settings, accessibility and updates controls](/reference/settings/)

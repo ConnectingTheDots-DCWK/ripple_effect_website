@@ -1,0 +1,107 @@
+---
+title: How to run Python in a story
+description: Compute with a Script node, show the answer with an Output node, vary a passage with {{ }} and ripple blocks, and check what the sandbox allows.
+---
+
+import Shot from '../../../components/Shot.astro';
+import { Steps } from '@astrojs/starlight/components';
+
+## Compute a value with a Script node
+
+A Script node references a `.py` file in the project, so one script can serve many nodes.
+
+<Steps>
+
+1. Add a Script node and reference a `.py` file.
+
+2. Press **Inputs** or **Outputs** in its editor, as you need them. Each opens the same ports dialog every other node uses. Declare a name and a type per row; the node grows a port per name.
+
+3. Wire the inputs. Values cross as native Python types, so `total = hp - damage` is arithmetic, not a parse.
+
+4. Assign each output name in the script. Whatever the script assigns to an output name is published on that port.
+
+</Steps>
+
+Choose names Python can read. A Script node's inputs and outputs, and a passage's inputs, accept only a letter or an underscore followed by letters, digits and underscores. Python's own words, such as `class`, are refused, with the reason shown under the field. A board that carries a name Python cannot read reports it.
+
+### Choose slot types and defaults
+
+Give each row the type of the value it carries, and a default if the slot may be left unfilled. For a script input, a wired value wins over the default; for an output, the default applies only where the script never set that name. The type list and the coercion rules are in [Node families, slots and state](/reference/node-families/).
+
+## Show the answer with an Output node
+
+A Script node presents nothing; an Output node shows its inputs to the reader as a slide with one way on.
+
+<Steps>
+
+1. Add an Output node and wire the Script node's outputs into it.
+
+2. Double-click the card and declare a name and a type per row. These names are read by people, so `Your roll` is a fine name here, unlike a Script node's. A slot may carry a default.
+
+</Steps>
+
+To take a name or a number from the reader instead, use an Input node. It asks the reader for values and hands what was typed on as ports, so a Script node can use them. On an Input node the default is filled in for the reader to accept or type over.
+
+## Vary a passage with Python
+
+A passage has two places for Python: an inline `{{ … }}` span and a fenced ```` ```ripple ```` block. Both are replaced by what they evaluate to when the passage is presented, so a sentence can vary instead of forking into two passages.
+
+````markdown
+The goblin has {{ entity_get("Goblin-1")["HP"] }} hit points left.
+
+```ripple
+names = entity_names(of="Goblin")
+f"{len(names)} goblins are still standing."
+```
+````
+
+A passage only reads. Making, changing or deleting an entity, or writing a console variable, is refused from inside prose. Do those in a Script node, where the change can be pointed at on the canvas. The refusal renders in place as a `⚠` chip and the story carries on.
+
+## Try a line in the console
+
+Open any `.py` file. Its console is a live session, one per project, so `x` survives between lines.
+
+- **Enter** runs what is there; **Shift+Enter** starts a new line. The prompt grows to three lines as you type.
+- The arrow keys walk through what you have already run.
+
+During a playthrough the same console sits beside the Entities and Variables panels, over the story that is running. There you can run statements that make or change entities, as a Script node can.
+
+## Work within the sandbox
+
+The interpreter runs a subset of Python; the limits are in [The sandbox and its limits](/reference/python/sandbox/). To roll dice, use the Dice roller, Random number and Weighted branch nodes. To keep entities straight in prose and scripts, use these habits.
+
+- **Read components and entities as dicts** (see [How to read and change entities from Python](/how-to/use-entities-from-python/)). Write `component_get("Goblin")["HP"]`, never `goblin.hp`.
+- **Write with `entity_set`.** A read hands back a copy: `e = entity_get("Mira"); e["HP"] -= 3` runs and changes nothing.
+- **Keep host functions out of `map()`, `filter()` and `sorted(key=…)`.** Everything the app binds fails there. Inside a `def` or a comprehension it works, so build the pairs first:
+
+```python
+pairs = [(entity_get(n)["HP"], n) for n in entity_names()]
+weakest = sorted(pairs)[0][1]
+```
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+### Check what the sandbox allows
+
+The list above is not the authority; the app is. The interpreter's limits change between its releases, so the app probes them.
+
+<Steps>
+
+1. Press the **i** button on the console, or run the command palette's *What this Python can and cannot do*.
+
+2. Read the report. It runs a suite of tiny snippets (statements, modules, built-ins, call shapes) in the real interpreter and reports what happened, row by row. It says what the app binds, what `import` can reach, and which limits are enforced.
+
+3. Press **Copy report** to paste it into a bug report. An agent can ask for the same text through `python_capabilities`.
+
+</Steps>
+
+Where this page and the report disagree, the report is right.
+
+## Related
+
+- [Python in a story](/explanation/python-in-a-story/): why Python sits where it does and what the sandbox is for.
+- [Python reference](/reference/python/): every function the app binds, with what it answers and refuses.
+- [The sandbox and its limits](/reference/python/sandbox/): the limits the interpreter enforces.
+- [Node families, slots and state](/reference/node-families/): slot types, coercion and defaults.
+
+To leave Python out of a campaign, see [How to build a campaign with no Python](/how-to/turn-python-off/).

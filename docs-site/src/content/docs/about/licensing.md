@@ -1,201 +1,147 @@
 ---
 title: Licensing
-description: What you may do with Ripple Effect, what stays yours, what is not permitted, and which parts of it are open source.
+description: The licences that govern the app, the engine and the hosted service, what each permits and forbids, and where each document is published.
 sidebar:
   order: 1
 ---
 
-Ripple Effect is **proprietary software**. It is not open source, and its
-source is not published.
+Ripple Effect is **proprietary software**. It is not open source, and its source is not published.
 
-The licence is the **End-User Licence Agreement**, and it lives at
-[legal.ripplefx.app/eula](https://legal.ripplefx.app/eula/). That document is
-the authority; this page is what it says in plain words, and where the two
-differ the document is right.
+The licence for the app is the **End-User Licence Agreement** (EULA), published at [legal.ripplefx.app/eula](https://legal.ripplefx.app/eula/). That document is the authority; this page states it in plain words, and where the two differ the document is right.
 
-:::note[If you have used Ripple Effect before version 1.5]
-The EULA **replaces** the short Ripple Effect Licence that shipped with
-earlier builds — it does not sit on top of it, so there is one document rather
-than two. A build earlier than 1.5 stays under that old licence for as long as
-you use it; the EULA governs from the first build that asks you to accept it,
-which is 1.5. Everything the old licence permitted, the EULA permits.
+## Documents
 
-That old notice is still published, unchanged, at
-[legal.ripplefx.app/v/ripple-effect-licence-1.0](https://legal.ripplefx.app/v/ripple-effect-licence-1.0/),
-because a licence that governs a build somebody is still running has to be
-readable. The set of builds under it is closed: 1.4 was the last release that
-did not ask.
-:::
+| Document | Governs | Address |
+| --- | --- | --- |
+| End-User Licence Agreement | The app | [legal.ripplefx.app/eula](https://legal.ripplefx.app/eula/) |
+| Runtime Licence | The engine, published on its own | [legal.ripplefx.app/runtime](https://legal.ripplefx.app/runtime/) |
+| Terms of Service | The website and the hosted service | [legal.ripplefx.app/terms](https://legal.ripplefx.app/terms/) |
+| Privacy Notice | What is processed, on what basis, for how long | [legal.ripplefx.app/privacy](https://legal.ripplefx.app/privacy/) |
+| Sub-processors | Who else touches it | [legal.ripplefx.app/subprocessors](https://legal.ripplefx.app/subprocessors/) |
+| Ripple Effect Licence 1.0 | Builds earlier than 1.5 | [legal.ripplefx.app/v/ripple-effect-licence-1.0](https://legal.ripplefx.app/v/ripple-effect-licence-1.0/) |
 
-:::note[From 1.5 the app asks, and sends nothing first]
-At first launch the app shows you the Agreement, and makes **no network
-request of any kind** until you accept it — not an update check, not anything.
-It is not a window over a running app: until you answer, the app underneath it
-has not been started, so there is nothing there to make a request. The Privacy
-Notice is shown alongside it, to read rather than to accept; you cannot
-meaningfully agree to being told something.
-:::
+## Which licence governs a build
 
-## What you may do
+| Build | Governing licence |
+| --- | --- |
+| Earlier than 1.5 | The short Ripple Effect Licence that shipped with it, for as long as you use it. 1.4 was the last release that did not ask you to accept anything. The notice stays published, unchanged. |
+| 1.5 and later | The EULA, from the first build that asks you to accept it. It replaces the earlier licence rather than sitting on top of it. Everything the earlier licence permitted, the EULA permits. |
 
-You may install and run the official builds on machines you own or control,
-for any purpose, personal or commercial. It is free. **There is no seat count,
-no licence key, no activation and no account** — the licence does not depend
-on knowing who you are, and the app never asks unless you choose to sign in.
+## Acceptance at first launch
 
-An account exists only for the [hosted
-service](https://legal.ripplefx.app/terms/), which is a separate thing under
-separate terms. If you never create one, those terms never apply to you, and
-nothing in the app requires you to.
+| Item | Behaviour |
+| --- | --- |
+| Agreement | Shown at first launch. |
+| Network requests | None of any kind, including an update check, until you accept. |
+| Mechanism | The app underneath is not started until you answer. |
+| Privacy Notice | Shown alongside the Agreement, to read rather than to accept. |
 
-## What stays yours
+## The EULA
 
-Article 3, in the agreement's own words:
+### What it permits
 
-> Stories, projects, boards, components, scripts and exports you author with
-> it are yours, and nothing in this licence claims any interest in them.
+| Item | Provision |
+| --- | --- |
+| Use | Install and run the official builds on machines you own or control, for any purpose, personal or commercial. |
+| Cost | Free. |
+| Seats, keys, activation | No seat count, no licence key, no activation. |
+| Account | None required. Signing in is optional and only for the hosted service. |
 
-That sentence is carried from the licence the EULA replaced, word for word,
-because it is the most important one in it. The app claims nothing in what you
-make with it, you may sell or publish it with no obligation back to us, and
-the formats are plain text so the claim is checkable: a project is a folder of
-Markdown and JSON that opens without the app. **Article 3 survives termination
-of the agreement**, for any reason.
+An account exists only for the hosted service, which is a separate thing under the [Terms of Service](https://legal.ripplefx.app/terms/). If you never create one, those terms never apply to you, and nothing in the app requires you to.
 
-## What is not permitted
+### What stays yours
 
-Without prior written permission you may not copy, redistribute, sell,
-sublicense, rent or host the software; modify, translate or create derivative
-works from it; reverse engineer, decompile or disassemble it, except to the
-extent that law expressly permits despite this term; or remove or alter any
-notice of copyright, authorship or licence it carries.
+Article 3 of the EULA:
 
-## Source code
+> Stories, projects, boards, components, scripts and exports you author with it are yours, and nothing in this licence claims any interest in them.
 
-The source is not published. Access to it, where granted, is granted
-separately and in writing, and carries no rights beyond those stated in that
-grant. Pull requests against the app are not open.
+| Item | Provision |
+| --- | --- |
+| Interest in your work | The app claims none. |
+| Selling or publishing | Permitted, with no obligation back. |
+| Origin of the wording | Carried word for word from the licence the EULA replaced. |
+| Survival | Article 3 survives termination of the agreement, for any reason. |
+| Checkable | The formats are plain text: a project is a folder of Markdown and JSON that opens without the app. |
 
-## What *is* open source
+### What is not permitted
 
-Several of the packages underneath the app are separate projects with their
-own repositories, published under the MIT licence — most of them ours, one
-not. They are named on the [open source page](/about/open-source/). That
-distinction is worth keeping straight: the packages are open source, and the
-app is not.
+Without prior written permission you may not:
 
-## Third-party components
+- copy, redistribute, sell, sublicense, rent or host the software;
+- modify, translate or create derivative works from it;
+- reverse engineer, decompile or disassemble it, except to the extent that law expressly permits despite this term;
+- remove or alter any notice of copyright, authorship or licence it carries.
 
-Ripple Effect is built on software written by other people, each under its
-own licence. Those licences govern those components and are unaffected by
-this one. The complete list is in the application, under **About →
-Third-party licences**.
+### Source code
 
-## No warranty
+| Item | Position |
+| --- | --- |
+| Source | Not published. |
+| Access | Where granted, granted separately and in writing, and carries no rights beyond those stated in that grant. |
+| Pull requests against the app | Not open. |
 
-The software is provided as is, without warranty of any kind, and to the
-fullest extent permitted by law the author is not liable for any claim,
-damages or other liability arising from the software or its use — including
-loss of or damage to any data, project or document. The agreement says this at
-length; this page says it once, and the practical answer to it is the
-[built-in version control](/overviews/version-control/).
+### Third-party components
 
-Nothing there limits anyone's rights as a consumer, and the agreement says so
-in its own consumer-protection article.
+Ripple Effect is built on software written by other people, each under its own licence. Those licences govern those components and are unaffected by the EULA. The complete list is in the application, under **About → Third-party licences**.
 
-## Termination
+### No warranty
 
-The agreement ends automatically if you breach it — after thirty days' notice
-where the breach can be put right, immediately where it cannot. On termination
-you must stop using the software and remove your copies of it. Your work is
-unaffected.
+The software is provided as is, without warranty of any kind. To the fullest extent permitted by law the author is not liable for any claim, damages or other liability arising from the software or its use, including loss of or damage to any data, project or document. The agreement states this at length. Nothing in it limits anyone's rights as a consumer; the agreement says so in its own consumer-protection article. [Version control](/reference/version-control/) is built into the app.
 
-## Changes to the agreement
+### Termination
 
-The EULA is versioned. A **minor** version changes the wording without
-changing the terms and applies when it is published. A **major** version
-changes the terms: you are told in the app and on the website, and asked to
-accept it no sooner than **thirty days** after that. Until you do, the version
-you accepted is the one that governs you.
+| Case | Effect |
+| --- | --- |
+| Breach that can be put right | The agreement ends automatically after thirty days' notice. |
+| Breach that cannot | The agreement ends immediately. |
+| On termination | You must stop using the software and remove your copies of it. Your work is unaffected. |
 
-**The licence carries no effective date, and that is deliberate.** It takes
-effect for your installation when you accept it, so the only moment that
-matters is the one at which you were asked. Nothing about a release of the app
-is scheduled around a date on a document.
+### Changes to the agreement
 
-**A new feature is not a new version.** The licence covers Ripple Effect
-including every component shipped with it, so a part of the app that did not
-exist when you accepted the agreement is already covered. What makes a new
-version is a change to what the agreement *says* — what you may do, what we
-owe you, who is liable for what.
+| Kind of version | Effect |
+| --- | --- |
+| Minor | Changes the wording without changing the terms. Applies when published. |
+| Major | Changes the terms. You are told in the app and on the website, and asked to accept it no sooner than thirty days after that. Until you do, the version you accepted governs you. |
 
-**A version nobody has accepted yet can still be corrected**, which is how a
-typo gets fixed without putting a dialog in front of everybody. Once a version
-has been accepted, or published as final, the text at its own address never
-changes again — and the version you accepted is never altered.
+- The licence carries no effective date. It takes effect for your installation when you accept it. Nothing about a release of the app is scheduled around a date on a document.
+- A new feature is not a new version. The licence covers Ripple Effect including every component shipped with it, so a part of the app that did not exist when you accepted the agreement is already covered. A new version follows a change to what the agreement says: what you may do, what is owed to you, who is liable for what.
+- A version nobody has accepted yet can still be corrected. Once a version has been accepted, or published as final, the text at its own address never changes, and the version you accepted is never altered.
+- Every version that has ever been in force stays published at its own permanent address.
 
-Every version that has ever been in force stays published at its own permanent
-address, so the version you accepted is still readable after it has been
-replaced.
+## The Runtime Licence
 
-## Building the engine into your own software
+The engine that plays a story is published on its own, as native libraries, command-line tools and WebAssembly components, so that a game, a story player or another tool can play campaigns made here. It is under the [Runtime Licence](https://legal.ripplefx.app/runtime/), not the EULA, because the EULA forbids what an integrator needs to do: ship it to other people.
 
-The engine that plays a story is published on its own as well — native
-libraries, command-line tools and WebAssembly components — so that a game, a
-story player or another tool can play campaigns made here. **That engine is
-under a different licence**, the [Runtime
-Licence](https://legal.ripplefx.app/runtime/), because the agreement for the
-application forbids exactly what an integrator needs to do: ship it to other
-people.
+| Term | Provision |
+| --- | --- |
+| Cost | Free and royalty-free, for any product, commercial or not. No fee, no revenue threshold, no registration. |
+| Redistribution | Unmodified in function, as part of your product, not on its own. Signing it, stripping its symbols, wrapping it in a framework or transpiling its WebAssembly is permitted. Changing what it does, or passing it off as your own, is not. |
+| Credit | Its `NOTICE` text, wherever your product lists the third-party software it uses. No logo, no splash screen. |
+| Your users | Get no more than you have. The `NOTICE` says so, which is enough for a product shipped with no terms. If your product has terms, they must not contradict it; the licence's annex has a clause you can paste. |
+| Versions | A version of the licence stays with the releases it came with. A product shipped with one engine release is never re-licensed; a later licence governs later releases only. |
+| Bindings | A library that calls the engine from another language can be under any licence, an open-source one included; the engine's own bindings are MIT. The engine it carries stays under the Runtime Licence. |
+| Replacement | Not permitted: no engine, runtime or authoring tool that plays or writes the same campaigns, built with the engine, its documentation or its test material. |
 
-- **It is free and royalty-free**, for any product, commercial or not. No
-  fee, no revenue threshold, no registration.
-- **You redistribute it unmodified in function, as part of your product** —
-  not on its own. Signing it, stripping its symbols, wrapping it in a
-  framework or transpiling its WebAssembly is all fine; changing what it does,
-  or passing it off as your own, is not.
-- **The only credit asked for** is its `NOTICE` text wherever your product
-  lists the third-party software it uses. No logo, no splash screen.
-- **Your users get no more than you have.** The `NOTICE` already tells them
-  so, which is enough for a product shipped with no terms; if yours has terms,
-  they must not contradict it, and the licence's annex has a clause you can
-  paste.
-- **A version of the licence stays with the releases it came with.** A product
-  you shipped with one engine release is never re-licensed under you; a later
-  licence governs later releases only.
-- **Bindings are yours.** A library that calls the engine from another
-  language can be under any licence, an open-source one included — ours are
-  MIT — while the engine it carries stays under the Runtime Licence.
-- **It may not be used to build a replacement for itself**: no engine,
-  runtime or authoring tool that plays or writes the same campaigns, built
-  with the engine, its documentation or its test material.
+## Open-source packages
 
-## The premium tier
+Several packages underneath the app are separate projects with their own repositories, published under the MIT licence, most of them written by the author, one not. They are named on the [open source page](/about/open-source/). The packages are open source; the app is not.
 
-A paid tier is planned: media storage, real-time collaboration and team
-workspaces, reached by signing in. It is governed by the [Terms of
-Service](https://legal.ripplefx.app/terms/), which exist now and describe it
-in advance — Part B applies from the release that introduces each feature.
+## The hosted service and the paid tier
 
-**Nothing that is free today is planned to stop being free**, and the Terms
-say so rather than leaving it as a promise on a marketing page: no feature
-that is free in the application on the date they take effect will be moved
-behind an account or a subscription.
+The hosted service is governed by the [Terms of Service](https://legal.ripplefx.app/terms/).
 
-## The other documents
+A paid tier is planned: media storage, real-time collaboration and team workspaces, reached by signing in. The Terms exist now and describe it in advance; Part B applies from the release that introduces each feature. The Terms state that no feature that is free in the application on the date they take effect will be moved behind an account or a subscription.
 
-- [End-User Licence Agreement](https://legal.ripplefx.app/eula/) — the app
-- [Terms of Service](https://legal.ripplefx.app/terms/) — the website and the
-  hosted service
-- [Privacy Notice](https://legal.ripplefx.app/privacy/) — what is processed,
-  on what basis, for how long
-- [Sub-processors](https://legal.ripplefx.app/subprocessors/) — who else
-  touches it
+## Contact
 
-## Questions
+Licensing, redistribution or a source grant: [legal@ripplefx.app](mailto:legal@ripplefx.app).
 
-Licensing, redistribution, or a source grant:
-[legal@ripplefx.app](mailto:legal@ripplefx.app).
+Copyright © 2026 ConnectingTheDots, a trade name of William Karol Di Cioccio, VAT IT02224180667. All rights reserved.
 
-Copyright © 2026 ConnectingTheDots — a trade name of William Karol Di
-Cioccio, VAT IT02224180667. All rights reserved.
+## Related
+
+- [Open source](/about/open-source/): which packages are published, and under what.
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/): the privacy side of what the app keeps and sends.
+- [What the app sends](/about/what-the-app-sends/): every request the app makes.
+- [Version control in the app](/reference/version-control/): the built-in history.
+- [A project is a folder](/explanation/projects-are-folders/): why your work opens without the app.

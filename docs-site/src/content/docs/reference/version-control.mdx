@@ -1,0 +1,247 @@
+---
+title: Version control in the app
+description: The Changes section of the side bar, its terms, what starting a history writes, the backup bar, the conflict view and the list of undone changes.
+---
+
+Version control is built into the app and is reached through the **Changes** section of the side bar, the second icon on the activity bar beside Files. The history underneath is an ordinary git repository, and anything that reads one reads this. The engine is libgit2, compiled into the app; no installation of git is needed.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Terms
+
+The app's words are used on screen. Git's own word appears in a tooltip, a diagnostic, or where it is what a reader would search for.
+
+| Term in the app | Git term |
+| --- | --- |
+| Changes (side bar section) | Source control |
+| Save point | Commit |
+| Storyline | Branch |
+| Ready to save | Staged |
+| Not yet included | Unstaged |
+| Mark ready | Stage |
+| Take back out | Unstage |
+| Set aside | Stash |
+| Back up | Push |
+| Get changes | Pull |
+| Check for changes | Fetch |
+| Where your backup lives | Remote |
+
+## Starting a history
+
+A project with no history shows the offer *This project has no history yet.* with the action **Let us help you set this up**. The setup page, **Keep a history of this project**, reports:
+
+| Check | Result text |
+| --- | --- |
+| Engine | *Version control is built in* (*Nothing to install — engine \{version\}.*), or *The engine did not load in this build.* |
+| Folder | *This folder can be written to* |
+| Network | *Backing up over the internet will work*, or a statement that this build cannot reach a remote over HTTPS; everything on the machine still works |
+| Identity | Taken from the git already set up on the computer (`~/.gitconfig`), or *Nothing was already set up here* |
+
+Every save point records a name and an email address, written into this project only. Any name and address are accepted; they are a label, not an account, and nothing checks them. Neither may contain `<` or `>`. Changing the identity on the setup page applies to this project only.
+
+**Start keeping a history** does three things:
+
+1. Starts a history in the folder.
+2. Writes a short list of things to leave out. An ignore file already present is not rewritten; patterns are only appended, and only those missing.
+3. Takes the first save point of everything in the project.
+
+Further effects:
+
+| Effect | Detail |
+| --- | --- |
+| `.gitattributes` | One line, `* text=auto`, written at start and not touched again. Keeps line endings consistent for co-authors on other platforms. |
+| Ignored by the app | `.ripple/workspace.json`, which is per machine. Everything else in `.ripple/` is shared; see [Project files and the .ripple folder](/reference/project-files/). |
+| Large files | Files too large to take back out of a history are left out and named, not committed. A file of 25 MB is reported as large enough to slow the operation; files above 95 MB are left out. |
+| Author | The first save point is authored by the user, never by the app. |
+
+A project inside a folder that already uses version control is refused: *This project sits inside a folder that is already using version control.* A second history is not started inside it.
+
+## Changes
+
+The Changes section has three views, selected by a switch: **Changes**, **History**, **Set aside**.
+
+### Changes view
+
+Files are listed in two groups, each headed with its count.
+
+| Group | Meaning |
+| --- | --- |
+| Ready to save | Marked for the next save point. |
+| Not yet included | Changed but not marked. |
+
+A file can appear in both groups when it was marked ready and edited again.
+
+| Control | Effect |
+| --- | --- |
+| **Mark ready (stage)** / **Mark all of these ready (stage)** | Moves files to *Ready to save*. |
+| **Take back out (unstage)** / **Take all of these back out (unstage)** | Moves files to *Not yet included*. |
+| **Undo these changes** | Asks *Undo these changes?*; **Undo them** or **Keep them**. Restores the file to the version marked ready, or to the last save point if none was; an untracked file is deleted. |
+| Click a file | Opens a comparison side by side with the version before it. |
+| Right-click a file in the file tree | Offers the comparison for a file with changes. |
+| Refresh (**Look again**) | Re-reads the list. Shown with an explanation when the folder is not being watched, so that the list only moves on request. |
+
+Every text file has a diff, including boards and components. A file that is not text, or is too long to lay out, is listed as changed with *This file is not text.* or *This file is too long to compare.* and no comparison. A diff tab compares a file with its last save point. The tooltips distinguish the two comparisons: *Staged* is the last save point against what is ready; *Unstaged* is what is ready against what is on disk.
+
+Status words in the list:
+
+| Word | Meaning |
+| --- | --- |
+| Unchanged | |
+| Not in the history yet | Untracked |
+| Added | |
+| Changed | |
+| Deleted | |
+| Renamed | |
+| Changed kind | |
+| Two versions disagree | Conflicted |
+
+The list follows changes anywhere in the project as files change, whether or not the folder is open in the tree.
+
+### Marks in the file tree
+
+Coloured dots appear on changed files and on the folders holding them. Ignored files do not roll up to their folders.
+
+| Mark | Tooltip |
+| --- | --- |
+| New | New since the last save point |
+| Modified | Changed since the last save point |
+| Ignored | Left out of the history |
+
+## Save points
+
+A save point is written in the box at the foot of the Changes view.
+
+| Field | Detail |
+| --- | --- |
+| Summary | Required; placeholder *What changed?*. Without it: *A save point needs a line saying what changed.* |
+| Detail | Optional; opened with **Add more detail**, closed with **Hide the details**; placeholder *Anything else worth knowing later*. |
+| Button | **Save \{count\} files**, or *Nothing marked ready* when none is. |
+
+Refusals: no name and email (*A name and an email address are needed before a save point can be made.*); nothing marked ready.
+
+The command palette carries the same operations: **Save a save point…**, **Take the last save point back**, **New storyline…**, **Move to another storyline…**, **Check for changes**, **Get changes from the backup**, **Back up now**, **Set this work aside…**.
+
+**Take the last save point back** asks *Take the last save point back?* Everything it recorded stays where it is on disk and returns to being marked ready; no file changes. The first save point cannot be taken back. A save point can also be taken back from its row in History.
+
+## History
+
+Lists each save point with its summary, author and how long ago it was made. An empty history reads *No save points yet.*
+
+## Storylines
+
+A storyline is a branch.
+
+| Operation | Detail |
+| --- | --- |
+| New storyline | Starts at the current save point and moves onto it. A storyline must start from a save point, so none can be made before the first. |
+| Rename this one… | |
+| Move to another storyline | With unsaved changes, asks *Move to "\{name\}"?* and offers **Set them aside and move**, or cancel to save them first. |
+| Delete one… | The current storyline cannot be deleted. A deleted storyline is kept and can be restored with **Put back**; the message states how many save points were only on it. |
+
+A storyline name cannot contain spaces, `..`, `~`, `^`, `:` or a trailing `/`.
+
+## Set aside
+
+**Set aside** puts the work in progress out of the way and returns the project to its last save point. The work is named when set aside; moving to another storyline offers the same, labelled *Set aside before moving to \{name\}*.
+
+| Control | Effect |
+| --- | --- |
+| **Put what is here out of the way** | Sets the current changes aside. Refused when everything is already in a save point. |
+| **Bring back** | Restores the set-aside work; it stays in the list until thrown away. Refused when it touches files changed since: save or set aside what is here first. |
+| **Throw it away** | Asks *Throw this away?*; the one operation in the view that cannot be undone. |
+
+## Recently undone
+
+**Recently undone** is part of the **Set aside** view. Undoing changes to a file keeps what is thrown away first, under a tag in the repository, `refs/tags/ripple/undo/`, so it remains reachable from a command line. Each entry offers **Put back**; the notice after is *Put back what was undone.* The message offering it back stays in Messages after the notification has gone.
+
+| Property | Detail |
+| --- | --- |
+| Lifetime of the list | Kept since the project was opened; the list starts again when the app closes. |
+| What survives closing | What each entry held is still in the history afterwards. |
+| Scope of an undo | Only the paths of the action it undoes. |
+
+## Backing up
+
+Backing up is separate from keeping a history; a project can have a history and never be backed up. One remote is supported.
+
+### Where it lives
+
+The dialog **Where should this be backed up?** takes an **Address**: a web address starting with `https://`, or the full path to a folder (a shared drive or synced folder needs no account). SSH addresses and `git://` addresses are refused with an instruction to use the HTTPS one; any other address that is neither is refused with *That should either start with https:// or be the full path to a folder.*
+
+| Notice | Content |
+| --- | --- |
+| Make the repository on the site first | The app does not create it. A missing repository is reported as a wrong password. See [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/). |
+| Check whether it is public or private | A public repository means anyone can read the story, including every draft saved. |
+
+### Sign-in
+
+A web address asks for sign-in once, with a personal access token and a username on that site. A folder needs no sign-in.
+
+| Property | Detail |
+| --- | --- |
+| Credential | A personal access token, not a password. |
+| Storage | The computer's secure storage, one token per host, shared by every project backed up there. |
+| No password store running | *Kept for this session only*; asked again next time. No plaintext file is written. |
+
+### The backup bar
+
+The main button states what it is about to do.
+
+| State | Button |
+| --- | --- |
+| No remote | **Back this up somewhere** |
+| Storyline never backed up | **Back this storyline up** |
+| Backup has save points this copy lacks | **Get \{count\} changes** |
+| This copy has save points the backup lacks | **Back up \{count\} save points** |
+| Both | **Get \{behind\} changes, then back up \{ahead\} save points** |
+
+The **More** menu holds **Check without taking anything**, **Change where it is backed up…** and **Sign in to \{host\} again…**. The bar also shows *Last checked \{date\} at \{time\}*.
+
+### Results
+
+| Message | Meaning |
+| --- | --- |
+| Nothing new. | Nothing to get. |
+| Brought \{count\} save points across. | Fast-forward. |
+| Brought \{count\} save points across and joined them with yours. | Merged without disagreement. |
+| Some of what came down disagrees with what you have. | A conflict; see below. |
+| There is no copy of this storyline on the backup yet. | Nothing to get for this storyline. |
+| Somebody else has changed things since you last looked. | Back up is refused; get their changes first, then back yours up. A forced push is never offered. |
+
+## Conflicts
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+A conflict arises when changes got from the backup touch the same places as local changes. Detection is done in memory: the working files, the staging area and the current save point are untouched until each disagreement has an answer. No conflict markers are written into files.
+
+The view is headed *One file disagrees* or *\{count\} files disagree*, with *Somebody else changed the same places you did. Nothing has been changed here yet — pick what should be kept, or leave it for now.* Both versions are shown side by side.
+
+| Choice | Detail |
+| --- | --- |
+| **Keep mine** | Always offered. Labelled **Keep it deleted** when your side deleted the file. |
+| **Take theirs** | Always offered. Labelled **Let theirs delete it** when their side deleted the file. |
+| **Write it myself…** (*What it should say*, with *Theirs, to read from*) | Offered for text files of kind Markdown, plain text, narration bundle and state machine; never for boards or components. |
+| **Leave it for now** | Always offered; no file changes |
+
+Boards and components offer only mine or theirs, because a line-by-line combination can be invalid JSON. A file that is not text offers one or the other with no comparison. The count of unresolved files shows on the confirm button (*\{count\} still to pick*); the join is refused until every disagreement is settled. When all are settled: *Joined the changes together.*
+
+An assistant connected over MCP is refused a document with a conflict pending; see [What an assistant may read, play and write](/reference/mcp-permissions/).
+
+## Messages
+
+| Message | Cause |
+| --- | --- |
+| Version control is not available in this build. | The engine did not load. |
+| The list of changes will not keep up with this folder on its own. | The folder could not be watched; use the refresh button. |
+| A personal access token is needed for \{host\}. | No token is stored for that host. |
+| There are changes here that are not in a save point yet. | Raised when moving storyline; save or set them aside first. |
+| This project has nowhere to back up to yet. / has nowhere to get changes from yet. | No remote set. |
+| There are no save points to back up yet. | |
+
+## Related
+
+- [History, sharing and conflicts](/explanation/history-and-sharing/)
+- [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/)
+- [What an assistant may read, play and write](/reference/mcp-permissions/)
+- [Project files and the .ripple folder](/reference/project-files/)
+- [The workspace window, menus and palette](/reference/workspace-window/)

@@ -1,0 +1,54 @@
+---
+title: How to write a passage
+description: Write a Narration node's Markdown, add pictures, and hand the passage values to read with {{ name }}.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Write the text
+
+<Steps>
+
+1. Double-click a Narration node to open its editor.
+
+2. Write the passage. To make a sentence vary instead of forking into two passages, put Python in an inline `{{ … }}` span or a fenced ```` ```ripple ```` block. See [How to run Python in a story](/how-to/script-a-passage/).
+
+</Steps>
+
+## Add a picture
+
+- **Drop a file on the editor.** The link writes itself.
+- **Click Image**, beside Link. Type a few letters to pick a project file by name, or give a URL or a path for anything outside the folder.
+
+A picture picked from outside the project is copied into `.ripple/external/` first. If **Import outside assets** is switched off in the File menu, it is linked instead and Messages says so. The alt text and prompt behaviour are in [Passages, choices, languages and reading time](/reference/passages/#writing).
+
+### Write a link by hand
+
+Start the path with a slash to measure it from the project root, as in `![map](/art/map.png)`. Without a slash it is read from the bundle's parent folder. The rules and an example are under [Link spellings](/reference/passages/#link-spellings).
+
+## Hand a passage values to read
+
+<Steps>
+
+1. Click the **Reads** row at the bottom of the card, beside the soundscape the node brings. It reads "Reads nothing — click to declare" until a name is declared, then "Reads — N".
+
+2. In the dialog, declare each name with a type, written the way every other card's ports are. A slot may carry a default; the types and defaults are in [Node families, slots and state](/reference/node-families/#slots).
+
+3. Wire a value into the port the card now has for each name.
+
+4. Use the name in the passage: `You owe {{ gold }} crowns.` with a number on the `gold` port. A slot with a default and nothing wired uses the default.
+
+</Steps>
+
+Declare the names on each card that shows the passage: they belong to the card, not to the passage file (see [Passages and translations](/explanation/passages-and-translations/)).
+
+If a name is not wired, a small warning shows where it stood and the rest of the passage renders as usual. Names are offered as you type only when the passage is opened from a board.
+
+### Name a slot
+
+Use letters, digits and underscores, and do not start with a digit. If the dialog refuses a name, the reason is shown under the field. The full rule is under [Name rule](/reference/passages/#name-rule). If Messages reports [`W.GE.15`](/reference/diagnostics/#wge15), rename the slot.
+
+## Related
+
+- [Passages and translations](/explanation/passages-and-translations/): why a passage is a folder of Markdown files, one per language.
+- [Passages, choices, languages and reading time](/reference/passages/): link and name rules, the reading-time figures.

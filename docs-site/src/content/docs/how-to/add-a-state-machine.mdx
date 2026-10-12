@@ -1,0 +1,61 @@
+---
+title: How to add a state machine to a board
+description: Create a state machine file, put it on a board as a State machine node, and branch the story on the state it answers.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Use a state machine for a door that is locked, unlocked or open, or a quest that is offered, taken or done.
+
+## Create the machine
+
+<Steps>
+
+1. In the file tree, right-click and choose **New state machine**. The file is `*.fsm.mmd` and holds a mermaid `stateDiagram-v2`.
+2. Write the machine in the editor. Every arrow is `From --> To : event`, and `[*] --> S` names the start:
+
+   ```text
+   stateDiagram-v2
+       [*] --> Locked
+       Locked --> Unlocked : key
+       Unlocked --> Open : push
+       Open --> Unlocked : pull
+       Unlocked --> Locked : lock
+   ```
+
+3. Fix anything the editor reports against its line. [State machine files](/reference/state-machine-file/) lists what the editor warns about.
+
+</Steps>
+
+## Put it on a board
+
+<Steps>
+
+1. Drag the `.fsm.mmd` file from the file tree onto the board. It becomes a **State machine** node pointing at the file. Alternatively, add a State machine node and pick the machine from the list on its card.
+2. Wire or type the **Event** the node receives. Leave it blank to read the state without moving the machine. Use `[*]` as the event to reset the machine to its start.
+3. If two nodes in the story must drive separate copies of one machine, give each its own **Instance** name. Give a single quest none: left blank, the instance is the machine's own name, so every node without one drives the same machine.
+
+</Steps>
+
+## Branch on the state
+
+<Steps>
+
+1. Add a **Switch** node and wire the State machine node's **state** output into it.
+2. In the Switch's rows, type one state name per row. Each row has its own output, taken when the state matches that name.
+3. Wire the State machine node's flow out to the rest of the board. It leaves by **changed** when an arrow fired or the machine was reset, and by **unchanged** otherwise.
+
+</Steps>
+
+An event the current state has no arrow for is not an error. The machine stays put and the flow takes **unchanged**, so decide downstream what to do about it.
+
+## What is kept
+
+A machine remembers its state for the whole playthrough, across boards and saves. Starting over resets it.
+
+## Related
+
+- [State machines](/explanation/state-machines/): why a state machine is a drawing and how it differs from a console variable.
+- [State machine files](/reference/state-machine-file/): the mermaid syntax the app reads and what it refuses.
+- [Nodes](/reference/nodes/): the State machine and Switch nodes.
+- [How to play and test a campaign](/how-to/play-a-campaign/): check the machine moves as you intend.

@@ -7,95 +7,65 @@ sidebar:
 
 import NodePreview from '../../../components/NodePreview.astro';
 
-Every card the Create menu offers, grouped as it groups them. For each: what
-it is for, in the card's own words; what is on the card; the ports it takes
-and the ports it answers on; and, where one exists, something to read. An
-agent gets the same list for the build it is talking to from `node_types`.
+Every card the Create menu offers, in the menu's order and under its categories. Each entry gives, in this order: what the card is for, in the card's own words; what is on the card; the ports it takes and the ports it answers on; and, where one exists, something to read. An agent receives the same list for the build it is talking to from `node_types`.
 
-A port carries either **flow** — the story, pushed from card to card — or a
-value, pulled when a card needs it. The [boards
-overview](/overviews/boards-and-nodes/#two-kinds-of-wire) says how the two are
-run and the one rule that follows. Every card's way in is `exec` unless the
-table says otherwise, and every value port is typed: a `number` joins a
-`number`, `any` joins anything.
+**Ports.** A port carries either *flow* or a value. Flow is the story, pushed from card to card; a value is pulled when a card needs it. A card's way in is `exec` unless its table says otherwise. Every value port is typed: a `number` joins a `number`, and `any` joins anything. How the two kinds are run is in [Board and navigation rules](/reference/canvas-rules/); the cards that declare, keep or read state across a playthrough are grouped in [Node families, slots and state](/reference/node-families/).
 
-**Five cards let you declare their own ports** — Output, Input, Script, Macro
-In and Macro Out — and a sixth, Narration, lets you declare what its passage
-is handed. Double-click one of the five (a Script node's *Inputs* and *Outputs*
-are buttons that open the same dialog) or click a Narration node's *Reads* row,
-at the bottom of the card, which says how many names the passage is given, and
-each row is a name and a type, and a
-type is two questions: **what it is** — `int`, `float`, `bool`, `string`,
-`markdown`, `asset`, `component` or `json` — and **how many of it**: one, a
-list, or a map of names to it. Twenty-four in all, and every one of the five
-offers the same twenty-four, as do a component's attributes and the console
-variables.
+**Cards that declare ports.**
 
-Two older words, `number` and `entity`, are still read wherever they appear
-and are no longer suggested: `int` or `float` says which, and an entity is a
-name, which is a `string`.
+| Card | Where the declaration is opened |
+| --- | --- |
+| Output, Input, Macro In, Macro Out | Double-click the card. |
+| Script | The *Inputs* and *Outputs* buttons, which open the same dialog. |
+| Narration | The *Reads* row at the bottom of the card, which shows how many names the passage is given. |
 
-What a row *declares* and what its port *carries* are deliberately not the
-same set. `int` and `float` both carry `number`, because a wire that would not
-join a whole number to an Operator expecting a number is a wire nobody wants.
-A lone `asset`, `component` or `markdown` carries `string`, since each of them
-is a path or some text. A **list** of assets or of components carries the tag a
-component's own `assetList` and `componentList` attributes carry, so those
-join each other. A map carries `json`. The file keeps the narrower word
-whichever way it goes, so nothing is lost by the port being broad.
+Each row is a name and a type. A type answers two questions: what it is, and how many of it.
 
-**An Input node's types are narrowed on the way into a campaign**, and that
-is the one thing worth knowing about them. What it declares is drawn as a
-form for the reader to fill in, and a form has no file picker — so an `asset`
-field reaches whoever is playing as a text box asking for a path. You may
-still declare it: the word is kept in your project, where it says what the
-field is for.
+| Question | Values |
+| --- | --- |
+| What it is | `int`, `float`, `bool`, `string`, `markdown`, `asset`, `component`, `json` |
+| How many of it | one, a list, or a map of names to it |
 
-**A name that becomes a Python variable has to be one Python can read.** A
-passage's inputs and a Script node's inputs and outputs take a letter or an
-underscore, then letters, digits and underscores; a Python keyword such as
-`class` is refused, with the reason under the field. An Output node's rows and
-an Input node's fields are read by people, so `Your roll` is still a fine name
-there. A board from an older version that carries a name Python cannot read now
-says so instead of silently never filling the slot.
+That is 24 types. Output, Input, Script, Macro In and Macro Out each offer the same 24, as do a component's attributes and the console variables. `number` and `entity` are still read wherever they appear and are no longer suggested: `int` or `float` says which, and an entity is a name, which is a `string`.
 
-**A slot gets the type it declared.** An `int` Script input given `3.7` reads
-`3`, and a `list<int>` input handed a list of text receives numbers. This holds
-for a Script node's inputs and an Output node's rows; a value that cannot be
-read as the declared type becomes that type's blank rather than stopping the
-story. What a script *writes* is left as it is.
+**Declared type and port type.** What a row declares and what its port carries are not the same set. The file keeps the declared word.
 
-**Any slot can carry a default** — what the slot is worth when nothing fills
-it. A Macro In's takes, a Script node's inputs and outputs, an Output node's
-slots, a Macro Out's answers and an Input node's form fields all take one.
-Where the card's own literal and a
-wire both answer a port, **the wire wins**, and the field on the card
-disappears while the wire is attached; where neither is there, the declared
-default stands in, and where there is no default either, the type's own blank
-does. A form field's default is filled in for the reader to accept or type
-over, and a script output's applies only where the program never set that
-name. A default on a `json` or a `map<…>` slot cannot travel, and the app
-says so when you compile.
+| Declared | Port carries |
+| --- | --- |
+| `int`, `float` | `number` |
+| A single `asset`, `component` or `markdown` | `string` |
+| A list of assets or of components | The tag a component's own `assetList` and `componentList` attributes carry, so those join each other |
+| A map | `json` |
 
-**A slot that points at a file is filled by name.** For a picture, a document
-or a component — a component's attributes, a macro take's or script input's
-default, a console variable — type a name and pick from the project's files,
-with the full path beside each; the pick sits there as a chip, hover shows the
-path, and the path is still what is stored. A chip whose file is outside the
-project or missing is marked. On a card (a macro take, a Set variable node) the
-slot is a searchable dropdown instead, like the Narration node's passage
-picker.
+**Input.** An Input node's types are narrowed on the way into a campaign. What it declares is drawn as a form for the reader to fill in, and a form has no file picker, so an `asset` field reaches the player as a text box asking for a path. The declaration is kept in the project.
 
-**Every card can carry metadata of your own.** Right-click it and choose
-*Edit metadata…*: a list of names, types and values — `int`, `float`, `bool`,
-`string`, a list of each, and `json` for anything nested — and a small tag on
-the card's header while there is any. A shorter list than a port may declare,
-and for a structural reason: a node stores the value and not its type, so the
-editor reads the type back off the value's own shape when it opens. An
-`asset` and a `string` would be the same thing written down, so it does not
-offer the difference; a whole `3` and a fractional `3.0` are not, so it does. Nothing on the board reads it; it is yours, for a status, a
-reviewer's note, a mark for a tool of your own. It travels with the node into
-a compiled campaign and to an agent, and a copied node arrives with its notes.
+**Names.** A name that becomes a Python variable must be one Python can read: a letter or an underscore, then letters, digits and underscores. A Python keyword such as `class` is refused, with the reason under the field. This applies to a passage's inputs and to a Script node's inputs and outputs. An Output node's rows and an Input node's fields are read by people, so `Your roll` is a valid name there. A board that carries a name Python cannot read reports it.
+
+**Coercion.** A slot receives the type it declared.
+
+- An `int` Script input given `3.7` reads `3`.
+- A `list<int>` input handed a list of text receives numbers.
+- A value that cannot be read as the declared type becomes that type's blank; the story is not stopped.
+- This holds for a Script node's inputs and an Output node's rows. What a script writes is left as it is.
+
+**Defaults.** Any slot can carry a default, the value the slot takes when nothing fills it. Slots that take one: a Macro In's takes, a Script node's inputs and outputs, an Output node's slots, a Macro Out's answers and an Input node's form fields.
+
+| Situation | Value used |
+| --- | --- |
+| A wire answers the port | The wire. A card's own literal is superseded by a wire, and the field disappears while the wire is attached. |
+| No wire | The card's own literal, where the card has one. |
+| Neither | The declared default. |
+| No default either | The type's blank. |
+
+An Input form field's default is filled in for the reader to accept or type over. A script output's default applies only where the program never set that name. A default on a `json` or a `map<…>` slot cannot travel into a campaign, and the app reports it when you compile.
+
+**File slots.** A slot that points at a file is filled by name. This covers a picture, a document or a component, in a component's attributes, a macro take's or script input's default, and a console variable. Typing a name lists the project's files, with the full path beside each. The pick is shown as a chip, hovering shows the path, and the path is what is stored. A chip whose file is outside the project or missing is marked. On a card (a macro take, a Set variable node) the slot is a searchable dropdown instead, like the Narration node's passage picker.
+
+**Metadata.** Every card can carry metadata. Right-click the card and choose *Edit metadata…*: a list of names, types and values. A small tag shows on the card's header while there is any. Nothing on the board reads it. It travels with the node into a compiled campaign and to an agent, and a copied node keeps its metadata.
+
+| Offered | Not offered |
+| --- | --- |
+| `int`, `float`, `bool`, `string`, a list of each, and `json` for anything nested | `asset` and `string` are not told apart; a whole `3` and a fractional `3.0` are. |
 
 ## Flow
 
@@ -142,7 +112,7 @@ Plus one **input per thing the macro takes**, with a field beside it to type a l
 | --- | --- | --- |
 | `completed` | `flow` | Taken where the macro reached its Macro Out. |
 
-**Read more:** [Macros](/overviews/boards-and-nodes/#macros)
+**Read more:** [Macros](/reference/node-families/#macros)
 
 
 ### Jump
@@ -165,7 +135,7 @@ Leave Node on `Start` to begin that board at the beginning, or name a node to re
 | --- | --- | --- |
 | `in` | `flow` | The way in. There is no way out: what happens next happens on the board it names. |
 
-**Read more:** [Reading a story back](/overviews/reading-a-story-back/)
+**Read more:** [Reading a story back](/explanation/reading-a-story-back/)
 
 
 ### While
@@ -326,7 +296,7 @@ The machine is a `.fsm.mmd` file — a mermaid state diagram. `event` is what to
 | `unchanged` | `flow` | Taken when none did — not an error. |
 | `state` | `string` | Where the machine is now. |
 
-**Read more:** [Finite state machines](https://brilliant.org/wiki/finite-state-machines/) · [Mermaid state diagrams](https://docs.mermaidviewer.com/diagrams/state.html) · [State machines in Ripple Effect](/overviews/state-machines/)
+**Read more:** [Finite state machines](https://brilliant.org/wiki/finite-state-machines/) · [Mermaid state diagrams](https://docs.mermaidviewer.com/diagrams/state.html) · [State machines in Ripple Effect](/explanation/state-machines/)
 
 
 ### Variable branch
@@ -355,7 +325,7 @@ A Get variable node into a Comparator into an If does the same in three cards; t
 | `yes` | `flow` | Taken when the comparison holds. |
 | `no` | `flow` | Taken when it does not. |
 
-**Read more:** [Console variables](/overviews/console-variables/)
+**Read more:** [Console variables](/explanation/console-variables/)
 
 
 ### Delay
@@ -407,7 +377,7 @@ The first visit goes out of `a`. `is A` is true while `a` is the side running. I
 | `b` | `flow` | Taken on the visits in between. |
 | `isA` | `bool` | True while `a` is the side running. |
 
-**Read more:** [What remembers, and for how long](/overviews/boards-and-nodes/#what-remembers-and-for-how-long)
+**Read more:** [What remembers, and for how long](/reference/node-families/#state-kept-for-the-whole-playthrough)
 
 
 ### Once
@@ -432,7 +402,7 @@ The first time the flow reaches it goes out of `first`; every time after goes ou
 | `again` | `flow` | Taken on every visit after. |
 | `visits` | `number` | How many visits so far, counting this one. |
 
-**Read more:** [What remembers, and for how long](/overviews/boards-and-nodes/#what-remembers-and-for-how-long)
+**Read more:** [What remembers, and for how long](/reference/node-families/#state-kept-for-the-whole-playthrough)
 
 
 ### End
@@ -482,7 +452,7 @@ A choice has a *Times* box beside its name: blank for as often as the reader lik
 | --- | --- | --- |
 | `choice_0` | `flow` | One per choice, in order; always one spare at the bottom. The words the reader sees are set on the row, per language. |
 
-**Read more:** [Passages and languages](/overviews/passages-and-languages/), [Soundscapes and sounds](/overviews/soundscapes-and-sounds/)
+**Read more:** [Passages and languages](/explanation/passages-and-translations/), [Soundscapes and sounds](/explanation/soundscapes-and-sounds/)
 
 
 ### Output
@@ -511,7 +481,7 @@ Plus one **input per name** in *Shows*, typed as the shape says.
 | --- | --- | --- |
 | `completed` | `flow` | Taken when the reader moves on. |
 
-**Read more:** [Python scripting](/overviews/python-scripting/)
+**Read more:** [Python scripting](/explanation/python-in-a-story/)
 
 
 ### Input
@@ -540,7 +510,7 @@ Plus one **output per name** in *Asks*, typed as the shape says, carrying what t
 | --- | --- | --- |
 | `completed` | `flow` | Taken when the reader submits the form. |
 
-**Read more:** [Playing a campaign](/overviews/playing-a-campaign/)
+**Read more:** [Playing a campaign](/reference/campaign-window/)
 
 
 ### Play sound
@@ -567,7 +537,7 @@ Nothing waits for it: `completed` fires the moment the sound is cued, so a door 
 | --- | --- | --- |
 | `completed` | `flow` | Taken the moment the sound is cued, not when it ends. |
 
-**Read more:** [Soundscapes and sounds](/overviews/soundscapes-and-sounds/)
+**Read more:** [Soundscapes and sounds](/explanation/soundscapes-and-sounds/)
 
 
 ## Math
@@ -630,11 +600,11 @@ Its result is what an If node is waiting for.
 
 ## Lists
 
-These four read a list — and a piece of text, which they read the same way. A list is itself; everything else is its text, one character at a time. So the same three cards work on `["bread", "rope"]` and on `"hi"`, and what comes out is the kind that went in: appending `!` to `hi` gives `hi!`, not a list of three letters.
+These four cards read a list or a piece of text, and read both the same way. A list is itself; any other value is its text, one character at a time. The same card works on `["bread", "rope"]` and on `"hi"`, and the result is the kind that went in: appending `!` to `hi` gives `hi!`.
 
-An index counts from zero, and from the end when it is negative — `-1` is the last item. Nothing here ever stops the story: an index past either end is an ordinary thing to reach inside a loop.
-
-A map is the one thing these three do not read. It has no order for an index to mean, so they hand it back untouched and answer nothing — the [Maps](#maps) cards below are what read one.
+- An index counts from zero, and from the end when it is negative: `-1` is the last item.
+- An index past either end does not stop the story; it is an ordinary thing to reach inside a loop.
+- A map has no order for an index to mean. Insert and Remove hand it back untouched, At answers nothing and Size counts none. The [Maps](#maps) cards read maps.
 
 ### Insert
 
@@ -745,11 +715,11 @@ A piece of text is counted in characters, and an emoji counts as one.
 
 ## Maps
 
-These seven read a map: a set of names, each holding a value. **A map is itself; everything else is an empty map** — point one of them at a list, at a number or at nothing and that is what it sees.
+These seven cards read a map: a set of names, each holding a value. A map is itself; any other value is read as an empty map.
 
-Which is also how a map is made, there being no card that holds one the way a Text node holds a word: a **Set** with nothing wired to its subject hands you back a map of one pair, and a chain of them is a map.
-
-A name is always text. A name that is not there never stops the story — **Get** answers nothing and says so on `found`, and **Remove** hands the map back as it was.
+- A name is always text.
+- No card holds a map as a literal. A **Set** with nothing wired to its subject returns a map of one pair, and a chain of Set cards builds a larger one.
+- A name that is not present does not stop the story. **Get** answers nothing and reports it on `found`; **Remove** returns the map unchanged.
 
 ### Get
 
@@ -954,7 +924,7 @@ Plus one **output per attribute**, typed as the component declares it — and in
 | `completed` | `flow` | Taken when the node has run. In Entity mode this is when the entity exists. |
 | `component` | `component` | The whole component as one value, for passing along rather than picking apart. |
 
-**Read more:** [Components and entities](/overviews/components-and-entities/)
+**Read more:** [Components and entities](/explanation/components-and-entities/)
 
 
 ### Spawn
@@ -988,7 +958,7 @@ It runs when the flow reaches it, so anything reading `entities` has to be wired
 | `completed` | `flow` | Taken when the node has run. |
 | `entities` | `stringList` | Their names, as a list of text. |
 
-**Read more:** [Components and entities](/overviews/components-and-entities/)
+**Read more:** [Components and entities](/explanation/components-and-entities/)
 
 
 ### Delete Entity
@@ -1018,7 +988,7 @@ A name that names nothing is not an error — it removes nothing and the story c
 | --- | --- | --- |
 | `completed` | `flow` | Taken when the node has run. |
 
-**Read more:** [Components and entities](/overviews/components-and-entities/)
+**Read more:** [Components and entities](/explanation/components-and-entities/)
 
 
 ### Entity Exists
@@ -1049,7 +1019,7 @@ It runs when the flow reaches it, so anything reading `exists` has to be wired a
 | `completed` | `flow` | Taken when the node has run. |
 | `exists` | `bool` | Whether the campaign has one under that name. |
 
-**Read more:** [Components and entities](/overviews/components-and-entities/)
+**Read more:** [Components and entities](/explanation/components-and-entities/)
 
 
 ### Entity Names
@@ -1082,7 +1052,7 @@ It runs when the flow reaches it, so anything reading `names` has to be wired af
 | `completed` | `flow` | Taken when the node has run. |
 | `names` | `stringList` | Every name, in alphabetical order. |
 
-**Read more:** [Components and entities](/overviews/components-and-entities/)
+**Read more:** [Components and entities](/explanation/components-and-entities/)
 
 
 ## Value
@@ -1115,7 +1085,7 @@ Plus one **input per name** in *Inputs* and one **output per name** in *Outputs*
 | --- | --- | --- |
 | `completed` | `flow` | Taken when the script has run. |
 
-**Read more:** [Python scripting](/overviews/python-scripting/) · [The Python API](/reference/python/)
+**Read more:** [Python scripting](/explanation/python-in-a-story/) · [The Python API](/reference/python/)
 
 
 ### Get variable
@@ -1143,7 +1113,7 @@ It takes the flow rather than being pulled, so that it always answers what the v
 | `completed` | `flow` | Taken when the node has run. |
 | `value` | `any` | What the variable holds now, typed as the variable is. |
 
-**Read more:** [Console variables](/overviews/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
+**Read more:** [Console variables](/explanation/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
 
 
 ### Set variable
@@ -1172,7 +1142,7 @@ Wire a value into `value`, or type one on the card; the wire wins when both are 
 | `completed` | `flow` | Taken when the node has run. |
 | `result` | `any` | What the variable holds after the write. |
 
-**Read more:** [Console variables](/overviews/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
+**Read more:** [Console variables](/explanation/console-variables/) · [The twenty-four types and the coercion rule](/reference/python/console-variables/#types)
 
 
 ### Random number
@@ -1468,7 +1438,7 @@ Each row is an outcome and how likely it is against the others — 60 / 30 / 10,
 
 ## Macro
 
-Offered on a macro's own canvas only, where a board would have its Start and its Ends. Everything above is offered on both.
+These cards are offered on a macro's own canvas only, where a board would have its Start and its End cards. All cards above are offered on both.
 
 ### Macro In
 
@@ -1490,7 +1460,7 @@ Plus one **output per name** in *Takes*, typed as the shape says.
 | --- | --- | --- |
 | `out` | `flow` | The single wire the macro begins by. |
 
-**Read more:** [Macros](/overviews/boards-and-nodes/#macros)
+**Read more:** [Macros](/reference/node-families/#macros)
 
 
 ### Macro Out
@@ -1513,4 +1483,12 @@ Plus one **input per name** in *Answers*, typed as the shape says.
 | --- | --- | --- |
 | `in` | `flow` | Any number of wires; every branch inside the macro can finish here. |
 
-**Read more:** [Macros](/overviews/boards-and-nodes/#macros)
+**Read more:** [Macros](/reference/node-families/#macros)
+
+
+## Related
+
+- [Boards, nodes and macros](/explanation/boards-nodes-and-macros/) explains what a card is and how a macro differs from a board.
+- [How to build a board](/how-to/work-on-the-canvas/) puts cards on a canvas and wires them.
+- [How a story runs](/explanation/how-a-story-runs/) says how flow and values are run.
+- [Diagnostics](/reference/diagnostics/) lists what a board reports about its cards.

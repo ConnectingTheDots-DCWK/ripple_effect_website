@@ -1,0 +1,55 @@
+---
+title: History, sharing and conflicts
+description: Why the app keeps a project's history in git, what it leaves out of that history, and why it never settles a conflict or overwrites a file on your behalf.
+sidebar:
+  order: 2
+---
+
+import Shot from '../../../components/Shot.astro';
+
+The file formats Ripple Effect writes are plain text, so that a project can be a repository. Git is built into the app. [Version control in the app](/reference/version-control/) shows where the controls are.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Why git underneath
+
+The words in the app are its own: *save point*, *storyline*, *back up*, *set aside*. The history under them is an ordinary git repository, and anything that reads one reads this. The vocabulary is not a second format.
+
+## Starting a history
+
+Starting a history writes as little into your folder as it can, because the folder was yours before the app arrived. It adds only the entries that are missing to a list of things to leave out, and it does not touch an ignore file you already had. It also keeps line endings consistent for co-authors on other platforms; without that, a co-author on another system checks the project out, their editor writes different line endings, and every prose file reads as changed on both machines for ever. Then it takes a first save point of everything. Files too large to ever take back out again are left out and named, rather than committed and regretted.
+
+The one thing of the app's that is ignored is `.ripple/workspace.json`, because it is per-machine: it records how one person has arranged their window. Everything else in `.ripple/` travels, and should. The registry is what keeps a Jump pointing at the right board after a rename; a copy of the project that arrived without it would have to rebuild its index, and the links between boards would have nothing to point at. The project's own title, cover and languages are shared facts about the story in the same way. The line between the two is whose fact it is: the story's, or one machine's.
+
+## Backing up is a separate decision
+
+You say where the project should be kept, and the app tells you what it is about to do before it does it. [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/) has the steps.
+
+Backing up is deliberately separate from keeping a history. A project can have a history and never leave the machine, and the app does not treat the first as an invitation to the second. Two things are said out loud because nobody would be asked them in time: the repository has to exist on the site before you can back up to it, and *public* really does mean anyone can read your drafts.
+
+## Why a conflict is never settled for you
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+When two people changed the same passage, there is no neutral answer. Either version might be the one the story needs, and a third sentence, written by hand, might be better than both. Any rule the app applied would be a guess about a story it does not know.
+
+So nothing is touched until you say. Both versions are shown side by side and you pick which to keep, or write the sentence yourself. Your files are left exactly as they were while you decide, which means leaving it for later costs nothing: there is no half-merged state to come back to.
+
+The same reasoning applies to an assistant connected over MCP. It is refused a document with a conflict pending, because a tool that picked a side would be making your decision. See [Working with an AI assistant](/explanation/working-with-an-assistant/) for how that sits beside the rest of what an assistant may do.
+
+## Undo is undoable
+
+Undoing changes to a file keeps what it removes first. The message offering it back stays in Messages, under the documents, after the notification has gone. Everything you have undone is listed in one place, so the safety net is something you can look at rather than a notification you had four seconds to catch.
+
+## Why autosave never overwrites
+
+The app saves what you type automatically, about a second after a keystroke. Version control rewrites files: a pull from a co-author, a change of storyline or a discarded edit all replace what is on disk. If those two could collide, the next keystroke in an open editor would silently undo the rewrite, which would look exactly like version control eating your work.
+
+That is the rule the whole feature rests on. A file another program changes underneath the app, whether a pull from a co-author or an editor writing the same passage, is noticed rather than overwritten, and autosave never writes over a change it did not make. Version control that could be undone by the editor's own autosave would be worse than none.
+
+## Related
+
+- [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/), the steps for starting a history, taking save points and backing up.
+- [Version control in the app](/reference/version-control/), every control in the Changes section.
+- [A project is a folder](/explanation/projects-are-folders/), the idea this page builds on.
+- [Project files and the .ripple folder](/reference/project-files/), what the folder holds and which parts travel.

@@ -1,0 +1,190 @@
+---
+title: Settings, accessibility and updates controls
+description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the engine update controls and the Support page.
+---
+
+The gear in the app bar, on every screen, opens the Settings dialog. Settings belong to the app, not to a project, so they follow you from project to project.
+
+Every option is a choice among a few named things, drawn as a segmented control with the current choice lit, and a line under the control says what that choice means. A choice takes effect when pressed; there is no Apply. The exception to the segmented control is *Language*, a drop-down.
+
+The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app.
+
+## Pages
+
+The dialog has six pages down a rail on its left. Every page has the same height, and both columns scroll.
+
+| Page | Rail description | Holds |
+| --- | --- | --- |
+| *General* | Appearance, accessibility, language | How the app looks, reads and plays |
+| *Data control* | What leaves this machine | *Usage statistics* |
+| *Updates* | Engine fixes | *Engine updates*, *Use the bundled engine* |
+| *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
+| *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
+| *About* | Version, credits, licences | The About box |
+
+*Agents*, *Support* and *About* are pages of the dialog rather than settings. The command palette's *Agents*, *Support* and *About* commands open their pages, and so does the agents mark in the app bar.
+
+*Documentation* leads the pointers in the About box. Panels that explain a feature (the variables panel, the agents page, the Python sandbox, the export dialog, the metadata editor and the state machine editor's bar) say what you are looking at and link to the documentation page that carries the rest.
+
+## General
+
+Rows in page order.
+
+| Row | Choices | Meaning |
+| --- | --- | --- |
+| *Language* | *System*, then each available language under its own name | The language of the app's own menus, dialogs, messages and tips |
+| *Appearance* | *System*, *Light*, *Dark* | *System* follows the operating system; the others are always that theme |
+| *Links* | *Curved*, *Right-angled* | How wires are drawn on a board |
+| *Contrast* | *Standard*, *More* | How firmly text and controls separate; see [Contrast](#contrast) |
+| *Colour vision* | *Off*, *Protan*, *Deutan*, *Tritan* | Which palettes are swapped; see [Colour vision](#colour-vision) |
+| *Playing* | *128*, *512*, *2,048*, *8,192*, *None* | The loop ceiling |
+
+### Language
+
+- Each language is listed under its own name, so a language is findable when the app is showing one that cannot be read.
+- *System* follows the operating system's language and says which language it currently resolves to.
+- The setting is the language of the app only. A project's own text and languages are set in the project's settings; see [Passages, choices, languages and reading time](/reference/passages/).
+- The row is shown only in a build that ships more than one language.
+- A stored language this build does not offer is read as *System*.
+- Italian is currently the only language besides English. It was drafted by a model and spot-checked rather than read line by line, so report anything that reads oddly.
+
+### Appearance
+
+*System* follows whatever the OS is set to. *Light* and *Dark* are always that theme. Appearance is independent of Contrast and Colour vision, so dark and *More* contrast can be on together.
+
+The default look is quiet and monochrome: the main button in each view is filled with the text colour, and selection, focus and the active tab are drawn in it too, in light and dark alike. Colour is kept for what it tells you: node families, traced routes, version-control marks and warnings. Links in Markdown are underlined, and the app icon is a dark plate with the mark in white.
+
+### Links
+
+| Choice | Wires |
+| --- | --- |
+| *Curved* | Curve from port to port. Double-click a wire to add a handle and drag it to route the wire. |
+| *Right-angled* | Run in straight legs and turn at right angles. A handle is a corner; dragged, it lines up with its neighbours. |
+
+### Playing
+
+*Playing* is the loop ceiling: how many times one loop node may go round before a campaign stops with an error and offers you the node. It is counted per loop and per board; jumping away and coming back starts the count again.
+
+| Choice | Behaviour |
+| --- | --- |
+| *128*, *512*, *2,048*, *8,192* | The campaign stops with an error at that count |
+| *None* | A loop node may go round for ever; a *While* with nothing breaking out of it never ends and does not stop the campaign |
+
+## Contrast
+
+| Choice | Effect |
+| --- | --- |
+| *Standard* | Text and controls clear the usual accessibility floor. |
+| *More* | Body and caption text reach the stricter accessibility grade (AAA). Every text field, button, chip, switch and checkbox has a findable edge. Muted text, control edges and hairlines are firmer. |
+
+Colours stay the same and the page does not change shape.
+
+## Colour vision
+
+| Choice | Palettes recoloured for |
+| --- | --- |
+| *Off* | The house colours |
+| *Protan* | Protanopia and protanomaly |
+| *Deutan* | Deuteranopia and deuteranomaly, the commonest kind |
+| *Tritan* | Tritanopia and tritanomaly |
+
+A mode recolours everything the app uses colour to tell apart:
+
+- the node families on a board;
+- traced routes;
+- the marks version control puts on files;
+- status colours;
+- syntax highlighting;
+- the diff, which stops being red and green.
+
+Palettes are chosen so that things which share a shape do not share a colour, and are checked against a simulation of all eight kinds of colour blindness. Neutral greys are not changed.
+
+### Limits
+
+- Three places tell categories apart by hue and nothing else: the board minimap and the overview's, where a family is a few-pixel rectangle with no icon or label; the traced routes; and a soundscape clip too narrow to have its mode written on it. A colour-vision mode improves them without making them readable to everyone.
+- There is no mode for either achromatic kind of colour blindness.
+- The app has no screen-reader support.
+
+See [What the accessibility settings do and do not claim](/explanation/accessibility-limits/).
+
+## Text size
+
+Text size is not a setting of the app.
+
+| Part | Behaviour |
+| --- | --- |
+| Chrome | Follows the system's text size, up to double |
+| Cards on a board | Stay at the size they were drawn at; zoom makes a board bigger |
+
+## Data control
+
+| Row | Choices | Behaviour |
+| --- | --- | --- |
+| *Usage statistics* | *Off*, *On* | *Off* until pressed to *On*. The full list of what is sent is shown under the control, and the identifier is shown while on. Nothing is sent until it has been on for an hour. |
+
+Switching off destroys the identifier. To have what was sent deleted, write to the address shown on the page with the identifier before switching off. Switching on again starts a new installation. What is sent is listed in [What the app sends](/about/what-the-app-sends/).
+
+## Updates
+
+The part of the app that plays and compiles campaigns can be fixed without a new installer. A fix is fetched in the background, checked against a signature before it is trusted, and used from the next launch. If the app crashes with a fix, the fix is set aside automatically. A fix never changes what the app can do.
+
+A button in the app bar shows while a fix is arriving, and again once it is ready, with the version it moves to.
+
+| Control | Effect |
+| --- | --- |
+| *Engine updates*: *On* | Fixes are fetched in the background and used from the next launch. |
+| *Engine updates*: *Off* | The engine stays the one this version came with, or the last fix already fetched. |
+| *Use the bundled engine* | Removes the fixes already fetched. The bundled engine is used from the next launch, and the page confirms it. |
+
+While a fix is in use the page reads *Running engine* followed by its version, a fix fetched after this version was installed. The engine button opens a dialog with two states. While a fix downloads, it says the fix is being downloaded and checked and that nothing changes until the app next starts. When the fix is ready, it says it has been downloaded and checked, takes effect at the next start, and that there is nothing to install. What the request carries is in [What the app sends](/about/what-the-app-sends/).
+
+## Support page
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+Opened by *Settings ▸ Support* or *Support and feedback* in the Help menu. Bugs, questions and ideas go to the public support repository, `ripple_effect_support`, on GitHub.
+
+| Entry | Does |
+| --- | --- |
+| *Ask a question* | Opens Discussions: usage, ideas, showing what you made |
+| *Report a bug* | Opens the bug form with the version, operating system and installer origin already answered, and the technical details filled in |
+| *Request a feature* | Opens a new issue tagged as an enhancement |
+| *Browse open issues* | Shows whether a problem is already known |
+
+*What to attach* shows only while a session folder exists:
+
+| Entry | Does |
+| --- | --- |
+| *Save this session as a zip* | Packs the session's log and reports into one file to attach to an issue. Its detail line names the session's id. |
+
+The page states what is replaced before anything is written down: username and home folder, the project's location, e-mail addresses, IP addresses and anything shaped like a key or a token. Times are recorded in UTC. Nothing uploads these files; the one exception is a crash report, which the app asks about first and sends only if you say yes.
+
+### Help menu
+
+The rest of what you might attach, and the tips, are in the Help menu rather than on the page. All of them are also command palette commands.
+
+| Entry | Does |
+| --- | --- |
+| *Show every tip again* | Each tip appears once more, as you reach the thing it is about |
+| *Troubleshooting* ▸ *Copy package info* | Copies which build this is and how it was installed |
+| *Troubleshooting* ▸ *Copy device info* | Copies the operating system underneath |
+| *Troubleshooting* ▸ *Open this session's folder* | Opens the log, the crash reports and the build information |
+
+**Links the app opens:** those for reporting a bug, asking a question, the survey, the documentation, the licence and the Privacy Notice go through an address on `ripplefx.app`, which redirects to where the thing lives.
+
+## First launch
+
+After the agreement pages, a first launch shows two pages. Both can be skipped, and everything on them is in Settings afterwards.
+
+| Page | Contents |
+| --- | --- |
+| First | Appearance, *Contrast*, *Colour vision* and how wires are drawn, beside a small preview of the app that changes as you choose |
+| Second | The *Usage statistics* question with neither answer chosen and the full list of what would be sent, how crash reports are asked, and a mention of donations |
+
+## Related
+
+- [How to change the app's language, contrast and colour vision](/how-to/change-app-language-contrast-and-colour/)
+- [What the accessibility settings do and do not claim](/explanation/accessibility-limits/)
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/)
+- [How to report a bug](/how-to/report-a-bug/)
+- [The session log and reports](/reference/session-log/)

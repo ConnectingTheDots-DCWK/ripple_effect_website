@@ -1,0 +1,75 @@
+---
+title: Working with an AI assistant
+description: Why Ripple Effect is an MCP server, why its tools are the app's own, and why an assistant's writes go through the same sessions as yours.
+---
+
+import Shot from '../../../components/Shot.astro';
+
+Ripple Effect is an **MCP server**, so Claude Code, Claude Desktop, Cursor and anything else that speaks the protocol can work in the folder alongside you instead of being pasted things. The design rests on four decisions: the channel is private, the tools are the app's rather than the bridge's, a write is the same act whoever makes it, and the log records that something happened without recording what.
+
+{/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+## Why a server at all
+
+A project is ordinary files, so an assistant with the folder open can already read most of it. What the files cannot answer on their own is what leads to what across boards, which translations have fallen behind, what the embedded Python can actually do, and what the story does when it is played. Those answers live in the running app, and the server is how an assistant asks for them.
+
+## A private channel, off by default
+
+The server is a private local channel that only your own account can open. It is never a network port. Connecting a client is a copy-and-paste, which [How to connect an AI assistant](/how-to/connect-an-mcp-client/) walks through.
+
+Access is off until you turn it on, in two steps, on the **Agents** page of the Settings dialog. **Let agents reach this app** makes the server listen: an assistant can then read the project and play it. **Let agents change files** is subordinate to the first and off independently. Both default to off.
+
+The split follows the difference in consequence. Reading is useful on its own and cannot touch a thing, so it is the first thing you can grant. Writing changes your story, so it is a separate decision, and a project can be shared with an assistant for review, questions and play-testing without ever offering it the chance to edit.
+
+## Why the tools are the app's, not the bridge's
+
+The program a client starts is a thin bridge. It does not carry a list of tools; it asks the running app what it offers the moment a client starts it, and the app answers for this build and this project. The node types that adding a node accepts are an enumeration read off the editor's own palette, with the card names beside them. Every `locale` argument names the languages the project is written in, and `cvar` names the variables it declares. A write tool says in its description when the edit switch is off, and every description ends with a link to its own page.
+
+The reason is drift. A list written into the bridge describes the app that existed when it was written; a list read from the app describes the one you are running. The same reasoning is behind the `node_types` tool, which lists every kind of node this build has and, asked about one, describes it in full: the fields to fill in and the ports to wire. It reads the palette at the moment it is asked.
+
+The client is told the moment any of that changes: a project opened, a switch thrown, a language or a variable declared. An update to the app is therefore seen by a client that was already running, and a client with the bridge configured shows up on the Agents page as soon as agent access is on, rather than at its first call. A client whose bridge predates 1.4 needs a restart once.
+
+## Reading: the shape of the project, on demand
+
+What an assistant can read is chosen to answer the questions a long story raises: the shape of the whole project in about twenty lines, then any board as a compact digest, and beyond single documents what leads to what, every route between two passages, and what is stale or wrong. [MCP tools](/reference/mcp-tools/) lists them.
+
+This is the same argument as [Reading a large story back](/explanation/reading-a-story-back/): a project too large to hold in view is better read as digests and answers than as every file, and an assistant is in the same position as you are. A node's metadata reaches it too, as a `meta` line under the node in a board read; adding or changing a node takes a `metadata` object that replaces what the node had.
+
+## Playing: the shipped story, not a simulation
+
+An assistant plays with the same runner the Play button uses, with the same Python and the same component values, for the reasons given in [Why the preview is the shipped story](/explanation/the-preview-is-the-shipped-story/). It starts a campaign, makes choices and reads the state. Because it is a program rather than a person, it can also walk **every** branch and report what nobody has time to sit through: which endings are reachable, which passages nothing leads to, where a path runs out of wire, and which jumps are broken.
+
+A playthrough writes nothing, and it plays the boards as they are on disk rather than what is half-edited in a tab, so a walk reports on what would be saved and exported. It reads the same trace the play window shows, line by line with the board and node each line came from, and continues from where it last read. An Input node reaches it as a slide of its own listing the fields it asks for, and it fills the form in with a value per name; an unattended walk goes through one with every field blank.
+
+## Writing: through the sessions, once you allow it
+
+With the second switch on, an assistant can write: passages and their translations, nodes and wires, components, scripts, soundscapes, and the files themselves. [MCP tools](/reference/mcp-tools/) lists every one.
+
+The important property is that none of these is a separate path to the disk. Every write goes through the app's own sessions, the same ones your typing goes through. That has three consequences you would otherwise have to build separately. Adding a passage is a single undo. Autosave sees it, so it is not lost or overwritten. Version control lists it, so it appears in the changes like anything else. A second route that wrote files directly would need its own answer to each of those, and the app would have two ways of being wrong. Everything changed this session is listed on the Agents page, and every change is posted to Messages as it happens.
+
+{/* TODO(shots): <Shot name="agentConnected" /> */}
+
+### What a write is refused
+
+A refusal is either a decision that belongs to you or a guard that keeps the project consistent. A document with two versions pending is a conflict, and picking a side would make your decision for you; the registry and catalogue ids are never written directly, so a rename cannot leave a Jump pointing at nothing. Deleting a file cannot be undone, so it is guarded rather than prompted: nothing outside the project, nothing in `.ripple/` and nothing with unsaved edits is deleted.
+
+[What an assistant may read, play and write](/reference/mcp-permissions/) is the reference for the full list.
+
+## Knowing who is connected
+
+The app bar keeps only what has news, and the agents mark is one of those things. While a client is connected its mark appears there (Claude's, OpenAI's, Gemini's, or a plain robot for everything else), and pressing it opens the Agents page. If the local connection could not be opened, a plug in the error colour takes its place, with *Agents cannot reach this app* on the tooltip. With the switch off, or on and nobody there, the bar shows nothing.
+
+## What the app writes down, and what it does not
+
+Every tool call, resource read and prompt a client makes leaves a line in the session log: which client, which tool, which argument *names* it passed, how long it took and whether it worked. Argument contents are never recorded. A path would be redacted, but a passage you wrote would not be, and a denylist of what to scrub is right only until the day it misses a case. The log can say that an assistant wrote to a board but not what it wrote; every change is also posted to Messages. See [Updates, logs and Messages](/explanation/updates-logs-and-privacy/).
+
+## Prompts and the documentation
+
+Two prompts, for writing a passage and for editing a board, can be handed to an assistant with the passage or board already in them. They exist because they carry the two things an assistant gets wrong first: that Python in prose is monty rather than CPython, so an attribute is `component("X")["attr"]`, and that a node id is numbered across a whole board rather than per type. This site also publishes its documentation as plain text for assistants; [MCP tools](/reference/mcp-tools/) names the files.
+
+## Related
+
+- [How to connect an AI assistant (MCP client)](/how-to/connect-an-mcp-client/): the copy-and-paste that connects a client.
+- [MCP tools](/reference/mcp-tools/): every tool and argument.
+- [What an assistant may read, play and write](/reference/mcp-permissions/): the permissions in full.
+- [How to play and test a campaign](/how-to/play-a-campaign/): the runner an assistant shares with you.

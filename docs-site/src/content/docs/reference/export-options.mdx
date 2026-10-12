@@ -1,0 +1,144 @@
+---
+title: Export options and bundle contents
+description: What the Export dialog makes, the switches on it, what a project copy and a compiled campaign contain, the HTML export profile file and the export diagnostics.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Export makes one of two things. The dialog asks which.
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+| Format | Result | Opens in the editor |
+| --- | --- | --- |
+| **Project copy** | A folder, with `.ripple/` included. | Yes |
+| **Campaign** | A compiled bundle a runtime plays. | No |
+
+*Zip files* and *Include media* mean the same in both formats.
+
+## Dialog controls
+
+Controls above the dividing line decide what travels. Controls below it decide what the passages become.
+
+| Control | Applies to | Effect |
+| --- | --- | --- |
+| **Zip files** | Both | Writes one zip archive instead of a folder. |
+| **Include media** | Both | Three switches, one each for **Images**, **Videos** and **Audio**. A kind that is off has its files listed, so they can be added back later, and left behind. Passages, boards and soundscapes still point where the files would have been. |
+| **Needs no Python** | Campaign | Stops the export if any Script node or Python snippet is found. See [Needs no Python](#needs-no-python). |
+| **Strip media** | Both | Removes embedded pictures, videos and audio from the prose, for a reader that cannot show them. One child switch per kind. |
+| **Strip links** | Both | Unwraps a link to its words. |
+| **Output passages as** | Campaign | Markdown or HTML. See [Passages as HTML](#passages-as-html). |
+| **Profile** | Campaign, HTML | The export profile that names the classes. |
+
+Strip switches:
+
+- A link to a picture is a picture, not a link, and answers to **Strip media**.
+- Neither strip switch changes what travels beside the passages. That is **Include media**.
+- A strip for a kind that is not in the export is disabled, since there is nothing to strip. It returns to its earlier state when the kind is back in the export.
+
+## Project copy
+
+A folder that opens in the editor, with `.ripple/` included. It is the project with its media resolved. A picture the prose points at from outside the project lands in `media/external/`.
+
+Audio is usually the largest kind by size.
+
+The export profile does not travel with a project copy.
+
+## Campaign
+
+The story compiled to a bundle that a runtime plays with no editor present. Every reference is resolved ahead of time, every board's evaluation order is decided, every passage's languages are flattened into one file, and everything only an editor needs is discarded.
+
+<FileTree>
+- campaign/
+  - campaign.json the manifest
+  - boards/
+    - the_gates.board.json
+  - passages/
+    - reaching_the_gates.passage.json every language, in one file
+  - components/
+    - goblin.component.json
+  - scripts/
+    - damage.py
+  - soundscapes/
+    - tavern.soundscape.json every clip's file as a media index
+  - media/
+    - art/
+      - map.png
+    - music/
+      - tavern.ogg
+</FileTree>
+
+### What a bundle holds
+
+| Aspect | Rule |
+| --- | --- |
+| Languages | Only the languages the project has. A language that is switched off stays in the project and does not ship. |
+| Media that exists | Only media the project holds. A picture a passage or component points at but does not have is left out. |
+| Media that is used | Only media the story uses. A picture nobody embedded and a sound no soundscape plays are left out. Both omissions are named in Messages, as a missing file is. |
+| Component file lists | An attribute holding a list of files carries those files, with rewritten paths. The campaign never names a picture that is not in it. |
+| Slot types | A Script node's inputs and an Output node's are read as the type they declared. An `int` input given `3.7` reads `3`. A `list<int>` input given a list of text arrives as numbers. A value that cannot be read as the type becomes that type's blank rather than stopping the story. What a script writes is left as it is. |
+| Slot defaults | A default on a macro take, a script input or output, an Output node's slot, a Macro Out's answer or an Input node's form field is used when nothing else fills the slot. Four of these become ordinary values on the board at compile time. The two a reader or program answers, a form field's and a script output's, are carried in the campaign. |
+| Macros | Nothing of a macro reaches the bundle. Each call is spliced into the board that made it, so two calls are two copies. |
+| Python in prose | Each passage's snippets are lifted into a table of their own, with a marker left where each was. A program playing the campaign inserts the answers by number. |
+| Sound | A Narration node names its soundscape by index into `soundscapes/`. The runtime decides which is in force and tells its host, which renders it. The command-line player prints a line per change and plays nothing, which is conforming. |
+| Node metadata | Travels under `metadata` on the node. The runtime hands it to the host on the node's turn and does not read it. |
+| Needs | The manifest records under `needs` whether the campaign needs Python. Information, not a gate. |
+
+### Format and compatibility
+
+- A campaign carries a format number. A runtime refuses one newer than it implements, naming both numbers.
+- A campaign exported by an earlier 1.x build plays unchanged. Only the first shape of the format is refused, by name; exporting again from the project produces a current one.
+- A saved game is unaffected.
+
+## Needs no Python
+
+On a build without the Python interpreter, a Script node stops the story where it stands, and a passage shows a warning where its Python was.
+
+With **Needs no Python** ticked, the export checks every Script node, and every passage with a `ripple` code block or an inline `{{ … }}` in any language. It stops if it finds one.
+
+| Code | Finding | Opens |
+| --- | --- | --- |
+| [`E.EX.01`](/reference/diagnostics/#eex01) | A Script node. | Its card |
+| [`E.EX.02`](/reference/diagnostics/#eex02) | A passage with Python in it. The message counts snippets across every language. | Its Narration card |
+
+- Each finding is listed in Messages.
+- The dialog stays open.
+- A campaign that passes carries no scripts.
+- Turning **Python** off under *Capabilities* in the project's settings marks every card that runs Python as an error on its board, makes Play refuse to start while any is left, and ticks the export's box and locks it.
+- The manifest's `needs` field lets a program loading a campaign tell whether it needs Python before it starts. A player without the interpreter still plays the campaign. A host that prefers to refuse one reads the field.
+
+## Passages as HTML
+
+With **Output passages as** set to HTML, a campaign has every passage written out as an HTML fragment per language. The editor and the play view stay Markdown.
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+An export profile names the class each kind of element gets: a paragraph, a heading, emphasis, a link, a table cell, a Python snippet. Choosing HTML opens the profile beside the export controls.
+
+| Column | Content |
+| --- | --- |
+| **In the passage** | The kind of element. A tooltip shows the Markdown it stands for. |
+| **CSS class** | The class assigned, saved as you type. |
+
+An element with no class assigned gets no attribute. With no profile, every element goes out bare: a plain `<p>`, a plain `<em>`.
+
+### Profile file
+
+| | |
+| --- | --- |
+| Path | `.ripple/export/<name>.profile.json` |
+| Name | A file name: letters, digits, spaces, dashes. A name already in use is refused. |
+| Scope | One profile serves any number of exports. |
+| Version control | Committed with the story, so a build reproduces it. |
+| Delete | Removes the file under `.ripple/export/`. Nothing else changes. |
+
+## Diagnostics
+
+The export's two codes, [`E.EX.01`](/reference/diagnostics/#eex01) and [`E.EX.02`](/reference/diagnostics/#eex02), are listed under [Needs no Python](#needs-no-python); [Diagnostics](/reference/diagnostics/) has the rest.
+
+## Related
+
+- [What an export is](/explanation/what-an-export-is/)
+- [How to export a project copy or a campaign](/how-to/export-a-project-or-campaign/)
+- [How to export for a player without Python](/how-to/export-for-a-player-without-python/)

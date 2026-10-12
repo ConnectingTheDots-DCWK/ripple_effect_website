@@ -1,0 +1,70 @@
+---
+title: How to create or import a project
+description: Make a new project, copy an example project, or open a folder you already have from the home screen.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+The home screen is a grid of the projects the app knows about. It has two buttons: **New project** and **Import a folder**.
+
+## Create a blank project
+
+<Steps>
+
+1. On the home screen, choose **New project**.
+2. Leave the dialog's left rail on **Blank** (*An empty folder*).
+3. Enter a **Title**. Add a **Description** and a **Cover** if you want them; a colour is generated for the cover otherwise.
+4. Choose where the new folder goes.
+5. Under **Written in**, check the language. The starting point comes from your computer's settings, but the choice is yours. Your passages start in this language; the ones you translate into are chosen later, in project settings.
+6. Choose **Create**.
+
+</Steps>
+
+The app creates the folder and one file in it, `.ripple/project.json`, and nothing else.
+
+{/* TODO(shots): <Shot name="newProject" /> */}
+
+If a folder with that name already exists at the location you chose, the dialog refuses and tells you to use **Import a folder** instead.
+
+## Start from an example project
+
+<Steps>
+
+1. Choose **New project**.
+2. In the dialog's left rail, choose **Templates** (*A copy of an example*).
+3. Pick an example. This build carries *The City Of Elsenmar*.
+4. Choose where the copy goes, then choose **Create**.
+
+</Steps>
+
+The copy is yours to change, and you can make another later.
+
+{/* TODO(shots): <Shot name="templates" /> */}
+
+## Import a folder you already have
+
+<Steps>
+
+1. Choose **Import a folder**.
+2. Pick the directory. The **Import a project** dialog opens.
+3. Check what the dialog shows, then choose **Import**.
+
+</Steps>
+
+- If the folder was a project before, check the prefilled fields and choose **Import**. Its title, description, cover and language arrive already filled in, and nothing is written into it. To change any of them, open the project and use project settings.
+- If it was not, name it and choose **Import**. The language is guessed from your computer and written down, because nothing in the folder says yet. The only thing written into it is a small `.ripple/` folder holding the project's settings; your files are shown as they are.
+- If the cover the folder names is missing, a colour is generated instead.
+- If the folder's settings were written by a newer version of the app, they are left alone rather than read and written back over. The folder is still imported, and opening it says the same thing. Update the app to read them.
+
+## When the folder is already a project
+
+If the folder you choose, for a new project or an import, is already used by another project on the home screen, the app says so and does not add a second. See [A project is a folder](/explanation/projects-are-folders/) for why.
+
+A project that another program has moved or deleted disappears from the grid; there is nothing else to keep in step.
+
+## Related
+
+- [A project is a folder](/explanation/projects-are-folders/) for why the app writes so little into your folder.
+- [Project files and the .ripple folder](/reference/project-files/) for what `.ripple/project.json` holds.
+- [The workspace window, menus and palette](/reference/workspace-window/) for the dialog's fields.
+- [How to add, switch off or change a project's languages](/how-to/manage-languages/) to add or change languages after the project exists.

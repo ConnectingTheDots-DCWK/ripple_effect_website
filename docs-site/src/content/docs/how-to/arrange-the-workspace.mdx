@@ -1,0 +1,51 @@
+---
+title: How to arrange the workspace
+description: Split, tab and resize documents, fold the side bar, show or hide Messages, enter Zen Mode and bring the tips back.
+---
+
+import Shot from '../../../components/Shot.astro';
+
+## Put two documents side by side
+
+- To put a board beside the passage it links to, drag its tab out of the strip and drop it beside the other document.
+- To tab a document into a group instead, drop it on that group's strip.
+- To resize, drag a divider.
+
+Your layout is remembered per project in `.ripple/workspace.json`.
+
+## Give the documents the whole width
+
+<Shot name="files" />
+
+Click the activity bar icon of the section already showing — **Files**, **Changes** or **Search** — to fold the side bar away. Click the icon of any section to pick what the side bar shows again.
+
+## Close and reopen Messages
+
+- Close Messages with its cross.
+- Bring it back, under the documents, from the Messages button at the bottom of the activity bar, which carries the count, from the **View** menu, or with *Toggle messages* in the command palette (`Ctrl+Shift+P`).
+
+To change how Messages reads:
+
+- To see everything broken first, switch the grouping from what a message is about to how loud it is.
+- To fold a group, click the count on its heading.
+- To hide a kind of message, turn off its chip: problems, cautions or records. The grouping and the chips are remembered.
+- To silence a deliberate choice the check cannot judge, tick *I meant that* on its row. It stays said.
+- To read about a message from the engine, click its code to open its page in [Diagnostics](/reference/diagnostics/). To find the cards a message names, click the message.
+
+## Give the window to one document
+
+Press `F11` (`Ctrl+Cmd+F` on a Mac), or choose *View ▸ Zen Mode*. The app bar, side bar, Messages and tabs go. The same keys bring them back.
+
+- A banner at the top names the document on the way in and whenever it changes. When the pointer reaches the top edge it carries an *Exit Zen Mode* button.
+- `Ctrl+Tab` and `Ctrl+Shift+Tab` move between documents — every open one, whichever group it is in. Outside Zen Mode the same keys move along the tabs of the group you are in.
+
+## Bring the tips back
+
+Each tip appears once, the first time you open its kind of thing. To see one again, run *Show the tip for…* from the command palette. To re-arm all of them, choose *Help ▸ Troubleshooting ▸ Show every tip again*.
+
+## Related
+
+- [The workspace window, menus and palette](/reference/workspace-window/) — what each part of the window holds.
+- [Project files and the .ripple folder](/reference/project-files/) — what `workspace.json` records.
+- [A project is a folder](/explanation/projects-are-folders/) — why the layout is remembered per project and per machine.
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/) — what lands in Messages and why.

@@ -1,0 +1,213 @@
+---
+title: Project files and the .ripple folder
+description: Every file kind the app owns, what each file in .ripple/ holds, the declared attribute types, and the layout of a component and a passage on disk.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+A project is a folder. The app writes no scaffold into it and imposes no layout. Its own bookkeeping is confined to one directory, `.ripple/`, at the project root. Every file the app owns is plain text.
+
+## File kinds
+
+Three kinds are JSON namespaced inside `.json`, so ordinary tools still read them. A state machine is a mermaid diagram, and a script is Python.
+
+| Pattern | Holds |
+| --- | --- |
+| `*.graph.json` | A board: nodes, wires and the choices on them |
+| `*.macro.graph.json` | A macro: a board that a board can call |
+| `*.component.json` | A component: a name, a cover and an ordered list of typed attributes |
+| `*.soundscape.json` | A soundscape: a timeline of clips a passage plays |
+| `*.fsm.mmd` | A state machine, as a mermaid `stateDiagram-v2` |
+| `*.loc.narr.bdl/` | One passage in several languages: a folder of ordinary `.md` files |
+| `*.py` | A script that a Script node runs |
+| `.ripple/` | The app's own bookkeeping |
+
+Every file the app owns carries an integer `version`, except three. A script is a `.py` file and a state machine is a mermaid diagram whose own header is its version, because neither is in a format of ours. A Markdown passage carries none either; the `touch.json` in its folder does.
+
+A path inside a file is measured from the project root, with forward slashes, and never contains `..`, except a link in a passage's prose (see [Passages](#passages)). A path outside the project is written absolute. The per-folder state in `.ripple/` is written with sorted, relative paths.
+
+## The .ripple folder
+
+Nothing the app keeps about a project is written into your story. It lives in `.ripple/`, beside your files.
+
+<FileTree>
+- my-story/
+  - .ripple/
+    - project.json the title, description, cover and languages
+    - registry.json the index of boards, components and the other files, and their ids
+    - workspace.json the layout, the open documents, the side bar and Messages, and which folders were open
+    - cvars.json the console variables the project declares
+    - callbacks.json the host callbacks the project declares
+    - lints.json the diagnostics the author has answered
+    - saves/ paused and bookmarked playthroughs
+    - export/ export profiles
+    - external/ pictures and audio picked from outside the project, copied in
+  - chapters/
+    - the_gates.graph.json
+    - the_gates_opening.loc.narr.bdl/
+      - en-US.md
+      - it-IT.md
+      - touch.json
+    - tavern.soundscape.json
+  - music/
+    - tavern.ogg
+  - items/
+    - sword.component.json
+  - scripts/
+    - damage.py
+  - notes.md
+</FileTree>
+
+| Entry | Holds | Version control |
+| --- | --- | --- |
+| `project.json` | The title, description, cover and languages | Travels |
+| `registry.json` | The index of every file in the project, by catalog id; the boards a story may begin at; the links between boards | Travels |
+| `workspace.json` | The layout, the open documents, the side bar and Messages, and which folders were open. Per machine | Ignored by the built-in version control |
+| `cvars.json` | The console variables the project declares. See [Console variable declarations](/reference/console-variable-declarations/) | Travels |
+| `callbacks.json` | The named host callbacks: a name, an event and what the event is aimed at. See [Host callbacks](/reference/host-callbacks/) | Travels |
+| `lints.json` | What the author has answered about the boards, for one card and one rule, keyed by lint name. Written even when empty. Not catalogued. A version this build does not know, or a file that is not this shape, reads as nothing answered, so the warning returns | Travels |
+| `saves/` | Paused and bookmarked playthroughs, one file a slot | Ignored by the built-in version control: a playthrough is a fact about your reading, not about the story |
+| `export/` | Export profiles, as `<name>.profile.json`. See [Export options and bundle contents](/reference/export-options/) | Travels |
+| `external/` | Pictures and audio picked from outside the project, copied in | Travels |
+
+### The registry
+
+`registry.json` has a `version`, `roots` (the boards a story may begin at, by id; authored, never derived), `links` (where the boards Jump to, derived from the boards and cached) and `entries` (every file the last walk found: `id`, `kind`, `name`, `path`).
+
+- A Jump stores the target's catalog id; the ids live in the registry.
+- An id is 32 lowercase hexadecimal characters, minted once when a file is first seen and kept for as long as the path is known.
+- A file is indexed as soon as it is in the folder, whether or not the app made it, so that a picker can offer it. A file imported from outside the project is listed as it lands.
+- Nothing under a dotted folder is indexed, nor is a dotted file, nor anything outside the project folder. The one exception is a file directly under `.ripple/external/`.
+- What an export or a compiled campaign carries is decided by what points at a file, not by the index, so the index adds nothing to either.
+
+| `kind` | File | Recognised by |
+| --- | --- | --- |
+| `board` | `*.graph.json` | Suffix |
+| `macro` | `*.macro.graph.json` | Suffix, tested before `board` |
+| `component` | `*.component.json` | Suffix |
+| `script` | `*.py` | Extension |
+| `narrationBundle` | `*.loc.narr.bdl/`, a directory | Suffix |
+| `machine` | `*.fsm.mmd` | Suffix |
+| `soundscape` | `*.soundscape.json` | Suffix |
+| `audio` | An audio extension; see [Viewer kinds](#viewer-kinds) | Extension |
+| `asset` | Anything else: an image, a video, a PDF, a loose note | A file that is none of the above |
+
+`name` is the file's stem for every kind except `asset` and `audio`, which keep the whole basename (`map.png`). `path` is root-relative.
+
+### Files from outside the project
+
+A picture or a sound picked from outside the project is copied into `.ripple/external/`, not into a folder the app invents at the top of the story. Copying in is a switch, **Import outside assets**, a checked row of the File menu and a palette command; with it off the file is linked. A link that leaves the project is reported under the field and in Messages every time the project is opened.
+
+## Viewer kinds
+
+The viewers recognise a file from its name alone, lowercased. Compound suffixes are tested first, and a macro's before a board's.
+
+| Kind | Matches |
+| --- | --- |
+| `macro` | `.macro.graph.json` |
+| `graph` | `.graph.json` |
+| `component` | `.component.json` |
+| `soundscape` | `.soundscape.json` |
+| `narrationBundle` | `.loc.narr.bdl` |
+| `machine` | `.fsm.mmd` |
+| `script` | `.py` |
+| `pdf` | `.pdf` |
+| `svg` | `.svg` |
+| `raster` | `.png` `.jpg` `.jpeg` `.gif` `.webp` `.bmp` |
+| `audio` | `.mp3` `.wav` `.ogg` `.oga` `.flac` `.m4a` `.aac` `.opus` |
+| `markdown` | `.md` `.markdown` |
+| `text` | Everything else |
+
+A text file above 4 MiB is refused by the text viewer, and a `<locale>.md` above 4 MiB is skipped by the passage reader.
+
+## Components
+
+```json
+{
+  "version": 3,
+  "name": "Goblin",
+  "cover": "art/goblin.png",
+  "attributes": [
+    { "label": "HP",    "type": "int",         "value": 7 },
+    { "label": "Alive", "type": "bool",        "value": true },
+    { "label": "Bio",   "type": "markdown",    "value": "A small, angry thing." },
+    { "label": "Loot",  "type": "list<asset>", "items": ["art/gold.png"] }
+  ]
+}
+```
+
+| Key | Rule |
+| --- | --- |
+| `version` | Format 3. An older file is lifted when it is opened or moved; a build that predates a format refuses a newer component rather than misreading it |
+| `name` | String, default `""` |
+| `cover` | Optional string; root-relative, absolute when outside the project |
+| `attributes` | Ordered. Each has `label` (default `""`), `type` (default `string`), and `value`. `list<asset>` and `list<componentRef>` carry their paths under `items` instead |
+
+### Declared types
+
+A declared type is a base at an arity, written `base`, `list<base>` or `map<base>`. A map is always keyed by strings. Eight bases at three arities make the twenty-four types that every editor in the app offers. The same set describes component attributes, node shapes, macro takes and console variables.
+
+| Base | Default | Meaning |
+| --- | --- | --- |
+| `int` | `0` | Whole number |
+| `float` | `0.0` | Number |
+| `bool` | `false` | True or false |
+| `string` | `""` | Text |
+| `markdown` | `""` | Text, edited as Markdown |
+| `asset` | `""` | A path to a file |
+| `componentRef` | `""` | A path to another component |
+| `json` | `{}` | Any JSON value, stored decoded |
+
+- Numbers and booleans are JSON numbers and booleans, never strings.
+- An attribute whose type this build cannot name keeps whatever it arrived with.
+- `number` and `entity` are read and never offered. `number` is the older spelling of a number; `entity` is a name and reads as `string`.
+- Older spellings read forever and are written in the new form the next time you touch the type menu: `assetList` as `list<asset>`, `componentList` as `list<componentRef>`, `numberList` as `list<number>`, `boolList` as `list<bool>`, `stringList` as `list<string>`.
+- Whether an attribute carries `items` is decided by its type, never by its contents.
+- Coercion never throws. An `int` from a float rounds, from a boolean is 0 or 1, and from a string parses, otherwise 0. A `float` likewise, otherwise 0.0. A `bool` from a number is non-zero and from a string is one of `true`, `yes`, `1`, `on`. A `string` from a map or a list is its JSON. A `json` from nothing is `{}`. A `list<T>` or `map<T>` coerces entry by entry.
+- An integer is at most 2⁵³ − 1.
+- A component written by a later version keeps its paths, in lists and maps both, when you open and save it.
+
+Paths in a component, the cover and each `list<asset>` item, are measured from the project root.
+
+An `asset` or `componentRef` slot stores the path. Its chip is marked when the file is outside the project or missing.
+
+## Passages
+
+A passage on disk is a localised passage: a folder, the only kind of file of ours that is a directory, which the app shows as one document.
+
+<FileTree>
+- chapters/
+  - the_gates.graph.json
+  - reaching_the_gates.loc.narr.bdl/
+    - en-US.md the passage, in the language the story is written in
+    - it-IT.md its translation
+    - touch.json when each was last touched, so a clone can tell which is older
+</FileTree>
+
+| Rule | Value |
+| --- | --- |
+| Name | The folder's basename with `.loc.narr.bdl` removed |
+| Name when the app creates it | `<board>-<passage title>`, beside the board: `gate.graph.json` and `gate-at-the-gate.loc.narr.bdl/`, so passages sort next to the board they belong to |
+| A language file | `<locale>.md`, where `<locale>` is a known locale id exactly. No normalisation |
+| Anything else in the folder | `README.md`, `en.md`, a subfolder: reported as unrecognised and never read |
+| Languages read | Every language found, whether or not the project has it switched on |
+| Size ceiling | A `<locale>.md` over 4 MiB is skipped. One unreadable file does not fail the passage |
+| Links in the prose | A link the app writes starts with `/` and is measured from the project root: `![map](/art/map.png)`. A link written by hand without the slash is relative to the bundle's parent folder: `![](../art/map.png)` beside `chapters/the_gates.graph.json` means `art/map.png` |
+| `touch.json` | `{ "version": 1, "touched": { "<locale>": "<ISO 8601, UTC>" } }`, keys sorted. A cache: a problem reading it reads as empty, and a walk rebuilds it |
+
+<Shot name="localisation" />
+
+See [Passages, choices, languages and reading time](/reference/passages/) for what a passage holds.
+
+## Version gate
+
+A file from a newer build is refused where it is authored and read as empty where it is a cache. A document the author cannot get back, such as the index, the project settings, a component or a board, stops the app rather than being half-read and written back over. A cache that a walk of the folder rebuilds simply rebuilds. `touch.json` and `lints.json` are caches.
+
+## Related
+
+- [A project is a folder](/explanation/projects-are-folders/)
+- [Components and entities](/explanation/components-and-entities/)
+- [Passages and translations](/explanation/passages-and-translations/)
+- [How to create or import a project](/how-to/create-or-import-a-project/)
+- [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/)

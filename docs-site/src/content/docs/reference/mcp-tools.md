@@ -5,28 +5,19 @@ sidebar:
   order: 2
 ---
 
-Every tool the app offers a connected client, in the words the client sees
-them by. The [overview](/overviews/working-with-an-ai-assistant/) says what
-an assistant can do with them and the [setup page](/setup/connecting-an-mcp-client/)
-how to connect one; this page is the list. An assistant reads the same
-descriptions from the app itself, for the build and the project it has
-open, so nothing here needs to be pasted into a prompt.
+The tools the app offers a connected MCP client, with the arguments each takes. An assistant reads the same descriptions from the app itself, for the build and the project it has open.
 
-**Every description ends with a link back to this page**, at the tool's own
-heading — so an assistant that wants more than a description has somewhere to
-go without being told where. Three of them point elsewhere, because their
-subject has a reference of its own: `python_eval` and `python_capabilities`
-at [the Python API](/reference/python/), `node_types` and the two tools that
-build nodes at [the node catalog](/reference/nodes/). For the whole of this
-site as one file, there is [`/llms-full.txt`](/llms-full.txt);
-[`/llms.txt`](/llms.txt) indexes it, and
-[`/llms-small.txt`](/llms-small.txt) is the budget version, which leaves out
-the tutorials and the about pages. The first two are linked from the site's
-header.
+**Every description ends with a link to this page**, at the tool's own heading. Three point elsewhere, because their subject has a reference of its own: `python_eval` and `python_capabilities` at [the Python API](/reference/python/), `node_types` and the two tools that build nodes, `board_add_node` and `board_set_node`, at [the node catalog](/reference/nodes/).
 
-Thirty-nine tools, in six groups. The first four groups need **Let agents
-reach this app**; the last two need **Let agents change files** as well, and a write tool
-called while that is off answers `refused`.
+| Machine-readable form | Contents |
+| --- | --- |
+| [`/llms-full.txt`](/llms-full.txt) | The whole of this site as one file. |
+| [`/llms.txt`](/llms.txt) | An index of it. |
+| [`/llms-small.txt`](/llms-small.txt) | The budget version, without the tutorials and the about pages. |
+
+The first two are linked from the site's header.
+
+Thirty-nine tools, in six groups. The first four groups need **Let agents reach this app**. The last two need **Let agents change files** as well; a write tool called while that is off answers `refused`.
 
 | | Tools |
 | --- | --- |
@@ -162,6 +153,8 @@ no single file can answer.
 
 ## What only the app can answer
 
+Questions the files cannot answer alone. `trace_between` and `trace_into` answer, across boards, what lies between two passages and what leads to one; `board_links` (under Reading the story) answers which boards hand the story to which. An assistant can use them to establish whether an ending is reachable without playing the story.
+
 ### `trace_between`
 
 Every route between two passages: what lies on some path from one to the
@@ -233,9 +226,9 @@ reference](/reference/nodes/).
 What the Python in this app can actually do, probed rather than documented:
 about eighty tiny scripts run in a real interpreter just now, and judged
 only by whether they raised. Read this before writing any Python. It is
-monty, not CPython — there is no `random` module and no `class` statement at
+not full CPython — there is no `random` module and no `class` statement at
 all, which puts attribute access out of reach by every route. Takes
-nothing; the same report the [Python overview](/overviews/python-scripting/)
+nothing; the same report the [sandbox reference](/reference/python/sandbox/)
 describes.
 
 ### `python_eval`
@@ -638,6 +631,13 @@ resource changes — including when you edit a board an assistant is holding.
 **Two prompts**, invoked by you rather than by the assistant, each arriving
 with the thing you name already in it: *writing-a-passage* (`passage?`) —
 what a passage is on disk, the two forms embedded Python takes, and what
-monty cannot do; and *editing-a-board* (`board?`) — how node ids are
+the sandbox cannot do; and *editing-a-board* (`board?`) — how node ids are
 numbered, where a choice's two strings live, what a wire's caption is and is
 not, what a Jump stores, and how a soundscape is laid out.
+
+## Related
+
+- [What an assistant may read, play and write](/reference/mcp-permissions/) — the permissions behind the two switches.
+- [How to connect an AI assistant (MCP client)](/how-to/connect-an-mcp-client/) — connecting a client to the app.
+- [Working with an AI assistant](/explanation/working-with-an-assistant/) — what an assistant does with these tools.
+- [Reading a large story back](/explanation/reading-a-story-back/) — the questions the trace tools answer.

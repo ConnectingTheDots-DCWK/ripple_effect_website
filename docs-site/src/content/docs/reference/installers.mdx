@@ -1,0 +1,101 @@
+---
+title: Installers and first launch
+description: The installer for each platform, what it needs and where it installs, the pages a first launch shows, and what Windows and macOS say about an unsigned installer.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Ripple Effect is one download per platform from the [download page](https://ripplefx.app/download), which always points at the latest release. After the first install the app updates itself; [Updates, logs and Messages](/explanation/updates-logs-and-privacy/) describes how.
+
+## Installers
+
+| Platform | Installer | Needs | Installs to |
+| --- | --- | --- | --- |
+| Linux, Debian and Ubuntu | `.deb` | glibc 2.38 or newer: Ubuntu 24.04+, Debian 13+ | `/opt/ripple_effect` |
+| Linux, Fedora and RHEL | `.rpm` | glibc 2.38 or newer: Fedora 39+ | `/usr/share/ripple-effect` |
+| Windows | Setup `.exe` | Windows 10 or 11 | `%LOCALAPPDATA%\Programs\Ripple Effect` |
+| macOS | `.dmg` | macOS 12 Monterey or newer | Applications, by dragging the app there |
+
+- **Linux.** Both packages put `ripple_effect` on `PATH`. The glibc floor exists because version control ships a libgit2 that needs it, and a package that claimed less would install and then be unable to open a repository; a package refused with a complaint about `libc6` or `GLIBC_2.38` is this floor. The `.deb` declares three runtime libraries for sound: ALSA, PulseAudio and PipeWire.
+- **Windows.** Installs for the current account only and never asks for an administrator. Running a later installer over an existing install upgrades it in place.
+- **macOS.** One universal build, for Apple silicon and Intel.
+
+Install commands for Linux:
+
+```sh
+sudo apt install ./ripple_effect-<version>-linux.deb
+sudo dnf install ./ripple_effect-<version>-linux.rpm
+```
+
+## The first launch
+
+The first launch shows pages before the home page, in this order.
+
+| Page | Skippable | Contents |
+| --- | --- | --- |
+| Agreement pages | No | The agreements the app asks you to accept; see [Licensing](/about/licensing/). |
+| Make it yours | Yes | Theme, contrast, colour vision and how wires are drawn, beside a small preview of the app that changes as you choose. |
+| Help make Ripple Effect better | Yes | Whether to send usage statistics, with neither answer picked and the full list of what would be sent shown. Also states how crash reports are asked, and carries the coffee. |
+
+Everything on the two skippable pages is in Settings afterwards. An upgrade from 1.4 shows the pages once, like a new install, and resets nothing already set.
+
+## Code signing
+
+None of the installers is signed by an authority the machine already trusts. Windows and macOS each stop the app once, on first run, and say they do not know it. The warning is about the missing certificate, not about anything the installer does. Linux checks nothing of the sort and asks nothing.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+    | Shown | Meaning | Choice |
+    | --- | --- | --- |
+    | **Windows protected your PC** (SmartScreen) | The installer is unknown. | **More info**, then **Run anyway** |
+
+    **An Application Control policy has blocked this file** is Smart App Control; see [below](#smart-app-control).
+  </TabItem>
+  <TabItem label="macOS">
+    Gatekeeper says the app cannot be opened because it is from an unidentified developer, or that it could not verify it. The app must be in Applications first. Then either:
+
+    - right-click it and choose **Open**, which adds an Open button to the dialog; or
+    - clear the quarantine mark:
+
+    ```sh
+    xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"
+    ```
+
+    Either is needed once; the app opens normally afterwards.
+  </TabItem>
+  <TabItem label="Linux">
+    No signing prompt.
+  </TabItem>
+</Tabs>
+
+See [Why the installers are unsigned](/explanation/unsigned-installers/).
+
+## Smart App Control
+
+Windows 11 only. Setup refuses with
+
+```text
+An Application Control policy has blocked this file
+```
+
+(error 4551).
+
+| Fact | Detail |
+| --- | --- |
+| What it is | A Windows 11 feature that runs only apps Microsoft's reputation service already knows or that carry a trusted signature. An unsigned installer is neither. |
+| Per-app exception | None. Unlike SmartScreen it has no **Run anyway**; the only way to install is to turn it off. |
+| When it is enabled | Only on a clean install of Windows 11 (a reset counts). |
+| Evaluation mode | Starts in *Evaluation*, which blocks nothing while Windows decides whether the feature suits the machine, then switches itself **On**, with a notification, or Off. |
+| When it is already off | A PC upgraded from Windows 10, or seen running developer tools during evaluation. |
+| Where to check and turn off | **Settings → Privacy & security → Windows Security → App & browser control → Smart App Control settings**, then **Off**. |
+
+:::caution
+Turning Smart App Control off is a decision, not a toggle. Microsoft says recent Windows updates allow Smart App Control to be turned back on without reinstalling. On older builds, once it is off the only way back is a clean reset of Windows. Weigh that before switching it off for one app.
+:::
+
+## Related
+
+- [How to install Ripple Effect](/how-to/install-the-app/)
+- [Why the installers are unsigned](/explanation/unsigned-installers/)
+- [Settings, accessibility and updates controls](/reference/settings/)
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/)

@@ -1,0 +1,95 @@
+---
+title: The sandbox and its limits
+description: What the Python sandbox has and lacks, where host functions may be called from, and the ceilings a script runs under.
+sidebar:
+  order: 5
+---
+
+Scripts, passage snippets, the console and `python_eval` run in a restricted Python interpreter, not CPython. This page lists what is absent, where the app's own functions may be called from, and the limits a script is held to.
+
+## The report is the authority
+
+The interpreter's limits change between its releases, so the app probes them rather than documenting them. The **sandbox report**, behind the `i` button on the console, runs a suite of small snippets in the real interpreter and reports the outcome row by row. `python_capabilities` returns the same text to an agent ([MCP tools](/reference/mcp-tools/#python_capabilities)).
+
+Where this page and the report disagree, the report is right.
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+| Probed group | Asks | Rows |
+| --- | --- | --- |
+| Language | Which statements and expressions the parser accepts | `def`, `lambda`, `class`, decorators, `yield`, `match`, f-strings, `%` formatting, comprehensions, conditional expressions, `:=`, chained comparison, unpacking, `*args` and `**kwargs`, `global`, closures, recursion, `try` / `except` / `raise` / `finally`, `assert`, `while` / `break` / `continue`, `for` / `else`, slicing, set, bytes and triple-quoted literals, bitwise operators, `//` `**` `%` |
+| Modules | What `import` can reach | `json`, `math`, `re`, `datetime`, `sys`, `os`, `random`, `collections`, `itertools`, `functools`, `statistics`, `string`, `time`, `copy`, `typing`, `dataclasses`, `enum`, `decimal`, `hashlib`, `base64`, `uuid`, `textwrap`, `operator`, and the network (`requests`, `urllib`) |
+| Built-ins | Names and methods available without importing | `len`, `range`, `enumerate`, `zip`, `sorted` (with and without `key=`), `reversed`, `map`, `filter`, `sum`, `min`, `max`, `abs`, `round`, `any`, `all`, `str`, `int`, `float`, `bool`, `list`, `dict`, `set`, `tuple`, `isinstance`, `type`, `repr`, `hex`, `chr`, `ord`, `divmod`, `pow`, `print`, `dir`, `eval`, `exec`, `open`, `input`, and the `str`, `dict` and `list` methods in common use |
+| Host functions | Call-shape probes: where the app's own functions may be called from | The seven call shapes under [Host functions](#host-functions) |
+
+Each row reads supported or not, with the interpreter's own words when it is not. A missing feature is not a fault in the project. Beyond the four probed groups, the report has a **What this app binds** section listing the functions the surface binds, in declaration order, and a **Limits** section (see [Limits](#limits)). The report can be copied as text.
+
+### Known absences and limits
+
+These are the rows the report attaches a hint to, with the hint beside each. A hint is shown when that row's probe fails; the `random` row also names the Dice roller and Weighted branch nodes, which the report's own hint does not.
+
+| Not supported or limited | Instead |
+| --- | --- |
+| `class` | Use a dict. A component or entity crosses as a dict: `component_get("Goblin")["HP"]`, never `goblin.hp`. |
+| `random` | Wire a Random number or Random string node. The Dice roller and Weighted branch nodes also cover chance on the board. |
+| `yield` (generators) | Build and return a list. |
+| `match` | A chain of `if` / `elif`. |
+| `%` formatting, `str.format` | Use an f-string. |
+| `collections` (where the report says no) | A plain `dict` covers most of it. |
+| `statistics` (where the report says no) | `sum(xs) / len(xs)`. |
+| Network (`requests`, `urllib`) | None. The sandbox has no network. |
+| `open`, the filesystem | A script reads the story through the host functions, not the disk. |
+| `os` | Importable, but the calls that touch a disk are not wired up. |
+| `input` | A passage asks the reader questions; a script does not. |
+| `dir()`, `inspect` | None. Nothing inside the sandbox can list what the sandbox has, which is why the report asks one question at a time. |
+
+A snippet is Python-shaped rather than Python-portable.
+
+## Host functions
+
+Everything the app binds is a **host function**: present without an `import`, with no module to import it from. The report's Host functions rows ask where one may be called from. The probes are written so that they change nothing.
+
+| Call shape | Works | If not |
+| --- | --- | --- |
+| At the top level | yes | |
+| Inside a `def` | yes | |
+| Inside a comprehension | yes | |
+| Inside `map()` or `filter()` | no | Rewrite it as a comprehension. |
+| Inside `sorted(key=…)` | no | Build a list of `(key, name)` pairs in a comprehension first, then sort that. |
+| With keyword arguments | yes | Every optional argument in the API is keyword-only. |
+| Catching a refusal | yes | A refusal arrives as `RuntimeError`. |
+
+```python
+pairs = [(entity_get(n)["HP"], n) for n in entity_names()]
+weakest = sorted(pairs)[0][1]
+```
+
+A value a host function answers is a copy: `e = entity_get("Mira"); e["HP"] -= 3` runs and changes nothing, and `entity_set` is how a script writes. See [Reads are copies](/reference/python/#reads-are-copies).
+
+## Limits
+
+| Limit | Value | Past it |
+| --- | --- | --- |
+| Time | 2000 ms (two seconds), checked on every instruction | The script is stopped with a `Timeout`; the story carries on. |
+| Memory | 64 MB, approximately | `MemoryError` |
+| Recursion depth | 200 frames | `RecursionError` |
+| Runaway scripts | 3 per playthrough | See below. |
+
+The report marks each limit as enforced.
+
+### Runaway scripts
+
+A script that was stopped by the time limit is not started again in the same playthrough. The match is on the script's source, not its name: a snippet's name is the same for every passage, and a Script node's source includes its inputs, so the same node with different inputs is a different script.
+
+After three distinct scripts have been stopped in one playthrough, no script starts at all. A script that reaches this has an infinite loop in it.
+
+## Interpreter
+
+The interpreter is monty; [Open source](/about/open-source/) says whose it is. A campaign can be built with no Python at all: see [Export options](/reference/export-options/).
+
+## Related
+
+- [Python reference](/reference/python/): the functions, the five surfaces and the refusal sentences.
+- [Python in a story](/explanation/python-in-a-story/): why Python is a host surface.
+- [How to run Python in a story](/how-to/script-a-passage/): writing a script and reading its result.
+- [How to build a campaign with no Python](/how-to/turn-python-off/): leaving the interpreter out of a build.

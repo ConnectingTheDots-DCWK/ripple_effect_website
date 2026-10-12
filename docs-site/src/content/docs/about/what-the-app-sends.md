@@ -1,210 +1,183 @@
 ---
 title: What the app sends
-description: The complete list of what leaves your machine, what never does, what a crash report contains, and what an account will and will not change.
+description: Every request that leaves your machine, what each carries, what never leaves, what a crash report contains, and what an account will and will not change.
 sidebar:
-  order: 2
+  order: 3
 ---
 
-Ripple Effect works on files on your own disk and needs no network to do it.
-This page is the complete list of what leaves your machine anyway — six
-things: three the app asks the website without being told to, one you have to
-switch on, one asked for every single time, and one that is only ever
-something you did yourself.
+Ripple Effect works on files on your own disk and needs no network to do it. This page lists what leaves your machine anyway: six things. Three the app asks the website for without being told to (the update check, the engine fix check and the contributor list with its avatars), one you have to switch on, one asked for every time, and one that is only ever something you did yourself.
 
-The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal
-version, with legal bases and retention periods. This page is the same facts
-in the order you would want to read them.
+The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version, with legal bases and retention periods. This page states the same facts.
 
-## Nothing, until you accept the licence
+## Summary
 
-**From version 1.5** the app asks you to accept the [End-User Licence
-Agreement](https://legal.ripplefx.app/eula/) at first launch and **makes no
-network request of any kind until you have** — not an update check, not
-anything. Close that window and nothing has been sent.
+| Request | Destination | When | Switch | Carries anything of yours |
+| --- | --- | --- | --- | --- |
+| [Update check](#update-check) | `ripplefx.app` | Once per launch | Settings ▸ Updates | No |
+| [Engine fix check](#engine-fix-check) | `ripplefx.app` | Once per launch, half a minute after start | Settings ▸ Updates | No |
+| [Contributor list and avatars](#contributor-list-and-avatars) | `ripplefx.app` for the list, `avatars.githubusercontent.com` for the images | When the About box opens | None | No |
+| [Usage statistics](#usage-statistics) | Ripple Effect's hosted backend | At most one row a day, after an hour on | Settings ▸ Data control, off until you switch it on | No |
+| [Crash report](#crash-report) | Ripple Effect's hosted backend | Only when you press *Send report* | Asked once per crash | It can |
+| [Your own actions](#requests-you-cause) | Where you point them | When you act | n/a | Depends |
 
-It is not a banner over a running application: until you answer, the app
-underneath has not been built, so there is nothing there to make a request.
-A build earlier than 1.5 does not ask, and makes the update check below on
-first launch like any other; it stays under the short licence it shipped with.
+## Before the licence is accepted
 
-## An update check, once per launch
+From version 1.5 the app asks you to accept the [End-User Licence Agreement](https://legal.ripplefx.app/eula/) at first launch and makes no network request of any kind until you have: not an update check, not anything. If you close that window, nothing has been sent.
 
-The app asks `ripplefx.app` what the most recent release is, and compares it
-with your own version on your machine.
+Until you answer, the app underneath has not been built, so there is nothing there to make a request.
 
-The request carries **no identifier, no version number and nothing about
-you** — it is a plain question with no subject. As with any request over the
-internet, the server sees the address it came from, which is how the internet
-works rather than something the app chose to send. Nothing distinguishes one
-installation from another, because nothing in the request is unique to one.
+## Update check
 
-## Engine fixes, unless you switch them off
+| Field | Detail |
+| --- | --- |
+| Destination | `ripplefx.app` |
+| Frequency | Once per launch |
+| Question | What is the most recent release? The app compares the answer with its own version on your machine. |
+| Carries | No identifier, no version number and nothing about you. |
+| Server sees | The address the request came from, as with any request over the internet. |
+| Distinguishes installations | No. Nothing in the request is unique to one. |
+| Switch | *Engine updates* under **Settings ▸ Updates** switches this off together with the engine fix check. |
 
-Once per launch, half a minute after the app has started, it asks
-`ripplefx.app` whether a fix exists for the engine it is running. The request
-carries that engine's version, its milestone, your platform and an identifier
-of the interface between the app and its engine — and nothing about you. A fix
-that exists is downloaded, checked against our signature, and used from the
-next launch; it never changes what the app can do.
+## Engine fix check
 
-*Engine updates*, under **Settings ▸ Updates**, switches this off along with
-the update check above, and *Use the bundled engine* there goes back to the
-engine that shipped with the app. A fix is set aside automatically if the app
-crashes with it. Versions before 1.5 did not ask at all.
+| Field | Detail |
+| --- | --- |
+| Destination | `ripplefx.app` |
+| Frequency | Once per launch, half a minute after the app has started |
+| Question | Does a fix exist for the engine the app is running? |
+| Carries | The engine's version, its milestone, your platform and an identifier of the interface between the app and its engine. Nothing about you. |
+| A fix that exists | Downloaded, checked against our signature, and used from the next launch. It never changes what the app can do. |
+| Switch | *Engine updates* under **Settings ▸ Updates**. *Use the bundled engine* there goes back to the engine that shipped with the app. |
+| Safeguard | A fix is set aside automatically if the app crashes with it. |
 
-## A list of contributors, when you open the About box
+## Contributor list and avatars
 
-The About box shows who has contributed, and asks `ripplefx.app` for that
-list when you open it. The site fetches it from GitHub on its own behalf and
-keeps it for an hour, so your request does not reach GitHub. Nothing about
-you goes with it beyond the app's name and version. Versions before 1.5 asked
-GitHub's public API directly.
+| Field | List | Avatars |
+| --- | --- | --- |
+| Trigger | Opening the About box | Opening the About box |
+| Destination | `ripplefx.app` | `avatars.githubusercontent.com`, from your machine and not through the site |
+| Carries | The app's name and version, nothing else about you | A request for each image; GitHub sees the address it came from, as any image host would |
+| Notes | The site fetches the list from GitHub on its own behalf and keeps it for an hour, so your request does not reach GitHub. | One of the avatar addresses is built into the app, so the request is made even when the list itself cannot be fetched. |
 
-**Their pictures come from GitHub.** Each contributor's avatar is loaded from
-`avatars.githubusercontent.com`, by your machine and not through the site, so
-opening the About box does make a request to GitHub for the images — and one
-of those addresses is built into the app, so it is made even when the list
-itself cannot be fetched. GitHub sees the address it came from, as any image
-host would. It is named in the [sub-processors
-list](https://legal.ripplefx.app/subprocessors/) as an independent controller
-for requests made to it.
+GitHub is named in the [sub-processors list](https://legal.ripplefx.app/subprocessors/) as an independent controller for requests made to it.
 
-## Usage statistics, if you switch them on
+## Usage statistics
 
-From version 1.5 the app can send anonymous usage statistics, and it is
-**opt-in**: you are asked once, with the complete list of what would be sent
-in front of the question rather than behind a link; neither answer is
-preselected; and you can turn it off afterwards in *Settings ▸ Data
-control*, where the same list stays in front of you. No text
-you wrote is ever included, and adding a new thing to the list means asking
-again. No build before 1.5 collected any.
+| Field | Detail |
+| --- | --- |
+| Destination | Ripple Effect's hosted backend |
+| Availability | From version 1.5. |
+| Default | Off. Opt-in. |
+| Asked | Once, with the complete list of what would be sent in front of the question rather than behind a link. Neither answer is preselected. |
+| Where to change it | **Settings ▸ Data control**, where the same list stays in front of you. |
+| Frequency | At most one row a day. Nothing at all until the statistics have been on for an hour, so switching them on and straight off again sends nothing. |
+| Adding to the list | Asks again. |
+| Never included | Any text you wrote; anything about your projects; anything about what you did in them. |
 
-What a row carries is whether the app was in use on a given day, the day, a
-random identifier for the installation, the app's version and your operating
-system's family. Nothing about your projects, and nothing about what you did
-in them. The app sends at most one row a day, and **nothing at all until the
-statistics have been on for an hour** — so switching it on and straight off
-again sends nothing.
+### What a row carries
 
-Turning it off does something worth understanding before you rely on it.
-While it is on, the app holds a random identifier it made when you switched it
-on, shown in that same settings row — so the data is *pseudonymous*, and while that identifier exists you can
-quote it to us and have the rows deleted. **Turning it off destroys the
-identifier**, which stops collection and severs the only link between you and
-what was already sent. After that nobody can connect those rows to you,
-including us — so there is nothing left to delete, and nothing we could hand
-back if you asked. Switching it on again mints a new identifier; you are a new
-installation and nothing joins the two.
+| Field | Content |
+| --- | --- |
+| Use | Whether the app was in use on the given day |
+| Day | The day |
+| Identifier | A random identifier for the installation |
+| Version | The app's version |
+| System | Your operating system's family |
 
-## A crash report — if you say yes to that report
+### The identifier
 
-This is the only thing the app sends that can contain anything of yours, and
-it is the only one that asks.
+| State | Behaviour |
+| --- | --- |
+| On | The app holds a random identifier it made when you switched statistics on, shown in the same settings row. The data is pseudonymous: while the identifier exists you can quote it to us and have the rows deleted. |
+| Turned off | The identifier is destroyed. Collection stops and the only link between you and what was already sent is severed. Nobody can then connect those rows to you, including us, so there is nothing left to delete and nothing we could hand back if you asked. |
+| Turned on again | A new identifier is made. You are a new installation and nothing joins the two. |
 
-**How it asks.** If the app crashes, it saves a report on your machine and
-sends nothing. The next time you start the app, a window tells you it crashed,
-lists **every file it would send** with its size and a sentence about what is
-in it, shows a report id to quote if you later want a sent report deleted, and
-offers *Show files* so you can open them and look. It goes only if
-you press *Send report*.
+## Crash report
 
-**There is no setting.** No "always send", no "never send". The question is
-asked once per crash, at the moment you can actually see what it is about, and
-whichever way you answer is final for that report. A report you decline stays
-on your machine and is never offered again.
+The only thing the app sends that can contain anything of yours, and the only one that asks. It goes to Ripple Effect's hosted backend.
 
-**What is in one:**
+### How it asks
 
-- **A memory snapshot** of the app at the moment it crashed — what each part
-  of it was running, the libraries it had loaded, and small pieces of memory
-  around them.
-- **The crashed run's diagnostic files** — the session record and the logs,
-  each cut to its last 2 MiB, and the window tells you when one was cut.
-- **A short manifest** naming the files, the version that sent them and when
-  the crash happened.
-- **A few labels**: the app's version, whether you were on the home screen or
-  inside a project — never *which* project — and an id tying the snapshot to
-  its own logs.
+| Step | Behaviour |
+| --- | --- |
+| The app crashes | It saves a report on your machine and sends nothing. |
+| Next start | A window says the app crashed. It lists every file it would send with its size and a sentence about what is in it, shows a report id to quote if you later want a sent report deleted, and offers *Show files* so you can open them. |
+| Your answer | The report goes only if you press *Send report*. |
+| Declined | The report stays on your machine and is never offered again. |
 
-**What is masked before you are even asked.** Your username and home folder,
-the folder of every project the app knows about, e-mail addresses, network
-addresses, and anything shaped like a password or a key are replaced
-throughout, before the window opens.
+There is no setting: no "always send", no "never send". The question is asked once per crash, at the moment you can see what it is about, and your answer is final for that report.
 
-:::caution[The one thing masking cannot promise]
-A memory snapshot may hold fragments of whatever text the app was working on.
-No automatic rule can know that a passage you wrote is private. The window
-says this too, because "everything is anonymised" is a claim nobody can check
-and therefore nobody should believe.
+### What a report contains
+
+| Item | Content |
+| --- | --- |
+| Memory snapshot | The app at the moment it crashed: what each part of it was running, the libraries it had loaded, and small pieces of memory around them. |
+| Diagnostic files | The crashed run's session record and logs, each cut to its last 2 MiB. The window tells you when one was cut. |
+| Manifest | A short file naming the files, the version that sent them and when the crash happened. |
+| Labels | The app's version; whether you were on the home screen or inside a project, never which project; an id tying the snapshot to its own logs. |
+
+### Masking
+
+Before the window opens, the following are replaced throughout:
+
+- your username and home folder
+- the folder of every project the app knows about
+- e-mail addresses
+- network addresses
+- anything shaped like a password or a key
+
+:::caution[What masking cannot promise]
+A memory snapshot may hold fragments of whatever text the app was working on. No automatic rule can know that a passage you wrote is private. The window says this too.
 :::
 
-**Is it anonymous?** There is no account and nothing in it names you. It does
-carry a random number the crash reporter made for your installation, so that
-crashes from one computer can be told apart from crashes from different ones.
-It is not derived from your hardware or anything about you, it is used for
-nothing else, and if you never send a report it never leaves your machine.
+### Identity
 
-## Whatever you send yourself
+There is no account and nothing in a report names you. It does carry a random number the crash reporter made for your installation, so that crashes from one computer can be told apart from crashes from different ones. The number is not derived from your hardware or anything about you and is used for nothing else. If you never send a report it never leaves your machine.
 
-The sixth is not really the app's: it is yours, and it is here because it
-still puts bytes on the wire.
+## Requests you cause
 
-- **Version-control pushes** go to the repository you configured, with
-  credentials you supplied. Those credentials live in your operating system's
-  own credential store, and never in a file of ours.
-- **Opening a documentation or support page** hands a URL to your browser.
-  From version 1.5 that goes through a redirect on `ripplefx.app`, which sees
-  the request and nothing else; what your browser does next is between you and
-  wherever it went.
-- **A picture in a document, referenced by address.** If a Markdown document
-  points at an image by `http` or `https` — rather than at a file in the
-  project — then drawing that document fetches it from whoever is hosting it,
-  and that host sees the request. **This includes a project somebody sent
-  you**, whose documents you did not write: an image small enough to be
-  invisible is still a request, and the app does not ask before making it.
-  A picture that lives in the project folder is read from your disk and
-  involves no network at all.
+These are yours rather than the app's, and are listed because they put bytes on the wire.
+
+| Action | What happens |
+| --- | --- |
+| Version-control push | Goes to the repository you configured, with credentials you supplied. The credentials live in your operating system's own credential store and never in a file of ours. |
+| Opening a documentation or support page | Hands a URL to your browser. From version 1.5 it goes through a redirect on `ripplefx.app`, which sees the request and nothing else. What your browser does next is between you and wherever it went. |
+| Image in a document, referenced by `http` or `https` | Drawing the document fetches the image from whoever hosts it, and that host sees the request. The app does not ask before making it, and an image small enough to be invisible is still a request. This includes a project somebody sent you, whose documents you did not write. |
+| Image in the project folder | Read from your disk. No network is involved. |
 
 ## What never leaves
 
-- **Your work.** Passages, boards, projects, components, scripts, exports —
-  none of it is sent anywhere. There is no background sync.
-- **What you do in the app.** Which boards you open, how long you spend, what
-  you click: none of it is recorded or sent, with or without the statistics
-  above switched on. The statistics say *that* the app was used on a day, and
-  nothing about how.
-- **The session log**, unless it goes inside a crash report you sent. It is
-  written on your machine, with private things replaced as they are written,
-  and a run where nothing went wrong is deleted the next time you start the
-  app. See [Updates, logs and
-  support](/overviews/updates-logs-and-support/).
-- **What the network requests returned.** The update check, the contributor
-  list and an installer download each leave a line in that session log saying
-  where the request went, what came back and how long it took. The address is
-  recorded without anything after the `?`, and no response content is written.
+| Item | Detail |
+| --- | --- |
+| Your work | Passages, boards, projects, components, scripts and exports are not sent anywhere. There is no background sync. |
+| What you do in the app | Which boards you open, how long you spend and what you click are not recorded or sent, with or without statistics switched on. The statistics say that the app was used on a day, and nothing about how. |
+| The session log | Not sent, unless it goes inside a crash report you sent. It is written on your machine, with private things replaced as they are written, and a run where nothing went wrong is deleted the next time you start the app. |
+| Network responses | The update check, the contributor list and an installer download each leave a line in the session log saying where the request went, what came back and how long it took. The address is recorded without anything after the `?`, and no response content is written. |
 
-## What is planned, and on what terms
+## What is planned
 
-**An account** is for the [hosted
-service](https://legal.ripplefx.app/terms/) — media storage, real-time
-collaboration, team workspaces — and for nothing else. **The editor does not
-change when you are signed out**, and no feature that is free today will move
-behind an account. If you never sign in, none of it applies to you.
+An account for the hosted service, and any feature that sends something to a third party, are covered by the [Terms of Service](https://legal.ripplefx.app/terms/) and the [sub-processors list](https://legal.ripplefx.app/subprocessors/), which name a provider before a feature ships.
 
-When a feature sends something to a third party, it will do so **only on an
-action you take**, the provider will be named in the
-[sub-processors list](https://legal.ripplefx.app/subprocessors/) before the
-feature ships rather than after, and what is sent will not be used to train
-anybody's models.
+| Topic | Terms |
+| --- | --- |
+| What an account is for | The hosted service: media storage, real-time collaboration and team workspaces. Nothing else. |
+| Signed out | The editor does not change. No feature that is free today will move behind an account. If you never sign in, none of it applies to you. |
+| A feature that sends something to a third party | It does so only on an action you take. The provider is named in the sub-processors list before the feature ships. What is sent is not used to train anybody's models. |
 
 ## The documents
 
-- [Privacy Notice](https://legal.ripplefx.app/privacy/) — the formal account
-- [End-User Licence Agreement](https://legal.ripplefx.app/eula/) — the app
-- [Terms of Service](https://legal.ripplefx.app/terms/) — the site and the
-  service
-- [Sub-processors](https://legal.ripplefx.app/subprocessors/) — who else
-  touches it
+| Document | Covers |
+| --- | --- |
+| [Privacy Notice](https://legal.ripplefx.app/privacy/) | The formal account |
+| [End-User Licence Agreement](https://legal.ripplefx.app/eula/) | The app |
+| [Terms of Service](https://legal.ripplefx.app/terms/) | The site and the service |
+| [Sub-processors](https://legal.ripplefx.app/subprocessors/) | Who else touches it |
 
-Questions about any of it:
-[legal@ripplefx.app](mailto:legal@ripplefx.app).
+Questions: [legal@ripplefx.app](mailto:legal@ripplefx.app).
+
+## Related
+
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/)
+- [The session log and reports](/reference/session-log/)
+- [Settings, accessibility and updates controls](/reference/settings/)
+- [How to report a bug](/how-to/report-a-bug/)

@@ -1,0 +1,54 @@
+---
+title: How to save and resume a playthrough
+description: Save a playthrough under a name, pause and resume it, and open a saved game from the bookmark or the command palette.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Save a playthrough under a name
+
+Saving does not end the playthrough, and you can save as many times as you like.
+
+<Steps>
+
+1. In the campaign window, select the bookmark in the header.
+2. Type a name in the **Save this playthrough** dialog. **Save** stays unavailable until the name is not empty.
+3. Select **Save**. The app reports *Saved as "name".* and the playthrough carries on.
+
+</Steps>
+
+## Put a playthrough down and pick it up again
+
+Select **Pause** in the campaign window to put a playthrough down. Pausing writes an automatic save into the project's `.ripple/saves/`, listed as **Where you left off** in the same list as your named saves and rewritten each time you pause. [How to play and test a campaign](/how-to/play-a-campaign/) covers pausing and resuming.
+
+Pausing and resuming in the same sitting hands you back the board you just edited. A save opened later is checked against the story as it is then, which is why one can be refused.
+
+## Open a saved game
+
+<Steps>
+
+1. Select the bookmark beside Play, or run **Open a saved game…** from the command palette.
+2. Pick a save. The list shows the passage each is waiting at and how long ago it was written.
+3. If a playthrough is running, the app asks **Open this saved game?** Opening a save throws the running campaign away, so save that playthrough first if you want it back.
+4. Select **Open**.
+
+</Steps>
+
+{/* TODO(shots): <Shot name="savedGames" /> */}
+
+A save records your place and everything the story has made. [The campaign window and saved games](/reference/campaign-window/) lists what it holds, and [How a story runs](/explanation/how-a-story-runs/) explains how choice counts and macros behave.
+
+## When a saved game is refused
+
+A save records a place in a board. If the story has been rewritten since and that place no longer exists, the save is listed with the reason beside it and left alone. Open another save, or start a new playthrough and save that.
+
+A build older than yours refuses a newer save rather than put a `json` variable back to its default. Update the app to open it.
+
+Saves are left out of version control.
+
+## Related
+
+- [How to play and test a campaign](/how-to/play-a-campaign/)
+- [The campaign window and saved games](/reference/campaign-window/)
+- [How a story runs](/explanation/how-a-story-runs/)
+- [Project files and the .ripple folder](/reference/project-files/)
