@@ -9,7 +9,7 @@ import NodePreview from '../../../components/NodePreview.astro';
 
 Every card the Create menu offers, in the menu's order and under its categories. Each entry gives, in this order: what the card is for, in the card's own words; what is on the card; the ports it takes and the ports it answers on; and, where one exists, something to read. An agent receives the same list for the build it is talking to from `node_types`.
 
-**Ports.** A port carries either *flow* or a value. Flow is the story, pushed from card to card; a value is pulled when a card needs it. A card's way in is `exec` unless its table says otherwise. Every value port is typed: a `number` joins a `number`, and `any` joins anything. How the two kinds are run is in [Board and navigation rules](/reference/canvas-rules/); the cards that declare, keep or read state across a playthrough are grouped in [Node families, slots and state](/reference/node-families/).
+**Ports.** A port carries either *flow* or a value. Flow is the story, pushed from card to card; a value is read when a card takes its turn, and is whatever the card at the other end last published. A card's way in is `exec` unless its table says otherwise. Every value port is typed: a `number` joins a `number`, and `any` joins anything. How the two kinds are run is in [Board and navigation rules](/reference/canvas-rules/); the cards that declare, keep or read state across a playthrough are grouped in [Node families, slots and state](/reference/node-families/).
 
 **Cards that declare ports.**
 

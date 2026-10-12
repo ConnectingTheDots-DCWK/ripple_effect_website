@@ -1,6 +1,6 @@
 ---
 title: How a story runs
-description: Why a board's control wires are pushed and its data wires pulled, why the story only goes forwards, and what that means for branches and for where a story begins.
+description: Why a board's control wires are pushed and its data wires only read, why the story only goes forwards, and what that means for branches and for where a story begins.
 ---
 
 A board looks like a diagram, but the engine reads it as two different things drawn on the same canvas: a path the story walks, and a set of questions the cards ask while they walk it. Most surprises on a board, a value that is a turn out of date or a setting that seems never to have fired, come from taking one wire for the other. This page explains the reasoning, so that the [diagnostics](/reference/diagnostics/) the app raises read as consequences of one model and not as separate rules.

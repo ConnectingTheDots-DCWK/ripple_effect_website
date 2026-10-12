@@ -139,7 +139,7 @@ Every port is one of two kinds. The canvas draws them apart.
 | Shape | Triangle, pointing the way the flow runs. | Dot. |
 | Tooltip | None. | The type it takes: `number`, `list<string>`, or `anything` for ports that accept whatever is given, such as a Comparator's two sides. |
 | Examples | The way in `exec`; the choices, branches, the *first* and *again* of a gate, and the `completed` of a node that merely did something. | Any port that carries a value. |
-| Direction of evaluation | Pushed. | Pulled. |
+| Direction of evaluation | Pushed. | Read: the card gets what the card at the other end last published. |
 | Role of the wire | A step in the story. | A question the card at its end asks when its turn comes. |
 
 - The story is the path from Start along control wires.
