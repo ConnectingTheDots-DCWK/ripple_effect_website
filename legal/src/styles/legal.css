@@ -27,7 +27,7 @@
   --muted: #edeff4;
   --muted-foreground: #5a6070;
   --border: #dfe3eb;
-  --primary: #4a57e0;
+  --primary: #15171c;
   --caution: #a07708;
 
   --measure: 34rem;
@@ -44,7 +44,7 @@
     --muted: #1a1d23;
     --muted-foreground: #99a0ae;
     --border: #262a32;
-    --primary: #a8b1fa;
+    --primary: #e8eaef;
     --caution: #e3b341;
 
     color-scheme: dark;

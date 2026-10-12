@@ -5,13 +5,15 @@
  * the seed at HSL lightness +0.06 to the seed at -0.14, with the mark drawn in
  * white and inset 0.17 on every side.
  *
- * The seed #6C7BF5 is hsl(233.4 87.3% 69.2%), so the two stops are simply that
- * hue and saturation at two lightnesses — no hex conversion to get wrong.
+ * The seed is #2A2E37 since 1.5 — a cool near-black on the neutral ramp's
+ * hue, where it was the periwinkle #6C7BF5 before. It is hsl(221.5 13.4%
+ * 19%), so the two stops are simply that hue and saturation at two
+ * lightnesses — no hex conversion to get wrong.
  */
 export const iconPlate = {
-  seed: "#6c7bf5",
-  gradientFrom: "hsl(233.4 87.3% 75.2%)",
-  gradientTo: "hsl(233.4 87.3% 55.2%)",
+  seed: "#2a2e37",
+  gradientFrom: "hsl(221.5 13.4% 25%)",
+  gradientTo: "hsl(221.5 13.4% 5%)",
   cornerRadius: 0.22,
   markInset: 0.17,
 } as const;

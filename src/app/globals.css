@@ -45,7 +45,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  /* The seed itself, for the mark and nothing else. See below. */
+  /* The mark's colour, kept as its own token. See below. */
   --color-brand: var(--brand);
   --color-brand-from: var(--brand-from);
   --color-brand-via: var(--brand-via);
@@ -99,42 +99,40 @@
   --border: #dfe3eb; /* outlineVariant    */
   --input: #dfe3eb;
 
-  /* The seed, #6C7BF5, is the *mark's* colour. `--primary` is the legible
-     derivative used for filled controls and links — which is exactly what
-     ColorScheme.fromSeed does in the app, where `primary` is never the seed
-     either. White on #6C7BF5 is 3.63:1; on this it is 5.63:1. */
-  --brand: #6c7bf5;
-  --primary: #4a57e0;
+  /* The accent is the ink. Since 1.5 the app has no hue in its chrome —
+     `primary` is `onSurface` — and neither does the site: filled controls,
+     links, the focus ring and the mark are all #15171c here and #e8eaef in
+     dark. White on it is 18:1. `--brand` is the mark's colour and stays a
+     token of its own, so the mark can move without moving every control. */
+  --brand: #15171c;
+  --primary: #15171c;
   --primary-foreground: #ffffff;
-  --ring: #4a57e0;
+  --ring: #15171c;
 
-  /* The travelling border light's two stops. It is the one gradient on the
-     site and the one place the house rule is deliberately set aside — see
-     CLAUDE.md. Both are the brand hue, so it reads as a highlight moving over
-     the edge rather than as a second colour arriving. */
-  --brand-from: #6c7bf5;
-  --brand-via: #8a96f8;
-  --brand-to: #a8b1fa;
+  /* The travelling border light's stops. It is the one gradient on the site
+     and the one place the house rule is deliberately set aside — see
+     CLAUDE.md. A grey ramp off the ink, so it reads as a highlight moving
+     over the edge rather than as a colour arriving. */
+  --brand-from: #15171c;
+  --brand-via: #3a3f4a;
+  --brand-to: #5a6070;
 
   /* The glint's sweep. White, because a highlight is lighter than the thing it
-     crosses; see the `glint` utility at the foot of this file for why the
-     alpha is a token per mode. On #4a57e0 this lands at #929aec — a long way
-     from where it started, so 0.4 is plenty. */
+     crosses; see the `glint` utility at the foot of this file for why it is a
+     token per mode. On #15171c this lands at #737476, so 0.4 is plenty. */
   --glint: rgb(255 255 255 / 0.4);
 
-  /* What reads on the brand gradient — and it is the *same* in both modes,
-     which is the point. The gradient is light lavender either way, so white
-     on it is 3.63:1 at the darkest stop and 2.3:1 at the lightest: not text.
-     #14171c is 5.8:1 and 8.8:1 across the same two. A foreground that follows
-     the theme would be wrong in one of them. */
-  --brand-foreground: #14171c;
+  /* What reads on the brand gradient. The ramp follows the mode now, so the
+     foreground does too: white here is 18:1 at the darkest stop and 6.3:1 at
+     the lightest. */
+  --brand-foreground: #ffffff;
 
   --destructive: #c0392b; /* AppStatus.stop.light    */
   --go: #2f7a4f; /* AppStatus.go.light      */
   --caution: #a04a08; /* AppStatus.caution.light */
-  /* Not a token of the app's: the paid tier has no surface there yet. The
-     complement of the brand's indigo, kept olive rather than amber so it is
-     not mistaken for `--caution`. 4.87:1 on the page, 5.32:1 on a card, and
+  /* Not a token of the app's: the paid tier has no surface there yet. The one
+     hue the site keeps outside the statuses, and kept olive rather than amber
+     so it is not mistaken for `--caution`. 4.87:1 on the page, 5.32:1 on a card, and
      white on it 5.32:1 — so it can fill a button. */
   --premium: #8a6512;
   --premium-foreground: #ffffff;
@@ -157,24 +155,23 @@
   --border: #262a32; /* outlineVariant    */
   --input: #262a32;
 
-  /* Light accent, dark label — the direction Material takes a seed in dark
-     mode, and the direction the app's own dark scheme takes it. */
-  --brand: #6c7bf5;
-  --primary: #a8b1fa;
-  --primary-foreground: #14171c;
-  --ring: #a8b1fa;
+  /* The ink again, the other way up: a pale fill takes a dark label. */
+  --brand: #e8eaef;
+  --primary: #e8eaef;
+  --primary-foreground: #0d0f13;
+  --ring: #e8eaef;
 
-  --brand-from: #8e99f8;
-  --brand-via: #aab3fb;
-  --brand-to: #c7cdfd;
+  --brand-from: #e8eaef;
+  --brand-via: #c4c8d1;
+  --brand-to: #99a0ae;
 
-  /* Same white, more of it. #a8b1fa is already pale, so there is less room
-     above it than there is above the indigo — 0.55 lands at #d8dcfd, which is
-     a comparable step. The colour does not invert between modes; only how
-     hard it has to be pushed does. */
-  --glint: rgb(255 255 255 / 0.55);
+  /* Same white, nearly all of it. #e8eaef leaves little room above it, so
+     the sweep has to be close to opaque to register — see the note on the
+     `glint` utility for why it is not turned into a shadow instead. */
+  --glint: rgb(255 255 255 / 0.85);
 
-  --brand-foreground: #14171c; /* not a typo — see the light block */
+  /* #0d0f13 on the ramp: 15.9:1 at the lightest stop, 7.3:1 at the darkest. */
+  --brand-foreground: #0d0f13;
 
   --destructive: #cf4538; /* AppStatus.stop.dark    */
   --go: #398358; /* AppStatus.go.dark      */
@@ -238,17 +235,16 @@
  *
  * **The sweep is white in both modes; the alpha is what is corrected.**
  * velora's original hardcodes `rgba(255,255,255,0.35)`, tuned for one dark
- * button. Light mode's `--primary` is #4a57e0 and 0.4 white takes it to
- * #929aec, which is a large step. Dark mode's is #a8b1fa, already pale, so
- * there is less room above it and the same alpha barely registers — 0.55
- * takes it to #d8dcfd, a comparable step. That is the correction.
+ * button. Light mode's `--primary` is the ink, #15171c, and 0.4 white takes it
+ * to #737476, a large step. Dark mode's is #e8eaef, nearly white already, so
+ * there is very little room above it and only 0.85 registers at all. That is
+ * the correction.
  *
- * **Darkening the dark-mode button instead was tried and is wrong.** The
- * reasoning was that a pale lavender has no headroom, so the sweep should go
- * the other way; the arithmetic says otherwise — white still moves #a8b1fa by
- * about fifty points of red — and on screen a dark band travelling over a
- * light button does not read as a highlight at all. It reads as a smudge. A
- * glint is lighter than the thing it crosses, in both themes.
+ * **Darkening the dark-mode button instead was tried and is wrong.** It was
+ * tried on the old pale lavender, which had no more headroom than this, and
+ * on screen a dark band travelling over a light button does not read as a
+ * highlight at all. It reads as a smudge. A glint is lighter than the thing
+ * it crosses, in both themes.
  *
  * It passes *over* the label rather than behind it. Deliberate: white over
  * a white label in light mode and over a near-black one in dark mode does not
