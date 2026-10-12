@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 import { OgGrid } from "@/lib/og-grid";
 import { OgMark } from "@/lib/og-mark";
 import { allPosts, findPost, formatDate } from "@/lib/blog";
+import { siteConfig } from "@/lib/site-config";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -81,8 +82,7 @@ export default async function PostOgImage({
         >
           <OgMark size={40} color="#e8eaef" />
           <span style={{ fontSize: 28, fontWeight: 600, display: "flex" }}>
-            <span>ripple</span>
-            <span>_effect</span>
+            {siteConfig.name}
           </span>
         </div>
 

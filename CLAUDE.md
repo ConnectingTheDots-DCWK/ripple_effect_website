@@ -85,24 +85,26 @@ product to the one it is selling. The header is a flat bar on a hairline for
 the same reason a card in the app is.
 
 **`BorderBeam` is the one exception, and it is deliberate.** A light travels
-the border of the hero screenshot and of the free tier's card — two places,
-both of them *the one thing on the page you are meant to look at*, which is
+the border of the free tier's card — *the one thing on that page you are meant
+to look at*, which is
 the same job the app's "one accent-filled action per view" rule does. It is
 still a gradient. It is allowed here because a marketing page has to catch an
 eye once, where a tool people work in for hours must not; `--brand-from` and
 `--brand-to` are a grey ramp off the ink so it reads as a highlight moving
-over an edge rather than as a colour arriving. **Two instances is the budget.**
-A third would make it decoration, and the reason above would stop being true.
+over an edge rather than as a colour arriving. **One instance is the budget.**
+It used to circle the hero screenshot too, and that one went in 1.5, with the
+screenshot moving under the features heading: on a landing page addressed to
+professionals a glowing frame read as a template rather than a product.
 
 **Everything else that moves is listed here, and each is allowed for a
-different reason.** The budget above is `BorderBeam`'s own and it is still two.
+different reason.** The budget above is `BorderBeam`'s own and it is one.
 The rest are enumerated so the next addition has to argue against a list
 rather than against nothing.
 
 `ShimmerButton` wears the *only* other travelling light, on the *only* two
 buttons that matter — the hero's download and the one above the footer. It is
-the same argument the beam makes, aimed at the action instead of at the
-screenshot. It does not go on the four cards on `/download`: those are a set
+the same argument the beam makes, aimed at the action instead of at a
+card. It does not go on the four cards on `/download`: those are a set
 being compared, and four glinting buttons side by side is a lightshow rather
 than a pointer.
 
@@ -378,10 +380,10 @@ The wash under the text is `rgba(13,15,19,0.9)`, not the flat surface colour.
 Opaque, it also erased the grid across the left half — which is the half where
 the grid is the only texture there is.
 
-The wordmark keeps the app's rule about itself: **`ripple` in the foreground
-and `_effect` in the accent** — *"the underscore is coloured rather than
-swallowed: it is half the name, and a `ripple effect` that has lost it reads as
-two words somebody forgot to join up."*
+The wordmark is the app's: **the display name, *Ripple Effect*, never the
+package name `ripple_effect`**, with the second word in the accent. It was the
+package name with the underscore coloured until 1.5, when the brand stopped
+being an identifier. The cards spell it from `siteConfig.name`.
 
 ## What search engines are told
 

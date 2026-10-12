@@ -4,17 +4,10 @@
  * and the landing page.
  *
  * Starlight's own `SiteTitle` renders `title` as a single run of text in
- * `--sl-color-text-accent`, which produces "Ripple Effect" in indigo — a
- * different name in a different shape from the one on every other surface.
- * The app's rule is:
- *
- * > The underscore is coloured rather than swallowed: it is half the name, and
- * > a `ripple effect` that has lost it reads as two words somebody forgot to
- * > join up.
- *
- * `title` in `astro.config.mjs` stays "Ripple Effect", because that is what
- * belongs in a `<title>` element, a search result and a browser tab. This is
- * only what the header *shows*.
+ * `--sl-color-text-accent`. The app's wordmark is the display name with the
+ * second word in the accent, and the mark beside it; this is that, so the
+ * header has the same shape as on every other surface. It used to be the
+ * package name, `ripple_effect`, with the underscore coloured.
  *
  * The mark is the same three-ring table as `lib/src/widgets/app_brand.dart`
  * and the landing page's `RippleMark`, drawn rather than imported for the
@@ -48,7 +41,7 @@ const U = 16;
 		}
 		<circle cx={U} cy={U} r={U * 0.17} fill="currentColor" />
 	</svg>
-	<span class="wordmark" translate="no">ripple<span class="tail">_effect</span></span>
+	<span class="wordmark" translate="no">Ripple <span class="tail">Effect</span></span>
 </a>
 
 <style>
@@ -59,8 +52,8 @@ const U = 16;
 			font-size: var(--sl-text-h4);
 			font-weight: 600;
 			letter-spacing: -0.02em;
-			/* Not `--sl-color-text-accent`: the name is text, and only the half
-			   after the underscore is the accent. */
+			/* Not `--sl-color-text-accent`: the name is text, and only the
+			   second word is the accent. */
 			color: var(--sl-color-white);
 			text-decoration: none;
 			white-space: nowrap;

@@ -12,7 +12,7 @@ const supportUrl = `https://github.com/${supportRepo.owner}/${supportRepo.name}`
 
 export const siteConfig = {
   name: "Ripple Effect",
-  /** The binary name, which is also how the wordmark is split. */
+  /** The binary name. The wordmark is `name`, as in the app. */
   slug: "ripple_effect",
 
   /**
