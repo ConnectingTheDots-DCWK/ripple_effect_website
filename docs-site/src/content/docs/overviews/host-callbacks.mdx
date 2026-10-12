@@ -134,6 +134,20 @@ to 100 when it is already 100 fires nothing. Dropping to 50 and climbing back
 to 100 fires again.
 :::
 
+## Forgetting one
+
+**Forget it** removes a declaration, after asking. A game listening for that
+name will simply never hear it again, and nothing in the project will say why.
+
+## Seeing them fire
+
+The play window has a **Host callbacks** side panel. It lists every fire — the
+name, the event, whichever payload fields are set, and what became of the
+lookup. The editor publishes the names but has no game to react to them, so
+normally nothing is registered and every fire shows as a name a game would
+have looked up. A name with nothing registered is not an error: the story
+plays exactly as it would have.
+
 ## What is gone is dropped, and said
 
 A callback aimed at a board, a variable or a component the project no longer
@@ -141,7 +155,9 @@ has is **left out of the compiled campaign**, with a warning, and the field in
 the pane says so. The declaration stays in the file: restoring the board from
 version control brings the callback back.
 
-A **node** is the exception. Whether a node id is on a board is not checked
+A callback aimed at a board that is gone, or at a node that is no longer on its
+board, is also flagged as the warning `W.GE.16`. A **node** is the exception to
+the dropping. Whether a node id is on a board is not checked
 when the campaign is built, so a callback naming one that is gone travels
 intact and simply never fires. The pane says so where it can, which is while
 the board it names is open in front of it.

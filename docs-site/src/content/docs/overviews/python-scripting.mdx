@@ -19,11 +19,33 @@ allows on the day you ask it.
 ## Where Python goes
 
 **A Script node** references a `.py` file in the project, so one script can
-serve many nodes. It declares its inputs and outputs as small JSON shapes —
-`{"hp": "number", "damage": "number"}` — and grows a port per name. Values
+serve many nodes. It declares its inputs and outputs as rows — a name and a type each — and
+grows a port per name. The two boxes in its editor are buttons, *Inputs* and
+*Outputs*, that open the same ports dialog every other node uses. Values
 cross as native Python types: `total = hp - damage` is arithmetic, not a
 parse. Whatever the script assigns to an output name is published on that
 port.
+
+A slot is offered the same twenty-four types everywhere a slot is declared —
+`int`, `float`, `bool`, `string`, `markdown`, a path to a file, a component
+and JSON, each on its own, as a list, or as a map from names to it. **A slot
+gets the type it declared**: an `int` input given `3.7` reads `3`, and a
+`list<int>` input given a list of text arrives as numbers. A value that cannot
+be read as the declared type becomes that type's blank rather than stopping
+the story. What a script *writes* is left as it is. The words `number` and
+`entity`, which older boards used, are no longer offered but still read, and
+show on a row that holds one until you retype it.
+
+Any slot may also carry a **default**, used when nothing fills it. For a
+script input, a wired value wins over it; for a script output, the default
+applies only where the program never set that name at all.
+
+**A name a script reads has to be a name Python can read.** A Script node's
+inputs and outputs, and a passage's inputs, accept only a letter or an
+underscore followed by letters, digits and underscores. Python's own words,
+such as `class`, are refused with the reason shown under the field. An older
+board that carries a name Python cannot read now reports it instead of
+silently never filling the slot.
 
 **An Output node** is the other half: the same idea, but it shows its inputs
 to the reader, as a slide with one way on. Wire a Script node into it and the
@@ -31,7 +53,10 @@ answers appear in the story. (It was called *Display* before 1.3.2.) Its
 counterpart, the **Input** node, asks the reader for values and hands what
 was typed on as ports — so a script can take a name or a number the reader
 chose. Both are described by double-clicking the card: a name and a type per
-row, rather than the JSON a Script node still takes.
+row. Their names are read by people, so `Your roll` is a fine name there,
+unlike a Script node's, which become variables. An Output node's slots are
+typed the same way a Script node's are, and a slot may carry a default; on an
+Input node the default is filled in for the reader to accept or type over.
 
 **A passage** has two places for it: an inline `{{ … }}` span and a fenced
 ```` ```ripple ```` block. Both are replaced by what they evaluate to when the
@@ -72,8 +97,11 @@ then marked as an error on its card, and listed in Messages, as you write —
 [`E.EX.01`](/reference/diagnostics/#eex01) and
 [`E.EX.02`](/reference/diagnostics/#eex02) — and the campaign will not play
 or export until there are none. Turn it back on and nothing about the project
-has changed. [Exporting](/overviews/exporting/#for-a-player-without-python)
-says what the smaller player does with a campaign that still has Python in it.
+has changed. The engine ships in two builds, one with the interpreter and a much smaller
+one without; [Exporting](/overviews/exporting/#for-a-player-without-python)
+says what the smaller player does with a campaign that still has Python in
+it, and how *Needs no Python* in the export dialog checks for it. Every
+exported campaign records whether it needs Python.
 
 ## What the sandbox allows
 
@@ -112,15 +140,17 @@ report; an agent can ask for the same text through `python_capabilities`.
 
 ## Limits
 
-A script that has not finished after **five seconds** is abandoned, and the
-app will not restart it. After three distinct scripts have been abandoned in
-one session no script starts at all until the app is relaunched — that is
-what keeps an unattended walk of every branch from paying for the same
-runaway on each. A script that hits this is a script with an infinite loop in
-it. Runaway recursion raises `RecursionError` and is caught normally.
+A script that has not finished after **two seconds** is stopped, and the
+app will not start that script again in the same playthrough. After three
+distinct scripts have been stopped in one playthrough no script starts at all
+— that is what keeps an unattended walk of every branch from paying for the
+same runaway on each. A script that hits this is a script with an infinite
+loop in it. A script is also held to roughly 64 megabytes and 200 calls deep:
+runaway recursion raises `RecursionError` and a list that will not fit raises
+`MemoryError`.
 
-The interpreter is [monty](/about/open-source/#monty--python-in-a-sandbox),
-reached through `dart_monty`; the open-source page says whose they are.
+The interpreter is [monty](/about/open-source/#monty--python-in-a-sandbox);
+the open-source page says whose it is.
 
 ## The functions
 

@@ -33,8 +33,16 @@ Double-click a Narration node to write in it. The editor is the same Markdown
 editor the app uses everywhere: a live render, a formatting toolbar, and image
 embeds, local and remote, raster and SVG — drop a file on it and the link
 writes itself. A picture picked from outside the project is copied into
-`.ripple/external/` first, unless importing outside assets is switched off
-from the palette, in which case it is linked and Messages says so.
+`.ripple/external/` first, unless **Import outside assets** is switched off
+in the File menu, in which case it is linked and Messages says so.
+
+**The toolbar has an Image button beside Link**, in every Markdown editor — a
+passage, a bundle, a document open in a tab. Type a few letters and it offers
+the project's pictures, documents and sounds by name; for anything that is not
+in the folder, give it a URL or a path. It writes `![alt](path)`, using
+whatever you had selected as the alt text and otherwise leaving a prompt
+selected for you to type over. Dragging a picture onto the editor still does
+the same thing in one move, and writes the same thing into the file.
 
 A link the app writes starts with a slash — `![map](/art/map.png)`, measured
 from the project's root the way GitHub reads one — so a passage can be dragged
@@ -49,12 +57,67 @@ fenced ```` ```ripple ```` block — so a sentence can vary instead of forking
 into two passages. A passage only *reads*; see [Python
 scripting](/overviews/python-scripting/).
 
+## Giving a passage things to read
+
+A Narration node can be handed values. The **Reads** row sits at the bottom of
+the card, beside the soundscape the node brings; it shows how many names the
+passage is handed and opens the dialog where they are declared — a name and a
+type each, written the way every other card's ports are. (It used to be an
+*Edit what it reads…* entry on the right-click menu; it is not there any
+more.) The card grows a port for each name, wire something in, and the
+passage's Python reads it by that name: `You owe {{ gold }} crowns.` with a
+number on the `gold` port. A slot with a default and nothing wired uses the
+default.
+
+The names belong to the **card**, not to the passage file, so one passage can
+be read by two cards that fill it differently — a passage is a template. A
+name the card does not hand over shows as a small warning where it stood, and
+the rest of the passage renders as usual. Open a passage from a board and the
+names it was given are offered as you type; open it in its own tab and they
+are not, because there is no card to ask.
+
+**A name has to be a name Python can read**: a letter or an underscore, then
+letters, digits and underscores. A Python keyword such as `class` is refused,
+with the reason shown under the field. A board written by an older version that
+carries a name Python cannot read now reports it, as
+[`W.GE.15`](/reference/diagnostics/), instead of silently never filling the
+slot. The same rule holds for a Script node's inputs and outputs; an Output
+node's rows and an Input node's fields are read by people, so `Your roll` is
+still fine there.
+
+## Choices
+
+A Narration node's choices carry two limits besides their wording, and both
+leave the choice on screen when they say no — greyed out and unpressable — so a
+passage never quietly becomes an empty slide.
+
+- **Times.** Open a choice and there is a *Times* box beside its name. Blank
+  means as often as the reader likes; a number is how often one playthrough can
+  take it. Once it is used up the choice stays on screen, greyed out. The card
+  shows the ceiling as `×3` at the end of the choice's row.
+- **A question.** Every wired choice has a small input on its row. Wire a
+  `bool` into it and the choice is offered only while that is true. The two
+  combine: *three times, and only while you carry the lantern* is one choice
+  with both.
+
+Put the cards that work the answer out **in the flow that leads to the
+passage** — a Do-all with a chain on each branch and `completed` into the
+passage is the tidy shape for several. A card hanging off the side of the board
+is worked out once before the story starts and answers the same for ever; the
+messages panel says so and names the choice (see
+[Diagnostics](/reference/diagnostics/)). A Comparator reading a dice roll
+follows the same rule. How the player shows a spent choice is under [Playing a
+campaign](/overviews/playing-a-campaign/); the cards themselves are in
+[Nodes](/reference/nodes/).
+
 ## The languages
 
 **The language a story is written in is chosen when the project is made.** The
 starting point comes from your computer's settings, but the choice is offered
 rather than applied on your behalf. The languages it is *translated into* are
-chosen in Project settings.
+chosen in Project settings, which is a set of pages down a rail like the
+app's own settings: *General*, *Languages* and *Narration roots* (and
+*Capabilities*), each on its own. The languages are on the *Languages* page.
 
 Switching a translation language on puts an empty translation into every
 bundle. Switching one off deletes nothing: the files stay, the editor keeps
@@ -72,7 +135,7 @@ across your passages play empty. There is no migration for that yet.
 
 The locale chips along the top of a bundle each stand for one language. A
 **dot** on a chip means that translation is older than its source. The
-Messages tab lists every one that has fallen behind, across the whole project.
+Messages panel lists every one that has fallen behind, across the whole project.
 
 The app cannot ask the filesystem this question — a `git clone` sets every
 file's time to the moment of checkout — which is what `touch.json` is for. It
@@ -84,7 +147,7 @@ conflict between two translators is three lines a person can resolve.
 {/* TODO(shots): <Shot name="readingTime" /> */}
 
 Under every passage: the word count on the left, and on the right a choice of
-reading pace — slow, average or skimming — with the estimate beside it. It
+reading pace — slow, average or fast — with the estimate beside it. It
 keeps up as you type, and the pace you pick is remembered.
 
 **It counts the language you are actually writing in.** Fifty-four of them,

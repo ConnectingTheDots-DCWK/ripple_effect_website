@@ -53,6 +53,21 @@ opens a **merged view**: every board on the route on one canvas, with the
 bookkeeping between two passages traversed rather than drawn. It is read-only,
 like script navigation; the boards themselves are where things change.
 
+A route is drawn the way the reader meets it. A choice that runs a script and
+returns to the passage it left is an arrow back to that passage, as a choice
+wired straight back always was. A Do-all's branches lie one after another on
+the route to `completed` rather than as a fork the reader picks one way
+through, so their passages are on the route and the count of ways in does not
+count them as alternatives; the same goes for one wire's end fanned out to
+several places. And the route goes inside the macros it calls: the passages a
+macro holds are drawn where the call is, so a shop or a skill check reused in
+three places is read on the route in each of them.
+
+An arrow that passes through an *If*, a *Switch*, a roll or a loop names that
+node and the way it went, such as `Hit? → true`, beside the words of the
+choice if there was one — so it is clear where the story decided and not the
+reader.
+
 A trace on a board and a merged view across boards do not mix: opening a
 merged view takes every board's trace away, and while one is open a board's
 two trace buttons wait, and say why, until it is closed.

@@ -49,20 +49,25 @@ never fire, and the editor says so.
 
 ## On a board
 
-Drop the file on a board and it becomes a **State machine** node, or pick the
-machine on a node from the Create menu. The node takes an event and answers
-the state the machine is in after it:
+Drop the file on a board and it becomes a **State machine** node, or add the
+node and pick the machine from the list on its card. (A new machine file is
+made from the file tree's right-click menu, **New state machine**.) The node
+takes an event and answers the state the machine is in after it:
 
 - Wire or type the **event**. Leave it blank to read the state without moving.
 - `[*]` as the event resets the machine to its start.
 - Wire the **state** output into a **Switch** — one row per state — and the
   story branches on where the machine is.
+- The flow leaves by **changed** when an arrow fired (or the machine was reset)
+  and by **unchanged** otherwise. An event the current state has no arrow for
+  is not an error: the machine stays put and the flow takes **unchanged**, so
+  what to do about it is yours to decide downstream.
 
 A machine remembers for the whole playthrough, across boards and across
 saves, the way the FlipFlop and Once gates do. Starting over resets it.
 
 **Two nodes anywhere in the story drive the same machine** unless one is given
-an **instance** name. Two doors want two instances of the door machine; one
+an **instance** name (left blank, the instance is the machine's own name). Two doors want two instances of the door machine; one
 quest wants one.
 
 ## In a saved game and in an export

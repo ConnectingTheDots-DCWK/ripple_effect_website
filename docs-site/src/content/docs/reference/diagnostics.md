@@ -29,6 +29,22 @@ Most of what the panel shows has no code: those are the app telling you about a
 file, a translation, or something it could not do. The coded ones are the
 engine reading the *shape* of your boards.
 
+## Reading the panel
+
+The panel clusters its messages by what they are about — Boards, Translations,
+Version control — with a count on each heading that you can fold away. Switch it
+to cluster by how loud they are instead if you would rather see everything
+broken first. Three chips above the list turn problems, cautions and records on
+and off. Both choices are remembered.
+
+A message from the engine wears its **code**, and the code is a link: it opens
+the heading for that rule on this page.
+
+Some messages are not codes at all. A macro's take declared as a map or as JSON
+cannot carry a typed value from the card, and the compile still says so; takes
+typed `int`, `float`, a path to a file, a component or a list of those deliver
+their value to the story.
+
 ## When they appear
 
 While you edit, a second or so after you stop typing, for the board you are
@@ -113,6 +129,13 @@ Put it in the flow that leads to whatever reads it — wire the roller's
 `completed` into the Comparator, and the Comparator's into the If — and it will
 be worked out on the way in.
 
+The same goes for a **choice's guard**: a `bool` wired into the small input on a
+choice's row is only worked out in time if the cards that make it sit in the
+flow leading to the passage — a Do all with a chain per branch and `completed`
+into the passage is the tidy shape. Hanging off the side, it is worked out once
+before the story starts and answers the same for ever, and the message names
+the choice.
+
 ### `W.GE.06`
 
 **Some way in does not pass through the card whose value is being read.**
@@ -125,7 +148,9 @@ visit, or nothing at all on the first.
 Sometimes that is exactly what you meant: a running total reads its own last
 answer, and a flag set once on the way in is meant to still be set on the way
 back. So this is a question rather than an accusation, and you can answer it:
-tell it you meant that, and it will stop asking about that card.
+tick *I meant that* on its row in the messages panel, and it stops asking
+about that card. The answer is remembered, and it is the only code that offers
+the tick.
 
 ### `W.GE.07`
 

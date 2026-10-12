@@ -63,6 +63,28 @@ What a compiled campaign gets right that a copy of the project could not:
   component points at but does not have is left out rather than travelling as
   a name nothing can open. The export already told you about these in
   Messages; now what it produces agrees with what it said.
+- **Only the media the story uses.** A picture nobody embedded and a sound no
+  soundscape plays are left out of an export and of a compiled campaign, and
+  named in Messages the way a missing file is, rather than copied because the
+  folder happened to hold them.
+- **A component's list of files travels with it.** An attribute holding a
+  list of files — however it was written, including every one made with the
+  editor's type menus — has its files carried along with its rewritten paths,
+  so the campaign never names a picture that is not in it.
+- **A slot is read as the type it declared.** A Script node's inputs and an
+  Output node's are given the type they asked for: an `int` input given `3.7`
+  reads `3`, and a `list<int>` input given a list of text
+  arrives as numbers. A value
+  that cannot be read that way becomes that type's blank rather than stopping
+  the story, and what a script writes is left as it is. A campaign compiled
+  by an older build plays unchanged.
+- **A slot's default is settled before it ships, or carried if someone has to
+  answer it.** A default on a macro take, a script input or output, an Output
+  node's slot, a Macro Out's answer or an Input node's form field is what is
+  used when nothing else fills the slot. Four of those become ordinary values
+  on the board when the campaign is compiled; the two that a reader or a
+  program answers — a form field's, and a script output's — are carried in
+  the campaign.
 - **A macro is copied into whatever calls it.** Nothing of a macro reaches
   the bundle: each call is spliced into the board that made it, so a runtime
   never has to know what a macro is, and two calls are two copies.
@@ -80,12 +102,14 @@ What a compiled campaign gets right that a copy of the project could not:
   the node's turn and never looks inside.
 
 The lifting is what makes delivering the prose in another format possible at
-all. It is also why **a campaign exported by an earlier version will not play
-in this one** — it says so by name, and exporting it again from the project is
-one click. A saved game is unaffected.
+all. A campaign carries a format number, and a runtime refuses one newer than
+it implements, naming both numbers rather than half-playing it. A campaign
+exported by an earlier 1.x build plays here unchanged; only the very first
+shape of the format is refused, by name, and exporting it again from the
+project is one click. A saved game is unaffected.
 
-The bundle format is a published contract, and the runtime that plays it —
-`ripple_runtime` — is pure Dart with no Flutter in it. A command-line player
+The bundle format is a published contract, and the engine that plays it is
+written in Rust, with no editor and no Flutter in it. A command-line player
 built from it plays a campaign in a terminal with neither Flutter nor Dart
 installed, which is how the claim is checked.
 
@@ -113,7 +137,9 @@ to start while any is left, and the export's box is ticked for you and cannot
 be unticked.
 
 Every campaign also says in its manifest whether it needs Python, under
-`needs`, so a program loading one can tell before it starts.
+`needs`, so a program loading one can tell before it starts. That is
+information rather than a gate: a player without the interpreter still plays
+the campaign, and a host that would rather refuse one reads the flag to do it.
 
 ## Passages as HTML
 

@@ -48,7 +48,9 @@ that exists is downloaded, checked against our signature, and used from the
 next launch; it never changes what the app can do.
 
 *Engine updates*, under **Settings ▸ Updates**, switches this off along with
-the update check above. Versions before 1.5 did not ask at all.
+the update check above, and *Use the bundled engine* there goes back to the
+engine that shipped with the app. A fix is set aside automatically if the app
+crashes with it. Versions before 1.5 did not ask at all.
 
 ## A list of contributors, when you open the About box
 
@@ -72,18 +74,22 @@ for requests made to it.
 From version 1.5 the app can send anonymous usage statistics, and it is
 **opt-in**: you are asked once, with the complete list of what would be sent
 in front of the question rather than behind a link; neither answer is
-preselected; and you can turn it off afterwards in the app's settings. No text
+preselected; and you can turn it off afterwards in *Settings ▸ Data
+control*, where the same list stays in front of you. No text
 you wrote is ever included, and adding a new thing to the list means asking
 again. No build before 1.5 collected any.
 
 What a row carries is whether the app was in use on a given day, the day, a
 random identifier for the installation, the app's version and your operating
-system. Nothing about your projects, and nothing about what you did in them.
+system's family. Nothing about your projects, and nothing about what you did
+in them. The app sends at most one row a day, and **nothing at all until the
+statistics have been on for an hour** — so switching it on and straight off
+again sends nothing.
 
 Turning it off does something worth understanding before you rely on it.
 While it is on, the app holds a random identifier it made when you switched it
-on — so the data is *pseudonymous*, and while that identifier exists you can
-give it to us and have the rows deleted. **Turning it off destroys the
+on, shown in that same settings row — so the data is *pseudonymous*, and while that identifier exists you can
+quote it to us and have the rows deleted. **Turning it off destroys the
 identifier**, which stops collection and severs the only link between you and
 what was already sent. After that nobody can connect those rows to you,
 including us — so there is nothing left to delete, and nothing we could hand
@@ -98,7 +104,8 @@ it is the only one that asks.
 **How it asks.** If the app crashes, it saves a report on your machine and
 sends nothing. The next time you start the app, a window tells you it crashed,
 lists **every file it would send** with its size and a sentence about what is
-in it, and offers *Show files* so you can open them and look. It goes only if
+in it, shows a report id to quote if you later want a sent report deleted, and
+offers *Show files* so you can open them and look. It goes only if
 you press *Send report*.
 
 **There is no setting.** No "always send", no "never send". The question is
@@ -171,6 +178,10 @@ still puts bytes on the wire.
   and a run where nothing went wrong is deleted the next time you start the
   app. See [Updates, logs and
   support](/overviews/updates-logs-and-support/).
+- **What the network requests returned.** The update check, the contributor
+  list and an installer download each leave a line in that session log saying
+  where the request went, what came back and how long it took. The address is
+  recorded without anything after the `?`, and no response content is written.
 
 ## What is planned, and on what terms
 

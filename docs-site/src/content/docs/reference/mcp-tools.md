@@ -1,6 +1,6 @@
 ---
 title: MCP tools
-description: The thirty-nine tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Agents may edit.
+description: The thirty-nine tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Let agents change files.
 sidebar:
   order: 2
 ---
@@ -18,11 +18,14 @@ go without being told where. Three of them point elsewhere, because their
 subject has a reference of its own: `python_eval` and `python_capabilities`
 at [the Python API](/reference/python/), `node_types` and the two tools that
 build nodes at [the node catalog](/reference/nodes/). For the whole of this
-site as one file, there is [`/llms-full.txt`](/llms-full.txt), and
-[`/llms.txt`](/llms.txt) indexes the shorter versions of it.
+site as one file, there is [`/llms-full.txt`](/llms-full.txt);
+[`/llms.txt`](/llms.txt) indexes it, and
+[`/llms-small.txt`](/llms-small.txt) is the budget version, which leaves out
+the tutorials and the about pages. The first two are linked from the site's
+header.
 
-Thirty-nine tools, in six groups. The first four groups need **Agent
-access**; the last two need **Agents may edit** as well, and a write tool
+Thirty-nine tools, in six groups. The first four groups need **Let agents
+reach this app**; the last two need **Let agents change files** as well, and a write tool
 called while that is off answers `refused`.
 
 | | Tools |
@@ -59,12 +62,12 @@ usually a `hint` naming the tool that would have answered:
 
 | Code | When |
 | --- | --- |
-| `notRunning` | the app is closed, or Agent access is off |
+| `notRunning` | the app is closed, or Let agents reach this app is off |
 | `noProject` | the app is running with nothing open |
 | `notFound` | no entry by that id, name or path |
 | `ambiguous` | a name matching several entries; `candidates` lists them |
 | `conflicted` | the document has a conflict the author has not resolved |
-| `refused` | Agents may edit is off, or the tool declines on policy — a clip on a lane the author locked, for one |
+| `refused` | Let agents change files is off, or the tool declines on policy — a clip on a lane the author locked, for one |
 | `busy` | a campaign is already running, or a write is in flight |
 | `outsideProject` | a path resolved outside the project root |
 | `failed` | anything else, with the app's own words |
@@ -332,9 +335,9 @@ to you. Takes nothing.
 
 ## Writing
 
-Every tool from here on needs **Agents may edit**. Each goes through the
+Every tool from here on needs **Let agents change files**. Each goes through the
 app's own document session for the file, so a call is one undo step, autosave
-sees it, it is posted to Messages and listed in the agents panel, and a
+sees it, it is posted to Messages and listed on the Agents page, and a
 document with an unresolved conflict is refused rather than written over.
 Every write answers with the paths it changed.
 
@@ -510,7 +513,7 @@ beside the board that shows it: `passage_create` makes one.
 
 | Argument | | What |
 | --- | --- | --- |
-| `kind` | required | `board`, `component`, `script`, `machine`, `soundscape`, `note` or `folder`. |
+| `kind` | required | `board`, `macro`, `component`, `script`, `machine`, `soundscape`, `note` or `folder`. |
 | `name` | required | Without the extension; the right one is added. |
 | `directory` | | Project-relative. Defaults to the top of the project. |
 

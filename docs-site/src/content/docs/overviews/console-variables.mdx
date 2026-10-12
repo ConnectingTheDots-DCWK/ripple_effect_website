@@ -16,8 +16,8 @@ saves, starting every playthrough at its default.
 
 ## Declaring one
 
-The **Console variables** page is reached from the left panel's footer or the
-command palette. Every row is a name, a type and a default. Renaming a
+The **Console variables** page is reached from the activity bar's project
+buttons or the command palette. Every row is a name, a type and a default. Renaming a
 variable is free for every board that names it: a node stores the variable's
 id, not its name.
 
@@ -42,6 +42,17 @@ into them goes — they say what the variable is *for*, which is what the page
 draws its field from. `json` is the open one: it holds a list or an object as
 it stands, so a `list<json>` is a list of lists if that is what you put in
 it. Nothing may hold nothing; every type refuses an empty value.
+
+A variable that holds a path — `asset` or `componentRef`, on its own, in a list
+or in a map — is filled by name, like every other slot that points at a file:
+type a few letters and pick from the project's files, with the full path
+beside each. What you picked sits there as a chip with its name on it, and
+hovering shows the path, which is still what the variable stores. A chip whose
+file is outside the project or no longer there is marked, so a file renamed
+behind the app's back is visible. The campaign window's panel has no project
+to offer, so there a path stays a text field. On a card — a Set variable node's
+typed value — the same slot is a searchable dropdown of the project's files
+instead, like the Narration node's passage picker.
 
 The declarations live in `.ripple/cvars.json`, beside the project's settings,
 and travel with the project:
@@ -125,6 +136,12 @@ console reads the defaults and says so when asked to write. See the
 
 An agent sees the declarations through `project_info` and the live values
 through `campaign_state`, and can point a variable node at one by name.
+
+Widening the types (the twenty-four, `json` included) moved three formats:
+`.ripple/cvars.json` is version 3, a save is format 5, and a campaign has to
+be recompiled. A save records what each variable held and not its type, so an
+older build refuses a newer save outright rather than quietly putting a
+`json` variable back to its default — re-save games made before.
 
 A saved game carries every variable. A save from before the project had one
 holds it at its default; a variable added while a campaign is paused is there

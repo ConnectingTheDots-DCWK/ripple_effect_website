@@ -11,7 +11,11 @@ table says otherwise, and every value port is typed: a `number` joins a
 `number`, `any` joins anything.
 
 **Five cards let you declare their own ports** — Output, Input, Script, Macro
-In and Macro Out. Double-click one and each row is a name and a type, and a
+In and Macro Out — and a sixth, Narration, lets you declare what its passage
+is handed. Double-click one of the five (a Script node's *Inputs* and *Outputs*
+are buttons that open the same dialog) or click a Narration node's *Reads* row,
+at the bottom of the card, which says how many names the passage is given, and
+each row is a name and a type, and a
 type is two questions: **what it is** — `int`, `float`, `bool`, `string`,
 `markdown`, `asset`, `component` or `json` — and **how many of it**: one, a
 list, or a map of names to it. Twenty-four in all, and every one of the five
@@ -38,13 +42,40 @@ field reaches whoever is playing as a text box asking for a path. You may
 still declare it: the word is kept in your project, where it says what the
 field is for.
 
-**A Macro In's takes and a Script node's inputs can carry a default** — what
-the slot is worth when nothing fills it. Where the card's own literal and a
+**A name that becomes a Python variable has to be one Python can read.** A
+passage's inputs and a Script node's inputs and outputs take a letter or an
+underscore, then letters, digits and underscores; a Python keyword such as
+`class` is refused, with the reason under the field. An Output node's rows and
+an Input node's fields are read by people, so `Your roll` is still a fine name
+there. A board from an older version that carries a name Python cannot read now
+says so instead of silently never filling the slot.
+
+**A slot gets the type it declared.** An `int` Script input given `3.7` reads
+`3`, and a `list<int>` input handed a list of text receives numbers. This holds
+for a Script node's inputs and an Output node's rows; a value that cannot be
+read as the declared type becomes that type's blank rather than stopping the
+story. What a script *writes* is left as it is.
+
+**Any slot can carry a default** — what the slot is worth when nothing fills
+it. A Macro In's takes, a Script node's inputs and outputs, an Output node's
+slots, a Macro Out's answers and an Input node's form fields all take one.
+Where the card's own literal and a
 wire both answer a port, **the wire wins**, and the field on the card
 disappears while the wire is attached; where neither is there, the declared
 default stands in, and where there is no default either, the type's own blank
-does. A default on a `json` or a `map<…>` slot cannot travel, and the app
+does. A form field's default is filled in for the reader to accept or type
+over, and a script output's applies only where the program never set that
+name. A default on a `json` or a `map<…>` slot cannot travel, and the app
 says so when you compile.
+
+**A slot that points at a file is filled by name.** For a picture, a document
+or a component — a component's attributes, a macro take's or script input's
+default, a console variable — type a name and pick from the project's files,
+with the full path beside each; the pick sits there as a chip, hover shows the
+path, and the path is still what is stored. A chip whose file is outside the
+project or missing is marked. On a card (a macro take, a Set variable node) the
+slot is a searchable dropdown instead, like the Narration node's passage
+picker.
 
 **Every card can carry metadata of your own.** Right-click it and choose
 *Edit metadata…*: a list of names, types and values — `int`, `float`, `bool`,

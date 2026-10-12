@@ -14,14 +14,21 @@ board until a path reaches an End.
 <Shot name="play" />
 
 **The story you preview is the story that ships.** Play runs the same engine
-an exported campaign runs — `ripple_runtime`, pure Dart, which has never heard
-of the canvas — so there is one implementation rather than a preview and a
-shipped copy that could quietly disagree.
+an exported campaign runs — the native engine, which has never heard of the
+canvas — so there is one implementation rather than a preview and a shipped
+copy that could quietly disagree.
+
+Before it compiles, Play **re-indexes** what passages link to and where boards
+jump, the same index an export reads. A picture added to a passage since the
+project was opened is in the playthrough without exporting first.
 
 ## Reading it
 
 A passage is rendered as Markdown with its Python already run, and the
-choices leading out of it are the tiles beneath. The reader picks the language
+choices leading out of it are the tiles beneath. A choice with a **Times**
+limit that has been used up stays on screen, greyed out and unpressable,
+rather than vanishing, so a passage never quietly becomes an empty slide. See
+[Passages and languages](/overviews/passages-and-languages/) for setting one. The reader picks the language
 from the header and can change it mid-passage; a passage with nothing in the
 chosen language says so rather than quietly falling back. A Delay node holds
 the last passage on screen, greyed, with a thin bar while it waits.
@@ -36,7 +43,21 @@ a line per field, and an unattended walk leaves every field blank.
 
 Compile warnings — a roll that cannot vary, a macro missing one of its ends —
 land in **Messages** when you press play, not only when you export. They come
-from the same compiler.
+from the same compiler. So do the engine's board checks: Play checks every
+board, and a finding names the cards it concerns. See the [diagnostics
+reference](/reference/diagnostics/); `W.GE.06` can be acknowledged per card
+with *I meant that*.
+
+If the project has turned **Python** off (project settings, *Capabilities*),
+every Script node and every passage with Python in it is marked as an error
+and listed in Messages, and the campaign will not play until none remain.
+
+**A loop nothing breaks out of stops the campaign** rather than running for
+ever. One loop node may go round 512 times in a board before the campaign
+stops and offers you the node that ran away. The ceiling is under *Playing* in
+Settings — 128, 512, 2,048, 8,192, or None for no ceiling — and a For node's
+own *Max iterations* still applies first when it is lower. The ceiling is the
+app's and never travels with an exported campaign.
 
 The window grows to fit the screen it is on and shrinks to fit a small one,
 and a button in its header takes it to the app's edges and back — Escape
@@ -65,7 +86,10 @@ have had: it may do everything a Script node may.
 into the project's `.ripple/saves/`, recording where you are and everything the
 story has made — the entities, the console variables, what the FlipFlop,
 Once and State machine nodes remember, and which soundscape was playing, so
-a load hears the tavern before it sees the page. The bookmark in the campaign's header
+a load hears the tavern before it sees the page. A choice's **Times**
+count is saved with it: coming back, or loading, finds the path as spent as it
+was, and starting over reopens it. A macro counts per call, so a corridor
+called from two places has a budget for each. The bookmark in the campaign's header
 saves one under a name, as many as you like, and saving does not end the
 playthrough.
 
@@ -83,6 +107,11 @@ place in a board, and a board that has been rewritten no longer has that place
 is listed with the reason beside it and left alone. Pausing and resuming in
 the same sitting is deliberately different: that hands you back the board you
 just edited, which is what pausing is for.
+
+A save records what each console variable held, and a console variable can be
+any of the 24 types, `json` included. A build older than this one refuses a
+newer save rather than quietly putting a `json` variable back to its default,
+and games have to be saved again after upgrading.
 
 Saves are left out of version control. A playthrough is a fact about your
 reading rather than about the story, and the automatic one is rewritten every
