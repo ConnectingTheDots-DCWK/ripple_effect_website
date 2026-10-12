@@ -13,6 +13,15 @@ way the app is a *view onto it*: the file tree on the left is the directory as
 it is on disk, and every file it shows is one you could open in another
 program.
 
+The look is quiet and monochrome. The main button in each view is filled with
+the text colour, and selection, focus and the active tab are drawn in it too,
+in light and dark alike. Colour is kept for what it tells you — node families,
+traced routes, version-control marks and warnings — so it stands out. Links in
+Markdown are underlined, and the app icon is a dark plate with the mark in
+white. The whole palette is measured against WCAG 2.1 AA in both themes: the
+edge of a text field, an outlined button, a chip, a switch or a checkbox is
+clearly visible, and a file left out of the history is a visible dot.
+
 {/* TODO(shots): <Shot name="home" /> */}
 
 ## The home screen
@@ -96,8 +105,8 @@ beside your files. Nothing is written into your story.
 - my-story/
   - .ripple/
     - project.json the title, description, cover and languages
-    - registry.json the index of boards and components, and their ids
-    - workspace.json which folders were open — per machine, not committed
+    - registry.json the index of boards, components and the other files, and their ids
+    - workspace.json the layout, the open documents, the side bar and Messages, and which folders were open — not committed
     - cvars.json the console variables the project declares
     - saves/ paused and bookmarked playthroughs
     - export/ export profiles
@@ -119,7 +128,14 @@ beside your files. Nothing is written into your story.
 
 **Commit `.ripple/`.** The registry is what keeps a Jump pointing at the right
 board after a rename: a Jump stores the target's catalog id rather than its
-path, and the ids live in the registry. The one file that should not travel is
+path, and the ids live in the registry. The registry indexes every file in the
+project — a picture, a video, a PDF or a note beside your story, not only the
+files the app makes — as soon as it is in the folder, so a file you have just
+dropped in can be offered in a picker. Exports and compiled campaigns still
+carry files by what points at them, so nothing extra ships. Nothing under a
+dotted folder is listed, nor is a dotted file, nor anything outside the
+project folder; a file imported from outside the project is listed as it
+lands. The one file that should not travel is
 `workspace.json`, which is per-machine, and the built-in version control
 ignores it for you. Saved games in `saves/` are left out as well — a
 playthrough is a fact about your reading rather than about the story.
@@ -136,6 +152,12 @@ Messages every time the project is opened.
 
 <Shot name="files" />
 
+The project page is laid out like a code editor. A narrow **activity bar** of
+icons runs down the left and picks what the **side bar** beside it shows:
+**Files**, **Changes** or **Search**. Clicking the one already showing folds
+the side bar away, so the documents get the whole width. The documents fill the
+editor area, and **Messages** sits under them.
+
 **The file tree** behaves like a file manager: multi-select, cut, copy, paste,
 rename, delete, spring-loaded folders and drag-to-move. Its **+** button makes
 the kinds of file the app owns — a board, a macro, a component, a script, a
@@ -147,24 +169,112 @@ a spreadsheet, a sound — just sits there and opens.
 its unsaved edits; tabs follow renames and close on deletes. Open a file from
 the tree, or land on one from a board, and its tab scrolls into view.
 
-**The viewer panel** on the right renders whatever is open: a board on its
-canvas, a passage in the Markdown editor with a live preview, a component in
-its attribute editor, a script beside a Python console, a state machine beside
-its diagram, a soundscape on its timeline, an audio file with play, pause and
-a scrub bar, and for anything else plain text, images or a PDF. Every editor
-fills its tab, under one bar that is the same in every tab: the controls on
-the left, and at the far right whether the file is written — *Saved* or
-*Unsaved*, with the word — and a button that reads it from disk again.
+**The documents are a docking area.** Drag a tab out of its strip to put it
+beside another — a board can sit beside the passage it links to — drop it on
+another strip to tab it there, and drag a divider to resize. Tabs make room
+live as you drag one along the strip, the way a browser's do, and the order you
+see is the order you get when you let go; a drop that would leave everything
+where it is does not light up as a target. Which documents are open, how they
+are arranged, and how the side bar and Messages were left are remembered per
+project in `.ripple/workspace.json`. The docking is
+[fl_panel](/about/open-source/).
 
-**The left panel's footer**: *Script navigation* draws how the boards hand the
-story to each other, *Export project* packages it for a build or a translator,
+Each document renders in the editor area: a board on its canvas, a passage in
+the Markdown editor with a live preview, a component in its attribute editor, a
+script beside a Python console, a state machine beside its diagram, a
+soundscape on its timeline, an audio file with play, pause and a scrub bar, and
+for anything else plain text, images or a PDF. Every editor fills its tab,
+under one bar that is the same in every tab: the controls on the left, and at
+the far right whether the file is written — *Saved* or *Unsaved*, with the
+word — and a button that reads it from disk again.
+
+**The bottom of the activity bar** holds four buttons, in view whether the side
+bar is open or not: *Script navigation* draws how the boards hand the story to
+each other, *Export project* packages it for a build or a translator,
 *Project settings* is where the languages live, and *Console variables* is the
-page where a project declares its typed variables.
+page where a project declares its typed variables. Project settings are pages
+down a rail: *General*, *Languages*, *Narration roots* and *Capabilities*, each on its own.
 
-**Messages** is the tab beside Files and Changes. Anything the app notices about
-your project lands there — a translation that has fallen behind its source, a
-project with boards but no way into any of them, a file a newer version wrote
-— and the badge counts what is worth looking at.
+**Messages** sits under the documents, a third of their height, with a count
+beside its name. Anything the app notices about your project lands there — a
+translation that has fallen behind its source, a project with boards but no way
+into any of them, a file a newer version wrote. Close it with its cross; bring
+it back from the button at the bottom of the activity bar, which carries the
+count too, or from the View menu. Messages cluster by what they are about —
+Boards, Translations, Version control — with a count on each heading you can
+fold away, or by how loud they are if you would rather see everything broken
+first. Three chips turn problems, cautions and records on and off, and both
+choices are remembered. A message from the engine wears its code, which opens
+the [page that explains it](/reference/diagnostics/); clicking one that names
+cards opens the board and lifts those cards out of the canvas so you can see
+which they are. For the one check that can be wrong about a deliberate choice,
+the row has a tick that says *I meant that*, and it stays said.
+
+### Zen Mode
+
+`F11` — `Ctrl+Cmd+F` on a Mac — or *View ▸ Zen Mode* gives the window to the
+document you are in: the app bar, the side bar, Messages and the tabs go, and
+the same keys bring them back. A small banner at the top names the document on the way
+in and whenever it changes, and carries an *Exit Zen Mode* button when the
+pointer reaches the top edge. `Ctrl+Tab` and `Ctrl+Shift+Tab` move between
+documents — every open one, whichever group it is in. Outside Zen Mode the same
+keys move along the tabs of the group you are in.
+
+## The menu bar
+
+In a project the app bar carries **File**, **Edit**, **View**, **Campaign**,
+**Changes** and **Help**; on the home page, **File** and **Help**. Together
+they offer everything the command palette can, with the shortcut beside each
+row and a check beside each option that is on. Edit's undo, redo, cut, copy,
+paste, duplicate and select all act on the text you are typing in, or on the
+board in front of you. *Show every tip again* and the troubleshooting rows
+(copying the package and device reports, opening this session's folder) are
+under *Help ▸ Troubleshooting*. The board toolbar is kept quiet to match:
+Undo and Redo are in Edit and a keystroke away, a right-click or a wire let go
+over empty canvas makes any card, and the shortcuts card comes back from
+*View ▸ Shortcuts card*.
+
+## Settings
+
+The gear in the app bar, on every screen, opens the Settings dialog. The theme
+lives there — system, light or dark, chosen by name — along with *Language*,
+*Contrast*, *Colour vision*, *Links* (how wires are drawn), *Playing* (the loop
+ceiling) and *Usage statistics*. *Agents*, *Support* and *About* are pages of
+the same dialog. The app bar keeps only what has news: an available update, and
+the agents mark while an assistant is connected or could not reach the app.
+
+A first launch starts with two pages, after the agreement pages. The first
+picks the theme, contrast, colour vision and how wires are drawn, beside a
+small preview of the app that changes as you choose. The second asks whether to
+send usage statistics, with neither answer picked and the full list of what
+would be sent in front of you, says how crash reports are asked, and has the
+coffee. Both can be skipped, and everything on them is in Settings afterwards.
+
+The chrome honours your system's text size, up to double. A board does not:
+cards stay at the size they were drawn at whatever the desktop's text size
+says, and zoom is how a board gets bigger.
+
+## Find in project
+
+The **Search** section of the side bar — `Ctrl+Shift+F`, or *Find in project*
+in the palette — finds a word or a pattern across the whole project, with match
+case, whole word and regular expressions, files to include and exclude, and
+switches for boards and components, narration, console variables and
+everything else. Boards and components are read for what you wrote in them — a
+node's title, a choice's text in each language, a field's value — never their
+JSON, and each result says where it is: *Choice text (Italian) in "At the
+gate"*, *Field "Backstory"*, *Line 12, English*. Names other things refer to — a
+variable's, a state's — are marked. Clicking a result opens the document at the
+match.
+
+A replace field sits under the search field. Type in it and each result shows
+what it would become; replace one, replace a file's, or replace all after a
+question with the counts. A preview shows what a file would look like after —
+for a board or a component, only the words that change. Replacements go into
+the open editors, so they can be undone there (a board's in one step). Names
+something else refers to are left alone, a result whose text changed since the
+search is skipped, and a file another program changed meanwhile is not
+overwritten; each is said in the panel.
 
 ## Saving
 
@@ -183,13 +293,14 @@ passage open in a second editor, or to pull from a co-author.
 `Ctrl+Shift+P` opens the command palette: everything the app can do, by name,
 from anywhere in a project, with a typo-tolerant filter and a scope that only
 offers what can actually run. Commands with no button anywhere — *Show the tip
-for…*, *Follow the system* — live here. It is the quick way to reach a
-command and never the only one.
+for…*, *Follow the system* — live here. While nothing is typed, the last command
+you ran is offered first, under *Recently used*, and remembered between
+launches. It is the quick way to reach a command and never the only one.
 
 ## Tips
 
 The first time you open each kind of thing — the home screen, a board, a
 bundle, a component, the campaign window — a short tip appears, once, saying
 what the words for it are. It is not a tour; there is no single path through
-the app. Any tip can be brought back from the palette, and the About box
-re-arms all of them.
+the app. Any tip can be brought back from the palette, and *Help ▸ Troubleshooting ▸
+Show every tip again* re-arms all of them.
