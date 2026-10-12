@@ -1,0 +1,38 @@
+---
+title: How to report a bug
+description: Open the pre-filled bug form from the Support page and attach the session's log and reports as a zip.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+<Steps>
+
+1. Open **Settings ▸ Support**, or choose *Support and feedback* in the Help menu.
+
+2. Choose **Report a bug**. The bug form opens in the public support repository, [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), with the version, your operating system and which installer this copy came from already answered, along with the technical details.
+
+3. Describe what you saw in the form.
+
+4. Under *What to attach*, choose **Save this session as a zip**. The log and reports of the session are packed into one file, and the folder it was written to opens. The row names the session by its id, so a support thread can be about the right run.
+
+5. Attach the zip to the issue before you submit it.
+
+</Steps>
+
+:::caution
+The app removes private details from the log before it is written, but it cannot know that a board's name is private. Read the zip's contents before you post it. Nothing uploads these files; you decide what to attach. The one exception is a crash report, which the app asks about first and sends only if you say yes. [The session log and reports](/reference/session-log/) lists what is removed.
+:::
+
+## Other ways to give details
+
+- **Help ▸ Troubleshooting** copies the package details (which build this is and how it was installed) and the device details (the operating system), and opens this session's folder. *Show every tip again* is in the Help menu itself. The Troubleshooting items and *Show every tip again* are in the command palette too; see [the workspace window, menus and palette](/reference/workspace-window/).
+- **Ask a question** opens GitHub Discussions, **Request a feature** opens a new issue tagged as an enhancement, and **Browse open issues** lists the known problems, so you can check whether yours is already there.
+
+## Related
+
+- [The workspace window, menus and palette](/reference/workspace-window/)
+- [Settings, accessibility and updates controls](/reference/settings/)
+- [The session log and reports](/reference/session-log/)
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/)

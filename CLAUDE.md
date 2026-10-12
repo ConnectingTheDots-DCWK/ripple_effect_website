@@ -1148,6 +1148,18 @@ and recorded there rather than estimated here.
 One distinction a post about a package has to keep making, because it is the
 easiest one to blur: **the packages are open source and the app is not.**
 
+**How a post is written and edited is `docs/internals/blog-writing.md` in the
+app repository** — the voice (exploratory engineering prose: the problem, its
+constraints, the mechanism, the trade-offs), the anti-patterns, and the
+audit-and-revise procedure with its scoring. Every post here was put through
+it on 2026-10-12. Two things that pass found are worth knowing before the next
+one. An editor's revision is where unverified claims get in — a version
+number, a mechanism, a README's list of non-features, all plausible and
+unchecked — so what a revision adds is looked up in the package before it
+stays. And a post is dated: when what it describes has moved on, it says so
+**once**, in an editorial note at the top, rather than in three places or by
+rewriting history into the author's mouth.
+
 ## `/thanks`, and the Buy Me a Coffee ask
 
 Every download button now points at `/thanks?asset=<id>` rather than straight

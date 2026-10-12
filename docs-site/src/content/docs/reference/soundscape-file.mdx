@@ -1,0 +1,186 @@
+---
+title: Soundscape files
+description: Audio file types, the soundscape file format, clip and timeline properties, editor shortcuts, the rule for which soundscape is in force, and where the files live.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## Audio files
+
+Every audio file in the project folder is in the registry and in every picker.
+
+| Property | Value |
+| --- | --- |
+| Extensions | `.mp3`, `.wav`, `.ogg`, `.oga`, `.flac`, `.m4a`, `.aac`, `.opus` |
+| Registry kind | `audio` |
+| Registry name | The whole basename, extension included |
+| Outside file | *Import…* copies it to `.ripple/external/` |
+| Opens as | A tab with play, pause and a scrub bar |
+
+## Soundscape file
+
+| Property | Value |
+| --- | --- |
+| Name | `*.soundscape.json` |
+| Contents | A timeline of clips over one clock, on lanes |
+| Registry kind | `soundscape` |
+| Format `version` | 1 |
+| Created from | The **+** menu of the file tree |
+| Named by | A Narration node, by catalog id |
+
+A clip names its audio by catalog id, so renaming or moving an audio file never breaks a clip. The file carries integer milliseconds throughout and every default written out. A file written by a newer build is refused rather than half-read.
+
+### Timeline properties
+
+Edited behind the gear in the editor's toolbar.
+
+| Property | Key | Default | Meaning |
+| --- | --- | --- | --- |
+| Length | `length` | `30000` | Timeline length in milliseconds. A clip past it is legal and shaded; what lies past it is cut at play time. |
+| Loop timeline | `loop` | `false` | Whether the timeline repeats. |
+| Fade in | `fadeIn` | `0` | Length over which the whole soundscape rises when it begins. The file stores whole milliseconds; the editor field also accepts a length such as `0.25 s` and a typed clock. |
+| Fade out | `fadeOut` | `0` | Length over which the whole soundscape falls when it is replaced. |
+| Volume | `volume` | `1.0` | Gain, 0 to 1. Every clip's volume is relative to it. |
+| Tied to the passage | `tied` | `false` | The soundscape stops when the story moves on. See [Which soundscape is in force](#which-soundscape-is-in-force). |
+
+### Clip properties
+
+Edited in the panel on the right when a clip is selected.
+
+| Property | Key | Default | Meaning |
+| --- | --- | --- | --- |
+| File | `audio` | required | Which audio file it plays, picked by name or by folder; the path is shown under the field. |
+| From, To | `clipStart`, `clipEnd` | `0`, `null` | The part of the file played, as clocks in `m:ss.mmm`. `clipEnd` is `null` or at least `clipStart`. |
+| Playback | `mode` | `once` | See below. |
+| Rest | `interval` | `0` | Auto-loop only. A silence between one play and the next. Off is gapless. On, plays follow the clip's own rhythm across the whole soundscape, independent of the timeline, and the lane shows where every play falls. |
+| Volume | `volume` | `1.0` | The clip's own gain, 0 to 1, relative to the timeline's. |
+| Speed | `speed` | `1.0` | Playback rate, above 0. |
+| Fade in, Fade out | `fadeIn`, `fadeOut` | `0` | How long it ramps at either end of every play. The file stores whole milliseconds; the editor field accepts a length such as `0.25 s` or a typed clock. |
+| Lane | `lane` | | Integer lane index. |
+| Position | `start` | | Where the clip begins on the timeline, in milliseconds. |
+| Id | `id` | required | String id of the clip. |
+
+| Playback | Behaviour |
+| --- | --- |
+| *Once* (`once`) | At its position on the first pass of the timeline, and never again. |
+| *Loop* (`loop`) | On every pass of a looping timeline, cut where the timeline ends. |
+| *Auto-loop* (`auto`) | Over and over for as long as the soundscape plays, regardless of where the timeline ends. |
+
+An auto-loop clip ramps at every turn of its clip, with or without a rest, so a file that does not loop cleanly can be used as a bed: the fade covers the seam.
+
+Where a clip's two ramps together outlast it, it rises and falls without reaching full volume. The two ramps combine as the quieter of the two, not their product.
+
+### Lanes
+
+| Property | Key | Meaning |
+| --- | --- | --- |
+| Name | `lanes.<n>.name` | Set by double-clicking the lane header, or from its right-click menu, for example *Bed* or *Weather*. |
+| Locked | `lanes.<n>.locked` | A locked lane takes no clip; a bed laid out once stays where it was put. |
+
+A lane with no name that is not locked is not written. Lane keys are integer strings.
+
+### Values and tolerances
+
+| Value | Rule |
+| --- | --- |
+| Times | Whole milliseconds, never negative. |
+| `volume` | 0 to 1; absent reads as 1. |
+| `speed` | Above 0; absent reads as 1. |
+| `length` | Absent reads as 30000. |
+| `loop`, `tied` | Absent reads as `false`. |
+| `tracks`, `lanes` | Absent reads as none. |
+| Scalars | Decoded strictly: `"loop": "yes"` is refused. |
+| `audio` | A catalog id of an `audio` entry. |
+
+### Example
+
+```json
+{
+  "version": 1,
+  "length": 30000, "loop": false, "fadeIn": 0, "fadeOut": 0, "volume": 1.0, "tied": false,
+  "tracks": [
+    { "id": "bed", "audio": "bc68e337…", "lane": 0, "start": 0, "clipStart": 0, "clipEnd": null,
+      "volume": 1.0, "speed": 1.0, "fadeIn": 0, "fadeOut": 0, "mode": "auto", "interval": 0 }
+  ],
+  "lanes": { "0": { "name": "Bed", "locked": true } }
+}
+```
+
+## Editor controls
+
+### Adding and editing clips
+
+| Action | Effect |
+| --- | --- |
+| *Add clip* | Offers the project's audio, searched by name or by folder, each row showing where the file is; or *Import a file…* when there is none yet. |
+| Double-click empty canvas | The same offer. |
+| Drag a sound from the file tree | The clip lands where you let go. |
+| Drag a block | Moves the clip. |
+| Pull either edge of a block | Trims the clip. |
+| Drag a fade grip | Moves with the slope: inward lengthens the ramp, back into the corner removes it. |
+| Select a clip | Edits it in the panel on the right. |
+| Double-click a lane header | Names the lane. |
+| Right-click a lane header | Names the lane, or locks it. |
+| Right-click elsewhere | Duplicate or delete a clip, add one here, select everything on a lane, fit the pane, choose a lane row height, undo and redo. |
+
+Each clip block draws the shape of its sound inside it, the part of the file it plays, so trimming moves the picture with the sound. The shape appears after the file is decoded. The block also draws the clip's ramps: a slope up at the start, a slope down at the end, and the quiet part shaded over the waveform. An auto-loop clip shows the same shape on every repeat.
+
+### Mute and solo
+
+Every lane header carries **M** and **S**; the lane's menu has both in words. A clip can be silenced from its panel, and a silenced clip is drawn faint. Mute and solo are not saved and do not reach the story: a soundscape plays every clip it holds.
+
+### Preview
+
+| Input | Effect |
+| --- | --- |
+| Space | Play and pause. |
+| Shift+Space | Stop. |
+| The ruler, or any empty canvas | Scrub bar. |
+| Toolbar undo | One undo for the whole file; an edge trimmed on the timeline and a volume typed in the panel share a history. |
+
+Preview plays through the same path as a campaign. A gain slider is live, and a dragged clip does not restart the bed under it.
+
+## Which soundscape is in force
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+A **Narration** node carries a soundscape row under its choices.
+
+| Answer | Effect |
+| --- | --- |
+| A soundscape | It plays from that passage on, through every later passage that brings none of its own. Naming the same one again does not restart it. |
+| *Silence* | Stops whatever is playing outright. |
+| *None* | Changes nothing. |
+
+- Two soundscapes never sound at once: the old one finishes its fade before the new one begins its own.
+- A soundscape marked **tied** belongs to its passage and stops when the story moves on.
+- A saved game remembers what was playing. A load restores it before the page is seen; a tied soundscape comes back only at its own passage.
+- The runtime reports which soundscape is in force and plays nothing; the host renders it. The campaign window renders through the app's mixer. See [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/).
+
+### Muting
+
+The campaign window's header has a **mute** button, remembered between sessions. It belongs to the campaign: previewing a soundscape in its own tab is never silenced by it. A soundscape's volume is the file's and every clip's is relative to it; there is no second master.
+
+## Where the files live
+
+<FileTree>
+- my-story/
+  - .ripple/
+    - external/
+      - rain.ogg an outside file brought in with Import…
+  - music/
+    - tavern.ogg
+  - chapters/
+    - the_gates.graph.json names tavern by id
+    - tavern.soundscape.json
+</FileTree>
+
+## Related
+
+- [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/) explains the two shapes sound takes in a story.
+- [How to add sound to a story](/how-to/add-sound-to-a-story/) applies these controls.
+- [Sounds](/reference/python/sounds/) documents `play_sound` from Python.
+- [Nodes](/reference/nodes/#play-sound) documents the Play sound node.
+- [Export options and bundle contents](/reference/export-options/) says what a compiled campaign carries.

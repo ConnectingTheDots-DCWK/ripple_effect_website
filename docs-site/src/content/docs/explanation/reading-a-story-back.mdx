@@ -1,0 +1,56 @@
+---
+title: Reading a large story back
+description: Why script navigation and the merged view exist, and why they draw a story the way a reader meets it rather than the way it is wired.
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A story with a few hundred passages across a dozen boards cannot be read by looking at it. A board is a good place to write a chapter and a poor place to understand a book: each canvas shows one chapter, and the connections between chapters are spread over many of them. Three questions come up that no single board answers: *how do the chapters connect*, *how can a reader get from here to there*, and *how could a reader have arrived here at all*.
+
+Ripple Effect answers them with views of the story rather than with more things to maintain. Script navigation answers the first, and tracing, which ends in the merged view, answers the other two. What they share is a rule about where the truth comes from: they draw what the story does, worked out from the boards, so there is no second drawing to keep in step.
+
+## The map of boards
+
+<Shot name="overview" />
+
+**Script navigation** draws how a project's boards hand the story to each other. There is one card per board and one output per way out of it. Every arrow is labelled with the node it leaves by. For a Jump into the middle of a chapter the arrow also says where it lands, as in `Down → The cellar`, so it no longer draws exactly like a jump to the chapter's beginning. Markers show where a thread begins and ends.
+
+Nothing on it can be moved or rewired. The arrangement is worked out for you and is deterministic: the same project always draws the same picture, so the direction of the story stays readable and a screenshot of the map means the same thing each time. Changing how chapters connect happens on the boards, where the wiring is.
+
+The map also settles a question that could otherwise be ambiguous. Where a board begins is the same question the runner asks, *which node is the Start?*, so what the map draws is what the story does, not an approximation of it. [How a story runs](/explanation/how-a-story-runs/) explains the rules the runner follows.
+
+## Tracing and its limit
+
+A board can light up the routes between two passages, and the same question can be put between two chapters on the map. The question runs the other way as well: every route that arrives at one passage, from wherever the story begins. Tracing is how you find out whether an ending is reachable without playing your way to it. [How to trace the routes between two passages](/how-to/trace-a-route/) covers using it.
+
+A board can only draw what lies on the board. When a route arrives through a Jump, the rest of it is on another canvas, and a single board has nowhere to put it. That limit is why the merged view exists.
+
+## The merged view
+
+{/* TODO(shots): <Shot name="mergedTrace" /> */}
+
+When a route arrives through a Jump the board cannot draw it, so the answer opens a **merged view**: every board on the route on one canvas, with the bookkeeping between two passages traversed rather than drawn. Like script navigation it is read-only; the boards are where things change.
+
+### Drawn as the reader meets it
+
+The merged view is not a copy of the wiring. A trace is a question about what a reader goes through, so the picture follows the reader's experience wherever that differs from the wires.
+
+- **A choice that runs a script and returns** to the passage it left is an arrow back to that passage, as a choice wired straight back is.
+- **A Do all's branches** lie one after another on the route to `completed`, rather than as a fork the reader picks one way through. The reader does not choose between them; they all happen. So their passages are on the route, and the count of ways in does not count them as alternatives. The same holds for one wire's end fanned out to several places.
+- **Macros are opened up.** The route goes inside the macros it calls, and the passages a macro holds are drawn where the call is. A shop or a skill check reused in three places is therefore read on the route in each of them, not as one box that stands for all three.
+
+An arrow that passes through an *If*, a *Switch*, a roll or a loop names that node and the way it went, such as `Hit? → true`, beside the words of the choice if there was one. It is clear where the story decided and not the reader. [Boards, nodes and macros](/explanation/boards-nodes-and-macros/) describes those nodes and how a macro is called.
+
+### One kind of trace at a time
+
+A trace on a board and a merged view across boards do not mix. Opening a merged view takes every board's trace away, and while one is open a board's two trace buttons wait, and say why, until it is closed. Closing the last merged view hands the boards back.
+
+## What an assistant can ask
+
+The same three questions are available to an AI assistant as MCP tools: `trace_between` for the routes between two passages, `trace_into` for every route that arrives at one, and `board_links` for how the boards hand the story to each other. So it can answer *is this ending reachable* without sitting through the story. [Working with an AI assistant](/explanation/working-with-an-assistant/) puts them in context, and the tools themselves are in the [MCP tools reference](/reference/mcp-tools/).
+
+## Related
+
+- [How to trace the routes between two passages](/how-to/trace-a-route/)
+- [Board and navigation rules](/reference/canvas-rules/)
+- [MCP tools](/reference/mcp-tools/)

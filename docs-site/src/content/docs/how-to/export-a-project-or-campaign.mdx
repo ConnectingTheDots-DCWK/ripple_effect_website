@@ -1,0 +1,90 @@
+---
+title: How to export a project copy or a campaign
+description: Choose between a project copy and a compiled campaign, set Include media, strip media and links, and write passages as HTML against a profile.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+## Open the export dialog
+
+Choose *Export project* in the project panel, or *Export project…* from the command palette. The dialog's format switch asks for one of two things:
+
+- **Project copy**, a folder that opens as a project again. Use it to hand a story to a translator or to keep a copy. It includes `.ripple/`.
+- **Campaign**, a compiled campaign ready to be played by the runtime. Nothing in it opens in the editor. Use it for a game or player.
+
+Warnings, such as media left out, appear in Messages. A picture the prose points at from outside the project lands in `media/external/` in a project copy.
+
+## Export a project copy
+
+<Steps>
+
+1. Choose **Project copy**.
+
+2. Under **Include media**, switch on the kinds that should travel: **Images**, **Videos**, **Audio**. Leave a kind off to send a translator the story and keep the score.
+
+   With a kind off, its files are listed and left behind. The passages, boards and soundscapes still point where the files would have been, so you can put them back later.
+
+3. Switch on **Zip files** to write one archive instead of a folder.
+
+4. Optionally strip media or links from the prose. See [Strip media and links](#strip-media-and-links).
+
+5. Choose **Export**, then pick the destination in the system dialog (*Export here*, or *Zip archive* when zipping).
+
+</Steps>
+
+## Export a campaign
+
+<Steps>
+
+1. Choose **Campaign**.
+
+2. Set **Include media** and **Zip files** as for a project copy.
+
+3. If a game or player built without the Python interpreter will play it, tick **Needs no Python** after following [How to export for a player without Python](/how-to/export-for-a-player-without-python/).
+
+4. Under **Output passages as**, keep Markdown, or choose HTML (see below).
+
+5. Choose **Export**, then pick the destination.
+
+</Steps>
+
+Media left out of a campaign is named in Messages. What a campaign contains, folder by folder, is in [Export options and bundle contents](/reference/export-options/).
+
+## Write passages as HTML
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+Campaign only. The controls above the line in the dialog decide what travels; the ones below decide what the prose becomes. The editor and the play view stay Markdown.
+
+<Steps>
+
+1. Beside **Output passages as**, choose HTML. Every passage is written out as an HTML fragment per language, ready to drop into a page.
+
+2. Open the **Profile** drop-down. With no profile every element goes out bare, a plain `<p>` or `<em>` (*None — plain elements*). Choose *Find a profile* to pick an existing one, or *New profile* to make one.
+
+3. In the profile, give each kind of element a class. The kinds are listed on the left (*In the passage*), with the Markdown each stands for on a tooltip, and a **CSS class** field sits on the right. A paragraph, a heading, emphasis, a link, a table cell and a Python snippet can each carry a class. Leave a field empty for no attribute at all.
+
+4. Choose **Export**, then pick the destination.
+
+</Steps>
+
+The profile is saved as you type, to `.ripple/export/<name>.profile.json`. A name is a file name: letters, digits, spaces and dashes. Commit the file with the story so a build reproduces it. One profile serves as many exports as you like. *Delete profile* removes only that file.
+
+## Strip media and links
+
+Two switches under **The passages**; both work on a project copy as well as a campaign.
+
+- **Strip media** takes embedded pictures, videos and audio out of the prose, for a reader that cannot show them. It has one child switch per kind.
+- **Strip links** unwraps links to documents and the web to their words.
+
+A link to a picture is a picture, not a link, and answers to **Strip media**. Neither switch changes what travels beside the passages; that is still **Include media**. A strip for a kind that is not in the export is disabled, since there is nothing to strip, and returns as it was when the kind does.
+
+## Related
+
+- [What an export is](/explanation/what-an-export-is/): why a campaign is compiled rather than copied.
+- [Export options and bundle contents](/reference/export-options/): every switch and what a bundle holds.
+- [How to export for a player without Python](/how-to/export-for-a-player-without-python/)
+- [Diagnostics](/reference/diagnostics/): the export's codes in Messages.

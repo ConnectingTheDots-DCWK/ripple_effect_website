@@ -1,0 +1,75 @@
+---
+title: How to declare, aim and forget a host callback
+description: Name a trigger for a game that embeds the story, choose its event, aim it, forget it, and watch it fire in the play window.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+You declare the trigger here; the programmer who embeds the story writes the handler and registers it under the same name. Nothing you type in the pane changes what the story does.
+
+:::caution[A name is a published API]
+The name is the only thing joining your declaration to their code. Renaming it breaks their build, and nothing in the editor can warn them. Agree the names early and treat a rename like renaming a function somebody calls.
+:::
+
+## Declare a callback
+
+<Steps>
+
+1. Open **Host callbacks** from the activity bar, or from the command palette.
+2. Type a name in the name field and add it. Write it like an identifier, because a programmer will type it: `chapterTwoBegan`, `achievementHit`, `guardWentAlert`. It must be unique in the project and cannot hold a line break or a control character.
+3. Select the callback in the list, and pick its **Event** (the picker has a search field, **Find an event**). The pane offers only the fields that event can use.
+
+</Steps>
+
+The programmer writes the event exactly as the picker spells it. The full list, with when each fires, is under [Events](/reference/host-callbacks/#events) in the reference.
+
+## Aim a callback
+
+Left alone, a callback fires at every occasion of its event. To narrow it, use the fields under **What it watches**.
+
+- **Board**, then optionally **Node** on it. `passage.shown` can then mean one passage rather than every passage. The node picker reads **Pick a board first** until a board is chosen.
+- **Console variable**. `cvar.changed` cannot do without it.
+- **Component**, for the entity events, and **Attribute** for `entity.field.changed`. The attribute is required and the component is not: with no component picked, `hp` watches anything the story made that has an `hp`.
+- **State machine**, which `machine.state.entered` cannot do without, and optionally the **State** to wait for.
+
+### Fire only when a variable reaches a value
+
+On a `cvar.changed` callback, tick **Only when it becomes a particular value** and enter the **Value**. The field takes the variable's own type, so you cannot enter a value it could never hold.
+
+The condition fires when the variable becomes that value, not while it holds it.
+
+### Watch individual cards
+
+To be told each time the story runs through a card, aim `node.entered`, `node.exited` or `node.failed` at a board and a card.
+
+A card inside a macro cannot be picked, because a macro is spliced into the board that calls it. Aim at the card that calls the macro, which is what the picker offers.
+
+## Forget a callback
+
+<Steps>
+
+1. Select the callback and choose **Forget it**.
+2. Confirm in the dialog, or choose **Keep it** to cancel.
+
+</Steps>
+
+A game listening for that name never hears it again, and nothing in the project says why.
+
+## See callbacks fire
+
+Open the **Host callbacks** side panel in the play window. Each row lists the name, the event, the payload fields that are set, and what became of the lookup. The editor publishes the names but has no game to react to them, so normally nothing is registered and each row ends with "nothing registered". That is not an error: the story plays as it would have. "The handler failed" marks a registered handler that threw; the story plays on.
+
+## Fix a callback aimed at something that is gone
+
+A callback aimed at a board, variable or component the project no longer has is left out of the compiled campaign with a warning, and the field in the pane says so. The declaration stays in the file, so restoring the board from version control brings the callback back. Aim it at something that exists, or forget it.
+
+A node is the exception. The build does not check that a node id is still on its board, so a callback naming a missing node travels intact and never fires. The pane says so while the board is open, and the board carries the warning `W.GE.16`. Aim it at a node that is there, or clear the node to watch the whole board.
+
+If the pane is read-only and a banner says the callbacks were written by a newer version, update the app to edit them. Nothing is written to the file meanwhile.
+
+## Related
+
+- [Host callbacks](/explanation/host-callbacks/): why the trigger and the handler are written on opposite sides.
+- [Host callbacks reference](/reference/host-callbacks/): the events, their payloads and `.ripple/callbacks.json`.
+- [How to play and test a campaign](/how-to/play-a-campaign/): the play window the callback panel sits in.
+- [Diagnostics](/reference/diagnostics/): `W.GE.16`.

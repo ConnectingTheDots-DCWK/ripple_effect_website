@@ -16,20 +16,24 @@ The usual implementation is one line, and everybody has written it:
 final minutes = text.split(' ').length / 200;
 ```
 
-That line is fine for English. It is fine for most of the languages this app
+That line is close enough for English, whose adult average in the package's
+table is 238 words a minute. It is fine for most of the languages this app
 has been used in so far. And it is catastrophically wrong for Japanese,
-Chinese, Thai and Khmer, which is a large enough hole that fixing it turned
-into a package of its own.
+Chinese, Thai, Khmer and the other space-less scripts, which is a large enough
+hole that fixing it turned into a package of its own.
 
 ## Where the one-liner falls over
 
-Japanese, Chinese, Thai and Khmer are written without spaces between words.
-Splitting a paragraph of any of them on whitespace finds **one token**. So the
-line above looks at eight hundred characters of Japanese, counts one word,
-divides by two hundred, and reports a two-second read.
+Japanese, Chinese, Thai and Khmer are written without spaces between words, and
+so are Lao, Burmese and Tibetan. Splitting a paragraph of any of them on
+whitespace finds **one token**. So the line above looks at eight hundred
+characters of Japanese, counts one word, divides by two hundred, and reports a
+read of a third of a second. At the package's own average rate for Japanese,
+four hundred characters a minute, those eight hundred characters take about two
+minutes.
 
 It does not fail loudly. It fails by returning a number, and the number is
-wrong by a factor of about a hundred.
+wrong by a factor of roughly four hundred.
 
 The fix is not a word-segmenter. Segmenting Japanese properly means a
 dictionary, and a dictionary means megabytes and a platform. What is actually
@@ -72,8 +76,10 @@ careful about, and it is in there as a test rather than as a comment.
 Fifty-four languages have an entry. **Seventeen of them are measured** — the
 figures come from cross-linguistic reading studies, the IReST benchmark and the
 Brysbaert meta-analysis among them. The other thirty-seven are *reasoned*:
-extrapolated from a measured neighbour by descent or by morphological type,
-and each entry names the language it was reasoned from and says why.
+extrapolated from a measured neighbour by descent or by morphological type
+(Thai and Khmer from Chinese, by the one property that decides the unit: no
+spaces), and each entry names the language it was reasoned from and says why.
+Every language a reasoned entry names is one of the measured seventeen.
 
 That distinction is carried in the API rather than in a footnote:
 
@@ -142,3 +148,8 @@ not.** The app is proprietary and its source is not published. The pieces
 underneath it that are useful on their own get published on their own, take
 issues, and take pull requests. Reading time was never going to be our
 competitive advantage. It was going to be a bug in somebody else's Japanese.
+
+*Editorial note, 2026-10-12: this post was written against version 0.1.0.
+Version 1.0.0 renamed `ReadTime.speed` to `readingSpeed`, so the first snippet
+that touches it reads `estimate.readingSpeed.evidence` today. The algorithm and
+the table are unchanged.*

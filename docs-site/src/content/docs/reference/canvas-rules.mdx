@@ -1,0 +1,242 @@
+---
+title: Board and navigation rules
+description: The rules a board's canvas enforces, the two kinds of port and wire, and how script navigation, traces and the merged view behave.
+sidebar:
+  order: 3
+---
+
+import Shot from '../../../components/Shot.astro';
+
+<Shot name="board" />
+
+## Start
+
+| Rule | Behaviour |
+| --- | --- |
+| Count | A board has exactly one **Start** node. |
+| Create menu | Does not offer a second Start. |
+| Two Starts | Play refuses the board and names both Start nodes. |
+| Where a board begins | The node that is the Start. Script navigation draws the same answer the runner uses. |
+
+## Creating and editing cards
+
+| Action | Result |
+| --- | --- |
+| Right-click empty canvas | The Create menu. Every card is made from it: a passage, a Jump, a Script, a loop, a component. |
+| Drop a wire on empty canvas | The same menu opens there; the card you pick is wired to the port the wire came from. |
+| Right-click a node, *About this node* | What the card is for, what each control does, what each port takes or answers, and a link to the docs page, rendered as Markdown. The [nodes reference](/reference/nodes/) is written from the same text. |
+| Right-click a node, *Edit metadata…* | A list of names, types and values. A small tag shows on the card's header while there is any. |
+| The board's toolbar | Has no *add a passage* button. Cards are made only from the Create menu or by dropping a wire on empty canvas. |
+| Undo, Redo | In the Edit menu and on their keystrokes. |
+| Shortcuts card | View ▸ Shortcuts card brings it back. |
+
+{/* TODO(shots): <Shot name="nodeMenu" /> */}
+
+### Node metadata
+
+- Nothing on the board reads it.
+- It travels with the node into a compiled campaign and to an agent.
+- A copied node arrives with its notes.
+- Entry types are `int`, `float`, `bool` and `string`, a list of each, and `json` for anything nested. This is shorter than a port's list of types: a node stores the value and not its type, so the editor infers the type from the value's shape. `asset`, `componentRef`, `entity` and `markdown` are not offered, because each is a plain string once written.
+- A build of the editor older than the feature, re-saving such a board, keeps every wire and every field and drops the notes.
+
+{/* TODO(shots): <Shot name="metadataEditor" /> */}
+
+### Pickers
+
+Every picker of something you made opens with a search field focused. Typing narrows by name or by path, which sits under each name. Entries are alphabetical.
+
+| Picker | Chooses |
+| --- | --- |
+| Jump | A board. |
+| Component | A component. |
+| Script | A `.py` file. |
+| Narration | A passage or a soundscape. |
+| State machine | A diagram. |
+| `cvar` node | A variable. |
+
+The exception is a Jump's node picker, which keeps a board's reading order.
+
+### Links
+
+| Setting | Wire drawing |
+| --- | --- |
+| Default | Curved. |
+| Settings ▸ Links ▸ Right-angled | Every wire on every canvas is straight legs with rounded corners. A handle on a wire is then a corner and lines up with its neighbours as you drag it. |
+
+### Text size
+
+Cards stay at the size they were drawn at whatever the desktop's text size is. Zoom changes a board's size. The rest of the app grows with the setting, up to double.
+
+## Narration nodes
+
+A Narration node holds a passage and grows one output port per choice. Wiring the last output makes a new spare appear beneath it.
+
+### Choice fields
+
+Click a choice's row on the card to edit it.
+
+| Field | Meaning |
+| --- | --- |
+| Name | The label the card shows, so a branch can be found on a wide board. |
+| Words | What the reader is offered, in every language the story is written in. A choice with nothing in the reader's language falls back to the language the story was written in. |
+| Times | Blank: the choice can be taken as often as the reader likes. A number: the ceiling. |
+| Wire caption | An annotation for the author. No reader sees it. |
+| Condition input | A small input on every wired choice's row. See below. |
+
+### Times
+
+| Rule | Behaviour |
+| --- | --- |
+| Once a playthrough has taken the path that many times | The choice stays on screen, greyed out and unpressable. |
+| Card display | The ceiling is shown as `×3` at the end of the choice's row. |
+| Scope of the count | The whole campaign. Jumping away and back, or saving and loading, finds the path as spent as it was. |
+| Starting over | Reopens the path. |
+| Macros | The count is per call: a macro called from two places has a separate budget for each. |
+| No number set | The choice remembers nothing. |
+
+### Condition input
+
+| Rule | Behaviour |
+| --- | --- |
+| Wired `bool` is true | The choice is offered. |
+| Wired `bool` is false | The choice is greyed out and unpressable, the same as a path that has run out. |
+| With *Times* | Both apply to the one choice. |
+| Cards in the flow leading to the passage | Run on every path to it, so the answer is current. |
+| Shape that works | A Do all with a chain per branch, completed into the passage. |
+| Cards hanging off the side of the board | Worked out once before the story starts, answer the same for ever, and the messages panel names the choice. |
+| A Comparator reading a dice roll | Follows the same rule. |
+
+### Reads dialog
+
+The *Reads* row sits at the bottom of the card, beside the soundscape the card brings. It shows how many names the passage is handed and opens the dialog that declares them.
+
+| Rule | Behaviour |
+| --- | --- |
+| Declaration | Named, typed inputs, each with an optional default. |
+| Ports | The card grows a port for each. |
+| Use in the passage | Python reads them by name: `You owe {{ gold }} crowns.` |
+| A slot with a default and nothing wired | Uses the default. |
+| Where the names belong | To the card, not the passage file. One passage can be a template read by two cards. |
+| A name the card does not supply | A small warning shows where it stood; the rest renders. |
+| Name completion | Offered as you type when opened from a board. Not offered when opened in its own tab. |
+| Valid names | Names Python can read. |
+
+## Jump
+
+| Rule | Behaviour |
+| --- | --- |
+| Target stored | The target board's catalog id, not its path. Renaming or moving a board never breaks a link. |
+| Arrow on the card | Opens the board the Jump points at. |
+
+## Ports and wires
+
+Every port is one of two kinds. The canvas draws them apart.
+
+| | Control | Data |
+| --- | --- | --- |
+| Carries | The story. | Values: a number, a name, a list of goblins, the state a machine is in. |
+| Shape | Triangle, pointing the way the flow runs. | Dot. |
+| Tooltip | None. | The type it takes: `number`, `list<string>`, or `anything` for ports that accept whatever is given, such as a Comparator's two sides. |
+| Examples | The way in `exec`; the choices, branches, the *first* and *again* of a gate, and the `completed` of a node that merely did something. | Any port that carries a value. |
+| Direction of evaluation | Pushed. | Read: the card gets what the card at the other end last published. |
+| Role of the wire | A step in the story. | A question the card at its end asks when its turn comes. |
+
+- The story is the path from Start along control wires.
+- Two branches that converge on a card run it twice. Nothing waits for both.
+- It is one engine, whether the campaign is played in the app or shipped.
+
+### Evaluation
+
+| Rule | Behaviour |
+| --- | --- |
+| A card reading a data input | Gets what the card wired into it last published: this turn, an earlier one, the priming before the story, or nothing. Reading runs no card. |
+| A card that has not run on this path | Its output holds an older turn's value, or nothing. `W.GE.06` asks about it. |
+| Priming | Before a story begins the engine walks the data wires back from everything the Start can reach. Cards the story never reaches are run once ahead of the story, in dependency order. |
+| Consequence of priming | A Number into a Set variable, a String into a Component's name or a Get variable into an Output needs no `exec` wire. |
+| A value that depends on something the story does | Must be in the flow after it. A Comparator hanging off a Dice roller is primed before there is a roll, and answers for a total that did not exist yet. Wire the roller's `completed` into the Comparator and the Comparator's into the If. |
+
+### The story only goes forwards
+
+Reading a value never makes a card run. The card reads **whatever the card wired into it published the last time it had a turn**: this turn, an earlier passage, the priming before the story began, or nothing at all. Nothing is fetched by running a card backwards.
+
+| State of a value | Meaning | Check |
+| --- | --- | --- |
+| Computed on the way in | Its cards are in the flow just before whatever reads them, so every path to that passage runs them. For several values, put a **Do all** in front of the passage with a chain per value and its `completed` wired on. | None. This is the intended state. |
+| Worked out before the story | Nothing in the flow reaches it, so it was primed and answers the same on every visit. Answers the same on every visit. | [`W.GE.05`](/reference/diagnostics/#wge05) wherever a primed value's cards read something the story changes. |
+| Left over from another path | Its cards are in the flow, but the way the reader got here this time did not pass them, so the value is an older turn's. Which visit it came from cannot be worked out. | [`W.GE.06`](/reference/diagnostics/#wge06) when not every route to the reading card runs the card that makes the value. It can be answered per card with *I meant that*. |
+
+### Marks on the board
+
+- A card the engine has something to say about wears a halo in the colour of how serious it is.
+- A small mark at the end of its header has a tooltip naming the check and the reason.
+- Only problems and cautions are marked.
+- The full records are in the messages panel, where they can be filtered.
+- Pressing Play checks every board, and a finding names the cards it concerns. Every check is in the [diagnostics reference](/reference/diagnostics/).
+
+### Wires that go back
+
+| Wire | Meaning |
+| --- | --- |
+| Control wire to an earlier card | A loop. |
+| Data wire back into the card that feeds it | Reads that card's previous answer. |
+| Cycles | Nothing refuses one. |
+
+## Script navigation
+
+<Shot name="overview" />
+
+Opened from the first button in the left panel's footer.
+
+| Element | Meaning |
+| --- | --- |
+| Card | One per board. |
+| Output | One per way out of the board. |
+| Arrow label | The node it leaves by. For a Jump into the middle of a chapter, where it lands: `Down → The cellar`. |
+| Markers | Where a thread begins and ends. |
+| Editing | Nothing on it can be moved or rewired. |
+| Layout | Worked out for you; the same project lays out identically every time it is opened. |
+
+## Traces
+
+<Shot name="trace" />
+
+| Gesture | Result |
+| --- | --- |
+| Pick two passages on a board | Every route between them lights up in colour, a hue per linear run, and the rest of the board goes under a scrim. |
+| Same gesture on the boards overview | Traces between two chapters. |
+| **What leads here** on a passage | Every route that arrives at it, from wherever the story begins. |
+
+| Lifecycle | Behaviour |
+| --- | --- |
+| Confirming a trace | Finishes it. The board keeps its routes with only the cross beside them, and the next click is an ordinary click. |
+| Several boards | Two boards can each show a trace at once. |
+| Editing the board | Drops its trace. |
+| A route that arrives through a Jump | The board cannot draw it; the answer opens the merged view. |
+
+## Merged view
+
+{/* TODO(shots): <Shot name="mergedTrace" /> */}
+
+Every board on the route on one canvas, with the bookkeeping between two passages traversed rather than drawn. It is read-only, like script navigation.
+
+| Route element | Drawing |
+| --- | --- |
+| A choice that runs a script and returns to the passage it left | An arrow back to that passage. |
+| A Do-all's branches | One after another on the route to `completed`, not a fork. Their passages are on the route and the count of ways in does not count them as alternatives. |
+| One wire's end fanned out to several places | Treated the same way as a Do-all. |
+| A macro called on the route | The route goes inside it: the passages the macro holds are drawn where the call is, in each place it is called. |
+| An *If*, *Switch*, roll or loop on an arrow | The arrow names that node and the way it went, such as `Hit? → true`, beside the words of the choice if there was one. |
+
+| Interaction | Behaviour |
+| --- | --- |
+| Opening a merged view | Takes every board's trace away. |
+| While one is open | A board's two trace buttons wait, and say why, until it is closed. |
+
+## Related
+
+- [How to build a board](/how-to/work-on-the-canvas/)
+- [How to trace the routes between two passages](/how-to/trace-a-route/)
+- [Boards, nodes and macros](/explanation/boards-nodes-and-macros/)
+- [How a story runs](/explanation/how-a-story-runs/)
+- [Reading a large story back](/explanation/reading-a-story-back/)

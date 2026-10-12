@@ -1,0 +1,64 @@
+---
+title: What an export is
+description: Why a campaign is compiled rather than copied, why media is a switch, why there are two engine builds, and why HTML is shaped by a profile in the project.
+---
+
+Export makes one of two things, and the dialog asks which. They look alike from the outside, since both write a folder, but they answer different questions. A project copy answers "how do I hand this story to someone who will keep editing it?". A campaign answers "how do I hand this story to something that will only play it?".
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+## A project copy is the project, resolved
+
+A project copy is a folder that opens in the editor, with `.ripple/` included. It exists for a translator, or for keeping. Because a project is a view onto a folder (see [A project is a folder](/explanation/projects-are-folders/)), a copy is the nearest thing to the project itself, with one change: a picture the prose points at from outside the project is brought in, landing in `media/external/`, so the copy does not depend on anything on your machine.
+
+The decision is what to do with media. A story's music is the heaviest thing in the folder and the one most likely to be somebody else's to license. Sending a translator the story while keeping the score is therefore the ordinary case, not an edge case, and that is why **Include media** is three switches, one each for images, videos and audio, rather than one. When a kind is switched off its files are listed and left behind, but the passages, boards and soundscapes still point where they would have been. The copy stays structurally whole, and the media can be put back later without anything having to be rewritten.
+
+## A campaign is compiled, not rearranged
+
+A campaign is the story compiled down to a bundle that a runtime plays with no editor anywhere near it. It is not a tidied copy of the project, and the difference is the reason it exists.
+
+An editor and a player want opposite things from a file. The editor wants everything it needs to let you change your mind: references by name, several languages side by side, macros you can open, boards laid out for reading. A player wants decisions already made. So compiling resolves every reference ahead of time, settles every board's evaluation order, flattens each passage's languages into one file and throws away what only an editor cares about. A runtime then never has to know what a macro is, what Markdown is or how a board was drawn, and that is what lets a terminal player, a game or any other host play the same story the editor does. The bundle format is a published contract and the engine that plays it is written in Rust, with no editor in it; a command-line player built from it plays a campaign with neither Flutter nor Dart installed, which is how that claim is checked.
+
+Most of what a compiled campaign gets right follows from that one idea.
+
+- **It carries what the project has, and what the story uses.** A language you switched off stays in your project and does not ship. A picture a passage or component points at but the project does not hold is left out rather than travelling as a name nothing can open, and a picture nobody embedded, or a sound no soundscape plays, is left out because the folder happened to hold it. Each omission is named in Messages, so what the export produces agrees with what it said.
+- **A component's files travel with it.** An attribute holding a list of files, however it was written, has its files carried along with rewritten paths, so the campaign never names a picture that is not in it.
+- **Macros dissolve.** Nothing of a macro reaches the bundle: each call is spliced into the board that made it, so two calls are two copies. See [Boards, nodes and macros](/explanation/boards-nodes-and-macros/).
+- **Python is lifted out of the prose.** Each passage's snippets go into a table of their own, with a marker left where each one was, so a program playing the campaign puts the answers in by number and never needs to understand Markdown. That separation is also what makes it possible to deliver prose in another format at all, as below.
+- **Slots are read as the type they declared.** A value that cannot be read as its slot's type becomes that type's blank rather than stopping the story. The trade is deliberate: a story that keeps going with a blank is easier to recover than one that halts on a bad value.
+- **A default is settled before shipping, or carried if someone must answer it.** Most defaults become ordinary values on the board when the campaign is compiled; the two that a reader or a program answers, a form field's and a script output's, are carried in the campaign. The examples and the full list of sites are in [Export options and bundle contents](/reference/export-options/#what-a-bundle-holds).
+- **Sound is a table, and the runtime plays none of it.** A Narration node names its soundscape by index into `soundscapes/`. The runtime decides which one is in force and tells its host, which renders it with whatever it has. The command-line player prints a line per change and hears nothing, and that is conforming. See [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/).
+- **A node's metadata travels with it**, under `metadata` on the node. The runtime hands it to the host on the node's turn and never looks inside, so the meaning is yours and the host's.
+
+A campaign carries a format number, and a runtime refuses one newer than it implements, naming both numbers rather than half-playing it. Refusing is safer than guessing: a story that plays slightly wrong is harder to diagnose than one that does not start. A saved game is unaffected. The files in a bundle and the options that shape it are listed in [Export options and bundle contents](/reference/export-options/); the reason the export is the compiler, and why the preview matches it, is in [Why the preview is the shipped story](/explanation/the-preview-is-the-shipped-story/).
+
+## Two engine builds, and a promise you can check
+
+The engine that plays a campaign comes in two builds: one with the Python interpreter in it, and a much smaller one without. A game or player built on the smaller one can play any campaign, but a Script node stops the story where it stands and a passage shows a warning where its Python was. The cost of dropping the interpreter is therefore not that campaigns refuse to load, but that parts of them quietly cannot run.
+
+**Needs no Python** turns that into a promise checked before anybody plays. With it ticked, the export looks for every Script node and every passage with a `ripple` code block or an inline `{{ … }}` in any of its languages, and stops if it finds one. Stopping rather than stripping is the point: removing the Python for you would deliver a different story from the one you tested. The findings, their codes and the retry loop are in [How to export for a player without Python](/how-to/export-for-a-player-without-python/) and [Diagnostics](/reference/diagnostics/).
+
+If the whole project is meant for such a player, say so once instead, by turning **Python** off under *Capabilities* in the project's settings. Every card that runs Python is then marked as an error on its board as you write, Play refuses to start while any is left, and the export's box is ticked for you and cannot be unticked. The check moves from the end of the work to the moment of writing it.
+
+Separately, every campaign records in its manifest whether it needs Python, under `needs`. That is information, not a gate: a player without the interpreter still plays the campaign, and a host that would rather refuse one reads the flag to do it. See [Python in a story](/explanation/python-in-a-story/) for what the interpreter is for, and [Diagnostics](/reference/diagnostics/) for the codes.
+
+## Why HTML is shaped by a profile in the project
+
+A campaign can have every passage written out as an HTML fragment per language, ready to drop into a page. The editor and the play view stay Markdown; HTML is for whatever reads the campaign next. The export dialog is split to say so: the controls above the line decide what *travels*, and the ones below decide what the prose *becomes*.
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+The difficulty is that HTML only makes sense inside a page, and the page already has a stylesheet. The export cannot know your class names, and guessing a set would force you to rewrite your CSS around the tool. So an **export profile** names the class each kind of element gets: a paragraph, a heading, emphasis, a link, a table cell, a Python snippet can each carry a class of your choosing. Nothing assigned means no attribute at all, so the fragments carry no styling opinions of their own.
+
+A profile is a file in the project, `.ripple/export/<name>.profile.json`, rather than a setting of the dialog or of the app. That placement is the argument. A build that must reproduce last month's output needs the classes that produced it, and a file committed with the story gives it that; a preference stored on one machine would not. One profile serves as many exports as you like, so a profile is not tied to one export.
+
+## Stripping media and links
+
+**Strip media** and **Strip links** work on a project copy as well as a campaign, and they answer a different question from **Include media**. Whether a file ships and whether the prose points at it are separate: stripping changes the prose and leaves what travels alone. The rules for each switch are in [Export options and bundle contents](/reference/export-options/#dialog-controls).
+
+## Related
+
+- [How to export a project copy or a campaign](/how-to/export-a-project-or-campaign/)
+- [How to export for a player without Python](/how-to/export-for-a-player-without-python/)
+- [Export options and bundle contents](/reference/export-options/)
+- [Diagnostics](/reference/diagnostics/)

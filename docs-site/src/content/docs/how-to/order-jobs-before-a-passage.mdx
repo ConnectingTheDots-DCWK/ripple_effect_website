@@ -1,0 +1,36 @@
+---
+title: How to run several jobs before a passage
+description: Put the jobs on the branches of a Do all and the story on its completed port, so every value is computed before the passage that reads it.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Use a **Do all** when more than one card has to run before a passage — setting several values, say — and the order has to be certain.
+
+<Steps>
+
+1. Put a **Do all** in front of the passage.
+
+2. Wire the first job's chain to the first branch. Wire the last branch and another appears beneath it, so the card grows as many as you need. For several values, give each value its own chain on its own branch. Branches run from top to bottom.
+
+3. Wire the Do all's `completed` port to the passage. The jobs go on the branches and the story goes on `completed`.
+
+</Steps>
+
+A Do all carries on from `completed` once every branch has run. A branch runs to the end of its wire before the next one starts, and a passage does not end a wire, so a passage on a branch holds the later branches back until everything after it has been read. That looks exactly like a Set that never fired. See [How a story runs](/explanation/how-a-story-runs/).
+
+## If the app flags a value
+
+A read never runs a card, so a value is only safe when its cards sit in the flow just before whatever reads it. The app reports two cases. A card with a finding wears a halo in the colour of its severity and a mark at the end of its header whose tooltip names the check; the full records are in the messages panel.
+
+- [`W.GE.05`](/reference/diagnostics/#wge05), a value worked out before the story that depends on something the story changes: put the cards in the flow that leads to the reader, using a Do all as above. Wire a producing card's `completed` into the card that reads it, as in a roller's `completed` into a Comparator and the Comparator's into an If. Priming suits a number or a name, not anything the story changes.
+- [`W.GE.06`](/reference/diagnostics/#wge06), a route that skips the card whose value is read: make every route run the card, or tick *I meant that* on its row where the leftover is intended, as with a running total or a flag set once on the way in.
+- A `bool` wired into a choice's row that raises `W.GE.05`: use a Do all with a chain per branch and `completed` into the passage. See [How to limit a choice](/how-to/limit-a-choice/).
+
+## Related
+
+- [How a story runs](/explanation/how-a-story-runs/) for why the flow only goes forwards and why a read never runs a card.
+- [How to limit a choice](/how-to/limit-a-choice/) for guards that need a value computed in time.
+- [Diagnostics](/reference/diagnostics/) for every coded check and its meaning.
+- [Nodes](/reference/nodes/) for the Do all card and its ports.
+- [How to build a board](/how-to/work-on-the-canvas/) for wiring cards.

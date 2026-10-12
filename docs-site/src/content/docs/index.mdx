@@ -1,5 +1,5 @@
 ---
-title: Ripple Effect
+title: Ripple Effect documentation
 description: A branching narrative and game design tool that keeps a story as ordinary files on your own disk.
 template: splash
 hero:
@@ -15,27 +15,33 @@ hero:
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
+The documentation is split by what you need to do next. Choose the card that matches.
+
 <CardGrid stagger>
-  <Card title="Overviews" icon="open-book">
-    One page per feature — boards, passages, components, Python, sound,
-    playing, exporting, version control — saying what each is for and where
-    its files live. Start with [the workspace](/overviews/the-workspace/).
+  <Card title="Learn" icon="pencil">
+    You are new to Ripple Effect. [Your first story](/tutorials/your-first-story/)
+    goes from an empty folder to a playable branch in a few minutes; the
+    [tutorials](/tutorials/) page lists them all.
   </Card>
-  <Card title="Tutorials" icon="pencil">
-    [Your first story](/tutorials/your-first-story/) goes from an empty folder
-    to a playable branch in a few minutes.
+  <Card title="Do" icon="setting">
+    You have a task. The how-to guides start with [installing the app on each
+    platform](/how-to/install-the-app/), and go on to [connecting an MCP
+    client](/how-to/connect-an-mcp-client/) such as Claude Code, Claude Desktop,
+    Cursor or any other client, [building a board](/how-to/work-on-the-canvas/) and [playing a
+    campaign](/how-to/play-a-campaign/).
   </Card>
-  <Card title="Setup" icon="setting">
-    [Installing](/setup/installing/) on each platform and what to click when
-    it is stopped, and [connecting an MCP
-    client](/setup/connecting-an-mcp-client/) — Claude Code, Claude Desktop,
-    Cursor or anything else.
-  </Card>
-  <Card title="Reference" icon="document">
-    [Every node](/reference/nodes/), and the [Python
-    API](/reference/python/): every function a script, a passage or the
-    console may call, what it answers and what it refuses. Also the [MCP
+  <Card title="Look up" icon="document">
+    You need a fact. Start with [every node](/reference/nodes/); beside it are
+    the [Python reference](/reference/python/), the [MCP
     tools](/reference/mcp-tools/) an agent can call and the
-    [diagnostics](/reference/diagnostics/) the messages panel shows with a code on them.
+    [diagnostics](/reference/diagnostics/) the messages panel shows with a code
+    on them. The Python reference holds every function a script, a passage or
+    the console may call, what it answers and what it refuses.
+  </Card>
+  <Card title="Understand" icon="open-book">
+    You want to know why it works as it does. Start with [boards, nodes and
+    macros](/explanation/boards-nodes-and-macros/), then [how a story
+    runs](/explanation/how-a-story-runs/). [What Ripple Effect
+    is](/start-here/what-ripple-effect-is/) says what the app is for.
   </Card>
 </CardGrid>

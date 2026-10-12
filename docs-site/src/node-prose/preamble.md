@@ -1,89 +1,59 @@
-Every card the Create menu offers, grouped as it groups them. For each: what
-it is for, in the card's own words; what is on the card; the ports it takes
-and the ports it answers on; and, where one exists, something to read. An
-agent gets the same list for the build it is talking to from `node_types`.
+Every card the Create menu offers, in the menu's order and under its categories. Each entry gives, in this order: what the card is for, in the card's own words; what is on the card; the ports it takes and the ports it answers on; and, where one exists, something to read. An agent receives the same list for the build it is talking to from `node_types`.
 
-A port carries either **flow** — the story, pushed from card to card — or a
-value, pulled when a card needs it. The [boards
-overview](/overviews/boards-and-nodes/#two-kinds-of-wire) says how the two are
-run and the one rule that follows. Every card's way in is `exec` unless the
-table says otherwise, and every value port is typed: a `number` joins a
-`number`, `any` joins anything.
+**Ports.** A port carries either *flow* or a value. Flow is the story, pushed from card to card; a value is read when a card takes its turn, and is whatever the card at the other end last published. A card's way in is `exec` unless its table says otherwise. Every value port is typed: a `number` joins a `number`, and `any` joins anything. How the two kinds are run is in [Board and navigation rules](/reference/canvas-rules/); the cards that declare, keep or read state across a playthrough are grouped in [Node families, slots and state](/reference/node-families/).
 
-**Five cards let you declare their own ports** — Output, Input, Script, Macro
-In and Macro Out — and a sixth, Narration, lets you declare what its passage
-is handed. Double-click one of the five (a Script node's *Inputs* and *Outputs*
-are buttons that open the same dialog) or click a Narration node's *Reads* row,
-at the bottom of the card, which says how many names the passage is given, and
-each row is a name and a type, and a
-type is two questions: **what it is** — `int`, `float`, `bool`, `string`,
-`markdown`, `asset`, `component` or `json` — and **how many of it**: one, a
-list, or a map of names to it. Twenty-four in all, and every one of the five
-offers the same twenty-four, as do a component's attributes and the console
-variables.
+**Cards that declare ports.**
 
-Two older words, `number` and `entity`, are still read wherever they appear
-and are no longer suggested: `int` or `float` says which, and an entity is a
-name, which is a `string`.
+| Card | Where the declaration is opened |
+| --- | --- |
+| Output, Input, Macro In, Macro Out | Double-click the card. |
+| Script | The *Inputs* and *Outputs* buttons, which open the same dialog. |
+| Narration | The *Reads* row at the bottom of the card, which shows how many names the passage is given. |
 
-What a row *declares* and what its port *carries* are deliberately not the
-same set. `int` and `float` both carry `number`, because a wire that would not
-join a whole number to an Operator expecting a number is a wire nobody wants.
-A lone `asset`, `component` or `markdown` carries `string`, since each of them
-is a path or some text. A **list** of assets or of components carries the tag a
-component's own `assetList` and `componentList` attributes carry, so those
-join each other. A map carries `json`. The file keeps the narrower word
-whichever way it goes, so nothing is lost by the port being broad.
+Each row is a name and a type. A type answers two questions: what it is, and how many of it.
 
-**An Input node's types are narrowed on the way into a campaign**, and that
-is the one thing worth knowing about them. What it declares is drawn as a
-form for the reader to fill in, and a form has no file picker — so an `asset`
-field reaches whoever is playing as a text box asking for a path. You may
-still declare it: the word is kept in your project, where it says what the
-field is for.
+| Question | Values |
+| --- | --- |
+| What it is | `int`, `float`, `bool`, `string`, `markdown`, `asset`, `component`, `json` |
+| How many of it | one, a list, or a map of names to it |
 
-**A name that becomes a Python variable has to be one Python can read.** A
-passage's inputs and a Script node's inputs and outputs take a letter or an
-underscore, then letters, digits and underscores; a Python keyword such as
-`class` is refused, with the reason under the field. An Output node's rows and
-an Input node's fields are read by people, so `Your roll` is still a fine name
-there. A board from an older version that carries a name Python cannot read now
-says so instead of silently never filling the slot.
+That is 24 types. Output, Input, Script, Macro In and Macro Out each offer the same 24, as do a component's attributes and the console variables. `number` and `entity` are still read wherever they appear and are no longer suggested: `int` or `float` says which, and an entity is a name, which is a `string`.
 
-**A slot gets the type it declared.** An `int` Script input given `3.7` reads
-`3`, and a `list<int>` input handed a list of text receives numbers. This holds
-for a Script node's inputs and an Output node's rows; a value that cannot be
-read as the declared type becomes that type's blank rather than stopping the
-story. What a script *writes* is left as it is.
+**Declared type and port type.** What a row declares and what its port carries are not the same set. The file keeps the declared word.
 
-**Any slot can carry a default** — what the slot is worth when nothing fills
-it. A Macro In's takes, a Script node's inputs and outputs, an Output node's
-slots, a Macro Out's answers and an Input node's form fields all take one.
-Where the card's own literal and a
-wire both answer a port, **the wire wins**, and the field on the card
-disappears while the wire is attached; where neither is there, the declared
-default stands in, and where there is no default either, the type's own blank
-does. A form field's default is filled in for the reader to accept or type
-over, and a script output's applies only where the program never set that
-name. A default on a `json` or a `map<…>` slot cannot travel, and the app
-says so when you compile.
+| Declared | Port carries |
+| --- | --- |
+| `int`, `float` | `number` |
+| A single `asset`, `component` or `markdown` | `string` |
+| A list of assets or of components | The tag a component's own `assetList` and `componentList` attributes carry, so those join each other |
+| A map | `json` |
 
-**A slot that points at a file is filled by name.** For a picture, a document
-or a component — a component's attributes, a macro take's or script input's
-default, a console variable — type a name and pick from the project's files,
-with the full path beside each; the pick sits there as a chip, hover shows the
-path, and the path is still what is stored. A chip whose file is outside the
-project or missing is marked. On a card (a macro take, a Set variable node) the
-slot is a searchable dropdown instead, like the Narration node's passage
-picker.
+**Input.** An Input node's types are narrowed on the way into a campaign. What it declares is drawn as a form for the reader to fill in, and a form has no file picker, so an `asset` field reaches the player as a text box asking for a path. The declaration is kept in the project.
 
-**Every card can carry metadata of your own.** Right-click it and choose
-*Edit metadata…*: a list of names, types and values — `int`, `float`, `bool`,
-`string`, a list of each, and `json` for anything nested — and a small tag on
-the card's header while there is any. A shorter list than a port may declare,
-and for a structural reason: a node stores the value and not its type, so the
-editor reads the type back off the value's own shape when it opens. An
-`asset` and a `string` would be the same thing written down, so it does not
-offer the difference; a whole `3` and a fractional `3.0` are not, so it does. Nothing on the board reads it; it is yours, for a status, a
-reviewer's note, a mark for a tool of your own. It travels with the node into
-a compiled campaign and to an agent, and a copied node arrives with its notes.
+**Names.** A name that becomes a Python variable must be one Python can read: a letter or an underscore, then letters, digits and underscores. A Python keyword such as `class` is refused, with the reason under the field. This applies to a passage's inputs and to a Script node's inputs and outputs. An Output node's rows and an Input node's fields are read by people, so `Your roll` is a valid name there. A board that carries a name Python cannot read reports it.
+
+**Coercion.** A slot receives the type it declared.
+
+- An `int` Script input given `3.7` reads `3`.
+- A `list<int>` input handed a list of text receives numbers.
+- A value that cannot be read as the declared type becomes that type's blank; the story is not stopped.
+- This holds for a Script node's inputs and an Output node's rows. What a script writes is left as it is.
+
+**Defaults.** Any slot can carry a default, the value the slot takes when nothing fills it. Slots that take one: a Macro In's takes, a Script node's inputs and outputs, an Output node's slots, a Macro Out's answers and an Input node's form fields.
+
+| Situation | Value used |
+| --- | --- |
+| A wire answers the port | The wire. A card's own literal is superseded by a wire, and the field disappears while the wire is attached. |
+| No wire | The card's own literal, where the card has one. |
+| Neither | The declared default. |
+| No default either | The type's blank. |
+
+An Input form field's default is filled in for the reader to accept or type over. A script output's default applies only where the program never set that name. A default on a `json` or a `map<…>` slot cannot travel into a campaign, and the app reports it when you compile.
+
+**File slots.** A slot that points at a file is filled by name. This covers a picture, a document or a component, in a component's attributes, a macro take's or script input's default, and a console variable. Typing a name lists the project's files, with the full path beside each. The pick is shown as a chip, hovering shows the path, and the path is what is stored. A chip whose file is outside the project or missing is marked. On a card (a macro take, a Set variable node) the slot is a searchable dropdown instead, like the Narration node's passage picker.
+
+**Metadata.** Every card can carry metadata. Right-click the card and choose *Edit metadata…*: a list of names, types and values. A small tag shows on the card's header while there is any. Nothing on the board reads it. It travels with the node into a compiled campaign and to an agent, and a copied node keeps its metadata.
+
+| Offered | Not offered |
+| --- | --- |
+| `int`, `float`, `bool`, `string`, a list of each, and `json` for anything nested | `asset` and `string` are not told apart; a whole `3` and a fractional `3.0` are. |

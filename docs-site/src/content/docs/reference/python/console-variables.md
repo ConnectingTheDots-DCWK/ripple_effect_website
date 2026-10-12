@@ -1,37 +1,31 @@
 ---
 title: Console variables
-description: The five functions over a project's console variables, the twenty-four types, and the one rule every write obeys.
+description: The five Python functions over a project's console variables, the twenty-four types, the coercion table and the refusals.
 sidebar:
   order: 3
 ---
 
-Five functions over the [console variables](/overviews/console-variables/) a
-project declares: typed, named values with a default, set anywhere and read
-anywhere, across boards and across saves. They sit on the same five
-[surfaces](/reference/python/#the-five-surfaces) as the components API.
+Five functions over the console variables a project declares: typed, named values with a default, set anywhere and read anywhere, across boards and across saves. They are bound on the same five [surfaces](/reference/python/#surfaces) as the components API.
 
-| function | answers | where it writes |
+## Functions
+
+| Function | Answers | Writes on |
 | --- | --- | --- |
 | `cvar_names()` | every name, in declaration order | — |
 | `cvar_type(name)` | the type, spelled as the file spells it | — |
-| `cvar_get(name)` | what it holds now; a list or map as a **copy** | — |
+| `cvar_get(name)` | what the variable holds now; a list or map is a **copy** | — |
 | `cvar_set(name, value)` | `None`; the value is coerced or refused | Script node, playthrough console |
-| `cvar_reset(name)` | `None`; back to the default | Script node, playthrough console |
+| `cvar_reset(name)` | `None`; the variable returns to its default | Script node, playthrough console |
 
-At design time — the editor's console, or an agent — a variable holds its
-default, and `cvar_get` answers that. A passage may read and not write.
+At design time (the editor's console, or an agent) a variable holds its default, and `cvar_get` answers that. A passage may read and not write.
 
-A name nothing declares raises `there is no console variable called "<name>"`
-on every function that takes one, and it is checked **before** the surface,
-so a passage with a typo hears about the typo rather than about passages. A
-blank name is `<function>: needs a name`.
+Every function that takes a name raises `there is no console variable called "<name>"` for a name nothing declares. The name is checked **before** the surface, so a passage with a typo is told about the typo, not about passages. A blank name raises `<function>: needs a name`.
 
 ## Types
 
-Eight scalars and, for each, a list and a string-keyed map — twenty-four, and
-the set is closed. The same twenty-four every editor in the app offers.
+Eight scalars and, for each, a list and a string-keyed map: twenty-four types. The set is closed, and every editor in the app offers the same twenty-four.
 
-| `type` | holds | default |
+| `type` | Holds | Default |
 | --- | --- | --- |
 | `int` | a whole number | `0` |
 | `float` | a number | `0.0` |
@@ -40,60 +34,54 @@ the set is closed. The same twenty-four every editor in the app offers.
 | `markdown` | text with a renderer | `""` |
 | `asset` | a project-relative path to a file | `""` |
 | `componentRef` | a project-relative path to a component | `""` |
-| `json` | any JSON value at all | `{}` |
-| `list<T>` | an ordered list of the scalar, for each of the eight | `[]` |
-| `map<T>` | string keys to the scalar, for each of the eight | `{}` |
+| `json` | any JSON value | `{}` |
+| `list<T>` | an ordered list of the scalar `T`, for each of the eight | `[]` |
+| `map<T>` | string keys to the scalar `T`, for each of the eight | `{}` |
 
-`cvar_type` answers one of those twenty-four strings. A declared variable
-never holds `None`.
+`cvar_type` answers one of those twenty-four strings, such as `int`, `markdown`, `json`, `list<string>` or `map<float>`. A declared variable never holds `None`.
 
-**`markdown`, `asset` and `componentRef` behave as `string`.** They say what
-a variable is *for*, which is what the editor draws a six-line field or a
-path from; the engine has no filesystem and does not check that a path
-resolves.
+`markdown`, `asset` and `componentRef` behave as `string`. They state what a variable is for, which is what the editor draws a six-line field or a path from; the engine has no filesystem and does not check that a path resolves.
 
-**`json` is the one that nests.** It takes a list or a dict as itself, so a
-`list<json>` holds lists and a `map<json>` holds dicts. Everything else may
-not: a scalar type refuses a collection, always.
+`json` is the one type that nests. It takes a list or a dict as itself, so a `list<json>` holds lists and a `map<json>` holds dicts. Every other type refuses a collection where it expects a scalar.
 
 ## Coercion
 
-**Every write is lossless or refused**, and one function decides: the Set
-node, `cvar_set`, the campaign panel and the compiler all ask it, so an author
-meets one rule everywhere.
+Every write is lossless or refused. One function decides, and the Set node, `cvar_set`, the campaign window and the compiler all ask it.
 
-| into | accepted | refused |
+| Into | Accepted | Refused |
 | --- | --- | --- |
-| `int` | an int; a whole, finite float (`3.0` → `3`); the text of either (`"42"`, `" 42 "`, `"3.0"`) | `3.5`, `"3.5"`, NaN, an infinity, a bool, other text, any collection, `None` |
-| `float` | any number, as a float (`2` → `2.0`); the text of a number | a bool, other text, any collection, `None` |
+| `int` | an int; a whole, finite float (`3.0` becomes `3`); the text of either (`"42"`, `" 42 "`, `"3.0"`) | `3.5`, `"3.5"`, NaN, an infinity, a bool, other text, any collection, `None` |
+| `float` | any number, as a float (`2` becomes `2.0`); the text of a number | a bool, other text, any collection, `None` |
 | `bool` | a bool; exactly the text `true` or `false`, trimmed | `"True"`, `"yes"`, `1`, `0`, `""`, any collection, `None` |
-| `string`, `markdown`, `asset`, `componentRef` | text as itself; a number or a bool as its text (`42` → `"42"`, `True` → `"true"`) | any collection, `None` |
-| `json` | **anything at all**, as it stands: a scalar, a list, a dict | `None`, and nothing else |
+| `string`, `markdown`, `asset`, `componentRef` | text as itself; a number or a bool as its text (`42` becomes `"42"`, `True` becomes `"true"`) | any collection, `None` |
+| `json` | anything, as it stands: a scalar, a list, a dict | `None`, and nothing else |
 | `list<T>` | a list whose every element coerces to `T` | any scalar (never wrapped), a map, a list with one element that does not coerce, `None` |
 | `map<T>` | a map whose every key is a string and every value coerces to `T` | any scalar, a list, a non-string key, a value that does not coerce, `None` |
 
-A coerced collection is a fresh list or map, never the one handed in.
+A coerced collection is a fresh list or map, never the one passed in.
 
-The refusal is one sentence, and it is the same sentence a Set node's report
-and a card's error text say:
+### Refusal sentence
 
-> `<name> holds a <type>, and <value> is not one`
+A refused write reads:
 
-with *an* before a type beginning with a vowel, a string value quoted, a list
-named as *a list*, a map as *an object*, and `None` as *nothing*. So
-`gold holds an int, and 3.5 is not one`, and
-`tags holds a list<string>, and "sword" is not one`.
+```text
+<name> holds a <type>, and <value> is not one
+```
+
+*an* replaces *a* before a type beginning with a vowel. A string value is quoted, a list is named *a list*, a map *an object*, and `None` *nothing*. Examples: `gold holds an int, and 3.5 is not one`; `tags holds a list<string>, and "sword" is not one`.
+
+The Set node's report and a card's error text use the same sentence.
 
 ## Refusals
 
-Every refusal is a `RuntimeError` a script can catch. A write from a passage
-gets the components API's own sentence — *a passage describes the world; only
-a Script node changes it* — and a write from the editor's console or an agent
-gets this API's:
+Every refusal is a `RuntimeError` a script can catch.
 
-> `no campaign is running, so a console variable holds its default — press play, or put this in a Script node`
+| Caller | Sentence |
+| --- | --- |
+| passage | the components API's own: *a passage describes the world; only a Script node changes it* |
+| editor console, agent | `no campaign is running, so a console variable holds its default — press play, or put this in a Script node` |
 
-Both are frozen; a script may already have branched on which it got.
+Both sentences are fixed.
 
 ## Examples
 
@@ -121,20 +109,23 @@ except RuntimeError:
 declared = {name: cvar_type(name) for name in cvar_names()}
 ```
 
-## In a save, in an export
+## In a save and an export
 
-A saved game carries every variable by name. A save from before the project
-had one holds it at its default; a variable removed from the declarations is
-dropped on resume; one retyped so its saved value no longer fits falls back
-to the default.
+| Item | Rule |
+| --- | --- |
+| Saved game | carries every variable by name |
+| Variable absent from a save | holds its default |
+| Variable removed from the declarations | dropped on resume |
+| Variable added while a campaign is paused | present on resume |
+| Variable retyped so the saved value no longer fits | falls back to the default |
+| Compiled campaign | carries each declaration (name, type, default); every playthrough starts from them |
+| Project copy | carries `.ripple/cvars.json` itself |
 
-Widening the types to twenty-four moved three versions: a campaign is
-recompiled (its bundle format moved), `.ripple/cvars.json` is version 3, and a save
-is format 5. A save records what each variable held and not its type, so a
-build older than this one would have reset a `json` variable to its default
-without a word; it refuses the newer save instead. Save again from this
-build.
+The twenty-four types are carried by `.ripple/cvars.json` version 3 and saved-game format 5. A save records what each variable held, not its type, so a build older than that format refuses a newer save.
 
-A compiled campaign carries the declarations — name, type and default — and a
-runtime starts every playthrough from them. A project copy carries the file
-itself, `.ripple/cvars.json`.
+## Related
+
+- [Console variables](/explanation/console-variables/): what a variable is for and where it lives.
+- [How to declare and scope a console variable](/how-to/declare-console-variables/)
+- [Console variable declarations](/reference/console-variable-declarations/): the file format.
+- [The sandbox and its limits](/reference/python/sandbox/)

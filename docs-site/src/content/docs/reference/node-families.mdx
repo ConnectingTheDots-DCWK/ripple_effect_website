@@ -1,0 +1,276 @@
+---
+title: Node families, slots and state
+description: The families of nodes, the types and defaults every slot shares, the rules for macros and Do all, and what is remembered for a whole playthrough.
+sidebar:
+  order: 2
+---
+
+The [nodes reference](/reference/nodes/) lists every card, port by port. This page describes what is shared between them: the families the Create menu groups them into, the slot types, defaults and file pickers, the node pairs that take part in a macro, and what keeps state.
+
+## Families
+
+The Create menu groups nodes into these families. Lists and Maps are described below; every other card is in the [nodes reference](/reference/nodes/).
+
+- Flow
+- Story
+- Math
+- Logic
+- Lists
+- Maps
+- Entities
+- Value
+- Chance
+- Macro In and Macro Out
+
+### Lists
+
+| Node | Behaviour |
+| --- | --- |
+| Insert | Prepends, appends, inserts at an index, or replaces at one. Returns the whole list. |
+| At | A single item. A negative index counts from the end; -1 is the last. |
+| Remove | Removes by the same counting. Returns the whole list. An index out of range leaves it unchanged. |
+| Size | How many, and whether there are none. Its `length` is what a For node's ceiling takes to walk a list. |
+
+- Pointed at text, the list nodes work a character at a time and return the kind that went in: appending `!` to `hi` gives `hi!`.
+- An index out of range never stops the story.
+
+### Maps
+
+| Node | Behaviour |
+| --- | --- |
+| Get | The value under a name, plus a `found` output. |
+| Set | Returns the whole map. |
+| Remove | Returns the whole map. |
+| Keys | The keys, in the same order as Values. |
+| Values | The values, in the same order as Keys, so the first goes with the first. |
+| Merge | The second map wins on conflicts. |
+| Size | How many. |
+
+- An input that is not a map is treated as an empty map. A Set with nothing wired to its subject makes a map of one pair; chained Sets build a map.
+- A name that is not there never stops the story.
+
+## Ports
+
+A port carries either flow or a value. Every card's way in is `exec` unless the [nodes reference](/reference/nodes/) says otherwise. Value ports are typed: a `number` joins a `number`, and `any` joins anything.
+
+## Slots
+
+A slot is a named, typed row on a card that declares its own ports: a macro's takes and answers, an Output node, an Input node, a Script node, a component's attributes, and console variables.
+
+### Slot types
+
+Every slot offers the same twenty-four types: eight kinds, each alone, as a list, or as a map from names to it.
+
+| Kind | Meaning |
+| --- | --- |
+| `int` | Integer. |
+| `float` | Number with a fraction. |
+| `bool` | Boolean. |
+| `string` | Text. |
+| `markdown` | Markdown text. |
+| a path to a file | `asset`. |
+| a component | `component`. |
+| JSON | `json`. |
+
+The menus offer neither `number` nor `entity`. Files that hold them read, and the row shows the word until it is retyped.
+
+### Declared type and port type
+
+What a slot declares and what its port carries are not the same set. The file keeps the narrower declared word.
+
+| Declared | Port carries |
+| --- | --- |
+| `int`, `float` | `number` |
+| A lone `asset`, `component` or `markdown` | `string` |
+| A list of assets or of components | The tag a component's `assetList` and `componentList` attributes carry, so they join. |
+| A map | `json` |
+
+An Input node's types are narrowed on the way into a campaign. It is drawn as a form, and a form has no file picker, so an `asset` field reaches the player as a text box asking for a path. It can still be declared; the word is kept in the project.
+
+### Which cards declare ports
+
+Output, Input, Script, Macro In and Macro Out. Double-click the card; a Script node's *Inputs* and *Outputs* are buttons that open the same dialog. Each row is a name and a type, and a type is two questions: what it is, and how many (one, a list, or a map).
+
+### Coercion
+
+- A slot gets the type it asked for. A script input declared `int` and wired `3.7` reads `3`.
+- A value that cannot be read as the type becomes that type's blank. It does not stop the story.
+- What a script writes to an output is left as it is.
+
+### Defaults
+
+A slot can carry a default, used when nothing fills it.
+
+| Slot | Default applies |
+| --- | --- |
+| Macro take | When the calling card wires nothing and types nothing. |
+| Script input | When nothing is wired. A wired value wins. |
+| Script output | Only where the program never set that name. |
+| Output node slot | When nothing fills it. |
+| Macro Out answer | When nothing fills it. |
+| Input node field | Prefilled for the reader to accept or type over. |
+
+Where a wire and the card's own literal both answer a port, the wire wins, and the field on the card disappears while the wire is attached. Where neither is there, the declared default stands in, and then the type's own blank.
+
+A default on a `json` or a `map<...>` slot cannot travel, and the app says so when you compile.
+
+### Slots that point at a file
+
+A slot that points at a picture, a document or a component offers the project's files by name, with the full path beside each.
+
+- The pick shows as a chip with its name. Hovering it shows the path, which is what is stored.
+- A chip whose file is outside the project or missing is marked, so a file renamed outside the app is visible.
+- On a card (a macro take, a Set variable node) the slot is a searchable dropdown, like the Narration node's passage picker.
+
+### Names
+
+A name read by a script must be a name Python can read.
+
+| Where | Rule |
+| --- | --- |
+| Script node inputs and outputs; a passage's inputs | A letter or an underscore, followed by letters, digits and underscores. Python's own words, such as `class`, are refused, with the reason shown under the field. A board that carries a name Python cannot read reports it. |
+| Output and Input node slots | Read by people; `Your roll` is a valid name. |
+
+## Macros
+
+{/* TODO(shots): <Shot name="macro" /> */}
+
+A macro is a file of its own, `*.macro.graph.json`, made from the file tree's **+** beside a board. It opens on the same canvas, with two nodes where a board has its Start and its Ends.
+
+| Node | Declares | Ports | Count |
+| --- | --- | --- | --- |
+| Macro In | What the macro takes, described as an Input node is: a name and a type per row, by double-click. | One output per name, carrying what the calling board wired in or typed on the card. | Exactly one. |
+| Macro Out | What the macro answers, described the same way. | One input per name. Its way in takes any number of wires, so every branch inside the macro can finish at the same way out. | Exactly one. |
+
+Everything between the two is the same node set a board has.
+
+### The Macro card
+
+- Dragging the file onto a board creates a **Macro** card with a port per name, and a field beside every name it takes.
+- A field can be wired or typed. The wire wins.
+- A take can carry a default.
+- Play on the macro's own tab reads it on its own, with nothing wired in.
+
+### Rules
+
+- A macro is copied into whatever calls it when the campaign is compiled. Calling one twice makes two independent copies: a Once gate inside a shop fires once per shop, not once for the whole story.
+- A macro cannot call itself.
+- A macro cannot be jumped to, and a board cannot be called. A Jump lists boards; a Macro card lists macros.
+- A story can be paused inside a macro and picked up where it left off.
+- A trace line in the play window about something inside a macro takes you to the card that called it.
+- A route traced across boards goes inside the macros it calls: the passages a macro holds are drawn where the call is, so a macro reused in several places appears on the route in each.
+
+## Do all
+
+A **Do all** runs everything wired to it, one branch after another, then carries on from `completed`.
+
+- Every branch runs to the end of its wire before the next starts.
+- A passage does not end a wire. A passage on branch two holds branch three until every passage after it has been read.
+- `completed` is where the flow carries on.
+- A board written before the `completed` port existed gains it when it opens.
+
+## Entities on a board
+
+A `*.component.json` dragged from the file tree onto a board becomes a **Component** node with one typed output per attribute, plus one carrying the whole component as a map. The node says which of its two modes it is in.
+
+| Mode | Behaviour |
+| --- | --- |
+| Component | A window onto the file. Outputs only. |
+| Entity | Makes the story a thing, keyed by the name on the node. Attribute inputs appear alongside the outputs; there is no Set/Get pair, because a second node naming the same entity later in the story is the setter. |
+
+- Two nodes with two names are two independent entities. A node on a later board naming the same entity is the entity the first board made.
+- A Component node whose name is wired from upstream makes one entity per name it is handed.
+
+The Entities category of the node menu holds four more.
+
+| Node | Behaviour |
+| --- | --- |
+| Spawn | Makes many entities at once from a component. Inputs: a count; how they are told apart, numbers or letters; and what goes between the name and the number. "Goblin" with numbers and a dash makes Goblin-1, Goblin-2, and so on. Output: the names, as a list. Returning to a Spawn node finds the entities it already made rather than making new ones, so a paused campaign resumes into the encounter it left. A second wave needs a different name. |
+| Delete Entity | Forgets one by name. Deleting a name nothing answers to removes nothing and is not an error. The component file is untouched, so a node naming it later makes a fresh one. |
+| Entity Exists | Answers whether the campaign still has the entity. |
+| Entity Names | Answers every entity the story has made, as a list of names, sorted by name, or only those made from one component. Wire `names` into a For node with a List at node to act on each. |
+
+## Console variables on a board
+
+{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+
+A Set on one board and a Branch on another need no wire between them: the variable is the wire.
+
+| Node | Behaviour |
+| --- | --- |
+| Get variable | Publishes what the variable holds on `value`. |
+| Set variable | Writes the variable, from a wire into `value` or the value typed on the card (the wire wins), and publishes the new value on `result`. |
+| Variable branch | Compares the variable against a value, on the card or wired in, and leaves by `yes` or `no`. Equality reads both sides as text. Ordering works only between two numbers or two strings, by the Comparator's rules. |
+
+All three take the flow rather than being pulled, so a read after a write is never stale.
+
+## State machine node
+
+The node is made by dropping a state machine file on a board, or by adding the node and picking the machine from the list on its card. A new machine file is made from the file tree's right-click menu, **New state machine**. The node takes an event and answers the state the machine is in after it.
+
+| Input or output | Behaviour |
+| --- | --- |
+| `event`, wired or typed | Blank reads the state without moving. `[*]` resets the machine to its start. |
+| `state` | Wire into a Switch, one row per state, to branch on where the machine is. |
+| `changed` | Flow leaves here when an arrow fired or the machine was reset. |
+| `unchanged` | Flow leaves here otherwise. An event the current state has no arrow for is not an error: the machine stays put and the flow takes `unchanged`. |
+
+- Two nodes anywhere in the story drive the same machine unless one is given an **instance** name.
+- Left blank, the instance is the machine's own name.
+
+## Python on a board
+
+| Place | Behaviour |
+| --- | --- |
+| Script node | References a `.py` file in the project, so one script can serve many nodes. Declares inputs and outputs as rows, a name and a type each, and has a port per name. The *Inputs* and *Outputs* boxes in its editor are buttons that open the ports dialog every other node uses. Values cross as native Python types. Whatever the script assigns to an output name is published on that port. |
+| Output node | Shows its inputs to the reader as a slide with one way on. Slots are typed as a Script node's are and may carry a default. |
+| Input node | Asks the reader for values and hands what was typed on as ports. Its default is filled in for the reader to accept or type over. |
+| Passage | An inline `{{ … }}` span and a fenced ```` ```ripple ```` block. Both are replaced by what they evaluate to when the passage is presented. |
+
+Output and Input are described by double-clicking the card: a name and a type per row.
+
+A passage only reads. Making, changing or deleting an entity, or writing a console variable, is refused from inside prose. The refusal renders in place as a `⚠` chip and the story carries on.
+
+````markdown
+The goblin has {{ entity_get("Goblin-1")["HP"] }} hit points left.
+
+```ripple
+names = entity_names(of="Goblin")
+f"{len(names)} goblins are still standing."
+```
+````
+
+### The console
+
+- The console beside every `.py` file is a live session, one per project, so `x` survives between lines.
+- The prompt grows to three lines as you type. Shift+Enter starts a new line; Enter runs what is there. The arrow keys walk through what has been run.
+- During a playthrough, the same console is available beside the Entities and Variables panels, over the story that is running. There it may do everything a Script node may, because it stands in for the nodes the story did not run, which *Play from here* needs.
+
+## Play sound
+
+One file, once, at a volume and a speed. The story carries on at once: `completed` fires the moment the sound is cued.
+
+| Route | Behaviour |
+| --- | --- |
+| Play sound node | See the [nodes reference](/reference/nodes/#play-sound). |
+| `play_sound("sfx/bell.ogg")` from a Script node | The same, from Python, by the project's spelling of the path or the bundle's. `volume` and `speed` by name. See the [Python reference](/reference/python/sounds/). |
+
+A passage's snippets cannot call it: they run again on every redraw and every change of language, and a sound rung from prose would ring twice.
+
+## State kept for the whole playthrough
+
+| Kept | Reset by |
+| --- | --- |
+| FlipFlop, Once, State machine | Starting over. |
+| A choice's limited-use count | Starting over. |
+
+- Leaving a board and coming back does not reset them.
+- Saving and loading does not reset them. A saved game carries what they remember.
+
+## Related
+
+- [Boards, nodes and macros](/explanation/boards-nodes-and-macros/)
+- [How a story runs](/explanation/how-a-story-runs/)
+- [How to reuse a stretch of story with a macro](/how-to/make-a-macro/)
+- [How to run several jobs before a passage](/how-to/order-jobs-before-a-passage/)
+- [Console variable declarations](/reference/console-variable-declarations/)

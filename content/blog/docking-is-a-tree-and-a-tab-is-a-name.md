@@ -1,10 +1,18 @@
 ---
 title: "Docking is a tree, and a tab is a name"
-description: "Ripple Effect's workspace is two fixed splits and a strip of tabs. The next one lets you tear a panel off, drop it anywhere, and get the same layout back tomorrow. The package that does it went on GitHub before the app started using it, and this is what is in it."
+description: "fl_panel is a Flutter docking layout: tear a panel off, drop it anywhere, and get the same layout back tomorrow. The package went on GitHub before Ripple Effect started using it, and this is what is in it."
 date: 2026-09-20
 category: Engineering
 seoTitle: "A Flutter docking layout with splits, tab groups, drag and drop and persistence"
 ---
+
+*Editorial note, 2026-10-12: this post was written on 2026-09-20, before
+fl_panel 0.1.0 was tagged. Since then the package has released 1.0.0 and
+1.1.0, and its main branch (unreleased) lets tabs drag between hosts. The
+app's workspace has moved onto it in the 1.5 work, so where the text below
+says the app does not use it yet, that was true on the day. For the workspace
+as it is now, see [the workspace
+page](https://docs.ripplefx.app/reference/workspace-window/).*
 
 Open [Ripple Effect](/) today and the workspace is fixed: a file tree on the
 left, a viewer on the right, a handle between them, and under the tree a
@@ -67,8 +75,11 @@ of its own without it. The tree serialises without asking anybody, because
 there is nothing in it that cannot be written as JSON. A tab moving between
 windows — which, under Flutter's multi-window support, means between two
 engines that cannot share a widget — is a tree edit and a rebuild from
-identity. And the application stays the owner of what a tab *is*: in Ripple
-Effect a tab is a view onto a document session, and it will stay one.
+identity. The model holds several windows and can move a tab between them;
+a second OS window is a second engine with a controller of its own, and
+wiring that to the first is the application's job. And the application
+stays the owner of what a tab *is*: in Ripple Effect a tab is a view onto a
+document session, and it will stay one.
 
 ## State survives a move
 
@@ -111,18 +122,20 @@ preview shades is what the drop will do.
 
 ## The strip
 
-Three ways to draw a tab, because the products above disagree and each is
-right for what it is: flush chips with an accent line, the VS Code shape;
-Chrome's curved shoulders, painted, where the active tab and its content are
-one surface; and floating pills. A window may mix them per group. Chips share
+Three ways to draw a tab (`PanelTabStyle`), because the products above
+disagree and each is right for what it is: `attached`, flush chips with an
+accent line, the VS Code shape; `blended`, Chrome's curved shoulders, painted,
+where the active tab and its content are one surface; and `floating`, pills.
+A window may mix them per group. Chips share
 the strip down to a minimum width and then the strip scrolls — by the wheel,
 and never by dragging, because a drag on a strip already means "move this
 tab". Asking the controller to focus a tab activates it, scrolls its chip
 into view and, if asked, hands its content the keyboard.
 
-Everything drawn that is not content goes through one delegate, so an
-application with its own look replaces the chrome and keeps the docking,
-provided its chips are wrapped in the one thing the drop hit-test looks for.
+Everything drawn that is not content goes through one delegate
+(`PanelChrome`), so an application with its own look replaces the chrome and
+keeps the docking, provided its chips are wrapped in the one thing the drop
+hit-test looks for.
 
 ## Where it is, and where it is not yet
 
@@ -133,7 +146,9 @@ takes pull requests, like [the packages beside
 it](https://docs.ripplefx.app/about/open-source/).
 
 It is not in Ripple Effect yet. The workspace still draws its two fixed
-splits, and moving it onto this is the next step. The package went public
+splits, and moving it onto this is the next step. What the package does not do
+yet, per its README, is floating panels, a maximise kept in the layout,
+pinning, and hosting across engines. The package went public
 first because that is the order that keeps it honest: a layout engine built
 inside one application quietly learns that application's shape, and one built
 in the open, with a demo that is not Ripple Effect, has to earn every

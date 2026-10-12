@@ -1,0 +1,94 @@
+---
+title: Python in a story
+description: Why Python in Ripple Effect is a sandboxed subset, why a passage reads but cannot write, and why a read hands back a copy.
+sidebar:
+  order: 5
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A story can hold Python in three places: a Script node runs a file of it, a sentence in a passage can hold a snippet of it, and a console beside every script is a place to try a line. The branching, the dice, the variables and the state machines are nodes. This page is about the shape that decision gave the feature: why it is a sandbox, why it is not all of Python, why a passage may look but not touch, and why the same campaign can ship with the interpreter or without it.
+
+<Shot name="python" />
+
+## A sandbox, and what that rules out
+
+What runs the Python is an interpreter built for running somebody else's code safely, with no filesystem, no network and a short standard library. The reason is that a story is a file you hand to other people: a campaign you export is played on a reader's machine or inside somebody else's product. Taking those abilities away, rather than asking the author to avoid them, is what lets the engine run a stranger's script.
+
+The cost is that it is Python, and not all of Python. There is no `class`, no `import` of the outside world and no `random`. Dicts, `def`, lambdas, f-strings, comprehensions and a handful of modules are there. Snippets are Python-shaped rather than Python-portable: a script written here is not promised to run elsewhere, and a script written elsewhere is not promised to run here.
+
+Missing `random` is a deliberate gap with a story-shaped answer. The Dice roller, Random number and Weighted branch nodes are how a story rolls, so a roll is a node and not a call buried in a file.
+
+### Why the API passes dicts
+
+No `class` has two consequences that shape the whole API. A component or an entity crosses into Python as a **dict**, so it is `component_get("Goblin")["HP"]` and never `goblin.hp`. And there is no object syntax to build a nicer one: there is no `import ripple` and nothing to instantiate. Everything a script may call is a **host function**, bound under the name an author types and present without an `import`, answered by the app or by the runtime playing the campaign.
+
+### Why a read is a copy
+
+A value crosses from the app to Python through JSON, so what `entity_get`, `component_get` and `cvar_get` answer is a snapshot. `e = entity_get("Mira"); e["HP"] -= 3` is legal, runs, and changes nothing. That is a trap, and it will not be fixed: a live handle would need `__setitem__`, which needs a class, which the interpreter does not have. Writing is always a named act: `entity_set` and `cvar_set` are the only way a script changes the world.
+
+### Why a call is strict
+
+Every optional argument is keyword-only, and a wrong call raises instead of answering. The check exists because the interpreter hands an unknown keyword straight through with no error. Without it, a typo in `of=` would behave as though the argument had been left out, and the call would behave as though the argument had been left out. A loud failure at the call is cheaper than a plausible wrong answer. The three functions that predate the rule, `component()`, `components()` and `set_attribute()`, are exempt for the opposite reason: every passage already written calls them, so what they do with a mistake is as frozen as their names. The names are a contract with every script written against them, and they are added to rather than repurposed.
+
+The same reasoning makes `entity_create` refuse a name that is already taken instead of returning the existing entity. A script asking for a name it can already see wants to be told, rather than have the mistake surface passages later. The Component and Spawn nodes are get-or-create, because that is what lets a node be re-entered and a paused campaign survive being resumed.
+
+Host functions also cannot be called inside `map()`, `filter()` or `sorted(key=…)`; that is a property of the interpreter, and [The sandbox and its limits](/reference/python/sandbox/#host-functions) has the detail.
+
+## Where Python goes, and who may write
+
+Python appears in five places, which the API calls surfaces: a Script node, a passage, the design-time console, an agent over MCP, and the console during a playthrough. Every function is bound on every surface. What differs is what a call does, and the differences follow one idea: **who is asking decides what may happen**.
+
+A Script node reads and writes, because it is a node on the board. A **passage** only reads. Making, changing or deleting an entity, or writing a console variable, is refused from inside prose, because a state change should be something you can point at on the canvas, and a goblin deleted by a sentence has nothing on the board to point at. The refusal renders in place as a `⚠` chip and the story carries on, so a mistake in prose degrades one sentence instead of ending the run. Every refusal is a single line, a `RuntimeError` a script can catch, and the sentences are fixed because scripts already branch on them.
+
+Playing a sound is refused from a passage for a different reason, and the difference is the instructive part. A sound changes no state. What it does is happen, and a passage's snippets run again on every redraw and every change of language, so a bell rung from prose would ring twice for a reader who switched to Italian, with no node on the board to explain why. The rule there is about repetition, not about state. A stinger belongs on a Play sound node before the passage, or in a Script node. The design-time sentence for the console and an agent is different again, so that nobody who hits one goes looking for the rule of the other.
+
+Three things are deliberately not in the sound function, and each is a decision. There is no soundscape from Python, because what plays under a passage is set on the passage as a document the whole project can reuse, and a script that could put one in force would be a state change with no node to point at. There is no stopping, waiting or asking what is playing, because a cue is fire and forget by construction, and a function that could be awaited is one an author would await. And there is no path outside the bundle, because every sound a story can play is in the campaign, and a name that matches nothing there is refused in words. The file may be named as the project spells it or as the bundle does, because an export files every asset under `media/` and an author should not have to know that. See [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/) for why a cue and a soundscape are different things.
+
+The **design-time console** and an **agent** are refused writes for a plainer reason: there is nothing here to change. A project that is not being played has no entities, and a console variable holds only its default. Reads still work, and an empty answer is an answer: `entity_names()` is `[]` and `entity_get(name)` is `None`. The refusal sentences distinguish the two cases on purpose, because telling somebody a rule forbids what is really a missing playthrough sends them looking for the wrong thing. 
+
+The **playthrough** console may do everything a Script node may. It exists because *Play from here* hands you a story that starts with nothing made, and the console is how you stand in for the nodes the story did not run. The surfaces are tabulated in the [Python reference](/reference/python/), and [The sandbox and its limits](/reference/python/sandbox/) holds what each allows.
+
+## Slots, types and names
+
+A Script node declares its inputs and outputs as typed rows, and values cross as native Python types, so `total = hp - damage` is arithmetic and not a parse. [Nodes](/reference/nodes/) describes the Script, Output and Input nodes.
+
+**A slot gets the type it declared.** An `int` input given `3.7` reads `3`, and a `list<int>` given a list of text arrives as numbers. A value that cannot be read as the declared type becomes that type's blank rather than stopping the story. The trade is explicit: coercion at the boundary means a script can trust what it receives, and the story can survive a bad value, at the price of a quiet substitution. What a script writes is left as it is. A slot may also carry a default, and the two rules there are asymmetric because the two directions differ. For a script input, a wired value wins over the default. For a script output, the default applies only where the program never set that name at all.
+
+Names are the one place where Python's rules leak into the board. A Script node's inputs and outputs, and a passage's inputs, become variables, so they accept only a letter or an underscore followed by letters, digits and underscores, and Python's own words such as `class` are refused with the reason shown under the field. A board that carries a name Python cannot read reports it instead of silently never filling the slot. The names on an Output or Input node are read by people, so `Your roll` is a fine name there.
+
+## A console that is the same everywhere
+
+The console beside every `.py` file and the console during a playthrough are the same tool, with only the permitted writes changing. The [Python reference](/reference/python/) describes the sessions.
+
+## Turning it off
+
+A project written for a game, or for a player built without the interpreter, can say so: turn **Python** off under *Capabilities* in the project's settings. The reason this is a switch on the project rather than something found at export is timing. Every Script node, and every passage with a `{{ … }}` or a `ripple` block, is marked as an error on its card and listed in Messages as you write ([`E.EX.01`](/reference/diagnostics/#eex01) and [`E.EX.02`](/reference/diagnostics/#eex02)), and the campaign will not play or export until there are none. Turning it back on changes nothing about the project, so the switch costs nothing to try.
+
+Behind it is the fact that the engine ships in two builds, one with the interpreter and a much smaller one without. Every exported campaign records whether it needs Python. The export dialog's *Needs no Python* option is the check made at the point of export. See [What an export is](/explanation/what-an-export-is/) for how a campaign is built and [How to build a campaign with no Python](/how-to/turn-python-off/) for the steps.
+
+## Why the app probes instead of listing
+
+The interpreter's limits change between its releases. A page that listed what is allowed would be correct on the day it was written and wrong later, and a reader would act on the difference. So the app does not describe the sandbox, it **probes** it: the sandbox report behind the `i` button on the console runs a suite of tiny snippets (statements, modules, built-ins, call shapes) in the real interpreter and reports what happened, row by row. It says what the app binds, what `import` can reach and which limits are enforced. An agent can ask for the same text through `python_capabilities`. Where any page and that report disagree, the report is right, and it is the thing to copy into a bug report.
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+The interpreter is [monty](/about/open-source/#monty-python-in-a-sandbox); the open-source page says whose it is.
+
+## Limits are about unattended runs
+
+A script that has not finished after **two seconds** is stopped, and the app will not start that script again in the same playthrough. After three distinct scripts have been stopped in one playthrough, no script starts at all. The second rule is the reason for the first one's shape: it keeps an unattended walk of every branch from paying for the same runaway on each pass. A script that hits this has an infinite loop in it. A script is also held to roughly 64 megabytes and 200 calls deep; runaway recursion raises `RecursionError` and a list that will not fit raises `MemoryError`. 
+
+## What a save and an export remember
+
+Python can read and write console variables, so what a save carries matters to a script's author. A saved game carries every variable by name. A save from before the project had one holds it at its default; a variable removed from the declarations is dropped on resume; and one retyped so its saved value no longer fits falls back to the default. A save records what each variable held and not its type, so a build older than the one that wrote it would have reset a `json` variable to its default without a word. It refuses the newer save instead, and the fix is to save again from the current build.
+
+A compiled campaign carries the declarations (name, type and default), and a runtime starts every playthrough from them. A project copy carries the file itself, `.ripple/cvars.json`. So a script that calls `cvar_get` sees the same starting values wherever the campaign is played, and the saved state is what differs between playthroughs. See [Console variables](/explanation/console-variables/) for what a variable is.
+
+## Related
+
+- [How to run Python in a story](/how-to/script-a-passage/): writing a Script node and a snippet.
+- [How to build a campaign with no Python](/how-to/turn-python-off/): the project switch and the export check.
+- [Python reference](/reference/python/): the eighteen functions, the surfaces and the refusal sentences.
+- [The sandbox and its limits](/reference/python/sandbox/): what the report says and the numbers behind the limits.
+- [How a story runs](/explanation/how-a-story-runs/): where a Script node sits in the flow.

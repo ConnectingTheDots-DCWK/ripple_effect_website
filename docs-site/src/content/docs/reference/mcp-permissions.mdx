@@ -1,0 +1,171 @@
+---
+title: What an assistant may read, play and write
+description: What an assistant connected over MCP may read, play and write, which Agents switch each tool needs, and what is always refused.
+sidebar:
+  order: 3
+---
+
+{/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+## The switches
+
+Both are on the **Agents** page of the Settings dialog, opened with the gear in the app bar or with the command palette's Agents command. Both default to off, and both belong to the app rather than to one project: the app serves whichever project is open.
+
+| Switch | Effect | Depends on |
+| --- | --- | --- |
+| **Let agents reach this app** | The server listens. An assistant can read the open project and play it. Reading changes nothing. | None. |
+| **Let agents change files** | An assistant can write. | **Let agents reach this app**: it has no effect while that switch is off. |
+
+The server is a private local channel that only your own account can open. It is never a network port.
+
+A write tool called while **Let agents change files** is off answers `refused`. Every tool call answers the following while the app is closed or agent access is off, and the client does not need restarting once access is on:
+
+```text
+ripple_effect is not running, or agent access is switched off.
+Open the project in ripple_effect and switch on "Let agents reach this app" under Settings → Agents.
+```
+
+The assistant is shown the full tool list either way.
+
+## Tool groups by permission
+
+Thirty-nine tools in six groups. Each tool is described on the [MCP tools](/reference/mcp-tools/) page.
+
+| Group | Tools | Needs |
+| --- | --- | --- |
+| Orientation | `project_info`, `project_outline`, `catalog_find` | **Let agents reach this app** |
+| Reading | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` | **Let agents reach this app** |
+| What only the app can answer | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` | **Let agents reach this app** |
+| Playtesting | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | **Let agents reach this app** |
+| Writing | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | **Let agents change files** |
+| Sound | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | **Let agents change files** |
+
+Every tool that takes a board, passage, component, soundscape or sound accepts an id, a name or a project-relative path. An ambiguous name comes back as a list of candidates rather than a guess.
+
+### What the assistant can read
+
+| Subject | Answer | Tools |
+| --- | --- | --- |
+| The project | The shape of the whole project in about twenty lines. | `project_info`, `project_outline`, `catalog_find` |
+| A board | A compact digest. | `board_read` |
+| A passage | Every language it has. | `passage_read` |
+| Components, scripts, state machines | Their contents. | `component_read` |
+| Links between boards | What leads to what across boards. | `board_links` |
+| Routes | Every route between two passages. | `trace_between`, `trace_into` |
+| Translations | Which have fallen behind. | `translation_status` |
+| Messages | What the Messages tab is saying. | `diagnostics_read` |
+| Python | What the sandbox says the Python can do; `python_eval` evaluates Python against the project's definitions, read-only. | `python_capabilities`, `python_eval` |
+| Node kinds | `node_types` lists every kind of node in this build: the name to add it by, the card's name and what it does. Named, it describes one in full with the fields to fill in and the ports to wire. It is read off the editor's own palette when asked. | `node_types` |
+| Node metadata | `board_read` prints it as a `meta` line under the node. | `board_read` |
+
+### What the assistant can play
+
+The runner is the one the Play button uses, with the same Python and the same component values. A playthrough writes nothing and plays the boards as they are on disk, not what is half-edited in a tab.
+
+| Capability | Behaviour | Tools |
+| --- | --- | --- |
+| Start, choose, read state | Starts a campaign, makes choices and reads the state. | `campaign_start`, `campaign_choose`, `campaign_state`, `campaign_end` |
+| Autoplay | Walks every branch and reports which endings are reachable, which passages nothing leads to, where a path runs out of wire and which jumps are broken. | `campaign_autoplay` |
+| `campaign_trace` | Reads the trace the play window shows: what the playthrough has done so far, line by line, with the board and the node each came from. It continues from where it last read. | `campaign_trace` |
+| Input node | Reaches the assistant as a slide listing the fields it asks for; the assistant fills the form in with a value per name. An unattended walk goes through one with every field blank. | `campaign_answer` |
+
+### What the assistant can write
+
+Needs **Let agents change files**.
+
+| Write | Tools |
+| --- | --- |
+| A passage in any language, or a passage and its translations together | `passage_write` |
+| A new passage added to a board and wired to the choice that leads there | `passage_create`, `board_add_passage` |
+| Wires and the words on them | `board_connect`, `board_disconnect`, `board_set_choice` |
+| A component's fields | `component_write` |
+| New boards, macros, components and scripts, made the way the app makes them | `file_create` |
+| Any kind of node, including a Jump and a Macro call with its ports already on the card; `board_add_node` and `board_set_node` take `metadata`, an object that replaces what the node had | `board_add_node`, `board_set_node` |
+| Nodes removed or re-pointed | `board_remove_node`, `board_set_node` |
+| A soundscape laid out clip by clip, each clip answered where it settled on the timeline | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
+| Files moved or removed | `file_move`, `file_delete` |
+| Work the app is still holding, written out | `save` |
+
+Every write goes through the app's own document sessions: adding a passage is a single undo, autosave sees it, version control lists it, the change is posted to Messages as it happens, and the **Changed this session** list on the Agents page shows it.
+
+## Always refused
+
+| Action | Reason |
+| --- | --- |
+| Resolve a conflict | The author decides between two pending versions. |
+| Write the registry directly, or re-issue a catalog id | Renames and moves go through the verb the file tree uses, so a Jump keeps pointing at the right board. |
+| Remove a board's Start, or add a second one | A board has one way in. |
+| Declare a console variable | That is the project's page, not a tool. |
+| Delete anything outside the project, or in `.ripple/`, or with unsaved edits | Deleting a file cannot be undone; it is guarded rather than prompted. |
+
+## The tools an assistant is shown
+
+The bridge asks the running app what it offers when a client starts it, and the client is told when that changes: an update to the app, a project opened, a switch thrown, a language or a variable declared. The app answers for this build and this project. Every tool description ends with a link to its own section of the [MCP tools](/reference/mcp-tools/) page; the Python tools point at the [Python reference](/reference/python/) and the node-building tools at the [Nodes](/reference/nodes/) reference.
+
+| Part of a tool | Taken from |
+| --- | --- |
+| `board_add_node`'s node types | An enum off the editor's own palette, with the card names beside them. |
+| Every `locale` argument | The languages the project is written in. |
+| `cvar` | The variables the project declares. |
+| A write tool's description | Says when editing is off. |
+
+A client with the bridge configured appears on the Agents page as soon as agent access is on, not at its first call.
+
+## The connected mark
+
+{/* TODO(shots): <Shot name="agentConnected" /> */}
+
+The app bar shows only what has news. Pressing the mark opens the Agents page.
+
+| State | App bar |
+| --- | --- |
+| Switch off, or on and nobody connected | Nothing; the page is behind the gear. |
+| A client connected | The client's mark: Claude's, OpenAI's, Gemini's, or a plain robot for any other. The tooltip carries the client's name and version. |
+| Two or more clients connected | The tooltip counts them. |
+| The local connection could not be opened | A plug in the error colour. The tooltip reads *Agents cannot reach this app*. |
+
+The Agents page lists the connected clients under **Connected**, and the files agents have written since the app started under **Changed this session**.
+
+## What the session log records
+
+Every tool call, resource read and prompt a client makes leaves a line in the session log: which client, which tool, which argument *names* it passed, how long it took and whether it worked. Argument contents are never recorded. The log can say that an assistant wrote to a board, not what it wrote. See [Session log](/reference/session-log/).
+
+## Prompts
+
+| Prompt | Arrives with |
+| --- | --- |
+| *Writing a passage* | The passage you name already in it. |
+| *Editing a board* | The board you name already in it. |
+
+Both state that Python in prose is monty rather than CPython, so an attribute is `component("X")["attr"]`, and that a node id is numbered across a whole board rather than per type.
+
+## Files for assistants
+
+This documentation site publishes three files, and a set of the Reference pages alone, so an assistant can take the whole of it as one file.
+
+| File | Content |
+| --- | --- |
+| `/llms.txt` | Index. Linked from the site's header. |
+| `/llms-full.txt` | The whole site. Linked from the site's header. |
+| `/llms-small.txt` | The budget version, which leaves out the asides, the tutorials and the about pages. |
+| The Reference set | Only the pages under Reference: the node catalog, the MCP tools and the Python API. |
+
+## Bridge path
+
+The client starts a small program installed beside the app, which talks to the app for it. **Copy client configuration** on the Agents page copies the block most clients read, already pointing at the right place. The program is not on `PATH`, and the connection between it and the app is private to your user account.
+
+| Platform | Path |
+| --- | --- |
+| Linux, `.deb` | `/opt/ripple_effect/ripple_effect_mcp` |
+| Linux, `.rpm` | `/usr/share/ripple-effect/ripple_effect_mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\Ripple Effect\ripple_effect_mcp.exe` |
+| macOS | `/Applications/Ripple Effect.app/Contents/MacOS/ripple_effect_mcp` |
+
+A build run from source has no such program beside it; `melos run editor:mcp:bridge` makes one and prints where it put it.
+
+## Related
+
+- [How to connect an AI assistant (MCP client)](/how-to/connect-an-mcp-client/)
+- [MCP tools](/reference/mcp-tools/)
+- [Working with an AI assistant](/explanation/working-with-an-assistant/)
+- [The session log and reports](/reference/session-log/)

@@ -1,0 +1,103 @@
+---
+title: How to connect an AI assistant (MCP client)
+description: Switch agent access on, copy the configuration and paste it into Claude Code, Claude Desktop, Cursor or another MCP client.
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Use this to point an MCP client — Claude Code, Claude Desktop, Cursor or anything else that runs local servers — at the project you have open in Ripple Effect.
+
+<Steps>
+
+1. **Switch agent access on.**
+
+   Open the gear in the app bar, which is on every screen, and pick the **Agents** page; the command palette's Agents command opens the same page. Switch on **Let agents reach this app**. An assistant can now read the project and play it, but change nothing.
+
+   Leave **Let agents change files** off until you want an assistant to change files. It only does anything while the first switch is on, and reading is useful on its own. With it off, a tool that writes answers `refused`.
+
+   Both switches are for the app rather than for one project: the app serves whichever project is open.
+
+   {/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+2. **Copy the configuration.**
+
+   Press **Copy client configuration** on the page. The clipboard receives the block most clients read, already pointing at the right place on your machine:
+
+   ```json
+   {
+     "mcpServers": {
+       "ripple_effect": {
+         "command": "/opt/ripple_effect/ripple_effect_mcp",
+         "args": []
+       }
+     }
+   }
+   ```
+
+   The path is a small program installed beside the app that the client starts and that talks to the app for it. Copy it from the page rather than typing it; the app installs to a different place on each platform.
+
+3. **Paste it where your client reads it.**
+
+   <Tabs syncKey="client">
+     <TabItem label="Claude Code">
+       One command, with the path from the page:
+
+       ```sh
+       claude mcp add ripple_effect -- /opt/ripple_effect/ripple_effect_mcp
+       ```
+
+       Quote the path on Windows, where it contains a space. `claude mcp list` shows it registered; `/mcp` inside a session shows whether it connected.
+     </TabItem>
+     <TabItem label="Claude Desktop">
+       Settings → Developer → **Edit Config** opens `claude_desktop_config.json`; paste the block in. If the file already has an `mcpServers` object, add the `ripple_effect` entry inside it rather than pasting a second object. Restart Claude Desktop and the tools appear. Claude Desktop has no Linux build.
+     </TabItem>
+     <TabItem label="Cursor">
+       Paste the block into `.cursor/mcp.json` in the project you are working from, or into `~/.cursor/mcp.json` for every project. Cursor lists it under Settings → MCP, where it can be switched on and off.
+     </TabItem>
+     <TabItem label="Anything else">
+       Every MCP client that runs local servers takes a command and an argument list. The command is the path in the block and the argument list is empty. Most read the `mcpServers` key exactly as above; check your client's own documentation for which file it wants.
+     </TabItem>
+   </Tabs>
+
+4. **Ask it something.**
+
+   A client with the bridge configured appears in the page's **Connected** list as soon as access is on; it does not wait for its first request. The app bar shows nothing for agents until there is news. While a client is connected its mark appears there, with its name and version on the tooltip. If the app could not open its local connection, the mark appears in the error colour instead. Either one opens the Agents page.
+
+   A good first request is `project_outline` — the shape of the whole story in about twenty lines — or ask *what is this project about?* and let the assistant find that tool itself.
+
+   {/* TODO(shots): <Shot name="agentConnected" /> */}
+
+</Steps>
+
+## If it says the app is not running
+
+While the app is closed or agent access is off, every tool call answers:
+
+```text
+ripple_effect is not running, or agent access is switched off.
+Open the project in ripple_effect and switch on "Let agents reach this app" under Settings → Agents.
+```
+
+Open the project and switch access on in the Agents page of Settings. The client does not need restarting. The assistant sees the full tool list either way, so it can tell you what it would be able to do before the app is up.
+
+## Find the program by hand
+
+If you need the path without opening the app, it is:
+
+| Platform | Path |
+| --- | --- |
+| Linux, `.deb` | `/opt/ripple_effect/ripple_effect_mcp` |
+| Linux, `.rpm` | `/usr/share/ripple-effect/ripple_effect_mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\Ripple Effect\ripple_effect_mcp.exe` |
+| macOS | `/Applications/Ripple Effect.app/Contents/MacOS/ripple_effect_mcp` |
+
+It is deliberately not on your `PATH`: the app installs to three different places on three platforms, and no one command line is true on all of them. The connection between it and the app is a private local channel that only your own account can open, never a network port.
+
+A build run from source has no such program beside it; `melos run editor:mcp:bridge` makes one and prints where it put it.
+
+## Related
+
+- [Working with an AI assistant](/explanation/working-with-an-assistant/) — what agent access buys you and why it is off by default.
+- [What an assistant may read, play and write](/reference/mcp-permissions/) — what each switch grants.
+- [MCP tools](/reference/mcp-tools/) — every tool, with what it takes.

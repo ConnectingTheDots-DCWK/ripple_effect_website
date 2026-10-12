@@ -1,0 +1,49 @@
+---
+title: How to reuse a stretch of story with a macro
+description: Write a stretch of story once as a macro board, then call it from any board with a Macro card.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="macro" /> */}
+
+Use a macro for a stretch you want to call from several places: a shop, a rest, a skill check with its own three passages.
+
+## Make the macro
+
+<Steps>
+
+1. In the file tree, press **+** beside a board and choose **Macro**. The file is `*.macro.graph.json` and opens on the same canvas as a board, with a **Macro In** and a **Macro Out** node where a board has its Start and its Ends.
+2. Double-click **Macro In** to say what the macro takes: a name and a type per row, as on an Input node. Each name becomes an output carrying what the calling board wires in or types on the card. A take can carry a default, which is used when the calling card wires nothing and types nothing.
+3. Double-click **Macro Out** to say what the macro answers, the same way. Each name becomes an input. Its way in takes any number of wires, so every branch inside the macro can finish at the same way out.
+4. Build the stretch between the two with the ordinary node set. A macro has exactly one Macro In and one Macro Out.
+
+</Steps>
+
+## Call it from a board
+
+<Steps>
+
+1. Drag the macro file from the file tree onto the board. A **Macro** card appears with a port per name, and a field beside every one the macro takes.
+2. For each take, wire it or type it in the field. If you do both, the wire wins.
+3. Wire the card's outputs on to the rest of the board.
+4. To run the macro by itself, with nothing wired in, press play on its own tab; see [How to play and test a campaign](/how-to/play-a-campaign/).
+
+</Steps>
+
+## What to expect
+
+- Two calls are two independent copies, so a *Once* gate inside a shop fires once per shop, not once for the whole story.
+- A choice's *Times* count inside a macro is kept per call: a corridor called from two places has a separate budget for each. See [How to limit a choice](/how-to/limit-a-choice/).
+- A macro cannot call itself.
+- A macro cannot be jumped to and a board cannot be called: a Jump lists boards, and a Macro card lists macros.
+- A story can be paused inside a macro and picked up where it left off.
+
+## Related
+
+- [Boards, nodes and macros](/explanation/boards-nodes-and-macros/), for how a board and a macro differ.
+- [Nodes](/reference/nodes/), for the Macro, Macro In and Macro Out cards.
+- [How to play and test a campaign](/how-to/play-a-campaign/)
+- [How to trace the routes between two passages](/how-to/trace-a-route/), where a route goes inside the macros it calls.
+- [How to limit a choice](/how-to/limit-a-choice/)

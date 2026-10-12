@@ -1,0 +1,62 @@
+---
+title: State machines
+description: Why a state machine in Ripple Effect is a mermaid drawing in a file of its own, how it is shared across a story, and why a runtime needs no parser to play it.
+---
+
+import Shot from '../../../components/Shot.astro';
+
+Some state is a *shape* rather than a value. A door is locked, then unlocked, then open; a quest is offered, then taken, then done; a guard is calm until provoked. You could hold any of these in a [console variable](/explanation/console-variables/) holding a number or a word, and for a single flag that is the right tool. A shape is different: what matters is which moves are allowed from where you stand, and a variable records only where you are. Rules like "you cannot open a locked door" end up scattered across every passage that touches the variable.
+
+A state machine puts the rules in one place. In Ripple Effect that place is a drawing.
+
+{/* TODO(shots): <Shot name="fsmEditor" /> */}
+
+## A machine is a picture first
+
+A machine is a `*.fsm.mmd` file holding a mermaid `stateDiagram-v2`. Every arrow reads `From --> To : event`, and the start is `[*]`. The same door, written out:
+
+```text
+stateDiagram-v2
+    [*] --> Locked
+    Locked --> Unlocked : key
+    Unlocked --> Open : push
+    Open --> Unlocked : pull
+    Unlocked --> Locked : lock
+```
+
+The editor shows the text on one side and the picture on the other, redrawn as you type, with every problem on its line. While the text does not parse, it draws the last machine that did, greyed. A picture of the text as typed would be a picture of a machine that does not exist, and blanking the pane on every half-typed arrow would make editing flicker.
+
+## Why mermaid owns the format
+
+The format is mermaid's, not ours. Every other file the app owns carries a `version` of ours; this one does not, because the `stateDiagram-v2` header is the version mermaid gave it. The same file renders on GitHub, in an editor plugin and anywhere else mermaid does, and the full syntax is mermaid's own [state diagram reference](https://mermaid.js.org/syntax/stateDiagram.html).
+
+The app reads a subset of mermaid and refuses the rest, naming the line. [State machine files](/reference/state-machine-file/) lists what is accepted and what is refused. One case is a warning rather than a refusal: an arrow with no event is drawn and kept, but nothing can ever name it, so it can never fire, and the editor says so.
+
+## One reader, so the picture is what plays
+
+A single reader parses the diagram. The editor draws from it, and the compiler uses the same reader to write the transition table a campaign carries. Two readers would be two opinions about what a machine is, and the picture would stop being what the story does. Because there is one, a file that draws is a file that plays.
+
+## A machine on a board
+
+A machine does nothing until a board drives it. Drop the file on a board and it becomes a **State machine** node; the node takes an event and answers with the state the machine is in afterwards. That makes the machine a participant in the flow of the story, not a separate system running beside it.
+
+The node's two exits, **changed** and **unchanged**, exist because an event that fits nothing is a normal thing to happen. **changed** fires when an arrow fired or the machine was reset; **unchanged** fires otherwise. Pushing a locked door is not a mistake in the story; it is a moment the author may want to narrate. So an event the current state has no arrow for leaves the machine where it is and takes **unchanged**, and what to do about it is a decision for the passages downstream. Wiring the **state** output into a **Switch**, one row per state, is how the story branches on where the machine is. [Adding a machine to a board](/how-to/add-a-state-machine/) walks through the steps.
+
+## Shared instances
+
+A machine remembers for the whole playthrough, across boards and across saves, in the way the FlipFlop and Once gates do. Starting over resets it. That raises a question: if two nodes name the same machine, do they share it?
+
+By default they do. Two nodes anywhere in the story drive the same machine unless one is given an **instance** name; left blank, the instance is the machine's own name. Two doors want two instances of the door machine, and the instance name is how you say so without copying the file. One quest wants one instance.
+
+## In a saved game and in an export
+
+A save carries what every machine remembers, so a resumed playthrough finds the door where you left it. A save with no machine data reads as remembering nothing.
+
+A compiled campaign carries each machine as a transition table, so a runtime needs no mermaid parser. What a campaign contains is covered in [what an export is](/explanation/what-an-export-is/).
+
+## Related
+
+- [How to add a state machine to a board](/how-to/add-a-state-machine/) applies this on the canvas.
+- [State machine files](/reference/state-machine-file/) lists what the reader accepts and refuses.
+- [Nodes](/reference/nodes/) has the State machine node's ports and fields.
+- [Console variables](/explanation/console-variables/) covers the other way a story remembers.

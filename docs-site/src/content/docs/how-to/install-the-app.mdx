@@ -1,0 +1,75 @@
+---
+title: How to install Ripple Effect
+description: Install Ripple Effect on Windows, macOS or Linux, get past the first-run warning, and turn off Smart App Control if Windows blocks the installer.
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Download the installer for your platform from the [download page](https://ripplefx.app/download), which always points at the latest release, then follow the section for your platform. None of the installers is code-signed, so Windows and macOS each stop the app once on first run; Linux asks nothing. The warning is about the missing certificate, not about what the installer does.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+Needs Windows 10 or 11.
+
+<Steps>
+1. Run the Setup `.exe`.
+2. When SmartScreen shows **Windows protected your PC**, choose **More info**, then **Run anyway**.
+3. If you see **An Application Control policy has blocked this file** instead, that is not SmartScreen. Follow [Turn off Smart App Control](#turn-off-smart-app-control), then run Setup again.
+</Steps>
+
+Setup installs into `%LOCALAPPDATA%\Programs\Ripple Effect`, for your account only, and never asks for an administrator. To upgrade by hand, run a later installer over it.
+  </TabItem>
+  <TabItem label="macOS">
+Needs macOS 12 Monterey or newer. The `.dmg` is one universal build for Apple silicon and Intel.
+
+<Steps>
+1. Open the `.dmg` and drag the app to Applications.
+2. Open the app. Gatekeeper says it cannot be opened because it is from an unidentified developer, or that it could not verify it.
+3. Either right-click the app and choose **Open**, which adds an Open button to the dialog, or clear the quarantine mark from a terminal:
+
+   ```sh
+   xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"
+   ```
+</Steps>
+
+You do this once; the app opens normally afterwards.
+  </TabItem>
+  <TabItem label="Linux">
+Needs glibc 2.38 or newer: Ubuntu 24.04+, Debian 13+ or Fedora 39+.
+
+Install the package for your distribution:
+
+```sh
+sudo apt install ./ripple_effect-<version>-linux.deb
+sudo dnf install ./ripple_effect-<version>-linux.rpm
+```
+
+The `.deb` installs to `/opt/ripple_effect` and the `.rpm` to `/usr/share/ripple-effect`. Both put `ripple_effect` on your `PATH`. The `.deb` declares ALSA, PulseAudio and PipeWire as dependencies for sound.
+
+If the package manager refuses it with a complaint about `libc6` or `GLIBC_2.38`, your distribution is older than the floor above.
+  </TabItem>
+</Tabs>
+
+After the first install the app updates itself. See [Updates, logs and Messages](/explanation/updates-logs-and-privacy/).
+
+## Turn off Smart App Control
+
+Windows 11 only. Setup refusing with `An Application Control policy has blocked this file` (error 4551) means Smart App Control is on. It has no *Run anyway* and no per-app exception, so the only way to install is to turn it off.
+
+<Steps>
+1. Open **Settings → Privacy & security → Windows Security → App & browser control → Smart App Control settings**.
+2. Choose **Off**.
+3. Run Setup again.
+</Steps>
+
+:::caution
+Turning Smart App Control off is a decision, not a toggle. Microsoft says recent Windows updates allow it to be turned back on without reinstalling. On older builds, once it is off the only way back is a clean reset of Windows.
+:::
+
+If the setting already reads **Off**, the block has another cause. For the background, see [Installers and first launch](/reference/installers/#smart-app-control).
+
+## Related
+
+- [Installers and first launch](/reference/installers/) — the platform table, the first-launch pages and the error text.
+- [Why the installers are unsigned](/explanation/unsigned-installers/)
+- [Updates, logs and Messages](/explanation/updates-logs-and-privacy/)

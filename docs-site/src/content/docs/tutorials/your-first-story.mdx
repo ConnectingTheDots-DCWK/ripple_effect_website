@@ -1,6 +1,6 @@
 ---
 title: Your first story
-description: From an empty folder to a playable branch — a project, a board, three passages, a choice, and the play button.
+description: Build a playable story from an empty folder, with a project, a board, three passages, a choice and the Play button.
 sidebar:
   order: 2
 ---
@@ -8,31 +8,19 @@ sidebar:
 import { FileTree, Steps } from '@astrojs/starlight/components';
 import Shot from '../../../components/Shot.astro';
 
-This takes about ten minutes and ends with a story you can play: a traveller
-at a gate, two ways through it, and an ending. Along the way you will see
-where everything you make lands on disk, which is the thing worth
-understanding first.
+In this tutorial you build a small story from nothing and play it: a traveller at a gate, two ways through it, and an ending. At each step you look at what the app wrote into the project folder.
 
-You need the app installed — the [download page](https://ripplefx.app/download)
-has the installers, and [Installing](/setup/installing/) says what to click
-when your platform stops an app it does not know. If you would rather read a
-finished story first, *New project → Templates* makes you a copy of one; this
-page builds a small one from nothing, because where each thing lands is the
-point.
+You need the app installed. If your platform stops an app it does not know, [How to install Ripple Effect](/how-to/install-the-app/) says what to click. If you would rather read a finished story first, *New project → Templates* makes you a copy of one; here we build a small one from nothing.
 
 <Steps>
 
 1. **Make a project.**
 
-   Press **New project** on the home screen. Give it a title — *The Gate* will
-   do — pick where the folder should go, and choose the language you are
-   writing in. The language is offered from your computer's settings, but it
-   is your choice: it decides the name of the file every passage is written
-   into.
+   Press **New project** on the home screen. Give it a title, *The Gate* will do, pick where the folder should go, and choose the language you are writing in. The language is offered from your computer's settings, but the choice is yours: it decides the name of the file every passage is written into.
 
    {/* TODO(shots): <Shot name="newProject" /> */}
 
-   The app creates the folder and writes exactly one thing into it:
+   Look at what the app creates: the folder with exactly one thing in it:
 
    <FileTree>
    - the_gate/
@@ -40,39 +28,31 @@ point.
        - project.json
    </FileTree>
 
-   That is the project. There is no scaffold and no convention; everything
-   else in the folder will be yours.
+   That is the project. There is no scaffold and no convention; everything else in the folder will be yours. See [A project is a folder](/explanation/projects-are-folders/) for why.
 
 2. **Make a board.**
 
-   In the file tree on the left, press **+** and choose **Board**. Name it
-   `gate`. It opens on the canvas holding one node, **Start**, which is where
-   the story begins — a board has exactly one.
+   In the file tree on the left, press **+** and choose **Board**. Name it `gate`. It opens on the canvas holding one node, **Start**, which is where the story begins. A board has exactly one.
 
    {/* TODO(shots): <Shot name="firstBoard" /> */}
 
-   On disk you now have `gate.graph.json`. It is JSON, and you could open it in
-   a text editor, though there is no reason to.
+   On disk you now have `gate.graph.json`. It is JSON.
 
 3. **Write the first passage.**
 
-   Right-click an empty part of the canvas and choose **Create ▸ Story ▸
-   Narration**. (A right-click, or a wire let go over empty canvas, is how
-   every card is made.) A card lands where you clicked, reading *Empty —
-   double-click to write*, so double-click it.
+   Right-click an empty part of the canvas and choose **Create ▸ Story ▸ Narration**. A right-click, or a wire let go over empty canvas, is how every card is made. A card lands where you clicked, reading *Empty — double-click to write.*, so double-click it.
 
-   The Passage dialog asks for a title — *At the gate* — and which passage the
-   card reads. Press **New** to make one, and write:
+   The Passage dialog asks for a title, *At the gate*, and which passage the card reads. Press **New** to make one, and write:
 
    ```markdown
    The gate is shut, and the guard on the wall has seen you.
    ```
 
-   Close the dialog. The writing is already saved: everything in the app
-   writes as you work, and the dialog only decides the title and which passage
-   the card points at.
+   Close the dialog. The writing is already saved: everything in the app writes as you work, and the dialog only decides the title and which passage the card points at.
 
-   Beside the board there is now a folder the app shows as one file:
+   {/* TODO(shots): <Shot name="firstPassage" /> */}
+
+   Beside the board there is now a folder that the app shows as one file:
 
    <FileTree>
    - the_gate/
@@ -82,49 +62,29 @@ point.
        - touch.json
    </FileTree>
 
-   `en-US.md` — or whichever language you chose — is your sentence, as plain
-   Markdown. A translation would be a second `.md` beside it. The folder is
-   named after the board and the title, so passages sort beside the board
-   they belong to.
+   `en-US.md`, or whichever language you chose, is your sentence as plain Markdown. A translation would be a second `.md` beside it. The folder name follows the board and the title.
 
 4. **Wire it in.**
 
-   Drag from the port on the right of **Start** to the port on the left of
-   your passage. The story now has a first page.
+   Drag from the port on the right of **Start** to the port on the left of your passage. The story now has a first page.
 
 5. **Give the passage two choices.**
 
-   Drag from the passage's first output port and let go over empty canvas.
-   The Create menu opens where you dropped it, already wired to whatever you
-   pick — choose **Narration**, double-click the new card, title it *Talk to
-   the guard*, press **New** and write a line. Do it again from the passage's
-   second port (a spare appears beneath each one you wire) for *Climb the
-   wall*.
+   Drag from the passage's first output port and let go over empty canvas. The Create menu opens where you dropped it, already wired to whatever you pick. Choose **Narration**, double-click the new card, title it *Talk to the guard*, press **New** and write `The guard leans over the wall and listens.` Do it again from the passage's second port: title it *Climb the wall*, press **New** and write `The stones are loose, but you find a hold.` A spare port appears beneath each one you wire.
 
-   Now click each choice's row on the first card. A choice has a **name**,
-   which is what the card shows so you can find the branch on a wide board,
-   and its **words**, which are what the reader is offered — in every language
-   the story is written in. Give the first one *Call up to the guard* and the
-   second *Look for another way*.
-
-   {/* TODO(shots): <Shot name="firstPassage" /> */}
+   Now click each choice's row on the first card. A choice has a **name**, which is what the card shows so you can find the branch on a wide board, and its **words**, which are what the reader is offered, in every language the story is written in. Give the first one *Call up to the guard* and the second *Look for another way*.
 
 6. **End it.**
 
-   Right-click on empty canvas, choose **End**, and wire both branches into it.
-   An End accepts any number of wires, so every branch can finish at the same
-   place — or add a second End and give the wall-climber a different fate.
+   Right-click on empty canvas, choose **End**, and wire both branches into it. An End accepts any number of wires, so every branch can finish at the same place.
 
 7. **Play it.**
 
-   Press **Play**, at the bottom right of the board. The campaign window opens
-   on your first passage with the two choices beneath it as tiles. Pick one,
-   read the next passage, and reach the end.
+   Press **Play**. The campaign window opens on your first passage with the two choices beneath it. Pick one, read the next passage, and reach the end.
 
    {/* TODO(shots): <Shot name="firstPlay" /> */}
 
-   What you just played is exactly what an exported campaign plays: the same
-   engine, with no preview copy that could disagree with it.
+   What you just played is what an exported campaign plays: the same engine, with no preview copy that could disagree with it. See [Why the preview is the shipped story](/explanation/the-preview-is-the-shipped-story/).
 
 </Steps>
 
@@ -148,21 +108,12 @@ point.
     - touch.json
 </FileTree>
 
-A board, three passages, and the app's index in `.ripple/`. Every file is plain
-text, and the whole folder is a git repository waiting to happen — open
-**Changes** (Source control) on the activity bar beside Files and press the button to start keeping a history,
-if you like. It needs a name and an email address and nothing else.
+You have built a board, three passages, and the app's index in `.ripple/`. Every file is plain text.
 
 ## Where to go next
 
-- **A second board.** Make one, put a passage on it, and hand the story over
-  with a **Jump** from the first board — then open *Script navigation* from the
-  activity bar's bottom icons to see the two boards drawn as a map.
-- **A dice roll.** Right-click, pick **Dice roller**, type `1d20`, and wire its
-  total into a **Comparator** and an **If** to decide whether the climb works.
-  The [boards overview](/overviews/boards-and-nodes/) lists every node.
-- **A macro.** Press **+**, choose **Macro**, and write a stretch of story
-  between its Macro In and Macro Out — then drag the file onto your board and
-  it runs there. Write a shop once and call it from every town.
-- **A second language.** Project settings adds one; every passage gains an
-  empty file for it, and the reader picks the language in the campaign window.
+- **A second board.** Make one, put a passage on it, and hand the story over with a **Jump** from the first board. Then open *Script navigation* from the activity bar's bottom icons to see the two boards drawn as a map. See [How to build a board](/how-to/work-on-the-canvas/).
+- **A dice roll.** A dice roller node can decide whether the climb works. [Nodes](/reference/nodes/) lists every node.
+- **A macro.** A macro lets you write a stretch of story once and call it from every board. See [How to reuse a stretch of story with a macro](/how-to/make-a-macro/).
+- **A second language.** Project settings adds one; every passage gains an empty file for it, and the reader picks the language in the campaign window. See [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+- **Keep a history.** [How to keep a history and back up a project](/how-to/keep-a-history-and-back-up/).

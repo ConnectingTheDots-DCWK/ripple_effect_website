@@ -1,0 +1,96 @@
+---
+title: How to add sound to a story
+description: Bring audio into a project, lay it out as a soundscape, name it on a Narration node, and cue one-off sounds.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## Bring audio into the project
+
+Drop an `.ogg`, `.mp3`, `.wav`, `.flac`, `.m4a`, `.aac` or `.opus` anywhere in the folder and it appears in every picker. Or use *Import…* for a file from outside; it is copied to `.ripple/external/`.
+
+An audio file opens in a tab of its own with play, pause and a scrub bar, so you can check it before you use it.
+
+## Make a soundscape and lay out clips
+
+<Steps>
+
+1. Choose **+** in the file tree and make a new soundscape, a `*.soundscape.json` file. Open it in a tab.
+
+2. Add a clip with *Add clip*, or double-click empty canvas. Both offer the project's audio, searchable by name or by folder, each row showing where the file is. Choose *Import a file…* if the audio is not in the project yet. You can also drag a sound from the file tree onto the timeline and let go where you want it.
+
+3. Drag a block to move it. Pull either edge to trim it. The shape of the sound is drawn inside the block, showing the part of the file it plays, so you can trim to a beat by eye. The shape appears a moment after the clip, because the file is decoded to draw it.
+
+4. Select a clip to edit it in the panel on the right. Set **Playback** to *Once*, *Loop* or *Auto-loop*. Use *Auto-loop* for music. Turn on **Rest** on an auto-loop clip to leave a silence between plays, for a bell every so often. Leave it off for a gapless bed.
+
+5. Shape the clip's ends. Drag the grip at the top of a fade slope inward to lengthen the ramp, or back into the corner to remove it. On an auto-loop clip the fades apply at every repeat, so a fade can hide the seam of a file that does not loop cleanly. For a ramp measured to the millisecond, type a length such as `0.25 s` in **Fade in** or **Fade out**. A clock typed there is also understood.
+
+6. Open the gear in the toolbar to set the timeline's own properties: **Length**, **Loop timeline**, **Fade in**, **Fade out**, **Volume** and **Tied to the passage**.
+
+</Steps>
+
+Every field a clip and a soundscape carries is in [Soundscape files](/reference/soundscape-file/). A clip names its audio by catalog id, so renaming or moving a file does not break it.
+
+### Name and lock lanes
+
+- Double-click a lane header to name it, for example *Bed* or *Weather*.
+- Right-click a lane header to name it or to lock it. A locked lane takes no clip, so a bed laid out once stays put while you move everything else around it.
+- Right-click anywhere else for what the pointer is on: duplicate or delete a clip, add one here, select everything on a lane, fit the pane, set the row height, undo and redo.
+
+### Preview the soundscape
+
+Press Space to play and pause, and Shift+Space to stop. The ruler, or any empty canvas, is the scrub bar. The preview plays through the same mixer the campaign uses, so a gain slider is heard live and a dragged clip does not restart the bed under it.
+
+To audition without the whole mix, use the **M** and **S** on a lane header, or silence a single clip from its panel. Silenced clips are drawn faint. None of this is saved and none of it reaches the story: a soundscape plays every clip it holds.
+
+The whole file is one undo history, the toolbar's. An edge you trim on the timeline and a volume typed in the panel are the same history.
+
+:::note
+A clip past the timeline's length is allowed and shaded. What lies past the length is cut at play time rather than refused in the editor.
+:::
+
+## Play a soundscape from a passage
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+<Steps>
+
+1. On the **Narration** node, find the soundscape row under the choices.
+
+2. Pick the soundscape. It plays from that passage on, through every passage after it that brings none of its own.
+
+3. To change the music, pick another soundscape on a later passage. Two soundscapes never overlap. Naming the same one again does not start it over.
+
+4. To stop everything outright, pick *Silence — stops what is playing* on a later passage. A passage with *None* changes nothing.
+
+5. To make a soundscape belong to one passage, turn on **Tied to the passage** in its properties. A tied soundscape stops when the story moves on.
+
+</Steps>
+
+A saved game remembers what was playing. A load plays the soundscape before the page shows, and a tied soundscape comes back only at its own passage.
+
+## Cue a sound once
+
+Use a one-off sound when the story should carry straight on. `completed` fires the moment the sound is cued, so nothing waits for it.
+
+- **From a node.** Add a **Play sound** node and pick one file, a volume and a speed. See [Nodes](/reference/nodes/#play-sound).
+- **From Python.** In a Script node, call `play_sound("sfx/bell.ogg")`, with the path as the project spells it or as the bundle spells it. Pass `volume` and `speed` by name. See [Sounds](/reference/python/sounds/).
+
+A passage's snippets cannot cue a sound. To sound a stinger when a passage is reached, put a **Play sound** node before the passage, or call `play_sound` from a Script node before it.
+
+## Hear it in the campaign
+
+The campaign window's header has a **mute** button. It is the reader's, it belongs to the campaign, and it is remembered between sessions. Previewing a soundscape in its own tab is never silenced by it.
+
+A soundscape's volume is the file's, and every clip's volume is relative to it, so there is no second master to keep in step.
+
+## Related
+
+- [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/) for how the runtime decides what is playing.
+- [Soundscape files](/reference/soundscape-file/) for every clip and timeline property, and how the file names its audio.
+- [Sounds](/reference/python/sounds/) for `play_sound` in Python.
+- [Nodes](/reference/nodes/#play-sound) for the Play sound node.
+- [How to play and test a campaign](/how-to/play-a-campaign/) to hear the result.

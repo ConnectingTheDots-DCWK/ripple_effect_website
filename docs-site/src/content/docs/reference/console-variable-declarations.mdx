@@ -1,0 +1,121 @@
+---
+title: Console variable declarations
+description: The types a console variable may have, the .ripple/cvars.json file that declares them, board scopes, versions and what a save or export carries.
+---
+
+A project declares its [console variables](/explanation/console-variables/) in `.ripple/cvars.json`, edited on the **Console variables** page. This page lists what a declaration holds and which formats carry it.
+
+{/* TODO(shots): <Shot name="cvarsPage" /> */}
+
+## The Console variables page
+
+| Item | Behaviour |
+| --- | --- |
+| Reached from | The project buttons in the activity bar, or the command palette. |
+| Row | A name, a type and a default, plus a **Boards** column. |
+| Renaming | Free for every board that names the variable: a node stores the variable's id, not its name. A script that named the old name stops working. |
+| Forgetting | Asks first. A node that names a forgotten variable reports that the variable is gone. |
+
+## Types
+
+Twenty-four types, and no others: the eight base types on their own, as `list<…>` and as `map<…>`. The same twenty-four are offered by every other editor in the app.
+
+| Type | Holds | Default |
+| --- | --- | --- |
+| `int` | A whole number. | `0` |
+| `float` | A number. | `0.0` |
+| `bool` | `true` or `false`. | `false` |
+| `string` | Text. | empty text |
+| `markdown` | Text with a renderer. | empty text |
+| `asset` | A path to a file in the project. | empty text |
+| `componentRef` | A path to a component. | empty text |
+| `json` | Any JSON value at all. | `{}` |
+| `list<…>` | An ordered list of any of the eight base types. | `[]` |
+| `map<…>` | Names to any of the eight base types. | `{}` |
+
+In the file a type is spelled canonically: `int`, `list<int>`, `map<string>`.
+
+- `markdown`, `asset` and `componentRef` accept the same values as `string`. They say what the variable is for, which decides the field the page draws.
+- `json` holds a list or an object as it stands, so a `list<json>` is a list of lists if that is what it is given.
+- Every type refuses an empty value (null).
+
+Writes are coerced to the declared type when nothing is lost and refused otherwise. The coercion table is under [Console variables](/reference/python/console-variables/#coercion).
+
+### Path-holding variables
+
+A variable of type `asset` or `componentRef`, on its own, in a list or in a map, is filled by name.
+
+| Where | Control |
+| --- | --- |
+| The Console variables page | Type a few letters and pick from the project's files, with the full path beside each. The pick is a chip showing the name; hovering shows the path, which is what the variable stores. A chip whose file is outside the project or no longer there is marked. |
+| A Set variable node's typed value, on a card | A searchable dropdown of the project's files. |
+| The campaign window's panel | A text field: there is no project to offer. |
+
+## `.ripple/cvars.json`
+
+The file sits beside the project's settings and travels with the project. It is not catalogued and is not opened as a document in the viewer panel.
+
+```json
+{
+  "version": 3,
+  "cvars": [
+    { "id": "4f2a…", "name": "gold", "type": "int", "default": 10 },
+    { "id": "9c11…", "name": "tags", "type": "list<string>", "default": [], "scope": ["28cf…"] }
+  ]
+}
+```
+
+| Key | Rule |
+| --- | --- |
+| `version` | Required. A file with no `version` is broken, not old. |
+| `cvars` | Array of objects; absent reads as none. |
+| `id` | Required string. |
+| `name` | Required string, trimmed, non-empty and unique across the file. A repeated name is refused as declared twice. |
+| `type` | One of the twenty-four types, spelled canonically. Anything else is refused. |
+| `default` | Coerced to `type` by the runtime's rule; refused when it does not fit. |
+| `scope` | Array of board ids, each once, order kept. Absent or empty means everywhere; written only when non-empty. |
+
+The reader is strict: every failure names `cvars[i].<key>`.
+
+A file written by a newer build is refused, and the page says so; a broken file is read as empty and never written over. Changing a variable's type keeps the default if it still fits and otherwise takes the new type's own (`3` becomes `3.0`; `"three"` becomes `0`).
+
+### Versions
+
+| Version | Added |
+| --- | --- |
+| 1 | The first file. |
+| 2 | `scope`. |
+| 3 | The twenty-four types. |
+
+A version 1 file reads as version 2 with no scopes. Each bump restamps the document and changes nothing else; each exists so that an older build refuses the file rather than reading it and writing it back without what it could not name. Any build older than the file's version refuses the file, even when no variable is scoped.
+
+## Scope
+
+The **Boards** column is a searchable menu of the project's boards with a box beside each. It reads *Everywhere* until a board is ticked.
+
+| Aspect | Behaviour |
+| --- | --- |
+| Stored as | Board catalog ids, so a renamed or moved board keeps its scope. |
+| Get variable, Set variable, Variable branch | Offer the variables scoped to the node's board and those scoped to none. |
+| A node already naming a variable scoped elsewhere | Keeps its name and shows *Not scoped to this board* under it. |
+| A card that cannot tell which board it is on | Offers every variable. |
+| A board that no longer exists | Its id stays in the file, and the page says *One board it names is gone* under the field. It counts as a board no node can be on. |
+| What a scope does not change | A scope decides where a variable is offered, not where it is read: the campaign holds every variable everywhere, a script names any of them from anywhere, and nothing about a scope reaches a bundle. |
+
+## Saves, agents and exports
+
+| Context | What carries the declarations |
+| --- | --- |
+| Saved game | Every variable, by value and not by type. A save made before the project had a variable holds it at its default; a variable added while a campaign is paused is there on resuming; one removed is gone. Save format 5. |
+| Older build and a newer save | Refused outright, so a `json` variable is never quietly put back to its default. |
+| Compiled campaign | The declarations in the bundle's own form. |
+| Project export (scaffold) | `.ripple/cvars.json` beside the project's settings, so every card still points at its variable. |
+| MCP | `project_info` returns the declarations, with a scope resolved to board paths and anything that no longer resolves dropped. `campaign_state` returns the live values. An agent can point a variable node at a variable by name. |
+
+## Related
+
+- [Console variables](/explanation/console-variables/): what a variable is and why the nodes need no wire.
+- [How to declare and scope a console variable](/how-to/declare-console-variables/)
+- [Console variables](/reference/python/console-variables/): the Python functions and the coercion table.
+- [Project files and the .ripple folder](/reference/project-files/)
+- [MCP tools](/reference/mcp-tools/)

@@ -1,0 +1,54 @@
+---
+title: How to limit a choice
+description: Cap how often a choice can be taken or offer it only while a condition holds.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A choice that is used up, or whose condition is false, stays on screen greyed out and unpressable, so a passage never becomes an empty slide.
+
+## Limit how often a choice can be taken
+
+<Steps>
+
+1. Open the choice on a Narration node.
+2. Fill the *Times* box beside its name with the number of times one playthrough can take it. Leave it blank for as often as the reader likes.
+
+</Steps>
+
+Once the choice is used up it stays on screen, greyed out. The card shows the ceiling as `×3` at the end of the choice's row.
+
+## Offer a choice only while a condition holds
+
+<Steps>
+
+1. Find the small input on the choice's row. Every wired choice has one.
+2. Wire a `bool` into it. The choice is offered only while that value is true.
+
+</Steps>
+
+Times and the condition combine on one choice: *three times, and only while you carry the lantern* is a single choice with both set.
+
+## Place the deciding cards in the flow
+
+A condition is only worked out in time if the cards that decide it sit in the flow leading to the passage. That holds for any card whose answer depends on something the story changes, such as a Comparator reading a dice roll.
+
+<Steps>
+
+1. Put the cards that work out the answer in the flow that leads to the passage. For several, use a Do all with a chain on each branch.
+2. Wire the Do all's `completed` port into the passage.
+3. Play the campaign and check the messages panel. A card that is not in the flow is reported there, with the choice named.
+
+</Steps>
+
+:::caution
+A card hanging off the side of the board is worked out once, before the story starts, and gives the same answer for ever. The messages panel says so and names the choice.
+:::
+
+## Related
+
+- [Diagnostics](/reference/diagnostics/) for the message that names a choice decided before the story starts.
+- [Nodes](/reference/nodes/) for the cards you wire into a choice.
+- [Passages, choices, languages and reading time](/reference/passages/) for what a choice carries.
+- [How a story runs](/explanation/how-a-story-runs/) for why the flow decides when a card is worked out.
+- [The campaign window and saved games](/reference/campaign-window/) for how the player shows a spent choice.

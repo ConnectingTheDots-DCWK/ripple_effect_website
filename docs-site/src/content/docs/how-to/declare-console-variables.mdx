@@ -1,0 +1,84 @@
+---
+title: How to declare and scope a console variable
+description: Add a typed, named variable to the project, limit the boards that offer it, and re-save older games.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+Declare a console variable when a value has to be read or written from more than one board, or from Python, with no wire between them.
+
+{/* TODO(shots): <Shot name="cvarsPage" /> */}
+
+## Declare a variable
+
+<Steps>
+
+1. Open the **Console variables** page from the activity bar's project buttons or from the command palette.
+
+2. In the **Add a variable** row, give it a name. The greyed example is `gate_open`; lower case with underscores suits a script that names it.
+
+3. Pick its type and set its default. The twenty-four types are listed in [Console variable declarations](/reference/console-variable-declarations/).
+
+4. For `asset` and `componentRef`, on their own, in a list or in a map, type a few letters of a name and pick from the project's files; the full path shows beside each. What you pick sits as a chip, and hovering shows the path, which is what the variable stores. A chip for a file that is outside the project or no longer there is marked.
+
+</Steps>
+
+The declaration appears under **Declared**. You can rename it at any time: a node stores the variable's id, so every board that uses it follows. A script that names the old name does not, and is refused when the campaign plays.
+
+To remove one, use **Forget this variable** and confirm. Every node that names it then says the variable is gone, a script that names it is refused at play time, and there is no undo.
+
+## Limit a variable to some boards
+
+<Steps>
+
+1. On the variable's row, open the **Boards** column. It is a searchable menu of the project's boards with a box beside each, and reads **Everywhere** until you tick some.
+
+2. Tick the boards that should offer the variable.
+
+</Steps>
+
+A Get variable, Set variable or Variable branch node on a board then offers the variables scoped to that board or to none. A node already pointed at a variable scoped elsewhere keeps its name and shows **Not scoped to this board** under it. If a board a scope names is deleted, the row says how many are gone.
+
+A scope only filters what a node offers; a script can still name the variable from anywhere.
+
+:::caution
+Ticking a board moves `.ripple/cvars.json` to version 2, which an earlier build refuses rather than reading and writing back without the scopes. A project that never ticks one still moves, because the version belongs to the file and not to the variable.
+:::
+
+## Use the variable on a board
+
+Add a Get variable, Set variable or Variable branch node and pick the variable by name on the card. The three nodes' ports and behaviour are in [Nodes](/reference/nodes/).
+
+{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+
+A value that does not fit the declared type is refused as you type it on a card. A value arriving on a wire that does not fit ends the run with a message naming the node. The rule is in [Console variables](/reference/python/console-variables/#coercion).
+
+## Change a value while testing
+
+In the campaign window, open the panel beside the entities and the console. It shows what every variable holds as the story runs, and lets you change one by hand. **Start over** is then offered, as it is after deleting an entity.
+
+## Re-save older games
+
+A save made before 1.5 has to be replaced: the campaign has to be recompiled, and a save is now format 5.
+
+<Steps>
+
+1. Recompile the campaign.
+
+2. Make a fresh save of any game started before the change.
+
+</Steps>
+
+What a save holds is in [The campaign window and saved games](/reference/campaign-window/).
+
+## Have an assistant point a node at a variable
+
+To have an assistant do this, see [How to connect an AI assistant (MCP client)](/how-to/connect-an-mcp-client/).
+
+## Related
+
+- [Console variables](/explanation/console-variables/): what a variable is and why a scope only filters the offer.
+- [Console variable declarations](/reference/console-variable-declarations/): the types, the file and its versions.
+- [Console variables from Python](/reference/python/console-variables/): the functions and the coercion table.
+- [The campaign window and saved games](/reference/campaign-window/): what a save holds.

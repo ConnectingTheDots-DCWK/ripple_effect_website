@@ -1,0 +1,67 @@
+---
+title: How to find and replace across a project
+description: Search every board, component, passage and variable in a project for a word or pattern, and replace it in one result, one file or everywhere, with a preview.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Find a word or pattern
+
+<Steps>
+
+1. Open the **Search** section of the side bar with `Ctrl+Shift+F`, or run *Find in project* from the command palette.
+
+2. Type in the **Search the project** field. The search starts 300 ms after your last keystroke, and a newer search replaces one still running.
+
+3. Set the options you need with the three toggles beside the field: **Match case**, **Match whole word** and **Use regular expression**.
+
+4. To narrow the search, open **Files and categories**:
+   - **Files to include** and **Files to exclude** take glob patterns separated by commas, such as `chapters/, *.md`.
+   - The category switches are **Boards & components**, **Narration**, **Console variables** and **Other text**, which covers notes, scripts and state machines.
+
+5. Read the results, grouped by file. The status line gives the totals, for example *3 results in 2 files*. Click a result to open the document at the match. **Clear** empties the field and the results, and **Collapse all** folds every file.
+
+</Steps>
+
+Each result says where it is, for example *Choice text (Italian) in "At the gate"*, *Field "Backstory"* or *Line 12, English*. Ids and references never match.
+
+A result tagged **name** is something else that refers to it by name: a variable's name, a state or event of a state machine, an instance, a slot or a metadata key. It is found and marked, and Replace leaves it alone.
+
+If the status line says *This is not a valid pattern*, correct the regular expression. If it says *Stopped at N results. Narrow the search to see the rest.*, add include or exclude patterns or switch categories off.
+
+A line under the results, *N files could not be read*, lists files the search could not read; hover it to see which.
+
+## Replace what you found
+
+<Steps>
+
+1. Type the new text in **Replace with**, under the search field. Each result now shows what it would become, struck through and followed by the replacement. An empty replacement deletes the match. With a regular expression, `$1` and the other capture groups can be used in the replacement.
+
+2. Hover a result or a file to see its actions. To check the effect on a file, choose **Preview the replacement** on the file. It opens as a tab showing **Now** and **After replacing**. For a board, a component or the console variables it shows only the strings that change, each under its location. The preview follows the replacement field as you retype it, and is not saved with your layout.
+
+3. Use **Dismiss** on a result or a file to remove what you do not want replaced from the list.
+
+4. Replace at the scale you need:
+   - **Replace** on a result, to change that match only.
+   - **Replace in this file** on a file's row.
+   - **Replace all**, which asks first. The dialog gives the counts of matches and files and how many names are left alone; confirm with **Replace**.
+
+5. Read the status line. After any replace the search runs again, so the list is what is left.
+
+</Steps>
+
+Replacements are written through the open editors, so you undo them there. A board's replacements, however many, are one undo step.
+
+## When a replacement is not applied
+
+The status line says so in two cases:
+
+- **The text changed since the search.** The result is skipped and counted: *1 was skipped: its text changed since the search*. Search again.
+- **The file changed on disk under unsaved edits.** It is not overwritten: *1 file changed on disk and was not saved; the replacement is in its open editor*. The replacement is in that editor, unsaved.
+
+## Related
+
+- [The workspace window, menus and palette](/reference/workspace-window/)
+- [Passages, choices, languages and reading time](/reference/passages/)
+- [Console variables](/explanation/console-variables/)
+- [A project is a folder](/explanation/projects-are-folders/)

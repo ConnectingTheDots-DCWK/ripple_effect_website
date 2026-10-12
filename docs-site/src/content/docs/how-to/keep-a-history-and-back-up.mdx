@@ -1,0 +1,146 @@
+---
+title: How to keep a history and back up a project
+description: Start a history, make save points, branch a storyline, back the project up, resolve a conflict and recover an undone change.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
+
+The history is built into the app and lives behind **Changes** in the side bar, the second icon on the activity bar beside Files.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Start a history
+
+Every file in a project is plain text, so the folder can take a history at any point. Starting one needs a name and an email address and nothing else.
+
+<Steps>
+
+1. Open **Changes** in the side bar. A project with no history shows *This project has no history yet.*
+
+2. Choose **Let us help you set this up**.
+
+3. Check the name and email address. If git is already set up on the computer they are filled in from `~/.gitconfig`; otherwise enter your own. They are written into this project only.
+
+4. Choose **Start keeping a history**.
+
+</Steps>
+
+This starts the history in the project folder, writes a short list of things to leave out and takes a first save point of everything. An ignore file you already had is not touched, and only what is missing is added. Line endings are kept consistent for co-authors on other platforms. Files too large to ever take back out again are left out and named.
+
+`.ripple/workspace.json` is the one file of the app's that is ignored, because it is per-machine. Commit the rest of `.ripple/`. [Project files and the .ripple folder](/reference/project-files/) says what each file is for.
+
+## Make a save point
+
+<Steps>
+
+1. Open **Changes**. Files are listed in two groups: **Ready to save** and **Not yet included**. Click a file to see it side by side against the version before it.
+
+2. Move files into **Ready to save** with **Mark ready (stage)**, or all of a group at once with **Mark all of these ready (stage)**. **Take back out (unstage)** reverses it.
+
+3. In the box at the foot of the section, write a line under **What changed?**. Choose **Add more detail** if you want a longer note.
+
+4. Choose **Save**, which reads *Save N files*.
+
+</Steps>
+
+Coloured dots mark changed files in the file tree, and the folders holding them, so you can follow a changed chapter down without opening anything. Right-click a file in the tree to see what changed in it without going through the list. The list keeps up on its own as files change anywhere in the project. If the folder is not being watched, choose **Look again**.
+
+To take the last save point back, use **Take it back** in **History**. Every file stays where it is and goes back to being marked ready.
+
+**History**, beside Changes, lists what was saved, by whom and how long ago.
+
+## Branch a storyline
+
+A storyline is a branch. Use the storyline commands in the command palette.
+
+<Steps>
+
+1. Choose **New storyline…**, name it, and choose **Start it**. It starts at the current save point and you move onto it.
+
+2. To move to another, choose **Move to another storyline…**. If you have unsaved work, the app asks first. Choose **Set them aside and move** to put the work aside and bring it back later, or cancel and save it first.
+
+3. To rename one, choose **Rename this one…**. To remove one, choose **Delete one…** and pick which.
+
+</Steps>
+
+A deleted storyline is kept and can be put back with **Put back**.
+
+## Set work aside
+
+Use this to park half-finished work and return to it later.
+
+<Steps>
+
+1. Open the set-aside view in **Changes** (its tooltip reads *Stashes, and what has been undone*).
+
+2. Choose **Put what is here out of the way** and name what you are half-way through. The project goes back to its last save point.
+
+3. To return to it, choose **Bring back**. The entry stays in the list until you throw it away.
+
+</Steps>
+
+:::caution
+**Throw it away** is the one action here that cannot be undone.
+:::
+
+## Back the project up
+
+Do this to keep a copy of the project somewhere else.
+
+<Steps>
+
+1. Choose **Back this up somewhere**.
+
+2. Under **Address**, give a web address or the full path to a folder. A shared or synced folder needs no account.
+
+3. For a web address, make the repository on the site first. The app does not create it. On GitHub that is New repository, and the address is under the Code button, on the HTTPS tab. Use the HTTPS address, not SSH.
+
+4. Check whether the repository is public or private. A public repository means anyone can read your story, including every draft you save. Choose private unless you mean otherwise. It can be changed later on the site.
+
+5. Choose **Use this**. A web address asks you to sign in once, with a personal access token you make on that site. Enter the username and the token, then choose **Sign in**. The token is kept on this computer and shared by every project you back up there. If the computer has no password store it is kept for this session only and you are asked again next time.
+
+6. Use the button that now sits in the Changes section. It tells you what it is about to do before it does it: *Check for changes*, then for example *Get 3 changes*, then *Back up 2 save points*, or *Back this storyline up* the first time.
+
+</Steps>
+
+Backing up to a repository that does not exist yet comes back looking like a wrong password. Under **More**, use **Check without taking anything** to look without getting changes, **Change where it is backed up…** to change the address, and the item that reads "Sign in to" followed by the site's host name and "again…" to replace the token.
+
+## Resolve a conflict
+
+When two people changed the same passage, the file is marked **Two versions disagree**.
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+<Steps>
+
+1. Open the file. Both versions are shown side by side.
+
+2. Choose **Keep mine** or **Take theirs**, or choose **Write it myself…** and write the text under **What it should say**. Where the other side deleted the file, choose **Keep it deleted** or **Let theirs delete it**.
+
+3. Repeat for each file. A file that is not text has no readable difference to show: keep one or the other.
+
+</Steps>
+
+Nothing is touched until you pick, and your files are left as they were while you decide, so leaving it for later costs nothing. Choose **Leave it for now** to defer. An assistant connected over MCP is refused a document with a conflict pending.
+
+## Recover an undone change
+
+<Steps>
+
+1. To undo changes to a file, choose **Undo these changes** on it and confirm with **Undo them**. What is thrown away is kept first.
+
+2. To get it back, choose **Put back** in the message that offers it. That message stays in Messages, under the documents, after the notification has gone.
+
+3. Later, open the set-aside view. **Recently undone** lists everything you have undone.
+
+</Steps>
+
+The undone list is kept since the project was opened and starts again when you close the app. What each held is still in the history afterwards.
+
+## Related
+
+- [Version control in the app](/reference/version-control/) for every control and what it does.
+- [History, sharing and conflicts](/explanation/history-and-sharing/) for why the app shares the folder and never lets autosave write over a change.
+- [A project is a folder](/explanation/projects-are-folders/) for what travels with the folder.
+- [Project files and the .ripple folder](/reference/project-files/) for what lives in `.ripple/` and which files are ignored.

@@ -1,0 +1,81 @@
+---
+title: Soundscapes and one-shot sounds
+description: Why a story has two shapes of sound, a timeline file and a single cue, and how the runtime decides what is playing while a host renders it.
+---
+
+import Shot from '../../../components/Shot.astro';
+
+A story can carry sound in two shapes, and they differ in what they are, not in how loud or long. A **soundscape** is what plays *under* a scene: music, rain on a roof, a bell at the second minute. It is laid out on a timeline, kept in a file of its own, and named by the passage it belongs to. A **sound** is one file played once, now, from a node or from a script, while the story carries straight on.
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## Audio belongs to the project, not to a node
+
+Every audio file in the project folder is in the registry: an `.ogg`, `.mp3`, `.wav`, `.flac`, `.m4a`, `.aac` or `.opus` dropped anywhere in the folder shows up in every picker without a file dialog. This is the same stance the app takes toward the rest of a project, a view onto a folder rather than a structure it imposes. *Import…* is there for a file that lives elsewhere, and copies it to `.ripple/external/` the way a picture picked from outside the project is. An audio file also opens in a tab of its own with play, pause and a scrub bar.
+
+## A soundscape is a file
+
+A soundscape is a `*.soundscape.json`: a timeline of clips over one clock. The timeline itself has a length and can loop, which is what a *Loop* clip follows. Keeping it as a file of its own, rather than as fields on a node, is what lets several passages name the same one and lets it be edited as a timeline rather than as a form. A clip names its audio by catalogue id, as a Narration node names the soundscape, so renaming or moving a file never breaks a clip. The file carries integer milliseconds throughout and every default written out, and an earlier build refuses a newer file rather than half-reading it. [Soundscape files](/reference/soundscape-file/) has the keys.
+
+### The picture is the sound
+
+Each clip is drawn as a block with the shape of its sound inside it: the part of the file it plays. That choice matters for how the editor feels. Pulling a ledge moves the picture with the sound, so you trim to a beat by eye rather than by typing a number and listening. The shape appears a moment after the clip does, since reading a file's shape means decoding it.
+
+A clip's playback mode says how it behaves when the timeline comes round. Auto-loop is the one that ignores the timeline's end and repeats for as long as the soundscape plays, which suits music. Its rest sets the character: with none, the repeat is gapless, a bed; with one, the clip is a bell every so often on its own rhythm across the whole soundscape. [Soundscape files](/reference/soundscape-file/) defines each mode and the rest.
+
+### A fade is a length, not a moment
+
+A clip's fades are drawn on it and you pull them. What the two ramps leave of the clip is the shape you see: a slope up at the start, a slope down at the end, and the quiet part shaded over the waveform. The slopes carry grips you can drag; [How to add sound to a story](/how-to/add-sound-to-a-story/) has the steps. An auto-loop clip shows the same shape on every repeat, because that is where it ramps.
+
+The panel's fields say how long a ramp lasts, not when it begins, which is why a quarter-second fade reads `0.25 s` and not `0:00.250`. Writing it as a length is what keeps the drawing and the number the same thing: the grip and the field edit one value. A clock typed there is still understood.
+
+Because an auto-loop ramps at every turn of its clip, rest or no rest, a file that does not loop cleanly can still be used as a bed: the fade covers the seam.
+
+A clip whose two ramps together outlast it is allowed, and it sounds the way it looks. It rises and falls without ever reaching full, because the two ramps are taken at whichever is quieter rather than multiplied together. The model clamps nothing; the drawn shape is the rule.
+
+The same reasoning applies to the timeline as a whole. Its fade in and fade out are lengths too: the whole soundscape rises when it begins and falls when it is replaced. Its volume is the file's own, and every clip's volume is relative to it, so there is no second master to keep in step. A clip past the timeline's length is legal and shaded, since the length is a field you may lengthen next. What lies past it is cut at play time rather than refused in the editor.
+
+### Lanes are for you
+
+Lanes can be named, such as *Bed* or *Weather*, and locked. A locked lane takes no clip, so a bed laid out once stays where it was put while everything else is moved around it. These are working aids for the author.
+
+Mute and solo are your ears, not the file. Every lane header carries an **M** and an **S**, and a clip can be silenced on its own from its panel; silenced clips are drawn faint and say so. None of it is saved and none of it reaches the story. A soundscape plays every clip it holds, because what a soundscape says is what the story will play.
+
+The tab previews through the same thing the campaign plays through, so a change is heard where the clock is: a gain slider is live, and a dragged clip does not restart the bed under it. The whole file is one undo, the toolbar's, so a ledge pulled on the timeline and a volume typed in the panel share one history.
+
+## What is playing, and when
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+A soundscape is chosen on a **Narration** node, in a row under the choices, and from there it plays **through every passage after it that brings none of its own**. A tavern goes on being a tavern. Naming the same soundscape again on a later passage does not start it over.
+
+Two soundscapes never sound at once. The old one finishes its fade before the new one begins its own. The row has two more answers besides a soundscape. *Silence* stops whatever is playing outright. A passage with *None* changes nothing. And a soundscape marked **tied** belongs to its passage: it stops when the story moves on, instead of staying in force. Tied is for the sound that is part of one page, such as a fire that should not follow the reader out of the room.
+
+A saved game remembers what was playing, so a load hears the tavern before it sees the page. A tied soundscape comes back only at its own passage. See [How a story runs](/explanation/how-a-story-runs/) for where this sits among a story's other state.
+
+### The runtime decides, the host renders
+
+Which soundscape is in force is the **runtime's** decision, and the runtime plays nothing. It tells whatever is hosting the story which soundscape is in force, and the host renders it with whatever it has. The play window renders it through the app's mixer. The command-line player prints a line per change and hears nothing, and that is conforming.
+
+This division is why the rule above can be the same everywhere. Every rule about what is in force runs once, in the engine, and is checked by the same fixtures whichever host plays them. A host with no speakers, or a game with its own audio middleware, takes the answer and does the rendering its own way. [What an export is](/explanation/what-an-export-is/) says what a compiled campaign carries for that host.
+
+## A sound, once
+
+A one-shot sound is the other half of the split. Nothing waits for it. The **Play sound** node plays one file, once, at a volume and a speed, and its `completed` port fires the moment the sound is cued, not when it ends. A door slams and the next passage is already showing. That follows from the sound being an event and not a state: there is nothing for the story to hold until it finishes.
+
+The same call is available from a Script node as `play_sound("sfx/bell.ogg")`, by the project's spelling of the path or the bundle's, with `volume` and `speed` by name. There is no way to stop a sound, wait for one or ask what is playing. A function that could be awaited is one an author would await, so a cue is fire and forget by construction.
+
+A passage's snippets are refused it, and that is a rule rather than a circumstance. It is not the rule that keeps a passage from writing an entity: a sound changes no state, it *happens*. Snippets run again on every redraw and every change of language, so a bell rung from prose would ring again for a reader who switched language, with no node on the board to explain why. A sound that belongs there goes on a Play sound node before the passage, or in a Script node.
+
+Python cannot put a soundscape in force either. What plays under a passage is set on the passage, as a document the whole project can reuse, and a script that could set one would be a state change with no node on the canvas to point at.
+
+## Hearing it
+
+The campaign window's header has a **mute** button, remembered between sessions. It is the reader's, and it belongs to the campaign: previewing a soundscape in its own tab is never silenced by it, since someone editing a soundscape has asked to hear it.
+
+## Related
+
+- [How to add sound to a story](/how-to/add-sound-to-a-story/): make a soundscape, attach it to a passage, cue a sound.
+- [Soundscape files](/reference/soundscape-file/): the keys a soundscape carries.
+- [Sounds in Python](/reference/python/sounds/): the `play_sound` call and its arguments.
+- [Nodes](/reference/nodes/#play-sound): the Play sound node.
