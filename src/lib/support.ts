@@ -18,8 +18,14 @@ export const support = {
   description: "Support me on Buy me a coffee!",
   message:
     "Hope you find the software useful! If you do and you're feeling generous buy me coffee! (I don't drink coffee BTW)",
-  /** Buy Me a Coffee's brand blue, from the snippet this was built from. */
-  colour: "#5F7FFF",
+  /**
+   * Buy Me a Coffee's own yellow — the colour their widget and buttons wear by
+   * default, so the ask is recognisably theirs. It was their blue variant
+   * while this site's accent was a blue too; once the site went monochrome
+   * the blue matched nothing, and a third party's mark is better in its own
+   * colours than borrowing ours.
+   */
+  colour: "#FFDD00",
 } as const;
 
 /**
@@ -35,8 +41,8 @@ export const support = {
 export const supportButton = {
   src:
     "https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕" +
-    `&slug=${support.slug}&button_colour=5F7FFF&font_colour=ffffff` +
-    "&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00",
+    `&slug=${support.slug}&button_colour=FFDD00&font_colour=000000` +
+    "&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff",
   width: 235,
   height: 50,
 } as const;
