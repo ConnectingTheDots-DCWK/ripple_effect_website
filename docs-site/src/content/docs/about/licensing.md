@@ -79,7 +79,7 @@ grant. Pull requests against the app are not open.
 ## What *is* open source
 
 Several of the packages underneath the app are separate projects with their
-own repositories, published under the MIT licence — two of them ours, one
+own repositories, published under the MIT licence — most of them ours, one
 not. They are named on the [open source page](/about/open-source/). That
 distinction is worth keeping straight: the packages are open source, and the
 app is not.
