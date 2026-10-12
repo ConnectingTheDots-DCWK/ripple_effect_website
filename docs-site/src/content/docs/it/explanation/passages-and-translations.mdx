@@ -1,0 +1,94 @@
+---
+title: Passaggi e traduzioni
+description: Perché un passaggio è una cartella di file Markdown, uno per lingua, e che cosa ne deriva per i collegamenti, le scelte, l'aggiornamento delle traduzioni e il tempo di lettura.
+sidebar:
+  order: 1
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Un passaggio è Markdown. Su una lavagna è una scheda Narration; su disco è un **passaggio localizzato**, una cartella che l'app mostra come un unico file e che contiene un `.md` per ogni lingua del progetto.
+
+<FileTree>
+- chapters/
+  - the_gates.graph.json
+  - reaching_the_gates.loc.narr.bdl/
+    - en-US.md il passaggio, nella lingua in cui è scritta la storia
+    - it-IT.md la sua traduzione
+    - touch.json quando ciascuno è stato modificato l'ultima volta, così un clone può dire quale è più vecchio
+</FileTree>
+
+<Shot name="localisation" />
+
+Quasi tutto ciò che c'è di insolito nei passaggi deriva da due decisioni: un passaggio in più lingue è *un solo* documento, e ciò che sta su disco è comunque Markdown ordinario.
+
+## Un documento, più file
+
+L'app presenta la cartella come un unico documento con un chip per ogni lingua. Sotto, ogni lingua è un semplice file Markdown, quindi un traduttore a cui si consegna la cartella può lavorare con qualsiasi editor e un `git diff` di una traduzione si legge come prosa.
+
+L'app non scrive alcuna sintassi speciale nel testo. Le eccezioni sono i due punti in cui un passaggio può contenere Python, uno span inline `{{ … }}` e un blocco delimitato ```` ```ripple ````, così che una frase possa variare invece di dividersi in due passaggi. Un passaggio si limita a *leggere*; che cosa significhi è argomento di [Python in una storia](/it/explanation/python-in-a-story/).
+
+## Perché un collegamento inizia con una barra
+
+L'editor Markdown è lo stesso ovunque nell'app: un rendering dal vivo, una barra degli strumenti di formattazione e immagini incorporate, locali e remote, raster e SVG. Un'immagine scelta da fuori del progetto viene prima copiata in `.ripple/external/`, a meno che **Importazione di risorse esterne** non sia disattivata nel menu File. In quel caso resta collegata dov'è, e Messaggi lo segnala. La procedura è in [Come scrivere un passaggio](/it/how-to/write-a-passage/).
+
+Un collegamento scritto dall'app inizia con una barra, come in `![map](/art/map.png)`, ed è misurato dalla radice del progetto, come lo legge GitHub. Un passaggio è qualcosa che si sposta: in un altro capitolo, sotto un'altra lavagna, accanto a una cartella rinominata. Un percorso misurato dal passaggio andrebbe riscritto ogni volta. Un percorso misurato dalla radice del progetto non si cura di dove sia il passaggio, quindi l'immagine punta ancora dove puntava.
+
+Un collegamento scritto a mano senza la barra mantiene il significato che ha sempre avuto: relativo alla cartella *genitore* del bundle, come lo leggerebbe un file al posto del bundle. Quindi `![](../art/map.png)` accanto a `chapters/the_gates.graph.json` significa `art/map.png`. Il bundle è una cartella, ma per chi scrive è un file, e il percorso relativo viene risolto come se lo fosse. Funzionano entrambe le forme.
+
+## Un passaggio è un modello
+
+A una scheda Narration si possono passare dei valori, e vale la pena descrivere come funziona. I nomi che un passaggio legge sono dichiarati sulla **scheda**, non nel file del passaggio: un nome e un tipo ciascuno, scritti come le porte di qualunque altra scheda. La scheda ottiene una porta per ogni nome, e ciò che vi è collegato è ciò che il Python del passaggio vede con quel nome. `You owe {{ gold }} crowns.` legge un numero dalla porta `gold`. Uno slot con un valore predefinito e nulla di collegato usa il valore predefinito.
+
+Mettere i nomi sulla scheda permette a un passaggio di essere letto da due schede che lo riempiono in modo diverso. La prosa è il file, gli argomenti sono la scheda, e il passaggio è quindi un modello e non un pezzo unico. Un passaggio aperto da solo, nella sua scheda del documento, non ha nessuna scheda da interrogare, quindi i nomi che gli sono stati passati vengono suggeriti mentre scrivi solo se lo apri da una lavagna. Un nome che la scheda non fornisce appare come un piccolo avviso nel punto in cui si trovava, e il resto del passaggio viene mostrato come al solito.
+
+Un nome deve essere un nome che Python sa leggere, perché è una variabile che lo script userà. Una lavagna che ne contiene uno che non lo è viene segnalata come [`W.GE.15`](/it/reference/diagnostics/). La stessa regola vale per gli ingressi e le uscite di una scheda Script. La regola esatta è in [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/).
+
+## Le scelte si esauriscono e hanno condizioni
+
+Le scelte di una scheda Narration hanno due limiti oltre al testo: quante volte una sessione di gioco può sceglierle, e una domanda che deve avere risposta affermativa. Entrambi lasciano la scelta a schermo quando dicono di no, in grigio e non selezionabile. È voluto: un passaggio non diventa mai silenziosamente una diapositiva vuota, e sia il lettore sia l'autore vedono che l'opzione esiste e non è disponibile.
+
+I due limiti si combinano: *tre volte, e solo finché porti la lanterna* è una sola scelta con entrambi. La procedura è in [Come limitare una scelta](/it/how-to/limit-a-choice/).
+
+Conta dove si trova la scheda che calcola la risposta, ed è l'unico caso in cui la disposizione di una lavagna cambia il comportamento. Una scheda appesa al lato della lavagna viene calcolata una volta, prima che la storia inizi, e risponde sempre allo stesso modo. Una scheda nel flusso che porta al passaggio viene calcolata quando la storia ci arriva. Quindi le schede vanno messe nel flusso. Un Comparator che legge un tiro di dado segue la stessa regola. Il pannello Messaggi indica una scelta la cui risposta non può mai cambiare (vedi [Diagnostica](/it/reference/diagnostics/)), perché la lavagna sembra a posto e la storia semplicemente non reagirebbe mai. Perché il flusso si comporti così è spiegato in [Come funziona una storia](/it/explanation/how-a-story-runs/).
+
+## Le lingue e che cosa succede cambiandole
+
+La lingua in cui è scritta una storia si sceglie quando si crea il progetto. Il punto di partenza viene dalle impostazioni del tuo computer, ma la scelta viene proposta e non applicata al posto tuo. Le lingue in cui viene tradotta si scelgono in Impostazioni progetto, nella pagina *Lingue*.
+
+Attivare una lingua di traduzione mette una traduzione vuota in ogni bundle. Disattivarne una non elimina nulla: i file restano, l'editor continua a mostrarli contrassegnati come ritirati, e ai lettori non viene più offerta quella lingua. Se vuoi che le parole spariscano, ti viene chiesto una sola volta, al salvataggio, e **Mantienile** è il pulsante a portata di dito; nulla viene eliminato facendo clic senza leggere la finestra di dialogo o chiudendola.
+
+Impostazioni progetto dice che cosa succede cambiando *Lingua del testo*. Non tocca la tua prosa. Ogni passaggio riceve un file vuoto per la nuova lingua, e tutto ciò che hai scritto resta dov'è, come traduzione. Finché non lo riporti nella nuova lingua, i tuoi passaggi vengono riprodotti vuoti. Per ora non esiste una migrazione. La procedura è in [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
+
+## Perché non ci si può fidare delle date dei file
+
+I chip delle lingue in cima a un bundle rappresentano ciascuno una lingua. Un **punto** su un chip significa che quella traduzione è più vecchia del suo originale, e il pannello Messaggi elenca tutte quelle rimaste indietro nell'intero progetto.
+
+Il modo ovvio per sapere se una traduzione è obsoleta è confrontare le date di modifica dei file, e l'app non può farlo. Un `git clone` imposta la data di ogni file al momento del checkout, quindi le date dei file non dicono quale file sia più vecchio. L'informazione deve viaggiare con il progetto, perciò sta in `touch.json` nel bundle, che registra quando ogni lingua è stata modificata l'ultima volta.
+
+Il modo in cui il file viene scritto deriva da dove viaggia. Usa chiavi ordinate e orari UTC, così che salvarlo due volte produca gli stessi byte e resti silenzioso in un diff. Un conflitto tra due traduttori è fatto di tre righe che una persona può risolvere, non di un merge che nessuno vuole leggere. Vedi [Cronologia, condivisione e conflitti](/it/explanation/history-and-sharing/) per il quadro più ampio del lavoro su un progetto con altre persone.
+
+## Tempo di lettura
+
+{/* TODO(shots): <Shot name="readingTime" /> */}
+
+Sotto ogni passaggio c'è il conteggio delle parole a sinistra e, a destra, la scelta del ritmo di lettura, lento, medio o veloce, con la stima accanto. Si aggiorna mentre scrivi, e il ritmo che scegli viene ricordato.
+
+La stima conta nella lingua in cui stai davvero scrivendo: sono cinquantaquattro, ciascuna con la propria velocità di lettura, quindi un passaggio in tedesco e lo stesso passaggio in inglese danno tempi di lettura simili anche se il numero di parole è diverso.
+
+Contare le parole non funziona affatto per alcune scritture. Giapponese, cinese, thai e khmer si scrivono senza spazi tra le parole, e contarli a parole dà una risposta sbagliata di un fattore dieci. Vengono contati a caratteri. Un passaggio che mescola scritture viene contato in entrambi i modi, ogni parte con la propria regola.
+
+La stima dice anche quanto fidarsene. Diciassette lingue hanno cifre tratte da studi sulla lettura. Le altre sono ricavate da una lingua affine, e il suggerimento sulla stima dice quale stai guardando. Un numero con falsa precisione sarebbe peggio di uno che ammette da dove viene.
+
+Il codice non conta come prosa. Gli snippet Python e i blocchi delimitati vengono tolti prima di contare qualsiasi cosa, e un collegamento vale quanto le parole che leggi e non la lunghezza del suo URL, dato che nessuno dei due si legge come testo.
+
+Un passaggio che mescola lingue può essere contato come tale, e l'impostazione è disattivata in modo predefinito e si attiva per progetto: i paragrafi scritti in una lingua diversa da quella del passaggio vengono individuati e valutati alla velocità di quella lingua. È un'impostazione del progetto perché il fatto che la tua prosa mescoli lingue riguarda la storia, non un passaggio o un lettore. È disattivata in modo predefinito perché legge ogni paragrafo dopo ogni pausa nella digitazione. I paragrafi brevi vengono ignorati, perché una lingua stabilita da una sola riga è indovinata, non conosciuta.
+
+## Vedi anche
+
+- [Come scrivere un passaggio](/it/how-to/write-a-passage/), per l'editor, le immagini e la riga Legge.
+- [Come limitare una scelta](/it/how-to/limit-a-choice/) e [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/), per applicare quanto descritto qui.
+- [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/), per i controlli esatti e i valori predefiniti.
+- [File di progetto e cartella .ripple](/it/reference/project-files/), per il bundle e `touch.json` su disco.
+- [Come giocare e testare una campagna](/it/how-to/play-a-campaign/), per come il player mostra una scelta esaurita.

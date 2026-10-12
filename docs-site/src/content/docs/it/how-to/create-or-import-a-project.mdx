@@ -1,0 +1,70 @@
+---
+title: Come creare o importare un progetto
+description: Crea un nuovo progetto, copia un progetto di esempio o apri dalla schermata iniziale una cartella che hai già.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+La schermata iniziale è una griglia dei progetti che l'app conosce. Ha due pulsanti: **Nuovo progetto** e **Importa una cartella**.
+
+## Creare un progetto vuoto
+
+<Steps>
+
+1. Nella schermata iniziale, scegli **Nuovo progetto**.
+2. Lascia la barra a sinistra della finestra di dialogo su **Vuoto** (*Una cartella vuota*).
+3. Inserisci un **Titolo**. Aggiungi una **Descrizione** e una **Copertina** se vuoi; altrimenti per la copertina viene generato un colore.
+4. Scegli dove deve andare la nuova cartella.
+5. In **Lingua del testo**, controlla la lingua. Il punto di partenza viene dalle impostazioni del tuo computer, ma la scelta è tua. I tuoi passaggi iniziano in questa lingua; quelle in cui li traduci si scelgono più tardi, nelle impostazioni del progetto.
+6. Scegli **Crea**.
+
+</Steps>
+
+L'app crea la cartella e un solo file al suo interno, `.ripple/project.json`, e nient'altro.
+
+{/* TODO(shots): <Shot name="newProject" /> */}
+
+Se nel percorso che hai scelto esiste già una cartella con quel nome, la finestra di dialogo rifiuta e ti dice di usare **Importa una cartella**.
+
+## Partire da un progetto di esempio
+
+<Steps>
+
+1. Scegli **Nuovo progetto**.
+2. Nella barra a sinistra della finestra di dialogo, scegli **Modelli** (*Una copia di un esempio*).
+3. Scegli un esempio. Questa versione include *The City Of Elsenmar*.
+4. Scegli dove deve andare la copia, poi scegli **Crea**.
+
+</Steps>
+
+La copia è tua e puoi modificarla; più tardi ne puoi creare un'altra.
+
+{/* TODO(shots): <Shot name="templates" /> */}
+
+## Importare una cartella che hai già
+
+<Steps>
+
+1. Scegli **Importa una cartella**.
+2. Scegli la directory. Si apre la finestra di dialogo **Importa un progetto**.
+3. Controlla ciò che mostra la finestra di dialogo, poi scegli **Importa**.
+
+</Steps>
+
+- Se la cartella era già un progetto, controlla i campi precompilati e scegli **Importa**. Titolo, descrizione, copertina e lingua arrivano già compilati e nella cartella non viene scritto nulla. Per cambiarne uno, apri il progetto e usa le impostazioni del progetto.
+- Se non lo era, dagli un nome e scegli **Importa**. La lingua viene dedotta dal tuo computer e annotata, perché per ora nella cartella nulla la indica. L'unica cosa scritta nella cartella è una piccola cartella `.ripple/` con le impostazioni del progetto; i tuoi file vengono mostrati così come sono.
+- Se la copertina indicata dalla cartella manca, viene generato un colore al suo posto.
+- Se le impostazioni della cartella sono state scritte da una versione più recente dell'app, vengono lasciate intatte invece di essere lette e riscritte. La cartella viene comunque importata e aprirla mostra lo stesso avviso. Aggiorna l'app per leggerle.
+
+## Quando la cartella è già un progetto
+
+Se la cartella che scegli, per un nuovo progetto o per un'importazione, è già usata da un altro progetto nella schermata iniziale, l'app te lo dice e non ne aggiunge un secondo. Per il motivo, vedi [Un progetto è una cartella](/it/explanation/projects-are-folders/).
+
+Un progetto spostato o eliminato da un altro programma scompare dalla griglia; non c'è nient'altro da tenere allineato.
+
+## Vedi anche
+
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/) per capire perché l'app scrive così poco nella tua cartella.
+- [File del progetto e cartella .ripple](/it/reference/project-files/) per sapere cosa contiene `.ripple/project.json`.
+- [La finestra di lavoro, i menu e la paletta](/it/reference/workspace-window/) per i campi della finestra di dialogo.
+- [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/) per aggiungere o cambiare lingue dopo che il progetto esiste.

@@ -1,0 +1,61 @@
+---
+title: Come aggiungere una state machine a una lavagna
+description: Crea un file di state machine, mettilo su una lavagna come scheda State machine e dirama la storia in base allo stato che restituisce.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Usa una state machine per una porta chiusa a chiave, sbloccata o aperta, oppure per una missione offerta, accettata o completata.
+
+## Crea la macchina
+
+<Steps>
+
+1. Nell'albero dei file, fai clic con il tasto destro e scegli **Nuova State machine**. Il file è `*.fsm.mmd` e contiene un `stateDiagram-v2` di mermaid.
+2. Scrivi la macchina nell'editor. Ogni freccia è `From --> To : event`, e `[*] --> S` indica lo stato iniziale:
+
+   ```text
+   stateDiagram-v2
+       [*] --> Locked
+       Locked --> Unlocked : key
+       Unlocked --> Open : push
+       Open --> Unlocked : pull
+       Unlocked --> Locked : lock
+   ```
+
+3. Correggi tutto ciò che l'editor segnala sulla relativa riga. [File di state machine](/it/reference/state-machine-file/) elenca ciò di cui l'editor avvisa.
+
+</Steps>
+
+## Mettila su una lavagna
+
+<Steps>
+
+1. Trascina il file `.fsm.mmd` dall'albero dei file sulla lavagna. Diventa una scheda **State machine** che punta al file. In alternativa, aggiungi una scheda State machine e scegli la macchina dall'elenco sulla sua scheda.
+2. Collega o scrivi l'**Evento** che la scheda riceve. Lascialo vuoto per leggere lo stato senza far avanzare la macchina. Usa `[*]` come evento per riportare la macchina al suo stato iniziale.
+3. Se due schede della storia devono pilotare copie separate della stessa macchina, assegna a ciascuna un proprio nome di **Istanza**. Per una missione singola non assegnarne nessuno: se lasciata vuota, l'istanza è il nome della macchina stessa, quindi tutte le schede senza istanza pilotano la stessa macchina.
+
+</Steps>
+
+## Dirama in base allo stato
+
+<Steps>
+
+1. Aggiungi una scheda **Switch** e collega l'uscita **state** della scheda State machine al suo ingresso.
+2. Nelle righe dello Switch, scrivi un nome di stato per riga. Ogni riga ha una propria uscita, presa quando lo stato corrisponde a quel nome.
+3. Collega l'uscita di flusso della scheda State machine al resto della lavagna. Esce da **changed** quando è scattata una freccia o la macchina è stata riportata all'inizio, e da **unchanged** negli altri casi.
+
+</Steps>
+
+Un evento per cui lo stato corrente non ha alcuna freccia non è un errore. La macchina resta dov'è e il flusso prende **unchanged**, quindi decidi a valle cosa farne.
+
+## Cosa viene conservato
+
+Una macchina ricorda il proprio stato per tutta la sessione di gioco, tra lavagne e salvataggi. Ricominciare l'azzera.
+
+## Vedi anche
+
+- [State machine](/it/explanation/state-machines/): perché una state machine è un disegno e in cosa differisce da una variabile di console.
+- [File di state machine](/it/reference/state-machine-file/): la sintassi mermaid che l'app legge e ciò che rifiuta.
+- [Schede](/it/reference/nodes/): le schede State machine e Switch.
+- [Come giocare e testare una campagna](/it/how-to/play-a-campaign/): verifica che la macchina si muova come previsto.

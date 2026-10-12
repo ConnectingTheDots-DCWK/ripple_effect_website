@@ -1,0 +1,101 @@
+---
+title: Programmi di installazione e primo avvio
+description: Il programma di installazione di ogni piattaforma, cosa richiede e dove si installa, le pagine che mostra il primo avvio e cosa dicono Windows e macOS di un programma di installazione non firmato.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Ripple Effect si scarica una volta per piattaforma dalla [pagina di download](https://ripplefx.app/download), che punta sempre all'ultima versione. Dopo la prima installazione l'app si aggiorna da sola; [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/) spiega come.
+
+## Programmi di installazione
+
+| Piattaforma | Programma di installazione | Requisiti | Si installa in |
+| --- | --- | --- | --- |
+| Linux, Debian e Ubuntu | `.deb` | glibc 2.38 o successiva: Ubuntu 24.04+, Debian 13+ | `/opt/ripple_effect` |
+| Linux, Fedora e RHEL | `.rpm` | glibc 2.38 o successiva: Fedora 39+ | `/usr/share/ripple-effect` |
+| Windows | Setup `.exe` | Windows 10 o 11 | `%LOCALAPPDATA%\Programs\Ripple Effect` |
+| macOS | `.dmg` | macOS 12 Monterey o successivo | Applicazioni, trascinandovi l'app |
+
+- **Linux.** Entrambi i pacchetti mettono `ripple_effect` nel `PATH`. Il requisito sulla glibc esiste perché il controllo di versione include una libgit2 che la richiede, e un pacchetto che dichiarasse meno si installerebbe per poi non riuscire ad aprire un repository; un pacchetto rifiutato con un errore su `libc6` o `GLIBC_2.38` dipende da questo requisito. Il `.deb` dichiara tre librerie di runtime per l'audio: ALSA, PulseAudio e PipeWire.
+- **Windows.** Si installa solo per l'account corrente e non chiede mai i privilegi di amministratore. Eseguire un programma di installazione più recente sopra un'installazione esistente la aggiorna sul posto.
+- **macOS.** Una sola build universale, per Apple silicon e Intel.
+
+Comandi di installazione per Linux:
+
+```sh
+sudo apt install ./ripple_effect-<version>-linux.deb
+sudo dnf install ./ripple_effect-<version>-linux.rpm
+```
+
+## Il primo avvio
+
+Il primo avvio mostra alcune pagine prima della home, in quest'ordine.
+
+| Pagina | Si può saltare | Contenuto |
+| --- | --- | --- |
+| Pagine dell'accordo | No | Gli accordi che l'app ti chiede di accettare; vedi [Licenze](/it/about/licensing/). |
+| Rendila tua | Sì | Tema, contrasto, visione dei colori e come vengono disegnati i collegamenti, accanto a una piccola anteprima dell'app che cambia mentre scegli. |
+| Aiuta a migliorare Ripple Effect | Sì | Se inviare le statistiche di utilizzo, senza nessuna risposta preselezionata e con l'elenco completo di ciò che verrebbe inviato. Indica anche come vengono richiesti i rapporti sugli arresti anomali e include il caffè. |
+
+Tutto ciò che si trova nelle due pagine che si possono saltare è poi disponibile in Impostazioni. Un aggiornamento dalla 1.4 mostra le pagine una volta, come una nuova installazione, e non reimposta nulla di ciò che è già stato impostato.
+
+## Firma del codice
+
+Nessuno dei programmi di installazione è firmato da un'autorità di cui la macchina si fida già. Windows e macOS fermano entrambi l'app una volta, al primo avvio, dicendo di non conoscerla. L'avviso riguarda il certificato mancante, non qualcosa che fa il programma di installazione. Linux non controlla nulla di simile e non chiede nulla.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+    | Mostrato | Significato | Scelta |
+    | --- | --- | --- |
+    | **Windows protected your PC** (SmartScreen) | Il programma di installazione è sconosciuto. | **More info**, poi **Run anyway** |
+
+    **An Application Control policy has blocked this file** è Smart App Control; vedi [più sotto](#smart-app-control).
+  </TabItem>
+  <TabItem label="macOS">
+    Gatekeeper dice che l'app non può essere aperta perché proviene da uno sviluppatore non identificato, oppure che non è stato possibile verificarla. L'app deve prima trovarsi in Applicazioni. Poi, in alternativa:
+
+    - fai clic con il tasto destro su di essa e scegli **Apri**, che aggiunge un pulsante Apri alla finestra di dialogo; oppure
+    - rimuovi il contrassegno di quarantena:
+
+    ```sh
+    xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"
+    ```
+
+    Basta una delle due, una sola volta; poi l'app si apre normalmente.
+  </TabItem>
+  <TabItem label="Linux">
+    Nessuna richiesta di firma.
+  </TabItem>
+</Tabs>
+
+Vedi [Perché i programmi di installazione non sono firmati](/it/explanation/unsigned-installers/).
+
+## Smart App Control
+
+Solo Windows 11. Setup si rifiuta di procedere con
+
+```text
+An Application Control policy has blocked this file
+```
+
+(errore 4551).
+
+| Aspetto | Dettaglio |
+| --- | --- |
+| Che cos'è | Una funzione di Windows 11 che esegue solo le app che il servizio di reputazione di Microsoft già conosce o che hanno una firma attendibile. Un programma di installazione non firmato non è nessuna delle due cose. |
+| Eccezione per singola app | Nessuna. A differenza di SmartScreen non ha **Run anyway**; l'unico modo per installare è disattivarla. |
+| Quando è attiva | Solo su un'installazione pulita di Windows 11 (anche un ripristino conta). |
+| Modalità di valutazione | Parte in *Evaluation*, che non blocca nulla mentre Windows decide se la funzione è adatta alla macchina, poi passa da sola a **On**, con una notifica, oppure a Off. |
+| Quando è già disattivata | Un PC aggiornato da Windows 10, o in cui sono stati rilevati strumenti per sviluppatori durante la valutazione. |
+| Dove controllare e disattivare | **Settings → Privacy & security → Windows Security → App & browser control → Smart App Control settings**, poi **Off**. |
+
+:::caution
+Disattivare Smart App Control è una decisione, non un semplice interruttore. Microsoft afferma che gli aggiornamenti recenti di Windows permettono di riattivare Smart App Control senza reinstallare. Sulle build più vecchie, una volta disattivato l'unico modo per tornare indietro è un ripristino completo di Windows. Pensaci bene prima di disattivarlo per una sola app.
+:::
+
+## Vedi anche
+
+- [Come installare Ripple Effect](/it/how-to/install-the-app/)
+- [Perché i programmi di installazione non sono firmati](/it/explanation/unsigned-installers/)
+- [Controlli di impostazioni, accessibilità e aggiornamenti](/it/reference/settings/)
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/)

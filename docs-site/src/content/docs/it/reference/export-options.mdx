@@ -1,0 +1,144 @@
+---
+title: Opzioni di esportazione e contenuto del bundle
+description: "Cosa produce la finestra Esporta, i selettori che contiene, cosa include una copia del progetto e una campagna compilata, il file del profilo di esportazione HTML e le diagnostiche di esportazione."
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Esporta produce una di due cose. La finestra di dialogo chiede quale.
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+| Formato | Risultato | Si apre nell'editor |
+| --- | --- | --- |
+| **Copia del progetto** | Una cartella, con `.ripple/` inclusa. | Sì |
+| **Campagna** | Un bundle compilato che un runtime riproduce. | No |
+
+*File Zip* e *Includi i media* hanno lo stesso significato in entrambi i formati.
+
+## Controlli della finestra di dialogo
+
+I controlli sopra la linea di separazione decidono cosa viaggia. I controlli sotto decidono in cosa diventano i passaggi.
+
+| Controllo | Si applica a | Effetto |
+| --- | --- | --- |
+| **File Zip** | Entrambi | Scrive un unico archivio zip invece di una cartella. |
+| **Includi i media** | Entrambi | Tre selettori, uno ciascuno per **Immagini**, **Video** e **Audio**. I file di un tipo disattivato vengono elencati, così puoi aggiungerli in seguito, ma non vengono inclusi. Passaggi, lavagne e soundscape puntano comunque dove sarebbero stati i file. |
+| **Non richiede Python** | Campagna | Interrompe l'esportazione se trova una scheda Script o uno snippet Python. Vedi [Non richiede Python](#non-richiede-python). |
+| **Rimuovi i media** | Entrambi | Rimuove dal testo le immagini, i video e l'audio incorporati, per un lettore che non può mostrarli. Un selettore figlio per ogni tipo. |
+| **Rimuovi i collegamenti** | Entrambi | Sostituisce un collegamento con le sue parole. |
+| **Esporta le pagine come** | Campagna | Markdown o HTML. Vedi [Passaggi come HTML](#passaggi-come-html). |
+| **Profilo** | Campagna, HTML | Il profilo di esportazione che assegna i nomi alle classi. |
+
+Selettori di rimozione:
+
+- Un collegamento a un'immagine è un'immagine, non un collegamento, e risponde a **Rimuovi i media**.
+- Nessuno dei due selettori di rimozione cambia ciò che viaggia accanto ai passaggi. Quello dipende da **Includi i media**.
+- La rimozione di un tipo che non è nell'esportazione è disabilitata, perché non c'è nulla da rimuovere. Torna allo stato precedente quando il tipo rientra nell'esportazione.
+
+## Copia del progetto
+
+Una cartella che si apre nell'editor, con `.ripple/` inclusa. È il progetto con i suoi media risolti. Un'immagine a cui il testo punta dall'esterno del progetto finisce in `media/external/`.
+
+L'audio di solito è il tipo più grande per dimensione.
+
+Il profilo di esportazione non viaggia con una copia del progetto.
+
+## Campagna
+
+La storia compilata in un bundle che un runtime riproduce senza alcun editor. Ogni riferimento è risolto in anticipo, l'ordine di valutazione di ogni lavagna è deciso, le lingue di ogni passaggio sono unite in un unico file e tutto ciò che serve solo a un editor viene scartato.
+
+<FileTree>
+- campaign/
+  - campaign.json il manifesto
+  - boards/
+    - the_gates.board.json
+  - passages/
+    - reaching_the_gates.passage.json tutte le lingue, in un unico file
+  - components/
+    - goblin.component.json
+  - scripts/
+    - damage.py
+  - soundscapes/
+    - tavern.soundscape.json il file di ogni clip come indice dei media
+  - media/
+    - art/
+      - map.png
+    - music/
+      - tavern.ogg
+</FileTree>
+
+### Cosa contiene un bundle
+
+| Aspetto | Regola |
+| --- | --- |
+| Lingue | Solo le lingue che il progetto ha. Una lingua disattivata resta nel progetto e non viene spedita. |
+| Media esistenti | Solo i media che il progetto possiede. Un'immagine a cui punta un passaggio o un componente ma che non c'è viene lasciata fuori. |
+| Media usati | Solo i media che la storia usa. Un'immagine che nessuno ha incorporato e un suono che nessun soundscape riproduce vengono lasciati fuori. Entrambe le omissioni sono segnalate in Messaggi, come un file mancante. |
+| Elenchi di file dei componenti | Un attributo che contiene un elenco di file porta con sé quei file, con i percorsi riscritti. La campagna non nomina mai un'immagine che non contiene. |
+| Tipi degli slot | Gli ingressi di una scheda Script e quelli di una scheda Output sono letti come il tipo che hanno dichiarato. Un ingresso `int` a cui viene dato `3.7` legge `3`. Un ingresso `list<int>` a cui viene data una lista di testo arriva come numeri. Un valore che non può essere letto come quel tipo diventa il valore vuoto di quel tipo invece di fermare la storia. Ciò che scrive uno script resta com'è. |
+| Valori predefiniti degli slot | Un valore predefinito su un parametro di una macro, su un ingresso o un'uscita di uno script, su uno slot di una scheda Output, sulla risposta di una Macro Out o su un campo del modulo di una scheda Input viene usato quando nient'altro riempie lo slot. Quattro di questi diventano valori ordinari sulla lavagna al momento della compilazione. I due a cui risponde un lettore o un programma, quello di un campo del modulo e quello di un'uscita di script, sono portati nella campagna. |
+| Macro | Nulla di una macro arriva nel bundle. Ogni chiamata viene inserita nella lavagna che l'ha fatta, quindi due chiamate sono due copie. |
+| Python nel testo | Gli snippet di ogni passaggio vengono estratti in una tabella a parte, con un marcatore lasciato dove si trovava ciascuno. Un programma che riproduce la campagna inserisce le risposte per numero. |
+| Suono | Una scheda Narration nomina il suo soundscape tramite indice in `soundscapes/`. Il runtime decide quale è in vigore e lo comunica al suo host, che lo riproduce. Il player da riga di comando stampa una riga per ogni cambiamento e non riproduce nulla, il che è conforme. |
+| Metadati della scheda | Viaggiano sotto `metadata` sulla scheda. Il runtime li passa all'host al turno della scheda e non li legge. |
+| Requisiti | Il manifesto registra sotto `needs` se la campagna richiede Python. Un'informazione, non un blocco. |
+
+### Formato e compatibilità
+
+- Una campagna porta un numero di formato. Un runtime rifiuta quello più recente di ciò che implementa, nominando entrambi i numeri.
+- Una campagna esportata da una build 1.x precedente viene riprodotta senza modifiche. Solo la prima forma del formato viene rifiutata, per nome; esportare di nuovo dal progetto ne produce una attuale.
+- Una partita salvata non è toccata.
+
+## Non richiede Python
+
+In una build senza l'interprete Python, una scheda Script ferma la storia dove si trova e un passaggio mostra un avviso dove c'era il suo Python.
+
+Con **Non richiede Python** selezionato, l'esportazione controlla ogni scheda Script e ogni passaggio con un blocco di codice `ripple` o un `{{ … }}` inline in qualsiasi lingua. Si ferma se ne trova uno.
+
+| Codice | Segnalazione | Apre |
+| --- | --- | --- |
+| [`E.EX.01`](/it/reference/diagnostics/#eex01) | Una scheda Script. | La sua scheda |
+| [`E.EX.02`](/it/reference/diagnostics/#eex02) | Un passaggio che contiene Python. Il messaggio conta gli snippet in tutte le lingue. | La sua scheda Narration |
+
+- Ogni segnalazione è elencata in Messaggi.
+- La finestra di dialogo resta aperta.
+- Una campagna che supera il controllo non contiene script.
+- Disattivare **Python** sotto *Capacità* nelle impostazioni del progetto segna come errore, sulla sua lavagna, ogni scheda che esegue Python, fa rifiutare a Gioca di avviarsi finché ne resta una, e seleziona e blocca la casella dell'esportazione.
+- Il campo `needs` del manifesto permette a un programma che carica una campagna di sapere se richiede Python prima di avviarla. Un player senza l'interprete riproduce comunque la campagna. Un host che preferisce rifiutarla legge il campo.
+
+## Passaggi come HTML
+
+Con **Esporta le pagine come** impostato su HTML, una campagna ha ogni passaggio scritto come frammento HTML per lingua. L'editor e la vista di gioco restano Markdown.
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+Un profilo di esportazione assegna la classe a ogni tipo di elemento: un paragrafo, un titolo, un'enfasi, un collegamento, una cella di tabella, uno snippet Python. Scegliere HTML apre il profilo accanto ai controlli di esportazione.
+
+| Colonna | Contenuto |
+| --- | --- |
+| **Nella pagina** | Il tipo di elemento. Un suggerimento mostra il Markdown che rappresenta. |
+| **Classe CSS** | La classe assegnata, salvata mentre scrivi. |
+
+Un elemento senza classe assegnata non riceve alcun attributo. Senza profilo, ogni elemento esce nudo: un semplice `<p>`, un semplice `<em>`.
+
+### File del profilo
+
+| | |
+| --- | --- |
+| Percorso | `.ripple/export/<name>.profile.json` |
+| Nome | Un nome di file: lettere, cifre, spazi, trattini. Un nome già in uso viene rifiutato. |
+| Ambito | Un profilo serve un numero qualsiasi di esportazioni. |
+| Controllo di versione | Salvato insieme alla storia, così una build lo riproduce. |
+| Elimina | Rimuove il file sotto `.ripple/export/`. Nient'altro cambia. |
+
+## Diagnostiche
+
+I due codici dell'esportazione, [`E.EX.01`](/it/reference/diagnostics/#eex01) e [`E.EX.02`](/it/reference/diagnostics/#eex02), sono elencati sotto [Non richiede Python](#non-richiede-python); [Diagnostiche](/it/reference/diagnostics/) contiene il resto.
+
+## Vedi anche
+
+- [Cos'è un'esportazione](/it/explanation/what-an-export-is/)
+- [Come esportare una copia del progetto o una campagna](/it/how-to/export-a-project-or-campaign/)
+- [Come esportare per un player senza Python](/it/how-to/export-for-a-player-without-python/)

@@ -1,0 +1,70 @@
+---
+title: Componenti ed entità
+description: Perché un componente dice che cos'è un goblin, un'entità è questo goblin, e una storia modifica le entità solo dove puoi indicarlo su una lavagna.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Una storia incontra di continuo lo stesso genere di cose. Ci sono goblin nel primo scontro e goblin nel terzo, una spada forgiata in un capitolo e brandita in un altro. Ripple Effect risponde con due idee facili da confondere: un **componente** è ciò che un goblin *è*, e un'**entità** è *questo* goblin, quello che la storia ha creato e che una lavagna successiva può ritrovare per nome.
+
+<Shot name="component" />
+
+## Un goblin e questo goblin
+
+Un componente è un personaggio, un'arma, un luogo, una fazione: un nome, un'immagine di copertina facoltativa e un elenco ordinato di attributi tipizzati. Vive in un file `*.component.json` nel tuo progetto, come qualsiasi altro file che possiedi, ed è uguale a ogni sessione di gioco. Punti ferita pari a 7 nel file significa che un goblin parte con 7.
+
+Un'entità è ciò che esiste una volta che la storia è in corso. Ha i propri punti ferita, e quando uno scontro ne toglie una parte, il file non cambia. Questa separazione è lo scopo di avere due idee. I dati di scrittura restano dati di scrittura; ciò che una sessione di gioco fa loro resta nella sessione di gioco.
+
+Dietro un componente non c'è volutamente alcuno schema: aggiungi ciò di cui questa storia ha bisogno. Ogni attributo ha un tipo, scelto tra quelli che ogni editor dell'app offre, e l'editor è un modulo costruito esattamente su quello: un nome, una copertina e una riga per attributo. [File di progetto e cartella .ripple](/it/reference/project-files/) descrive il formato, e [Componenti ed entità in Python](/it/reference/python/components-and-entities/) elenca i nomi dei tipi che vede uno script.
+
+I percorsi all'interno di un componente, una copertina o una risorsa, sono misurati dalla radice del progetto. È una scelta fatta per la cartella: puoi rinominare una cartella o trascinarci dentro un componente e ogni immagine punta ancora dove puntava. Una copertina scelta da fuori del progetto viene prima copiata all'interno, per il motivo spiegato in [un progetto è una cartella](/it/explanation/projects-are-folders/): un percorso che funziona solo sulla tua macchina è un buco nella storia per tutti gli altri. Poiché un attributo che punta a un file si imposta per nome, e non digitando un percorso, un'immagine rinominata all'insaputa dell'app compare come un chip contrassegnato invece che come un vuoto silenzioso in un'esportazione.
+
+## Perché la scheda Component ha due modalità
+
+Una scheda **Component** rappresenta su una lavagna un file di componente. Ha un'uscita tipizzata per ogni attributo, più una che porta l'intero componente come map, e si trova in una di due modalità.
+
+In modalità **Component** è una finestra sul file: uscite, e nient'altro. Legge la definizione e non cambia nulla.
+
+In modalità **Entity** la scheda rende la storia una *cosa*, identificata dal nome scritto sulla scheda. È ciò che permette allo stesso file di stare dietro a molti oggetti indipendenti. Due schede con due nomi sono due spade. Una scheda su una lavagna successiva che nomina la stessa entità è la spada creata dalla prima lavagna, e la trova per nome, non perché qualcosa sia stato collegato da una all'altra.
+
+In modalità Entity compaiono ingressi per gli attributi accanto alle uscite, ed è per questo che l'app non ha una scheda Set né una scheda Get per le entità. Una seconda scheda che nomina la stessa entità più avanti nella storia *è* il setter. Un cambiamento di stato dovrebbe essere qualcosa che puoi indicare sulla tela, e una scheda con un nome sopra, in un punto di una lavagna, lo è.
+
+Una scheda il cui nome arriva collegato da monte crea un'entità per ogni nome che riceve, quindi un ciclo che forgia una spada a ogni giro forgia una spada a ogni giro.
+
+## Molte insieme, e dimenticare
+
+Altre quattro schede lavorano sulle entità, tutte nella categoria **Entities** del menu delle schede, accanto a Component. Ognuna è modellata da una domanda su ciò che una storia deve poter fare con una folla.
+
+**Spawn** ne crea molte insieme a partire da un componente, e ne passa i nomi come lista, così che uno script possa dare a ciascuna i propri punti ferita. Crea sempre le stesse: tornando a una scheda Spawn si ritrovano i goblin già creati invece di sei nuovi, ed è ciò che permette a una campagna in pausa di riprendere nello scontro che aveva lasciato. Il prezzo è che una seconda ondata richiede un nome diverso. Le opzioni di numero e di denominazione sono nel [riferimento delle schede](/it/reference/nodes/).
+
+**Delete Entity** ne dimentica una per nome, perché il goblin è morto o la pozione è stata bevuta. Eliminare un nome a cui nulla risponde non è un errore: non rimuove niente e la storia prosegue. Il file del componente non viene toccato, quindi una scheda che lo nomina più tardi ne crea una nuova.
+
+**Entity Exists** risponde se la campagna ne ha ancora una. Collegala a una scheda If e la storia decide da sé che cosa significhi una spada mancante, dove una ricerca fallita avrebbe deciso al suo posto.
+
+**Entity Names** risponde con tutte le entità che la storia ha creato, come lista di nomi in ordine alfabetico, oppure solo con quelle create da un componente. Collega `names` a una scheda For con un List at e puoi fare qualcosa a ciascuna, per esempio ai goblin ancora in piedi due passaggi più avanti, senza uno script.
+
+## Perché un passaggio può leggere e non scrivere
+
+Python può fare più delle schede, e può leggere le stesse cose. `component_get("Goblin")` risponde con l'intera definizione, tipi compresi, e `entity_create`, `entity_set`, `entity_rename` e `entity_delete` permettono a una scheda Script di creare, impostare, rinominare ed eliminare entità.
+
+La superficie è più ampia di quanto le lavagne farebbero pensare, ma conserva una regola delle lavagne: un passaggio può leggere e non scrivere. Il ragionamento è lo stesso che sta dietro all'assenza della coppia Set/Get: un cambiamento di stato dovrebbe essere qualcosa che puoi indicare sulla tela. Uno script che vuole cambiare un'entità lo fa da una scheda Script, che è un riquadro su una lavagna, e un passaggio si limita a riportare ciò che è vero. [Come funziona una storia](/it/explanation/how-a-story-runs/) e [Python in una storia](/it/explanation/python-in-a-story/) collocano questa regola tra le altre.
+
+Due dettagli di questa superficie derivano dal tenere separate definizione ed entità. `entity_get` risponde direttamente con gli attributi di un'entità, quindi il suo dict non ha un posto dove registrare da quale componente provenga l'entità senza entrare in collisione con l'etichetta di un attributo reale. `entity_of` risponde a questo separatamente, e i due si compongono: `component_get(entity_of("Goblin-1"))` è la definizione dietro un'entità.
+
+La più vecchia funzione `component()` fa l'opposto di `component_get` e `entity_get`: un'entità con lo stesso nome ha la precedenza sulla definizione, quindi la oscura. Una domanda su una definizione non dovrebbe dipendere dal fatto che sia stata creata un'entità, ed è per questo che le sostitute sono due funzioni, una per ciascuna domanda, e nessuna oscura l'altra.
+
+## Perché una sessione di gioco è effimera
+
+Nulla di ciò che una sessione di gioco crea viene scritto nella tua storia. Le entità vivono nella finestra della campagna, e una partita salvata è ciò che le porta oltre la sua chiusura. Il file del componente non viene mai toccato da una sessione di gioco.
+
+<Shot name="entitiesPanel" />
+
+Il pannello **Entità** nella finestra della campagna mostra tutto ciò che la storia ha creato, raggruppato sotto il componente da cui proviene ciascuna entità. Ogni riga ha un cestino, e non viene chiesto nulla prima, perché ciò che perderesti è ciò che questa sessione ha fatto a quella singola spada, e il file del componente non viene toccato. Una volta usato, viene offerto **Ricomincia**. I controlli del pannello sono in [riferimento della finestra della campagna](/it/reference/campaign-window/).
+
+## Vedi anche
+
+- [Come usare componenti ed entità](/it/how-to/use-components-and-entities/) lo applica su una lavagna.
+- [Come leggere e modificare le entità da Python](/it/how-to/use-entities-from-python/) tratta il lato della scheda Script.
+- [Componenti ed entità in Python](/it/reference/python/components-and-entities/) elenca le funzioni.
+- [File di progetto e cartella .ripple](/it/reference/project-files/) contiene il formato del file di componente.
+- [La finestra della campagna e le partite salvate](/it/reference/campaign-window/) descrive il pannello Entità e ciò che porta con sé una partita salvata.

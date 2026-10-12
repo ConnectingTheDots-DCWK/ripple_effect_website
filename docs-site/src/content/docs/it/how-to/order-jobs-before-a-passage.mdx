@@ -1,0 +1,36 @@
+---
+title: Come eseguire più operazioni prima di un passaggio
+description: Metti le operazioni sui rami di una scheda Do all e la storia sulla sua porta completed, così ogni valore è calcolato prima del passaggio che lo legge.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Usa una scheda **Do all** quando più di una scheda deve essere eseguita prima di un passaggio, per esempio per impostare più valori, e l'ordine deve essere certo.
+
+<Steps>
+
+1. Metti una scheda **Do all** davanti al passaggio.
+
+2. Collega la catena della prima operazione al primo ramo. Collega l'ultimo ramo e ne compare un altro sotto di esso, così la scheda cresce fino a quanti ne servono. Per più valori, dai a ogni valore la sua catena su un ramo a parte. I rami vengono eseguiti dall'alto verso il basso.
+
+3. Collega la porta `completed` della scheda Do all al passaggio. Le operazioni vanno sui rami e la storia va su `completed`.
+
+</Steps>
+
+Una scheda Do all prosegue da `completed` quando ogni ramo è stato eseguito. Un ramo viene eseguito fino alla fine del suo collegamento prima che parta il successivo, e un passaggio non termina un collegamento: perciò un passaggio su un ramo trattiene i rami seguenti finché tutto ciò che viene dopo non è stato letto. Sembra esattamente una scheda Set che non è mai scattata. Vedi [Come viene eseguita una storia](/it/explanation/how-a-story-runs/).
+
+## Se l'app segnala un valore
+
+Una lettura non esegue mai una scheda, quindi un valore è sicuro solo se le sue schede si trovano nel flusso subito prima di ciò che lo legge. L'app segnala due casi. Una scheda con una segnalazione ha un alone del colore della sua gravità e un contrassegno alla fine dell'intestazione, il cui suggerimento nomina il controllo; i record completi sono nel pannello Messaggi.
+
+- [`W.GE.05`](/it/reference/diagnostics/#wge05), un valore calcolato prima della storia che dipende da qualcosa che la storia modifica: metti le schede nel flusso che porta a chi legge, usando una scheda Do all come sopra. Collega il `completed` di una scheda che produce il valore alla scheda che lo legge, come il `completed` di una scheda Dice roller in un Comparator e quello del Comparator in un If. Calcolare in anticipo va bene per un numero o un nome, non per qualcosa che la storia modifica.
+- [`W.GE.06`](/it/reference/diagnostics/#wge06), un percorso che salta la scheda il cui valore viene letto: fai in modo che ogni percorso esegua la scheda, oppure spunta *È intenzionale* sulla sua riga dove ciò che resta è voluto, come un totale parziale o un flag impostato una sola volta all'ingresso.
+- Un `bool` collegato alla riga di una scelta che fa scattare `W.GE.05`: usa una scheda Do all con una catena per ramo e `completed` verso il passaggio. Vedi [Come limitare una scelta](/it/how-to/limit-a-choice/).
+
+## Vedi anche
+
+- [Come viene eseguita una storia](/it/explanation/how-a-story-runs/) per capire perché il flusso va solo in avanti e perché una lettura non esegue mai una scheda.
+- [Come limitare una scelta](/it/how-to/limit-a-choice/) per le condizioni che richiedono un valore calcolato in tempo.
+- [Diagnostica](/it/reference/diagnostics/) per ogni controllo con codice e il suo significato.
+- [Nodi](/it/reference/nodes/) per la scheda Do all e le sue porte.
+- [Come costruire una lavagna](/it/how-to/work-on-the-canvas/) per collegare le schede.

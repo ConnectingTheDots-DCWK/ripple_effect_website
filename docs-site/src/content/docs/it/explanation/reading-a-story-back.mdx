@@ -1,0 +1,56 @@
+---
+title: Rileggere una storia lunga
+description: Perché esistono la navigazione Script e la vista unita, e perché disegnano una storia come la incontra il lettore e non come è collegata.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Una storia con qualche centinaio di passaggi distribuiti su una dozzina di lavagne non si capisce guardandola. Una lavagna è un buon posto per scrivere un capitolo e un posto scomodo per capire un libro: ogni tela mostra un solo capitolo, e i collegamenti tra i capitoli sono sparsi su molte di esse. Emergono tre domande a cui nessuna lavagna da sola risponde: *come sono collegati i capitoli*, *come può un lettore arrivare da qui a là* e *come ha potuto un lettore arrivare fin qui*.
+
+Ripple Effect risponde con viste della storia, non con altre cose da mantenere. La navigazione Script risponde alla prima domanda, mentre la traccia, che termina nella vista unita, risponde alle altre due. Hanno in comune una regola su da dove viene la verità: disegnano ciò che la storia fa, ricavato dalle lavagne, quindi non c'è un secondo disegno da tenere allineato.
+
+## La mappa delle lavagne
+
+<Shot name="overview" />
+
+La **navigazione Script** disegna come le lavagne di un progetto si passano la storia. C'è una scheda per ogni lavagna e un'uscita per ogni via d'uscita da essa. Ogni freccia riporta l'etichetta della scheda da cui parte. Per un Jump verso il centro di un capitolo la freccia dice anche dove atterra, come in `Down → The cellar`, quindi non si disegna più esattamente come un salto all'inizio del capitolo. Dei marcatori mostrano dove un filo comincia e dove finisce.
+
+Niente al suo interno si può spostare o ricollegare. La disposizione viene calcolata per te ed è deterministica: lo stesso progetto produce sempre lo stesso disegno, così la direzione della storia resta leggibile e una schermata della mappa significa ogni volta la stessa cosa. Per cambiare il modo in cui i capitoli si collegano si lavora sulle lavagne, dove stanno i collegamenti.
+
+La mappa risolve anche una questione che altrimenti potrebbe essere ambigua. Dove comincia una lavagna è la stessa domanda che si pone il runner, *quale scheda è lo Start?*, quindi ciò che la mappa disegna è ciò che la storia fa, non un'approssimazione. [Come funziona una storia](/it/explanation/how-a-story-runs/) spiega le regole che il runner segue.
+
+## La traccia e il suo limite
+
+Una lavagna può evidenziare i percorsi tra due passaggi, e la stessa domanda si può porre tra due capitoli sulla mappa. La domanda vale anche nell'altro verso: ogni percorso che arriva a un passaggio, da qualunque punto la storia cominci. La traccia serve a scoprire se un finale è raggiungibile senza giocare fino a lì. [Come tracciare i percorsi tra due passaggi](/it/how-to/trace-a-route/) spiega come usarla.
+
+Una lavagna può disegnare solo ciò che sta sulla lavagna. Quando un percorso arriva attraverso un Jump, il resto si trova su un'altra tela, e una singola lavagna non ha dove metterlo. È questo limite il motivo per cui esiste la vista unita.
+
+## La vista unita
+
+{/* TODO(shots): <Shot name="mergedTrace" /> */}
+
+Quando un percorso arriva attraverso un Jump che la lavagna non può disegnare, la risposta apre una **vista unita**: tutte le lavagne del percorso su un'unica tela, con le operazioni di servizio tra due passaggi percorse anziché disegnate. Come la navigazione Script, è di sola lettura; i cambiamenti si fanno sulle lavagne.
+
+### Disegnata come la incontra il lettore
+
+La vista unita non è una copia dei collegamenti. Una traccia è una domanda su ciò che un lettore attraversa, quindi il disegno segue l'esperienza del lettore ovunque questa differisca dai collegamenti.
+
+- **Una scelta che esegue uno script e ritorna** al passaggio da cui era partita è una freccia che torna a quel passaggio, proprio come una scelta collegata direttamente all'indietro.
+- **I rami di un Do all** stanno uno dopo l'altro sul percorso verso `completed`, anziché come una biforcazione in cui il lettore sceglie una sola via. Il lettore non sceglie tra di essi; accadono tutti. Perciò i loro passaggi sono sul percorso, e il conteggio dei modi di arrivarci non li conta come alternative. Lo stesso vale per l'estremità di un collegamento che si ramifica verso più destinazioni.
+- **Le macro vengono aperte.** Il percorso entra nelle macro che richiama, e i passaggi contenuti in una macro sono disegnati dove avviene la chiamata. Un negozio o una prova di abilità riusati in tre punti si leggono quindi sul percorso in ciascuno di essi, non come un unico riquadro che sta per tutti e tre.
+
+Una freccia che attraversa un *If*, uno *Switch*, un tiro o un ciclo nomina quella scheda e la direzione presa, come `Hit? → true`, accanto alle parole della scelta, se ce n'era una. Si capisce dove ha deciso la storia e non il lettore. [Lavagne, schede e macro](/it/explanation/boards-nodes-and-macros/) descrive queste schede e come si richiama una macro.
+
+### Un solo tipo di traccia alla volta
+
+Una traccia su una lavagna e una vista unita tra più lavagne non si mescolano. Aprire una vista unita toglie la traccia di ogni lavagna, e finché una è aperta i due pulsanti di traccia di una lavagna restano in attesa, spiegandone il motivo, fino alla chiusura. Chiudere l'ultima vista unita restituisce le lavagne.
+
+## Cosa può chiedere un assistente
+
+Le stesse tre domande sono a disposizione di un assistente IA come strumenti MCP: `trace_between` per i percorsi tra due passaggi, `trace_into` per ogni percorso che arriva a uno, e `board_links` per come le lavagne si passano la storia. Così può rispondere a *questo finale è raggiungibile?* senza rigiocare la storia. [Lavorare con un assistente IA](/it/explanation/working-with-an-assistant/) li inserisce nel contesto, e gli strumenti veri e propri sono nel [riferimento degli strumenti MCP](/it/reference/mcp-tools/).
+
+## Vedi anche
+
+- [Come tracciare i percorsi tra due passaggi](/it/how-to/trace-a-route/)
+- [Regole di lavagna e navigazione](/it/reference/canvas-rules/)
+- [Strumenti MCP](/it/reference/mcp-tools/)

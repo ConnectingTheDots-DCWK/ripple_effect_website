@@ -1,0 +1,55 @@
+---
+title: Cronologia, condivisione e conflitti
+description: Perché l'app tiene la cronologia di un progetto in git, cosa lascia fuori da quella cronologia e perché non risolve mai un conflitto né sovrascrive un file al posto tuo.
+sidebar:
+  order: 2
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+I formati di file che Ripple Effect scrive sono testo semplice, così un progetto può essere un repository. Git è integrato nell'app. [Controllo di versione nell'app](/it/reference/version-control/) mostra dove si trovano i controlli.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Perché git sotto il cofano
+
+Le parole nell'app sono sue: *punto di salvataggio*, *Storyline*, *backup*, *mettere da parte*. La cronologia che sta sotto è un normale repository git, e qualsiasi strumento che ne legge uno legge anche questo. Il vocabolario non è un secondo formato.
+
+## Avviare una cronologia
+
+Avviare una cronologia scrive nella tua cartella il minimo indispensabile, perché la cartella era tua prima che arrivasse l'app. Aggiunge solo le voci mancanti a un elenco di cose da lasciare fuori e non tocca un file di esclusione che avevi già. Mantiene inoltre coerenti le terminazioni di riga per i coautori su altre piattaforme: senza questo, un coautore su un altro sistema scarica il progetto, il suo editor scrive terminazioni di riga diverse e ogni file di prosa risulta modificato su entrambe le macchine per sempre. Poi crea un primo punto di salvataggio di tutto. I file troppo grandi per poter essere mai ripresi di nuovo vengono lasciati fuori e nominati, invece di essere inseriti e poi rimpianti.
+
+L'unica cosa dell'app che viene ignorata è `.ripple/workspace.json`, perché è per singola macchina: registra come una persona ha disposto la propria finestra. Tutto il resto di `.ripple/` viaggia con il progetto, ed è giusto così. Il registro è ciò che mantiene un Jump puntato sulla lavagna giusta dopo una ridenominazione; una copia del progetto arrivata senza di esso dovrebbe ricostruire il proprio indice, e i collegamenti tra le lavagne non avrebbero più nulla a cui puntare. Allo stesso modo, il titolo, la copertina e le lingue del progetto sono fatti condivisi sulla storia. La differenza sta in chi possiede il fatto: la storia, oppure una singola macchina.
+
+## Il backup è una decisione separata
+
+Sei tu a dire dove deve essere conservato il progetto, e l'app ti dice cosa sta per fare prima di farlo. [Come tenere una cronologia e fare il backup di un progetto](/it/how-to/keep-a-history-and-back-up/) ha i passaggi.
+
+Il backup è volutamente separato dal tenere una cronologia. Un progetto può avere una cronologia e non lasciare mai la macchina, e l'app non considera la prima come un invito al secondo. Due cose vengono dette ad alta voce perché nessuno te le chiederebbe in tempo: il repository deve già esistere sul sito prima che tu possa farci il backup, e *pubblico* significa davvero che chiunque può leggere le tue bozze.
+
+## Perché un conflitto non viene mai risolto al posto tuo
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+Quando due persone hanno modificato lo stesso passaggio, non esiste una risposta neutrale. Una delle due versioni potrebbe essere quella di cui la storia ha bisogno, e una terza frase, scritta a mano, potrebbe essere migliore di entrambe. Qualsiasi regola applicata dall'app sarebbe una congettura su una storia che non conosce.
+
+Perciò nulla viene toccato finché non lo dici tu. Le due versioni vengono mostrate affiancate e scegli quale mantenere, oppure scrivi tu la frase. I tuoi file restano esattamente come erano mentre decidi, il che significa che rimandare non costa nulla: non c'è nessuno stato a metà unione a cui tornare.
+
+Lo stesso ragionamento vale per un assistente collegato tramite MCP. Gli viene rifiutato un documento con un conflitto in sospeso, perché uno strumento che scegliesse da che parte stare prenderebbe una decisione che spetta a te. Vedi [Lavorare con un assistente IA](/it/explanation/working-with-an-assistant/) per come questo si colloca accanto al resto di ciò che un assistente può fare.
+
+## Annullare si può annullare
+
+Annullare le modifiche a un file conserva prima ciò che rimuove. Il messaggio che ne offre il ripristino resta in Messaggi, sotto i documenti, anche dopo che la notifica è sparita. Tutto ciò che hai annullato è elencato in un unico posto, così la rete di sicurezza è qualcosa che puoi guardare e non una notifica che hai avuto quattro secondi per cogliere.
+
+## Perché il salvataggio automatico non sovrascrive mai
+
+L'app salva automaticamente quello che scrivi, circa un secondo dopo la pressione di un tasto. Il controllo di versione riscrive i file: un pull da un coautore, un cambio di Storyline o una modifica scartata sostituiscono tutti ciò che c'è su disco. Se le due cose potessero scontrarsi, la pressione di tasto successiva in un editor aperto annullerebbe in silenzio la riscrittura, e sembrerebbe esattamente che il controllo di versione si stia mangiando il tuo lavoro.
+
+È la regola su cui poggia l'intera funzione. Un file che un altro programma modifica sotto i piedi dell'app, che si tratti di un pull da un coautore o di un editor che scrive lo stesso passaggio, viene rilevato e non sovrascritto, e il salvataggio automatico non scrive mai sopra una modifica che non ha fatto lui. Un controllo di versione che il salvataggio automatico dello stesso editor potesse annullare sarebbe peggio di nessuno.
+
+## Vedi anche
+
+- [Come tenere una cronologia e fare il backup di un progetto](/it/how-to/keep-a-history-and-back-up/), i passaggi per avviare una cronologia, creare punti di salvataggio e fare il backup.
+- [Controllo di versione nell'app](/it/reference/version-control/), ogni controllo della sezione Modifiche.
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/), l'idea su cui si basa questa pagina.
+- [File del progetto e cartella .ripple](/it/reference/project-files/), cosa contiene la cartella e quali parti viaggiano con il progetto.

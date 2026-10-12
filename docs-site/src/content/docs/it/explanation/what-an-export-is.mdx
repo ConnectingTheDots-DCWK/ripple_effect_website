@@ -1,0 +1,64 @@
+---
+title: Che cos'è un'esportazione
+description: Perché una campagna viene compilata anziché copiata, perché i media sono un interruttore, perché esistono due versioni del motore e perché l'HTML è modellato da un profilo nel progetto.
+---
+
+L'esportazione produce una di due cose, e la finestra di dialogo chiede quale. Dall'esterno si assomigliano, perché entrambe scrivono una cartella, ma rispondono a domande diverse. Una copia del progetto risponde a «come consegno questa storia a qualcuno che continuerà a modificarla?». Una campagna risponde a «come consegno questa storia a qualcosa che si limiterà a giocarla?».
+
+{/* TODO(shots): <Shot name="exportDialog" /> */}
+
+## Una copia del progetto è il progetto, risolto
+
+Una copia del progetto è una cartella che si apre nell'editor, `.ripple/` compresa. Esiste per un traduttore, o per conservare il lavoro. Poiché un progetto è una vista su una cartella (vedi [Un progetto è una cartella](/it/explanation/projects-are-folders/)), una copia è la cosa più vicina al progetto stesso, con una sola modifica: un'immagine a cui la prosa rimanda dall'esterno del progetto viene portata dentro, finendo in `media/external/`, così la copia non dipende da nulla che si trovi sulla tua macchina.
+
+La decisione riguarda i media. La musica di una storia è la cosa più pesante della cartella e quella che più probabilmente ha una licenza di qualcun altro. Mandare a un traduttore la storia tenendo per te la colonna sonora è quindi il caso ordinario, non un caso limite, ed è per questo che **Includi i media** è fatto di tre interruttori, uno per le immagini, uno per i video e uno per l'audio, anziché uno solo. Quando un tipo è disattivato, i suoi file vengono elencati e lasciati indietro, ma i passaggi, le lavagne e i soundscape puntano comunque dove avrebbero puntato. La copia resta strutturalmente completa, e i media si possono rimettere in seguito senza dover riscrivere nulla.
+
+## Una campagna viene compilata, non riordinata
+
+Una campagna è la storia compilata in un bundle che un runtime esegue senza alcun editor nelle vicinanze. Non è una copia ripulita del progetto, e la differenza è il motivo per cui esiste.
+
+Un editor e un player vogliono da un file cose opposte. L'editor vuole tutto ciò che serve a farti cambiare idea: riferimenti per nome, più lingue una accanto all'altra, macro che puoi aprire, lavagne disposte per essere lette. Un player vuole decisioni già prese. Compilare significa quindi risolvere in anticipo ogni riferimento, fissare l'ordine di valutazione di ogni lavagna, appiattire le lingue di ogni passaggio in un unico file e scartare ciò che interessa solo a un editor. Un runtime non deve mai sapere cos'è una macro, cos'è Markdown o come è stata disegnata una lavagna, ed è questo che permette a un player da terminale, a un gioco o a qualunque altro host di eseguire la stessa storia dell'editor. Il formato del bundle è un contratto pubblicato e il motore che lo esegue è scritto in Rust, senza alcun editor dentro; un player da riga di comando costruito a partire da esso gioca una campagna senza che Flutter o Dart siano installati, ed è così che quell'affermazione viene verificata.
+
+Quasi tutto ciò che una campagna compilata fa bene discende da quest'unica idea.
+
+- **Porta con sé ciò che il progetto ha e ciò che la storia usa.** Una lingua che hai disattivato resta nel progetto e non viene distribuita. Un'immagine a cui punta un passaggio o un componente ma che il progetto non contiene viene lasciata fuori, anziché viaggiare come un nome che nulla può aprire; un'immagine che nessuno ha incorporato, o un suono che nessun soundscape riproduce, non vengono inclusi solo perché la cartella li conteneva. Ogni omissione è indicata in Messaggi, così ciò che l'esportazione produce concorda con ciò che ha dichiarato.
+- **I file di un componente viaggiano con lui.** Un attributo che contiene un elenco di file, comunque sia stato scritto, si porta dietro i suoi file con i percorsi riscritti, così la campagna non nomina mai un'immagine che non c'è.
+- **Le macro si dissolvono.** Di una macro non arriva nulla nel bundle: ogni chiamata viene innestata nella lavagna che l'ha fatta, quindi due chiamate sono due copie. Vedi [Lavagne, schede e macro](/it/explanation/boards-nodes-and-macros/).
+- **Il Python viene estratto dalla prosa.** Gli snippet di ogni passaggio finiscono in una tabella a parte, con un marcatore lasciato dov'era ciascuno, così un programma che gioca la campagna inserisce le risposte per numero e non ha mai bisogno di capire Markdown. Questa separazione è anche ciò che permette di consegnare la prosa in un altro formato, come vedremo.
+- **Gli slot vengono letti come il tipo che hanno dichiarato.** Un valore che non può essere letto come il tipo del suo slot diventa il vuoto di quel tipo, anziché fermare la storia. Lo scambio è voluto: una storia che prosegue con un vuoto è più facile da recuperare di una che si blocca su un valore errato.
+- **Un valore predefinito viene fissato prima della distribuzione, oppure viene portato con sé se qualcuno deve rispondere.** La maggior parte dei valori predefiniti diventa un valore ordinario sulla lavagna quando la campagna viene compilata; i due a cui risponde un lettore o un programma, quello di un campo di modulo e quello di un'uscita di script, vengono portati nella campagna. Gli esempi e l'elenco completo dei punti sono in [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/).
+- **Il suono è una tabella, e il runtime non ne riproduce nulla.** Una scheda Narration nomina il suo soundscape tramite un indice in `soundscapes/`. Il runtime decide quale è in vigore e lo comunica al suo host, che lo rende con ciò che ha a disposizione. Il player da riga di comando stampa una riga per ogni cambiamento e non sente nulla, ed è conforme. Vedi [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/).
+- **I metadati di una scheda viaggiano con essa**, sotto `metadata` sulla scheda. Il runtime li consegna all'host al turno della scheda e non guarda mai dentro, quindi il significato è tuo e dell'host.
+
+Una campagna porta un numero di formato, e un runtime rifiuta quelle più recenti di quanto implementa, indicando entrambi i numeri anziché giocarla a metà. Rifiutare è più sicuro che tirare a indovinare: una storia che gira leggermente storta è più difficile da diagnosticare di una che non parte. Una partita salvata non ne risente. I file di un bundle e le opzioni che lo modellano sono elencati in [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/); il motivo per cui l'esportazione è il compilatore, e perché l'anteprima coincide con essa, è in [Perché l'anteprima è la storia distribuita](/it/explanation/the-preview-is-the-shipped-story/).
+
+## Due versioni del motore, e una promessa verificabile
+
+Il motore che gioca una campagna esiste in due versioni: una con l'interprete Python dentro, e una molto più piccola senza. Un gioco o un player costruito sulla versione più piccola può giocare qualunque campagna, ma una scheda Script ferma la storia dov'è e un passaggio mostra un avviso dove c'era il suo Python. Il costo di rinunciare all'interprete non è quindi che le campagne si rifiutino di caricarsi, ma che alcune loro parti non possano girare, in silenzio.
+
+**Non richiede Python** trasforma tutto questo in una promessa verificata prima che qualcuno giochi. Con la casella selezionata, l'esportazione cerca ogni scheda Script e ogni passaggio con un blocco di codice `ripple` o un `{{ … }}` inline in una qualunque delle sue lingue, e si ferma se ne trova uno. Fermarsi anziché rimuovere è il punto: togliere il Python al posto tuo consegnerebbe una storia diversa da quella che hai provato. Le segnalazioni, i loro codici e il ciclo di nuovi tentativi sono in [Come esportare per un player senza Python](/it/how-to/export-for-a-player-without-python/) e in [Diagnostica](/it/reference/diagnostics/).
+
+Se l'intero progetto è pensato per un player di questo tipo, dillo una volta sola, disattivando **Python** sotto *Capacità* nelle impostazioni del progetto. Ogni scheda che esegue Python viene allora segnalata come errore sulla sua lavagna mentre scrivi, Gioca rifiuta di partire finché ne resta qualcuna, e la casella dell'esportazione viene selezionata per te e non può essere deselezionata. Il controllo passa dalla fine del lavoro al momento in cui lo scrivi.
+
+Inoltre, ogni campagna registra nel proprio manifest se ha bisogno di Python, sotto `needs`. È un'informazione, non un blocco: un player senza interprete gioca comunque la campagna, e un host che preferisce rifiutarla legge quel flag per farlo. Vedi [Python in una storia](/it/explanation/python-in-a-story/) per sapere a cosa serve l'interprete, e [Diagnostica](/it/reference/diagnostics/) per i codici.
+
+## Perché l'HTML è modellato da un profilo nel progetto
+
+Una campagna può avere ogni passaggio scritto come frammento HTML per lingua, pronto da inserire in una pagina. L'editor e la vista di gioco restano Markdown; l'HTML è per qualunque cosa legga la campagna dopo. La finestra di esportazione è divisa per dirlo: i controlli sopra la linea decidono cosa *viaggia*, quelli sotto decidono in cosa *diventa* la prosa.
+
+{/* TODO(shots): <Shot name="exportProfile" /> */}
+
+La difficoltà è che l'HTML ha senso solo dentro una pagina, e la pagina ha già un foglio di stile. L'esportazione non può conoscere i nomi delle tue classi, e indovinarne un insieme ti costringerebbe a riscrivere il tuo CSS attorno allo strumento. Così un **profilo di esportazione** nomina la classe che ottiene ogni tipo di elemento: un paragrafo, un titolo, un'enfasi, un collegamento, una cella di tabella, uno snippet Python possono ciascuno avere una classe a tua scelta. Se non assegni nulla non c'è alcun attributo, e i frammenti non portano quindi alcuna opinione di stile propria.
+
+Un profilo è un file nel progetto, `.ripple/export/<name>.profile.json`, anziché un'impostazione della finestra o dell'app. Quella collocazione è l'argomento. Una build che deve riprodurre l'output del mese scorso ha bisogno delle classi che lo hanno prodotto, e un file versionato insieme alla storia gliele dà; una preferenza memorizzata su una macchina no. Un profilo serve quante esportazioni vuoi, quindi non è legato a una sola esportazione.
+
+## Rimuovere media e collegamenti
+
+**Rimuovi i media** e **Rimuovi i collegamenti** funzionano sia su una copia del progetto sia su una campagna, e rispondono a una domanda diversa da **Includi i media**. Se un file viene distribuito e se la prosa vi punta sono cose separate: la rimozione cambia la prosa e lascia stare ciò che viaggia. Le regole di ciascun interruttore sono in [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/).
+
+## Vedi anche
+
+- [Come esportare una copia del progetto o una campagna](/it/how-to/export-a-project-or-campaign/)
+- [Come esportare per un player senza Python](/it/how-to/export-for-a-player-without-python/)
+- [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/)
+- [Diagnostica](/it/reference/diagnostics/)

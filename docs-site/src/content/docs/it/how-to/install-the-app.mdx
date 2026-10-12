@@ -1,0 +1,75 @@
+---
+title: Come installare Ripple Effect
+description: "Installa Ripple Effect su Windows, macOS o Linux, supera l'avviso del primo avvio e disattiva Smart App Control se Windows blocca il programma di installazione."
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Scarica il programma di installazione per la tua piattaforma dalla [pagina di download](https://ripplefx.app/download), che punta sempre all'ultima versione, poi segui la sezione della tua piattaforma. Nessun programma di installazione è firmato con un certificato, quindi Windows e macOS bloccano l'app una volta al primo avvio; Linux non chiede nulla. L'avviso riguarda il certificato mancante, non ciò che fa il programma di installazione.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+Richiede Windows 10 o 11.
+
+<Steps>
+1. Esegui il file `.exe` di Setup.
+2. Quando SmartScreen mostra **Windows protected your PC**, scegli **More info**, poi **Run anyway**.
+3. Se invece vedi **An Application Control policy has blocked this file**, non si tratta di SmartScreen. Segui [Disattivare Smart App Control](#disattivare-smart-app-control), poi esegui di nuovo Setup.
+</Steps>
+
+Setup installa in `%LOCALAPPDATA%\Programs\Ripple Effect`, solo per il tuo account, e non chiede mai i privilegi di amministratore. Per aggiornare a mano, esegui un programma di installazione più recente sopra quello esistente.
+  </TabItem>
+  <TabItem label="macOS">
+Richiede macOS 12 Monterey o successivo. Il `.dmg` è un'unica build universale per Apple silicon e Intel.
+
+<Steps>
+1. Apri il `.dmg` e trascina l'app in Applicazioni.
+2. Apri l'app. Gatekeeper segnala che non può essere aperta perché proviene da uno sviluppatore non identificato, oppure che non ha potuto verificarla.
+3. Fai clic con il tasto destro sull'app e scegli **Apri**, che aggiunge un pulsante Apri alla finestra di dialogo, oppure rimuovi il contrassegno di quarantena da un terminale:
+
+   ```sh
+   xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"
+   ```
+</Steps>
+
+Lo fai una volta sola; dopo, l'app si apre normalmente.
+  </TabItem>
+  <TabItem label="Linux">
+Richiede glibc 2.38 o successiva: Ubuntu 24.04+, Debian 13+ o Fedora 39+.
+
+Installa il pacchetto per la tua distribuzione:
+
+```sh
+sudo apt install ./ripple_effect-<version>-linux.deb
+sudo dnf install ./ripple_effect-<version>-linux.rpm
+```
+
+Il `.deb` si installa in `/opt/ripple_effect` e l'`.rpm` in `/usr/share/ripple-effect`. Entrambi mettono `ripple_effect` nel tuo `PATH`. Il `.deb` dichiara ALSA, PulseAudio e PipeWire come dipendenze per l'audio.
+
+Se il gestore di pacchetti lo rifiuta con un errore su `libc6` o `GLIBC_2.38`, la tua distribuzione è più vecchia del requisito indicato sopra.
+  </TabItem>
+</Tabs>
+
+Dopo la prima installazione l'app si aggiorna da sola. Vedi [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/).
+
+## Disattivare Smart App Control
+
+Solo Windows 11. Se Setup si rifiuta di procedere con `An Application Control policy has blocked this file` (errore 4551), Smart App Control è attivo. Non ha un *Run anyway* né eccezioni per singola app, quindi l'unico modo per installare è disattivarlo.
+
+<Steps>
+1. Apri **Settings → Privacy & security → Windows Security → App & browser control → Smart App Control settings**.
+2. Scegli **Off**.
+3. Esegui di nuovo Setup.
+</Steps>
+
+:::caution
+Disattivare Smart App Control è una decisione, non un semplice interruttore. Microsoft afferma che gli aggiornamenti recenti di Windows permettono di riattivarlo senza reinstallare. Sulle build più vecchie, una volta disattivato l'unico modo per tornare indietro è un ripristino completo di Windows.
+:::
+
+Se l'impostazione indica già **Off**, il blocco ha un'altra causa. Per il contesto, vedi [Programmi di installazione e primo avvio](/it/reference/installers/).
+
+## Vedi anche
+
+- [Programmi di installazione e primo avvio](/it/reference/installers/) — la tabella delle piattaforme, le pagine del primo avvio e il testo degli errori.
+- [Perché i programmi di installazione non sono firmati](/it/explanation/unsigned-installers/)
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/)

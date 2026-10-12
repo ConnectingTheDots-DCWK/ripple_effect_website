@@ -1,0 +1,75 @@
+---
+title: Come dichiarare, puntare e dimenticare una callback dell'host
+description: "Dai un nome a un trigger per un gioco che incorpora la storia, scegli il suo evento, puntalo, dimenticalo e guardalo scattare nella finestra di gioco."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Il trigger lo dichiari qui; il programmatore che incorpora la storia scrive il gestore e lo registra con lo stesso nome. Niente di ciò che scrivi nel pannello cambia quello che fa la storia.
+
+:::caution[Un nome è un'API pubblicata]
+Il nome è l'unica cosa che collega la tua dichiarazione al loro codice. Rinominarlo rompe la loro build, e nell'editor niente può avvisarli. Concorda i nomi presto e tratta una ridenominazione come rinominare una funzione che qualcun altro chiama.
+:::
+
+## Dichiarare una callback
+
+<Steps>
+
+1. Apri **Callback dell'host** dalla barra delle attività, oppure dalla Paletta dei comandi.
+2. Digita un nome nel campo del nome e aggiungilo. Scrivilo come un identificatore, perché un programmatore dovrà digitarlo: `chapterTwoBegan`, `achievementHit`, `guardWentAlert`. Deve essere univoco nel progetto e non può contenere un'interruzione di riga né un carattere di controllo.
+3. Seleziona la callback nell'elenco e scegli il suo **Evento** (il selettore ha un campo di ricerca, **Trova un evento**). Il pannello offre solo i campi che quell'evento può usare.
+
+</Steps>
+
+Il programmatore scrive l'evento esattamente come lo riporta il selettore. L'elenco completo, con il momento in cui scatta ciascun evento, è sotto [Eventi](/it/reference/host-callbacks/) nel riferimento.
+
+## Puntare una callback
+
+Lasciata com'è, una callback scatta a ogni occorrenza del suo evento. Per restringerla, usa i campi sotto **Cosa osserva**.
+
+- **Lavagna**, poi facoltativamente **Scheda** al suo interno. `passage.shown` può così indicare un solo passaggio anziché ogni passaggio. Il selettore delle schede riporta **Scegli prima una lavagna** finché non ne è scelta una.
+- **Variabile di console**. `cvar.changed` non può farne a meno.
+- **Componente**, per gli eventi delle entità, e **Attributo** per `entity.field.changed`. L'attributo è obbligatorio e il componente no: senza un componente scelto, `hp` osserva qualunque cosa la storia abbia creato che abbia un `hp`.
+- **State machine**, di cui `machine.state.entered` non può fare a meno, e facoltativamente lo **Stato** da attendere.
+
+### Scattare solo quando una variabile raggiunge un valore
+
+Su una callback `cvar.changed`, spunta **Solo quando diventa un valore particolare** e inserisci il **Valore**. Il campo accetta il tipo della variabile stessa, quindi non puoi inserire un valore che non potrebbe mai contenere.
+
+La condizione scatta nel momento in cui la variabile diventa quel valore, non mentre lo mantiene.
+
+### Osservare singole schede
+
+Per essere avvisato ogni volta che la storia attraversa una scheda, punta `node.entered`, `node.exited` o `node.failed` a una lavagna e a una scheda.
+
+Una scheda dentro una macro non può essere scelta, perché una macro viene inserita nella lavagna che la richiama. Punta alla scheda che richiama la macro, che è quella offerta dal selettore.
+
+## Dimenticare una callback
+
+<Steps>
+
+1. Seleziona la callback e scegli **Dimenticala**.
+2. Conferma nella finestra di dialogo, oppure scegli **Tienila** per annullare.
+
+</Steps>
+
+Un gioco in ascolto di quel nome non lo sentirà più, e niente nel progetto ne spiega il motivo.
+
+## Vedere le callback scattare
+
+Apri il pannello laterale **Callback dell'host** nella finestra di gioco. Ogni riga riporta il nome, l'evento, i campi del payload valorizzati e l'esito della ricerca. L'editor pubblica i nomi ma non ha un gioco che reagisca, quindi normalmente non è registrato nulla e ogni riga termina con «nothing registered». Non è un errore: la storia procede come avrebbe fatto comunque. «The handler failed» indica un gestore registrato che ha generato un errore; la storia prosegue.
+
+## Correggere una callback puntata a qualcosa che non c'è più
+
+Una callback puntata a una lavagna, a una variabile o a un componente che il progetto non ha più viene esclusa dalla campagna compilata con un avviso, e il campo nel pannello lo segnala. La dichiarazione resta nel file, quindi ripristinare la lavagna dal controllo di versione fa tornare la callback. Puntala a qualcosa che esiste, oppure dimenticala.
+
+Una scheda è l'eccezione. La build non verifica che l'id di una scheda sia ancora sulla sua lavagna, quindi una callback che nomina una scheda mancante viaggia intatta e non scatta mai. Il pannello lo dice mentre la lavagna è aperta, e la lavagna riporta l'avviso `W.GE.16`. Puntala a una scheda esistente, oppure svuota la scheda per osservare l'intera lavagna.
+
+Se il pannello è in sola lettura e un banner dice che le callback sono state scritte da una versione più recente, aggiorna l'app per modificarle. Nel frattempo non viene scritto nulla nel file.
+
+## Vedi anche
+
+- [Callback dell'host](/it/explanation/host-callbacks/): perché il trigger e il gestore si scrivono da parti opposte.
+- [Riferimento delle callback dell'host](/it/reference/host-callbacks/): gli eventi, i loro payload e `.ripple/callbacks.json`.
+- [Come giocare e testare una campagna](/it/how-to/play-a-campaign/): la finestra di gioco in cui si trova il pannello delle callback.
+- [Diagnostica](/it/reference/diagnostics/): `W.GE.16`.

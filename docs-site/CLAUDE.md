@@ -147,14 +147,52 @@ That a build writes into `src/` is worth remembering on its own: it dirties the
 working tree the first time a slug appears, and the file it writes is the
 frozen copy, not a cache.
 
-## i18n is prepared, with one language in it
+## Two languages: English at the root, Italian under `/it/`
 
-`defaultLocale: 'root'`, so English has no `/en/` prefix. Adding a language is
-two things and neither is a restructuring: an entry beside `root` in
-`astro.config.mjs`, and a directory under `src/content/docs/` named for its
-key. Untranslated pages fall back to the default locale rather than 404, so a
-language can be added and filled in gradually. Starlight's own UI strings live
-in `src/content/i18n/<lang>.json` and that collection is already declared.
+`defaultLocale: 'root'`, so English has no `/en/` prefix; Italian is the `it`
+locale, and its pages are `src/content/docs/it/<slug>`, the same slug as the
+English page they translate. **A page with no Italian file falls back to
+English at the same `/it/` path, with Starlight's notice that it is not
+translated yet** — so a language can be filled in gradually and no `/it/` link
+404s. Every sidebar group and sub-group carries `translations: { it: … }` in
+`astro.config.mjs`. Starlight's own UI strings in Italian are built in; the
+`i18n` collection in `src/content.config.ts` is for overriding them, and is
+empty.
+
+**Four pages are English on purpose.** `reference/nodes` is generated from the
+card prose on the definitions, which the app itself shows in English;
+`reference/mcp-tools` transcribes the MCP wire, which stays English by rule;
+`about/licensing` and `about/what-the-app-sends` restate legal texts whose
+English version is the operative one (`../legal/README.md`, *Adding Italian*).
+Do not translate them by hand: the first two would drift from their source at
+the next regeneration, and the last two would read as a translation of terms
+nobody has translated.
+
+**The Italian is the app's Italian.** Translators work from a glossary built
+out of `apps/editor/l10n/app_it.arb` and the house glossary
+`tool/translation/context.md` in the app repository: *tu*, *lavagna* for board,
+*scheda* for card, *passaggio* for passage, and every UI label exactly as the
+Italian app shows it. A label the reader cannot find in their app is worse than
+one left in English. An Italian page's internal links are `/it/<slug>/`; an
+anchor into another page only survives if its heading is not translated (a
+diagnostic code, an MCP tool), so cross-page links into translated prose carry
+no fragment.
+
+**A visitor from Italy, San Marino or the Vatican is sent to `/it/` on
+arrival**, by the one rule in `vercel.json`: a 307 when `x-vercel-ip-country`
+matches and the `Referer` is **not** this site. Arrival means a search result,
+a link from elsewhere, a typed URL or the app's own *Learn more*; a click inside
+the site — including choosing English in the language menu — is never
+redirected, which is what makes the choice stick for the visit. It does **not**
+stick across visits: someone in Italy who prefers English is offered Italian
+again next time. Remembering it would take a cookie, and the Privacy Notice
+says the site sets only technically necessary ones besides the coffee button's;
+a new one is a change to that text first (`../legal/README.md`). Assets,
+`/_astro/`, Pagefind, every file with an extension (`llms.txt`, the sitemap)
+and the old `overviews/` and `setup/` redirect stubs are excluded from the
+rule, so nothing but a page is ever sent to `/it/`. This is the mechanism the
+legal site reserves for its own Italian, as a redirect rather than a rewrite
+because the two languages have their own URLs here.
 
 ## Two components are overridden, and only two
 

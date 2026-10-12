@@ -1,0 +1,122 @@
+---
+title: Passaggi, scelte, lingue e tempo di lettura
+description: Il formato del file di un passaggio, la riga Legge, i limiti delle scelte, le lingue del progetto, le traduzioni obsolete e la stima del tempo di lettura.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+## Passaggio localizzato
+
+Un passaggio è Markdown. Su una lavagna è una scheda Narration; su disco è un **passaggio localizzato**, una cartella chiamata `*.loc.narr.bdl` che l'app mostra come un unico file. Contiene un `.md` per ogni lingua del progetto.
+
+<FileTree>
+- chapters/
+  - the_gates.graph.json
+  - reaching_the_gates.loc.narr.bdl/
+    - en-US.md il passaggio, nella lingua in cui è scritta la storia
+    - it-IT.md la sua traduzione
+    - touch.json quando ciascuno è stato modificato l'ultima volta, così un clone sa quale è più vecchio
+</FileTree>
+
+| File | Contenuto |
+| --- | --- |
+| `<locale>.md` | Il passaggio in quella lingua, come normale Markdown. |
+| `touch.json` | Quando ogni file di lingua è stato modificato l'ultima volta. Scritto con chiavi ordinate e orari UTC. |
+
+<Shot name="localisation" />
+
+## Scrittura
+
+Fai doppio clic su una scheda Narration per scriverci. L'editor è l'editor Markdown che l'app usa ovunque: un'anteprima dal vivo, una barra di formattazione e immagini incorporate (locali e remote, raster e SVG).
+
+| Controllo | Comportamento |
+| --- | --- |
+| Trascina un file sull'editor | Viene scritto il collegamento. |
+| Pulsante Immagine (accanto a Collegamento, in ogni editor Markdown: un passaggio, un bundle, un documento aperto in una scheda) | Propone per nome le immagini, i documenti e i suoni del progetto mentre digiti. Per qualsiasi cosa fuori dalla cartella accetta un URL o un percorso. Scrive `![alt](path)`; la selezione diventa il testo alternativo, altrimenti resta selezionato un segnaposto. |
+| Immagine esterna al progetto | Prima viene copiata in `.ripple/external/`. Con **Importazione di risorse esterne** disattivata nel menu File viene invece collegata, e Messaggi lo segnala. |
+
+### Forme dei collegamenti
+
+| Forma | Si risolve rispetto a |
+| --- | --- |
+| Inizia con una barra, `![map](/art/map.png)` (quella che scrive l'app) | La radice del progetto. |
+| Senza barra iniziale, `![](../art/map.png)` | La cartella *genitore* del bundle, come farebbe un file al suo posto. Accanto a `chapters/the_gates.graph.json`, significa `art/map.png`. |
+
+### Python in un passaggio
+
+Due posti ospitano Python: uno span inline `{{ … }}` e un blocco delimitato ```` ```ripple ````. Un passaggio può solo leggere. Vedi [Python in una storia](/it/explanation/python-in-a-story/) e [Riferimento Python](/it/reference/python/).
+
+## Legge
+
+La riga **Legge** si trova in fondo alla scheda Narration, accanto al soundscape che il nodo porta con sé. Mostra quanti nomi vengono passati al passaggio e apre la finestra di dialogo in cui si dichiarano: un nome e un tipo ciascuno, scritti come le porte di ogni altra scheda.
+
+| Regola | Dettaglio |
+| --- | --- |
+| Una porta per nome | La scheda aggiunge una porta per ogni nome dichiarato. |
+| Lettura di un nome | Il Python del passaggio lo legge per nome: `You owe {{ gold }} crowns.` con un numero sulla porta `gold`. |
+| Valore predefinito | Uno slot con un valore predefinito e nessun collegamento usa il valore predefinito. |
+| Proprietario | I nomi appartengono alla scheda, non al file del passaggio. Lo stesso passaggio può essere letto da due schede che lo riempiono in modo diverso. |
+| Nome non passato | Compare un piccolo avviso al suo posto; il resto del passaggio viene mostrato come al solito. |
+| Completamenti | Aprendo il passaggio da una lavagna, i nomi della scheda vengono proposti mentre digiti. Aprendolo in una scheda propria no: non c'è nessuna scheda a cui chiedere. |
+
+### Regola dei nomi
+
+Un nome è una lettera o un trattino basso, seguiti da lettere, cifre e trattini bassi. Una parola chiave di Python come `class` viene rifiutata, con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non sa leggere segnala [`W.GE.15`](/it/reference/diagnostics/). La stessa regola vale per gli ingressi e le uscite di una scheda Script. Le righe di una scheda Output e i campi di una scheda Input sono letti da persone, quindi `Your roll` è valido lì.
+
+## Scelte
+
+Le scelte di una scheda Narration hanno due limiti oltre al testo. Quando uno dei due dice no, la scelta resta a schermo, in grigio e non selezionabile. Il motivo è spiegato in [Passaggi e traduzioni](/it/explanation/passages-and-translations/).
+
+| Limite | Dove | Valori | Indicatore sulla scheda |
+| --- | --- | --- | --- |
+| Volte | La casella *Volte* accanto al nome della scelta | Vuota: illimitata. Un numero: quante volte una sessione di gioco può scegliere quella scelta. Una volta esaurita, la scelta resta a schermo, in grigio. | `×3` alla fine della riga della scelta. |
+| Una domanda | Un piccolo ingresso sulla riga di ogni scelta collegata | Un `bool` collegato: la scelta viene offerta solo finché è vero. | L'ingresso sulla riga. |
+
+I due limiti si combinano: *tre volte, e solo finché porti la lanterna* è una scelta con entrambi.
+
+Una scheda appesa al lato della lavagna, fuori dal flusso che porta al passaggio, viene calcolata una sola volta prima che la storia inizi e dà sempre la stessa risposta. Il pannello Messaggi lo segnala e nomina la scelta ([Diagnostica](/it/reference/diagnostics/)). Un Comparator che legge un tiro di dado segue la stessa regola. Le schede stesse sono in [Nodi](/it/reference/nodes/); per costruire il limite, vedi [Come limitare una scelta](/it/how-to/limit-a-choice/).
+
+## Lingue
+
+| Impostazione | Dove | Comportamento |
+| --- | --- | --- |
+| Lingua del testo | Scelta alla creazione del progetto. Il punto di partenza viene dalle impostazioni del computer; la scelta viene proposta, non applicata. Decide il nome del file in cui è scritto ogni passaggio, come `en-US.md`. | Cambiarla lascia intatta la tua prosa: ogni passaggio riceve un file vuoto per la nuova lingua e tutto ciò che hai scritto resta dov'è come traduzione. Finché non viene riportato, i passaggi si riproducono vuoti. Non c'è nessuna migrazione. |
+| Tradotta in | Impostazioni progetto, pagina *Lingue*. Le pagine delle impostazioni del progetto sono *Generale*, *Lingue*, *Radici della narrazione* e *Capacità*. | Vedi le azioni qui sotto. |
+
+| Azione | Effetto |
+| --- | --- |
+| Attivare una lingua di traduzione | Una traduzione vuota viene inserita in ogni bundle. |
+| Disattivare una lingua di traduzione | Non viene eliminato nulla. I file restano, l'editor li mostra contrassegnati come ritirati e ai lettori non viene più offerta la lingua. |
+| Disattivare una lingua in cui c'è del testo scritto | Viene chiesto una volta, al salvataggio. **Mantienile** è il pulsante con il focus. Fare clic altrove o chiudere la finestra di dialogo non elimina nulla. |
+
+## Traduzioni obsolete
+
+I chip delle lingue lungo la parte alta di un bundle rappresentano ciascuno una lingua. Un **punto** su un chip significa che quella traduzione è più vecchia del suo originale. Il pannello Messaggi elenca ogni traduzione rimasta indietro, in tutto il progetto.
+
+L'età si legge da `touch.json`, non dal filesystem, perché un `git clone` imposta l'ora di ogni file al momento del checkout. `touch.json` è scritto con chiavi ordinate e orari UTC, così resta silenzioso in un diff.
+
+## Tempo di lettura
+
+{/* TODO(shots): <Shot name="readingTime" /> */}
+
+Sotto ogni passaggio: il conteggio delle parole a sinistra e, a destra, la scelta di un ritmo di lettura (lento, medio o veloce) con la stima accanto. Si aggiorna mentre scrivi e il ritmo scelto viene ricordato.
+
+| Regola | Dettaglio |
+| --- | --- |
+| Lingue | Cinquantaquattro, ciascuna con la propria velocità di lettura. |
+| Conteggio per carattere | Giapponese, cinese, thailandese e khmer, che si scrivono senza spazi tra le parole. |
+| Scritture miste | Un passaggio che mescola scritture viene contato come entrambe. |
+| Fonti dei valori | Diciassette lingue hanno valori tratti da studi sulla lettura; le altre si ricavano da una lingua affine. Il suggerimento sulla stima dice quale caso vale. |
+| Codice | Gli snippet Python e i blocchi delimitati vengono rimossi prima del conteggio. Un collegamento conta come le parole lette, non come la lunghezza del suo URL. |
+| Passaggi in più lingue | Disattivato per impostazione predefinita; è un'impostazione per progetto. Quando è attivo, i paragrafi in una lingua diversa da quella del passaggio vengono individuati e calcolati alla velocità di quella lingua. Legge ogni paragrafo dopo ogni pausa nella digitazione. I paragrafi brevi vengono lasciati stare, perché una lingua indovinata da una sola riga è indovinata, non conosciuta. |
+
+Il calcolo è fatto dal pacchetto separato [`dart_read_time`](https://github.com/ConnectingTheDots-DCWK/dart_read_time): Dart puro, MIT.
+
+## Vedi anche
+
+- [Passaggi e traduzioni](/it/explanation/passages-and-translations/)
+- [Come scrivere un passaggio](/it/how-to/write-a-passage/)
+- [Come limitare una scelta](/it/how-to/limit-a-choice/)
+- [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/)
+- [Nodi](/it/reference/nodes/)

@@ -1,0 +1,171 @@
+---
+title: Cosa può leggere, giocare e scrivere un assistente
+description: Cosa può leggere, giocare e scrivere un assistente collegato tramite MCP, quali interruttori della pagina Agenti servono a ogni strumento e cosa viene sempre rifiutato.
+sidebar:
+  order: 3
+---
+
+{/* TODO(shots): <Shot name="agentsPanel" /> */}
+
+## Gli interruttori
+
+Entrambi si trovano nella pagina **Agenti** della finestra di dialogo Impostazioni, che si apre con l'ingranaggio nella barra dell'app o con il comando Agenti della Paletta dei comandi. Entrambi sono disattivati per impostazione predefinita ed entrambi appartengono all'app e non a un singolo progetto: l'app serve il progetto che è aperto.
+
+| Interruttore | Effetto | Dipende da |
+| --- | --- | --- |
+| **Consenti agli agenti di raggiungere questa app** | Il server è in ascolto. Un assistente può leggere il progetto aperto e giocarlo. La lettura non cambia nulla. | Nessuno. |
+| **Consenti agli agenti di modificare i file** | Un assistente può scrivere. | **Consenti agli agenti di raggiungere questa app**: non ha effetto finché quell'interruttore è disattivato. |
+
+Il server è un canale locale privato che solo il tuo account può aprire. Non è mai una porta di rete.
+
+Uno strumento di scrittura chiamato mentre **Consenti agli agenti di modificare i file** è disattivato risponde `refused`. Ogni chiamata a uno strumento risponde quanto segue quando l'app è chiusa o l'accesso degli agenti è disattivato, e il client non ha bisogno di essere riavviato una volta attivato l'accesso:
+
+```text
+ripple_effect is not running, or agent access is switched off.
+Open the project in ripple_effect and switch on "Let agents reach this app" under Settings → Agents.
+```
+
+All'assistente viene mostrato comunque l'elenco completo degli strumenti.
+
+## Gruppi di strumenti per permesso
+
+Trentanove strumenti in sei gruppi. Ogni strumento è descritto nella pagina [Strumenti MCP](/it/reference/mcp-tools/).
+
+| Gruppo | Strumenti | Richiede |
+| --- | --- | --- |
+| Orientamento | `project_info`, `project_outline`, `catalog_find` | **Consenti agli agenti di raggiungere questa app** |
+| Lettura | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` | **Consenti agli agenti di raggiungere questa app** |
+| Ciò a cui può rispondere solo l'app | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` | **Consenti agli agenti di raggiungere questa app** |
+| Playtest | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | **Consenti agli agenti di raggiungere questa app** |
+| Scrittura | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | **Consenti agli agenti di modificare i file** |
+| Suono | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | **Consenti agli agenti di modificare i file** |
+
+Ogni strumento che accetta una lavagna, un passaggio, un componente, un soundscape o un suono accetta un id, un nome o un percorso relativo al progetto. Un nome ambiguo restituisce un elenco di candidati invece di una scelta a caso.
+
+### Cosa può leggere l'assistente
+
+| Soggetto | Risposta | Strumenti |
+| --- | --- | --- |
+| Il progetto | La forma dell'intero progetto in una ventina di righe. | `project_info`, `project_outline`, `catalog_find` |
+| Una lavagna | Un riepilogo compatto. | `board_read` |
+| Un passaggio | Tutte le lingue che ha. | `passage_read` |
+| Componenti, script, state machine | I loro contenuti. | `component_read` |
+| Collegamenti tra lavagne | Cosa porta a cosa da una lavagna all'altra. | `board_links` |
+| Percorsi | Ogni percorso tra due passaggi. | `trace_between`, `trace_into` |
+| Traduzioni | Quali sono rimaste indietro. | `translation_status` |
+| Messaggi | Cosa dice la scheda Messaggi. | `diagnostics_read` |
+| Python | Cosa dice la sandbox che il Python può fare; `python_eval` valuta Python rispetto alle definizioni del progetto, in sola lettura. | `python_capabilities`, `python_eval` |
+| Tipi di scheda | `node_types` elenca ogni tipo di scheda di questa versione: il nome con cui aggiungerla, il nome della scheda e cosa fa. Se gli si dà un nome, ne descrive una per intero, con i campi da compilare e le porte da collegare. Viene letto dalla paletta dell'editor stesso al momento della richiesta. | `node_types` |
+| Metadati della scheda | `board_read` li stampa come riga `meta` sotto la scheda. | `board_read` |
+
+### Cosa può giocare l'assistente
+
+Il runner è lo stesso che usa il pulsante Gioca, con lo stesso Python e gli stessi valori dei componenti. Una sessione di gioco non scrive nulla e gioca le lavagne così come sono su disco, non come sono a metà modifica in una scheda.
+
+| Capacità | Comportamento | Strumenti |
+| --- | --- | --- |
+| Avviare, scegliere, leggere lo stato | Avvia una campagna, compie scelte e legge lo stato. | `campaign_start`, `campaign_choose`, `campaign_state`, `campaign_end` |
+| Autoplay | Percorre ogni ramo e segnala quali finali sono raggiungibili, quali passaggi non hanno nulla che porti a loro, dove un percorso resta senza collegamento e quali Jump sono rotti. | `campaign_autoplay` |
+| `campaign_trace` | Legge la traccia che mostra la finestra di gioco: cosa ha fatto finora la sessione di gioco, riga per riga, con la lavagna e la scheda da cui proviene ciascuna. Riprende da dove aveva letto l'ultima volta. | `campaign_trace` |
+| Scheda Input | Arriva all'assistente come una slide che elenca i campi richiesti; l'assistente compila il modulo con un valore per ogni nome. Un percorso non presidiato ne attraversa una con ogni campo vuoto. | `campaign_answer` |
+
+### Cosa può scrivere l'assistente
+
+Richiede **Consenti agli agenti di modificare i file**.
+
+| Scrittura | Strumenti |
+| --- | --- |
+| Un passaggio in una lingua qualsiasi, oppure un passaggio e le sue traduzioni insieme | `passage_write` |
+| Un nuovo passaggio aggiunto a una lavagna e collegato alla scelta che porta a lui | `passage_create`, `board_add_passage` |
+| Collegamenti e le parole su di essi | `board_connect`, `board_disconnect`, `board_set_choice` |
+| I campi di un componente | `component_write` |
+| Nuove lavagne, macro, componenti e script, creati nel modo in cui li crea l'app | `file_create` |
+| Qualsiasi tipo di scheda, compresi un Jump e una chiamata Macro con le sue porte già sulla scheda; `board_add_node` e `board_set_node` accettano `metadata`, un oggetto che sostituisce quello che la scheda aveva | `board_add_node`, `board_set_node` |
+| Schede rimosse o riorientate | `board_remove_node`, `board_set_node` |
+| Un soundscape disposto clip per clip, con la risposta di dove si è posata ogni clip sulla timeline | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
+| File spostati o rimossi | `file_move`, `file_delete` |
+| Il lavoro che l'app sta ancora trattenendo, scritto su disco | `save` |
+
+Ogni scrittura passa dalle sessioni di documento dell'app: aggiungere un passaggio è un singolo annullamento, il salvataggio automatico lo vede, il controllo di versione lo elenca, la modifica viene segnalata in Messaggi nel momento in cui avviene e l'elenco **Modificati in questa sessione** della pagina Agenti la mostra.
+
+## Sempre rifiutato
+
+| Azione | Motivo |
+| --- | --- |
+| Risolvere un conflitto | È l'autore a decidere tra due versioni in sospeso. |
+| Scrivere direttamente il registro, o riemettere un id del catalogo | Rinomine e spostamenti passano dal verbo che usa l'albero dei file, così un Jump continua a puntare alla lavagna giusta. |
+| Rimuovere lo Start di una lavagna, o aggiungerne un secondo | Una lavagna ha un solo ingresso. |
+| Dichiarare una variabile di console | È la pagina del progetto, non uno strumento. |
+| Eliminare qualcosa fuori dal progetto, o in `.ripple/`, o con modifiche non salvate | L'eliminazione di un file non si può annullare; è protetta, non soggetta a conferma. |
+
+## Gli strumenti mostrati a un assistente
+
+Il bridge chiede all'app in esecuzione cosa offre quando un client lo avvia, e il client viene avvisato quando cambia: un aggiornamento dell'app, un progetto aperto, un interruttore spostato, una lingua o una variabile dichiarata. L'app risponde per questa versione e per questo progetto. La descrizione di ogni strumento termina con un collegamento alla sua sezione della pagina [Strumenti MCP](/it/reference/mcp-tools/); gli strumenti Python rimandano al [riferimento Python](/it/reference/python/) e quelli che costruiscono schede al riferimento dei [Nodi](/it/reference/nodes/).
+
+| Parte di uno strumento | Presa da |
+| --- | --- |
+| I tipi di scheda di `board_add_node` | Un'enumerazione ricavata dalla paletta dell'editor stesso, con i nomi delle schede accanto. |
+| Ogni argomento `locale` | Le lingue in cui è scritto il progetto. |
+| `cvar` | Le variabili che il progetto dichiara. |
+| La descrizione di uno strumento di scrittura | Dice quando la modifica è disattivata. |
+
+Un client con il bridge configurato compare nella pagina Agenti non appena l'accesso degli agenti è attivo, non alla sua prima chiamata.
+
+## Il segno di connessione
+
+{/* TODO(shots): <Shot name="agentConnected" /> */}
+
+La barra dell'app mostra solo ciò che ha novità. Premendo il segno si apre la pagina Agenti.
+
+| Stato | Barra dell'app |
+| --- | --- |
+| Interruttore disattivato, oppure attivato e nessuno connesso | Niente; la pagina si trova dietro l'ingranaggio. |
+| Un client connesso | Il segno del client: quello di Claude, di OpenAI, di Gemini, o un semplice robot per tutti gli altri. Il suggerimento riporta il nome e la versione del client. |
+| Due o più client connessi | Il suggerimento li conta. |
+| Non è stato possibile aprire la connessione locale | Una spina nel colore di errore. Il suggerimento dice *Gli agenti non possono raggiungere questa app*. |
+
+La pagina Agenti elenca i client connessi sotto **Connessi** e i file che gli agenti hanno scritto dall'avvio dell'app sotto **Modificati in questa sessione**.
+
+## Cosa registra il log di sessione
+
+Ogni chiamata a uno strumento, lettura di risorsa e prompt di un client lascia una riga nel log di sessione: quale client, quale strumento, quali *nomi* di argomento ha passato, quanto ha impiegato e se è andata a buon fine. Il contenuto degli argomenti non viene mai registrato. Il log può dire che un assistente ha scritto su una lavagna, non cosa ha scritto. Vedi [Log di sessione](/it/reference/session-log/).
+
+## Prompt
+
+| Prompt | Arriva con |
+| --- | --- |
+| *Writing a passage* | Il passaggio che nomini già al suo interno. |
+| *Editing a board* | La lavagna che nomini già al suo interno. |
+
+Entrambi dichiarano in prosa che il Python è monty e non CPython, quindi un attributo è `component("X")["attr"]`, e che l'id di una scheda è numerato sull'intera lavagna e non per tipo.
+
+## File per gli assistenti
+
+Questo sito di documentazione pubblica tre file, e un insieme delle sole pagine di Riferimento, in modo che un assistente possa prenderne l'intero contenuto come un unico file.
+
+| File | Contenuto |
+| --- | --- |
+| `/llms.txt` | Indice. Collegato dall'intestazione del sito. |
+| `/llms-full.txt` | L'intero sito. Collegato dall'intestazione del sito. |
+| `/llms-small.txt` | La versione ridotta, che lascia fuori le note a margine, i tutorial e le pagine Informazioni. |
+| L'insieme Riferimento | Solo le pagine sotto Riferimento: il catalogo delle schede, gli strumenti MCP e l'API Python. |
+
+## Percorso del bridge
+
+Il client avvia un piccolo programma installato accanto all'app, che parla con l'app per suo conto. **Copia configurazione client** nella pagina Agenti copia il blocco che la maggior parte dei client legge, già puntato nel posto giusto. Il programma non è in `PATH`, e la connessione tra lui e l'app è privata per il tuo account utente.
+
+| Piattaforma | Percorso |
+| --- | --- |
+| Linux, `.deb` | `/opt/ripple_effect/ripple_effect_mcp` |
+| Linux, `.rpm` | `/usr/share/ripple-effect/ripple_effect_mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\Ripple Effect\ripple_effect_mcp.exe` |
+| macOS | `/Applications/Ripple Effect.app/Contents/MacOS/ripple_effect_mcp` |
+
+Una versione eseguita dai sorgenti non ha un programma di questo tipo accanto; `melos run editor:mcp:bridge` ne crea uno e stampa dove l'ha messo.
+
+## Vedi anche
+
+- [Come collegare un assistente AI (client MCP)](/it/how-to/connect-an-mcp-client/)
+- [Strumenti MCP](/it/reference/mcp-tools/)
+- [Lavorare con un assistente AI](/it/explanation/working-with-an-assistant/)
+- [Il log di sessione e i rapporti](/it/reference/session-log/)

@@ -1,0 +1,96 @@
+---
+title: Come aggiungere il suono a una storia
+description: Porta l'audio in un progetto, disponilo come soundscape, assegnalo a una scheda Narration e richiama suoni singoli.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+{/* TODO(shots): <Shot name="soundscapeEditor" /> */}
+
+## Portare l'audio nel progetto
+
+Trascina un file `.ogg`, `.mp3`, `.wav`, `.flac`, `.m4a`, `.aac` o `.opus` in un punto qualsiasi della cartella e comparirà in ogni selettore. Oppure usa *Importa* per un file che si trova all'esterno: viene copiato in `.ripple/external/`.
+
+Un file audio si apre in una scheda del documento tutta sua, con riproduzione, pausa e una barra di scorrimento, così puoi ascoltarlo prima di usarlo.
+
+## Creare un soundscape e disporre i clip
+
+<Steps>
+
+1. Scegli **+** nell'albero dei file e crea un nuovo soundscape, un file `*.soundscape.json`. Aprilo in una scheda del documento.
+
+2. Aggiungi un clip con *Aggiungi clip*, oppure fai doppio clic sull'area vuota. Entrambi i modi propongono l'audio del progetto, ricercabile per nome o per cartella, e ogni riga mostra dove si trova il file. Scegli *Importa un file…* se l'audio non è ancora nel progetto. Puoi anche trascinare un suono dall'albero dei file sulla timeline e rilasciarlo nel punto che preferisci.
+
+3. Trascina un blocco per spostarlo. Tira uno dei due bordi per tagliarlo. La forma del suono è disegnata dentro il blocco e mostra la parte del file che viene riprodotta, così puoi tagliare a occhio su un battito. La forma compare un istante dopo il clip, perché il file viene decodificato per disegnarla.
+
+4. Seleziona un clip per modificarla nel pannello a destra. Imposta **RIPRODUZIONE** su *Una volta*, *Loop* o *Ripetizione automatica*. Usa *Ripetizione automatica* per la musica. Attiva **Pausa** su un clip a ripetizione automatica per lasciare un silenzio tra una riproduzione e l'altra, per esempio per una campana ogni tanto. Lascialo disattivato per un sottofondo continuo.
+
+5. Dai forma alle estremità del clip. Trascina verso l'interno la maniglia in cima alla rampa di una dissolvenza per allungarla, oppure riportala nell'angolo per eliminarla. In un clip a ripetizione automatica le dissolvenze si applicano a ogni ripetizione, quindi una dissolvenza può nascondere la giunzione di un file che non si ripete in modo pulito. Per una rampa misurata al millisecondo, scrivi una durata come `0.25 s` in **Dissolvenza in entrata** o **Dissolvenza in uscita**. Si accetta anche un orario, come m:ss.mmm.
+
+6. Apri l'ingranaggio nella barra degli strumenti per impostare le proprietà della timeline: **Durata**, **Ripeti cronologia**, **Dissolvenza in entrata**, **Dissolvenza in uscita**, **Volume** e **Vinculato al passaggio**.
+
+</Steps>
+
+Ogni campo che portano un clip e un soundscape è descritto in [File Soundscape](/it/reference/soundscape-file/). Un clip indica il proprio audio tramite l'id di catalogo, quindi rinominare o spostare un file non lo rompe.
+
+### Dare un nome alle tracce e bloccarle
+
+- Fai doppio clic sull'intestazione di una traccia per darle un nome, per esempio *Bed* o *Weather*.
+- Fai clic con il tasto destro sull'intestazione di una traccia per darle un nome o per bloccarla. Una traccia bloccata non accetta clip, così un sottofondo disposto una volta resta fermo mentre sposti tutto il resto intorno a lui.
+- Fai clic con il tasto destro in qualunque altro punto per ciò che si trova sotto il puntatore: duplicare o eliminare un clip, aggiungerne uno qui, selezionare tutti i clip su una traccia, adattare il pannello, impostare l'altezza della riga, annullare e ripetere.
+
+### Ascoltare l'anteprima del soundscape
+
+Premi Spazio per riprodurre e mettere in pausa, e Maiusc+Spazio per fermare. Il righello, o qualsiasi area vuota, è la barra di scorrimento. L'anteprima passa dallo stesso mixer che usa la campagna, quindi un cursore del guadagno si sente dal vivo e trascinare un clip non fa ripartire il sottofondo che c'è sotto.
+
+Per ascoltare senza l'intero mix, usa **M** e **S** sull'intestazione di una traccia, oppure silenzia una singolo clip dal suo pannello. I clip silenziati sono disegnati sbiaditi. Niente di tutto questo viene salvato e niente arriva alla storia: un soundscape riproduce tutti i clip che contiene.
+
+L'intero file ha un'unica cronologia di annullamenti, quella della barra degli strumenti. Un bordo che tagli sulla timeline e un volume scritto nel pannello appartengono alla stessa cronologia.
+
+:::note
+Un clip oltre la durata della timeline è consentito e viene ombreggiato. Ciò che sta oltre la durata viene tagliato al momento della riproduzione, non rifiutato nell'editor.
+:::
+
+## Riprodurre un soundscape da un passaggio
+
+{/* TODO(shots): <Shot name="soundscapeRow" /> */}
+
+<Steps>
+
+1. Sulla scheda **Narration**, trova la riga del soundscape sotto le scelte.
+
+2. Scegli il soundscape. Parte da quel passaggio e prosegue in tutti i passaggi successivi che non ne portano uno proprio.
+
+3. Per cambiare la musica, scegli un altro soundscape in un passaggio successivo. Due soundscape non si sovrappongono mai. Indicare di nuovo lo stesso non lo fa ripartire.
+
+4. Per fermare tutto subito, scegli *Silenzio — interrompe ciò che sta suonando* in un passaggio successivo. Un passaggio con *Nessuno* non cambia nulla.
+
+5. Per far appartenere un soundscape a un solo passaggio, attiva **Vinculato al passaggio** nelle sue proprietà. Un soundscape vincolato si ferma quando la storia va avanti.
+
+</Steps>
+
+Una partita salvata ricorda ciò che stava suonando. Un caricamento riproduce il soundscape prima che la pagina compaia, e un soundscape vincolato torna solo nel proprio passaggio.
+
+## Richiamare un suono una sola volta
+
+Usa un suono singolo quando la storia deve proseguire subito. `completed` scatta nell'istante in cui il suono viene richiamato, quindi nulla lo aspetta.
+
+- **Da una scheda.** Aggiungi una scheda **Play sound** e scegli un file, un volume e una velocità. Vedi [Nodi](/it/reference/nodes/).
+- **Da Python.** In una scheda Script, chiama `play_sound("sfx/bell.ogg")`, con il percorso scritto come lo scrive il progetto o come lo scrive il bundle. Passa `volume` e `speed` per nome. Vedi [Suoni](/it/reference/python/sounds/).
+
+Gli snippet di un passaggio non possono richiamare un suono. Per far suonare uno stacco quando si raggiunge un passaggio, metti una scheda **Play sound** prima del passaggio, oppure chiama `play_sound` da una scheda Script che lo precede.
+
+## Ascoltarlo nella campagna
+
+L'intestazione della finestra della campagna ha un pulsante **Disattiva audio**. È del lettore, appartiene alla campagna e viene ricordato tra una sessione e l'altra. L'anteprima di un soundscape nella sua scheda del documento non viene mai silenziata da esso.
+
+Il volume di un soundscape è quello del file, e il volume di ogni clip è relativo a esso, quindi non c'è un secondo volume generale da tenere allineato.
+
+## Vedi anche
+
+- [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/) per capire come il runtime decide cosa sta suonando.
+- [File Soundscape](/it/reference/soundscape-file/) per ogni proprietà di clip e timeline e per come il file indica il proprio audio.
+- [Suoni](/it/reference/python/sounds/) per `play_sound` in Python.
+- [Nodi](/it/reference/nodes/) per la scheda Play sound.
+- [Come giocare e provare una campagna](/it/how-to/play-a-campaign/) per ascoltare il risultato.

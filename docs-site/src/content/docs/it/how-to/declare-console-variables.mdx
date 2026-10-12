@@ -1,0 +1,84 @@
+---
+title: Come dichiarare e delimitare una variabile di console
+description: "Aggiungi al progetto una variabile con nome e tipo, limita le lavagne che la offrono e salva di nuovo le partite più vecchie."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Dichiara una variabile di console quando un valore deve essere letto o scritto da più di una lavagna, o da Python, senza un collegamento tra le due parti.
+
+{/* TODO(shots): <Shot name="cvarsPage" /> */}
+
+## Dichiarare una variabile
+
+<Steps>
+
+1. Apri la pagina **Variabili Console** dai pulsanti del progetto nella barra delle attività o dalla paletta dei comandi.
+
+2. Nella riga **Aggiungi una variabile**, dalle un nome. L'esempio in grigio è `gate_open`; minuscole con trattini bassi vanno bene per uno script che la nomina.
+
+3. Scegli il suo tipo e imposta il valore predefinito. I ventiquattro tipi sono elencati in [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/).
+
+4. Per `asset` e `componentRef`, da soli, in una lista o in una mappa, digita qualche lettera di un nome e scegli tra i file del progetto; accanto a ciascuno compare il percorso completo. Ciò che scegli resta come chip, e passandoci sopra il mouse compare il percorso, che è ciò che la variabile memorizza. Un chip per un file che è fuori dal progetto o non c'è più è contrassegnato.
+
+</Steps>
+
+La dichiarazione compare sotto **Dichiarate**. Puoi rinominarla in qualsiasi momento: una scheda memorizza l'id della variabile, quindi ogni lavagna che la usa la segue. Uno script che nomina il vecchio nome no, e viene rifiutato quando la campagna viene giocata.
+
+Per rimuoverne una, usa **Dimentica questa variabile** e conferma. Ogni scheda che la nomina segnala allora che la variabile non c'è più, uno script che la nomina viene rifiutato durante il gioco, e non c'è modo di annullare.
+
+## Limitare una variabile ad alcune lavagne
+
+<Steps>
+
+1. Nella riga della variabile, apri la colonna **Lavagne**. È un menu ricercabile delle lavagne del progetto con una casella accanto a ciascuna, e mostra **Dovunque** finché non ne selezioni qualcuna.
+
+2. Seleziona le lavagne che devono offrire la variabile.
+
+</Steps>
+
+Una scheda Get variable, Set variable o Variable branch su una lavagna offre allora le variabili delimitate a quella lavagna o a nessuna. Una scheda già puntata su una variabile delimitata altrove conserva il suo nome e mostra sotto di esso **Non in ambito di questa lavagna**. Se una lavagna citata da un ambito viene eliminata, la riga indica quante ne mancano.
+
+Un ambito filtra soltanto ciò che una scheda offre; uno script può comunque nominare la variabile da qualsiasi punto.
+
+:::caution
+Selezionare una lavagna porta `.ripple/cvars.json` alla versione 2, che una build precedente rifiuta invece di leggerlo e riscriverlo senza gli ambiti. Un progetto che non ne seleziona mai nessuna passa comunque alla nuova versione, perché la versione appartiene al file e non alla variabile.
+:::
+
+## Usare la variabile su una lavagna
+
+Aggiungi una scheda Get variable, Set variable o Variable branch e scegli la variabile per nome sulla scheda. Le porte e il comportamento delle tre schede sono in [Schede](/it/reference/nodes/).
+
+{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+
+Un valore che non si adatta al tipo dichiarato viene rifiutato mentre lo digiti su una scheda. Un valore che arriva su un collegamento e non si adatta termina l'esecuzione con un messaggio che nomina la scheda. La regola è in [Variabili di console](/it/reference/python/console-variables/).
+
+## Cambiare un valore durante i test
+
+Nella finestra della campagna, apri il pannello accanto alle entità e alla console. Mostra cosa contiene ogni variabile mentre la storia procede e ti permette di cambiarne una a mano. **Ricomincia** viene allora offerto, come dopo l'eliminazione di un'entità.
+
+## Salvare di nuovo le partite più vecchie
+
+Un salvataggio fatto prima della 1.5 va sostituito: la campagna deve essere ricompilata, e un salvataggio è ora in formato 5.
+
+<Steps>
+
+1. Ricompila la campagna.
+
+2. Crea un nuovo salvataggio di ogni partita iniziata prima della modifica.
+
+</Steps>
+
+Cosa contiene un salvataggio è in [La finestra della campagna e le partite salvate](/it/reference/campaign-window/).
+
+## Far puntare una scheda a una variabile da un assistente
+
+Per farlo fare a un assistente, vedi [Come collegare un assistente AI (client MCP)](/it/how-to/connect-an-mcp-client/).
+
+## Vedi anche
+
+- [Variabili di console](/it/explanation/console-variables/): cos'è una variabile e perché un ambito filtra soltanto l'offerta.
+- [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/): i tipi, il file e le sue versioni.
+- [Variabili di console da Python](/it/reference/python/console-variables/): le funzioni e la tabella di coercizione.
+- [La finestra della campagna e le partite salvate](/it/reference/campaign-window/): cosa contiene un salvataggio.

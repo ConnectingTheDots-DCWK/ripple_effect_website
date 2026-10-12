@@ -1,0 +1,54 @@
+---
+title: Come limitare una scelta
+description: Limita quante volte si può fare una scelta oppure offrila solo finché una condizione è vera.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Una scelta esaurita, o la cui condizione è falsa, resta sullo schermo in grigio e non si può premere, così un passaggio non diventa mai una diapositiva vuota.
+
+## Limitare quante volte si può fare una scelta
+
+<Steps>
+
+1. Apri la scelta su una scheda Narration.
+2. Compila la casella *Volte* accanto al suo nome con il numero di volte in cui una sessione di gioco può farla. Lasciala vuota per consentirla tutte le volte che il lettore vuole.
+
+</Steps>
+
+Quando la scelta è esaurita resta sullo schermo, in grigio. La scheda mostra il limite come `×3` alla fine della riga della scelta.
+
+## Offrire una scelta solo finché una condizione è vera
+
+<Steps>
+
+1. Trova il piccolo ingresso sulla riga della scelta. Ogni scelta collegata ne ha uno.
+2. Collega un `bool` a quell'ingresso. La scelta viene offerta solo finché quel valore è vero.
+
+</Steps>
+
+Il numero di volte e la condizione si combinano su una stessa scelta: *tre volte, e solo finché porti la lanterna* è un'unica scelta con entrambi impostati.
+
+## Mettere le schede che decidono nel flusso
+
+Una condizione viene calcolata in tempo solo se le schede che la decidono si trovano nel flusso che porta al passaggio. Vale per qualsiasi scheda la cui risposta dipende da qualcosa che la storia cambia, come un Comparator che legge un tiro di dado.
+
+<Steps>
+
+1. Metti le schede che calcolano la risposta nel flusso che porta al passaggio. Se sono più di una, usa una scheda Do all con una catena su ogni ramo.
+2. Collega la porta `completed` della scheda Do all al passaggio.
+3. Gioca la campagna e controlla il pannello Messaggi. Una scheda che non è nel flusso viene segnalata lì, con il nome della scelta.
+
+</Steps>
+
+:::caution
+Una scheda appesa al lato della lavagna viene calcolata una sola volta, prima che la storia cominci, e dà per sempre la stessa risposta. Il pannello Messaggi lo segnala e nomina la scelta.
+:::
+
+## Vedi anche
+
+- [Diagnostics](/it/reference/diagnostics/) per il messaggio che nomina una scelta decisa prima che la storia cominci.
+- [Nodes](/it/reference/nodes/) per le schede che puoi collegare a una scelta.
+- [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/) per ciò che una scelta contiene.
+- [How a story runs](/it/explanation/how-a-story-runs/) per capire perché è il flusso a decidere quando una scheda viene calcolata.
+- [La finestra della campagna e le partite salvate](/it/reference/campaign-window/) per come il player mostra una scelta esaurita.

@@ -1,0 +1,119 @@
+---
+title: La tua prima storia
+description: Costruisci una storia giocabile partendo da una cartella vuota, con un progetto, una lavagna, tre passaggi, una scelta e il pulsante Gioca.
+sidebar:
+  order: 2
+---
+
+import { FileTree, Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+In questo tutorial costruisci da zero una piccola storia e la giochi: un viandante davanti a un cancello, due modi per attraversarlo e un finale. A ogni passo guardi che cosa l'app ha scritto nella cartella del progetto.
+
+Ti serve l'app installata. Se la tua piattaforma blocca un'app che non conosce, [Come installare Ripple Effect](/it/how-to/install-the-app/) spiega su che cosa fare clic. Se preferisci leggere prima una storia già finita, *Nuovo progetto → Modelli* ne crea una copia per te; qui ne costruiamo una piccola da zero.
+
+<Steps>
+
+1. **Crea un progetto.**
+
+   Premi **Nuovo progetto** nella schermata iniziale. Dagli un titolo, *The Gate* va bene, scegli dove deve andare la cartella e scegli la lingua in cui scrivi. La lingua viene proposta in base alle impostazioni del tuo computer, ma la scelta è tua: decide il nome del file in cui viene scritto ogni passaggio.
+
+   {/* TODO(shots): <Shot name="newProject" /> */}
+
+   Guarda che cosa crea l'app: la cartella con una cosa sola dentro:
+
+   <FileTree>
+   - the_gate/
+     - .ripple/
+       - project.json
+   </FileTree>
+
+   Quello è il progetto. Non c'è nessuna impalcatura né convenzione; tutto il resto della cartella sarà tuo. Vedi [Un progetto è una cartella](/it/explanation/projects-are-folders/) per capire perché.
+
+2. **Crea una lavagna.**
+
+   Nell'albero dei file a sinistra premi **+** e scegli **Lavagna**. Chiamala `gate`. Si apre sul canvas con una sola scheda, **Start**, da cui inizia la storia. Una lavagna ne ha esattamente uno.
+
+   {/* TODO(shots): <Shot name="firstBoard" /> */}
+
+   Sul disco ora hai `gate.graph.json`. È JSON.
+
+3. **Scrivi il primo passaggio.**
+
+   Fai clic destro su una zona vuota del canvas e scegli **Crea ▸ Story ▸ Narration**. Un clic destro, o un collegamento rilasciato sul canvas vuoto, è il modo in cui si crea ogni scheda. La scheda compare dove hai fatto clic, con la scritta *Vuota — fai doppio clic per scrivere.*: fai doppio clic su di essa.
+
+   La finestra Passage chiede un titolo, *At the gate*, e quale passaggio legge la scheda. Premi **Nuovo** per crearne uno e scrivi:
+
+   ```markdown
+   The gate is shut, and the guard on the wall has seen you.
+   ```
+
+   Chiudi la finestra. Il testo è già salvato: tutto nell'app viene scritto mentre lavori, e la finestra decide soltanto il titolo e a quale passaggio punta la scheda.
+
+   {/* TODO(shots): <Shot name="firstPassage" /> */}
+
+   Accanto alla lavagna c'è ora una cartella che l'app mostra come un unico file:
+
+   <FileTree>
+   - the_gate/
+     - gate.graph.json
+     - gate-at-the-gate.loc.narr.bdl/
+       - en-US.md
+       - touch.json
+   </FileTree>
+
+   `en-US.md`, o la lingua che hai scelto, contiene la tua frase come semplice Markdown. Una traduzione sarebbe un secondo `.md` accanto a questo. Il nome della cartella segue la lavagna e il titolo.
+
+4. **Collegalo.**
+
+   Trascina dalla porta a destra di **Start** alla porta a sinistra del tuo passaggio. La storia ha ora una prima pagina.
+
+5. **Dai al passaggio due scelte.**
+
+   Trascina dalla prima porta di uscita del passaggio e rilascia sul canvas vuoto. Il menu Crea si apre dove hai rilasciato, già collegato a ciò che scegli. Scegli **Narration**, fai doppio clic sulla nuova scheda, intitolala *Talk to the guard*, premi **Nuovo** e scrivi `The guard leans over the wall and listens.` Ripeti dalla seconda porta del passaggio: intitolala *Climb the wall*, premi **Nuovo** e scrivi `The stones are loose, but you find a hold.` Sotto ogni porta che colleghi compare una porta libera.
+
+   Ora fai clic sulla riga di ciascuna scelta nella prima scheda. Una scelta ha un **nome**, che è ciò che la scheda mostra perché tu possa trovare il ramo su una lavagna ampia, e le sue **parole**, che sono ciò che viene offerto al lettore, in ogni lingua in cui è scritta la storia. Dai alla prima *Call up to the guard* e alla seconda *Look for another way*.
+
+6. **Concludila.**
+
+   Fai clic destro sul canvas vuoto, scegli **End** e collega entrambi i rami. Una scheda End accetta un numero qualsiasi di collegamenti, così ogni ramo può finire nello stesso punto.
+
+7. **Provala.**
+
+   Premi **Gioca**. La finestra della campagna si apre sul tuo primo passaggio con le due scelte sotto. Scegline una, leggi il passaggio successivo e arriva alla fine.
+
+   {/* TODO(shots): <Shot name="firstPlay" /> */}
+
+   Ciò che hai appena giocato è ciò che gioca una campagna esportata: lo stesso motore, senza una copia di anteprima che potrebbe discostarsene. Vedi [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/).
+
+</Steps>
+
+## Che cosa hai ottenuto
+
+<FileTree>
+- the_gate/
+  - .ripple/
+    - project.json
+    - registry.json
+    - workspace.json
+  - gate.graph.json
+  - gate-at-the-gate.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+  - gate-talk-to-the-guard.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+  - gate-climb-the-wall.loc.narr.bdl/
+    - en-US.md
+    - touch.json
+</FileTree>
+
+Hai costruito una lavagna, tre passaggi e l'indice dell'app in `.ripple/`. Ogni file è testo semplice.
+
+## Dove andare dopo
+
+- **Una seconda lavagna.** Creane una, mettici un passaggio e passa la storia con una scheda **Jump** dalla prima lavagna. Poi apri *Navigazione Script* dalle icone in basso della barra delle attività per vedere le due lavagne disegnate come una mappa. Vedi [Come costruire una lavagna](/it/how-to/work-on-the-canvas/).
+- **Un tiro di dadi.** Una scheda per il tiro di dadi può decidere se la scalata riesce. [Nodi](/it/reference/nodes/) elenca tutti i nodi.
+- **Una macro.** Una macro ti permette di scrivere un tratto di storia una volta sola e richiamarlo da ogni lavagna. Vedi [Come riutilizzare un tratto di storia con una macro](/it/how-to/make-a-macro/).
+- **Una seconda lingua.** Le impostazioni del progetto ne aggiungono una; ogni passaggio ottiene un file vuoto per essa, e il lettore sceglie la lingua nella finestra della campagna. Vedi [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
+- **Tieni una cronologia.** [Come tenere una cronologia ed eseguire il backup di un progetto](/it/how-to/keep-a-history-and-back-up/).

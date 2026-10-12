@@ -1,0 +1,159 @@
+---
+title: La finestra della campagna e le partite salvate
+description: Cosa mostra la finestra della campagna, i suoi controlli nell'intestazione, i quattro pannelli, Gioca da qui, e cosa contiene una partita salvata e dove si trova.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Il pulsante **Gioca** in basso a destra di una lavagna apre la finestra della campagna
+e avvia la storia dalla scheda Start di quella lavagna, seguendo i Jump da una lavagna all'altra
+finché un percorso raggiunge un End.
+
+<Shot name="play" />
+
+| Proprietà | Valore |
+| --- | --- |
+| Motore | Il motore nativo che esegue una campagna esportata. Gioca e un'esportazione condividono la stessa implementazione. |
+| Cosa viene compilato | L'intero progetto, non la lavagna aperta. |
+| Prima della compilazione | Gioca reindicizza a cosa rimandano i passaggi e dove saltano le lavagne, lo stesso indice che legge un'esportazione. Un'immagine aggiunta a un passaggio dopo l'apertura del progetto è presente nella sessione di gioco senza esportare. |
+| Avvisi di compilazione | Elencati in **Messaggi** quando si preme Gioca, dallo stesso compilatore di un'esportazione. Esempi: un tiro che non può variare, una macro a cui manca una delle estremità. |
+| Controlli sulle lavagne | Gioca controlla ogni lavagna con i controlli del motore. Una segnalazione indica le schede interessate. `W.GE.06` può essere riconosciuta scheda per scheda con *È intenzionale*. Vedi [Diagnostica](/it/reference/diagnostics/). |
+| Python disattivato | Se nel progetto Python è disattivato (impostazioni del progetto, *Capacità*), ogni scheda Script e ogni passaggio che contiene Python è segnalato come errore ed elencato in Messaggi. La campagna non parte finché ne resta qualcuno. |
+
+## Finestra
+
+| Controllo | Comportamento |
+| --- | --- |
+| Dimensione | La finestra si ingrandisce per adattarsi allo schermo in cui si trova e si riduce per adattarsi a uno piccolo. |
+| Pulsante Schermo intero (intestazione) | Porta la finestra ai bordi dell'app e la riporta indietro. Anche Esc la riporta indietro. |
+| Lingua (intestazione) | Chi legge sceglie la lingua e può cambiarla a metà di un passaggio. Un passaggio senza testo nella lingua scelta lo dice; non ricade su un'altra lingua. |
+| **Disattiva audio** (intestazione) | Viene ricordato tra una sessione e l'altra. Appartiene alla campagna: l'anteprima di un soundscape nella sua scheda non viene mai silenziata da questo comando. Il volume di un soundscape è quello del file e quello di ogni clip è relativo a esso; non c'è un secondo volume principale. |
+| Segnalibro (intestazione, accanto a Gioca) | Salva la sessione di gioco con un nome. Se ne può salvare un numero qualsiasi. Salvare non conclude la sessione di gioco. Vedi [Partite salvate](#partite-salvate). |
+| Ricomincia | Sempre disponibile, dal primo passaggio fino a un finale. *Rigioca* è offerto anche su un finale. Mentre una storia è in corso, il controllo Gioca dell'intestazione riporta **Ricomincia**. |
+| Barra dei pannelli | Una striscia stretta lungo il bordo destro apre i quattro pannelli. Un pannello aperto occupa un terzo della finestra. |
+
+## Cosa mostra una diapositiva
+
+| Elemento | Comportamento |
+| --- | --- |
+| Passaggio | Mostrato come Markdown con il suo Python già eseguito. |
+| Scelte | Le tessere sotto il passaggio. |
+| Scelta con un limite di **Volte** esaurito | Resta sullo schermo, in grigio e non selezionabile. Un passaggio non diventa mai una diapositiva vuota. |
+| Scheda Delay | Mantiene sullo schermo l'ultimo passaggio, in grigio, con una sottile barra mentre attende. |
+| Scheda Input | Un modulo. Invio in un campo equivale a Continua. |
+| Loop che nulla interrompe | Ferma la campagna e propone la scheda che è andata fuori controllo. |
+
+### Campi del modulo Input
+
+| Tipo di campo | Controllo |
+| --- | --- |
+| Testo | Un campo di testo. |
+| Numero | Un campo numerico che non accetta lettere. |
+| Verità | Un interruttore. |
+| Elenco | Una riga di valori separati da virgole. |
+
+Una storia può essere messa in pausa, salvata e ripresa a una scheda Input; riprendendo, i valori vengono chiesti di nuovo.
+Il player da terminale chiede una riga per campo, e una partita senza supervisione lascia ogni
+campo vuoto.
+
+{/* TODO(shots): <Shot name="inputForm" /> */}
+
+### Limite di cicli
+
+| Proprietà | Valore |
+| --- | --- |
+| Significato | Il numero di volte in cui una scheda di loop può girare in una lavagna prima che la campagna si fermi. |
+| Predefinito | 512. |
+| Opzioni | 128, 512, 2.048, 8.192, oppure Nessuno per nessun limite. |
+| Dove si imposta | *Riproduzione* nelle Impostazioni. |
+| Interazione | Il valore *Max iterations* di una scheda For si applica per primo quando è più basso. |
+| Viaggia con un'esportazione | No. Il limite appartiene all'app. |
+
+## Gioca da qui
+
+Fai clic con il tasto destro su una scheda qualsiasi di una lavagna e scegli **Gioca da qui**. La campagna
+parte da quella scheda invece che dallo Start.
+
+{/* TODO(shots): <Shot name="playFromHere" /> */}
+
+Parte senza che sia stato creato nulla, e lo dice. La console nella finestra della campagna
+prepara tutto ciò che la storia avrebbe dovuto avere; può fare tutto ciò che può fare una
+scheda Script. Vedi [Come funziona una storia](/it/explanation/how-a-story-runs/) per capire perché nulla
+viene inventato.
+
+## I quattro pannelli
+
+| Pannello | Mostra | Note |
+| --- | --- | --- |
+| **Entità** | Tutto ciò che la storia ha creato, raggruppato sotto il componente da cui proviene ciascuna entità. | Un conteggio sull'intestazione di ogni gruppo. Una riga di ricerca trova un'entità per nome, oppure il nome di un componente per trovare tutto ciò che ne deriva. Ogni riga ha un cestino; non viene chiesto nulla prima, la sessione di gioco è effimera e il file del componente non viene toccato. |
+| **Variabili** | Cosa contiene ora ogni variabile di console. | Modificabili a mano. Vedi [Variabili di console](/it/reference/console-variable-declarations/). |
+| **Console Python** | La console Python sulla sessione di gioco in corso. | La stessa console dell'editor di script, con lo stesso scorrimento all'indietro e la stessa cronologia. |
+| **Traccia** | Cosa ha fatto la storia, riga per riga. | Vedi sotto. |
+
+{/* TODO(shots): <Shot name="entitiesPanel" /> */}
+
+### Pannello Traccia
+
+{/* TODO(shots): <Shot name="tracePanel" /> */}
+
+| Proprietà | Comportamento |
+| --- | --- |
+| Righe | Scritte con le parole della storia, per esempio *Letto* **The gate** — scelta «Bribe the guard», *Impostato* **gold** su 2 (era 10), *Lanciato* **2d6+3 → 11**, *Saltato a* **The yard**, *Ambiente* **tavern** dove un passaggio ha portato un soundscape, e ciò che ha stampato una scheda Script. |
+| Decorazione delle righe | Ogni riga porta l'icona e il colore della sua scheda. |
+| Lettura predefinita | Ciò che chi legge avrebbe potuto notare. |
+| Interruttore | Mostra tutto ciò che sta sotto: ogni turno, i valori valutati, le osservazioni dello scheduler, con una riga tecnica dietro ciascuna. |
+| **Copia** | Mette negli appunti le righe in chiaro. |
+| Toccare una riga | Mette in pausa la storia, chiude la finestra, apre la lavagna con la scheda selezionata e centrata. **Riprendi** riporta la storia indietro. |
+| Riga dentro una macro | Ti porta alla scheda che ha chiamato la macro, perché è quella che si trova sulla lavagna. |
+
+## Pannello Callback dell'host
+
+La finestra ha un pannello laterale **Callback dell'host**. Elenca ogni attivazione: il nome,
+l'evento, i campi del payload impostati e com'è andata la ricerca.
+
+L'editor pubblica i nomi ma non ha un gioco che reagisca, quindi di norma
+non è registrato nulla e ogni attivazione compare come un nome che un gioco avrebbe cercato.
+Un nome senza nulla di registrato non è un errore; la storia procede esattamente come
+avrebbe fatto. Vedi [Callback dell'host](/it/reference/host-callbacks/).
+
+## Partite salvate
+
+{/* TODO(shots): <Shot name="savedGames" /> */}
+
+| Proprietà | Valore |
+| --- | --- |
+| Posizione | `.ripple/saves/` nel progetto, un file per slot. |
+| Salvataggio automatico | La pausa lo scrive, nello slot che appartiene a una pausa. Sopravvive alla chiusura dell'app. |
+| Salvataggi con nome | Creati con il segnalibro nell'intestazione, in numero qualsiasi, accanto a quello automatico. |
+| Controllo di versione | I salvataggi sono esclusi. Una sessione di gioco è un fatto che riguarda la lettura, non la storia, e quello automatico viene riscritto a ogni pausa. |
+
+### Contenuto di un salvataggio
+
+| Registrato | Note |
+| --- | --- |
+| Dov'è la sessione di gioco | Il punto in una lavagna. |
+| Entità | Tutto ciò che la storia ha creato. |
+| Variabili di console | Cosa conteneva ciascuna variabile, non il suo tipo. Uno qualsiasi dei 24 tipi, `json` compreso. |
+| Memoria delle schede | Ciò che ricordano le schede FlipFlop, Once e State machine. |
+| Soundscape | Quale era in riproduzione, così un caricamento lo sente prima di vedere la pagina. |
+| Conteggi di **Volte** | Il conteggio di una scelta viene salvato: caricando si trova il percorso esaurito com'era, e ricominciando si riapre. Una macro conta per chiamata, quindi un corridoio chiamato da due punti ha un budget per ciascuno. |
+
+### Aprire una partita salvata
+
+| Proprietà | Comportamento |
+| --- | --- |
+| Dove | Il segnalibro accanto a Gioca, o il comando della paletta dei comandi *Apri una partita salvata…*. |
+| Elenco | Ogni salvataggio con il passaggio a cui è in attesa e quanto tempo fa è stato scritto. Un salvataggio fatto in attesa a una scheda Input mostra *Chiede* e i nomi dei campi. Un salvataggio il cui file è stato modificato fuori dall'app è contrassegnato *modificata a mano*. |
+| Effetto | Aprirne uno scarta la campagna in corso. La conferma, *Aprire questo gioco salvato?*, dice di salvare prima la campagna in corso per conservarla. |
+| Storia cambiata | Un salvataggio viene rifiutato quando la storia è cambiata da allora: il salvataggio registra un punto in una lavagna che non esiste più. Il salvataggio è elencato con il motivo accanto e lasciato intatto. |
+| Lavagna eliminata | Un salvataggio che nomina una lavagna che il progetto non ha più viene segnalato in Messaggi: non c'è dove riprenderlo. |
+| Pausa e ripresa nella stessa sessione | Non rifiutata. Riprendi restituisce la lavagna appena modificata. |
+| Salvataggio più recente di una versione dell'app più vecchia | Rifiutato. Una versione dell'app più vecchia del salvataggio non reimposta una variabile `json` al suo valore predefinito. Le partite salvate prima dell'aggiornamento vanno salvate di nuovo. |
+
+## Vedi anche
+
+- [Come giocare e testare una campagna](/it/how-to/play-a-campaign/)
+- [Come salvare e riprendere una sessione di gioco](/it/how-to/save-and-resume-a-campaign/)
+- [Perché l'anteprima è la storia che verrà pubblicata](/it/explanation/the-preview-is-the-shipped-story/)
+- [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/)
+- [File del progetto e la cartella .ripple](/it/reference/project-files/)

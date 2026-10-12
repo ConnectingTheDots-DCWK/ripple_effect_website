@@ -1,0 +1,247 @@
+---
+title: Controllo di versione nell'app
+description: "La sezione Modifiche della barra laterale, i suoi termini, cosa scrive l'avvio di una cronologia, la barra del backup, la vista dei conflitti e l'elenco delle modifiche annullate."
+---
+
+Il controllo di versione è integrato nell'app e si raggiunge dalla sezione **Modifiche** della barra laterale, la seconda icona della barra delle attività accanto a File. La cronologia sottostante è un normale repository git, e tutto ciò che ne legge uno legge anche questa. Il motore è libgit2, compilato nell'app: non serve installare git.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Termini
+
+Sullo schermo si usano le parole dell'app. La parola di git compare in un tooltip, in una segnalazione o dove è ciò che si cercherebbe.
+
+| Termine nell'app | Termine di git |
+| --- | --- |
+| Modifiche (sezione della barra laterale) | Source control |
+| Punto di salvataggio | Commit |
+| Storyline | Branch |
+| Pronto per salvare | Staged |
+| Non ancora incluso | Unstaged |
+| Segna come pronto | Stage |
+| Ritira | Unstage |
+| Metti da parte | Stash |
+| Esegui il backup | Push |
+| Ottieni le modifiche | Pull |
+| Controlla le modifiche | Fetch |
+| Dove vive il tuo backup | Remote |
+
+## Avviare una cronologia
+
+Un progetto senza cronologia mostra la proposta *Questo progetto non ha ancora una cronologia.* con l'azione **Lascia che ti aiutiamo a configurarla**. La pagina di configurazione, **Tieni una cronologia di questo progetto**, riporta:
+
+| Controllo | Testo del risultato |
+| --- | --- |
+| Motore | *Il controllo di versione è integrato* (*Niente da installare: motore \{version\}.*), oppure *Il motore non è stato caricato in questa versione.* |
+| Cartella | *È possibile scrivere in questa cartella* |
+| Rete | *Il backup su internet funzionerà*, oppure una nota che questa versione non può raggiungere un remote via HTTPS; tutto ciò che sta sulla macchina funziona comunque |
+| Identità | Presa dal git già configurato sul computer (`~/.gitconfig`), oppure *Niente era già configurato qui* |
+
+Ogni punto di salvataggio registra un nome e un indirizzo email, scritti solo in questo progetto. Sono accettati qualsiasi nome e indirizzo: sono un'etichetta, non un account, e nulla li verifica. Nessuno dei due può contenere `<` o `>`. Cambiare l'identità nella pagina di configurazione vale solo per questo progetto.
+
+**Inizia a tenere una cronologia** fa tre cose:
+
+1. Avvia una cronologia nella cartella.
+2. Scrive un breve elenco di cose da lasciare fuori. Un file di esclusione già presente non viene riscritto; le regole vengono solo aggiunte, e solo quelle mancanti.
+3. Crea il primo punto di salvataggio di tutto il progetto.
+
+Altri effetti:
+
+| Effetto | Dettaglio |
+| --- | --- |
+| `.gitattributes` | Una sola riga, `* text=auto`, scritta all'avvio e poi non più toccata. Mantiene coerenti i fine riga per i coautori su altre piattaforme. |
+| Ignorato dall'app | `.ripple/workspace.json`, che è per singola macchina. Tutto il resto di `.ripple/` è condiviso; vedi [File del progetto e cartella .ripple](/it/reference/project-files/). |
+| File grandi | I file troppo grandi per essere ritirati da una cronologia vengono lasciati fuori e nominati, non salvati. Un file di 25 MB viene segnalato come abbastanza grande da rallentare l'operazione; i file oltre 95 MB vengono lasciati fuori. |
+| Autore | Il primo punto di salvataggio ha come autore l'utente, mai l'app. |
+
+Un progetto dentro una cartella che usa già il controllo di versione viene rifiutato: *Questo progetto si trova all'interno di una cartella che utilizza già il controllo di versione.* Al suo interno non si avvia una seconda cronologia.
+
+## Modifiche
+
+La sezione Modifiche ha tre viste, scelte con un selettore: **Modifiche**, **Cronologia**, **Metti da parte**.
+
+### Vista Modifiche
+
+I file sono elencati in due gruppi, ciascuno con la propria quantità nell'intestazione.
+
+| Gruppo | Significato |
+| --- | --- |
+| Pronto per salvare | Segnati per il prossimo punto di salvataggio. |
+| Non ancora incluso | Modificati ma non segnati. |
+
+Un file può comparire in entrambi i gruppi quando è stato segnato come pronto e poi modificato di nuovo.
+
+| Controllo | Effetto |
+| --- | --- |
+| **Prepara per il salvataggio (stage)** / **Segna tutto questo come pronto (stage)** | Sposta i file in *Pronto per salvare*. |
+| **Ritira (unstage)** / **Ritira tutto questo (unstage)** | Sposta i file in *Non ancora incluso*. |
+| **Annulla queste modifiche** | Chiede *Annullare queste modifiche?*; **Annullale** oppure **Mantienile**. Ripristina il file alla versione segnata come pronta, o all'ultimo punto di salvataggio se non ce n'era una; un file non tracciato viene eliminato. |
+| Clic su un file | Apre un confronto affiancato con la versione precedente. |
+| Clic destro su un file nell'albero dei file | Offre il confronto per un file con modifiche. |
+| Aggiorna (**Controlla di nuovo**) | Rilegge l'elenco. Compare con una spiegazione quando la cartella non è osservata, così l'elenco si muove solo su richiesta. |
+
+Ogni file di testo ha un diff, comprese lavagne e componenti. Un file che non è testo, o è troppo lungo per essere disposto, è elencato come modificato con *Questo file non è testo.* o *Questo file è troppo lungo per il confronto.* e senza confronto. Una scheda di diff confronta un file con il suo ultimo punto di salvataggio. I tooltip distinguono i due confronti: *Staged* è l'ultimo punto di salvataggio rispetto a ciò che è pronto; *Unstaged* è ciò che è pronto rispetto a ciò che c'è sul disco.
+
+Parole di stato nell'elenco:
+
+| Parola | Significato |
+| --- | --- |
+| Invariato | |
+| Non ancora nella cronologia | Non tracciato |
+| Aggiunto | |
+| Modificato | |
+| Eliminato | |
+| Rinominato | |
+| Tipo modificato | |
+| Due versioni non concordano | In conflitto |
+
+L'elenco segue le modifiche ovunque nel progetto man mano che i file cambiano, che la cartella sia aperta o no nell'albero.
+
+### Indicatori nell'albero dei file
+
+Puntini colorati compaiono sui file modificati e sulle cartelle che li contengono. I file ignorati non si propagano alle cartelle.
+
+| Indicatore | Tooltip |
+| --- | --- |
+| Nuovo | Nuovo dall'ultimo punto di salvataggio |
+| Modificato | Modificato dall'ultimo punto di salvataggio |
+| Ignorato | Escluso dalla cronologia |
+
+## Punti di salvataggio
+
+Un punto di salvataggio si scrive nel riquadro in fondo alla vista Modifiche.
+
+| Campo | Dettaglio |
+| --- | --- |
+| Riepilogo | Obbligatorio; segnaposto *Cosa è cambiato?*. Senza: *Un punto di salvataggio richiede una riga che spieghi cosa è cambiato.* |
+| Dettaglio | Facoltativo; si apre con **Aggiungi altri dettagli**, si chiude con **Nascondi i dettagli**; segnaposto *Qualcosa d'altro utile da sapere in seguito*. |
+| Pulsante | **Salva \{count\} file**, oppure *Nessun file pronto* quando non ce n'è nessuno. |
+
+Rifiuti: nessun nome e indirizzo email (*Prima di creare un punto di salvataggio sono necessari un nome e un indirizzo email.*); nulla segnato come pronto.
+
+La paletta dei comandi contiene le stesse operazioni: **Salva un punto di salvataggio…**, **Annulla l'ultimo punto di salvataggio**, **Nuova Storyline…**, **Passa a un'altra Storyline…**, **Controlla le modifiche**, **Ottieni le modifiche dal backup**, **Esegui il backup ora**, **Metti da parte questo lavoro…**.
+
+**Annulla l'ultimo punto di salvataggio** chiede *Riprendere l'ultimo punto di salvataggio?* Tutto ciò che aveva registrato resta dov'è sul disco e torna a essere segnato come pronto; nessun file cambia. Il primo punto di salvataggio non può essere ripreso. Un punto di salvataggio si può riprendere anche dalla sua riga nella Cronologia.
+
+## Cronologia
+
+Elenca ogni punto di salvataggio con il suo riepilogo, l'autore e quanto tempo fa è stato creato. Una cronologia vuota riporta *Ancora nessun punto di salvataggio.*
+
+## Storyline
+
+Una Storyline è un branch.
+
+| Operazione | Dettaglio |
+| --- | --- |
+| Nuova Storyline | Parte dal punto di salvataggio corrente e ci passa sopra. Una Storyline deve partire da un punto di salvataggio, quindi non se ne può creare una prima del primo. |
+| Rinomina questa… | |
+| Passa a un'altra Storyline | Con modifiche non salvate, chiede *Passare a «\{name\}»?* e offre **Metti da parte e passa**, oppure annulla per salvarle prima. |
+| Elimina una… | La Storyline corrente non può essere eliminata. Una Storyline eliminata viene conservata e si può recuperare con **Ripristina**; il messaggio indica quanti punti di salvataggio c'erano solo in essa. |
+
+Il nome di una Storyline non può contenere spazi, `..`, `~`, `^`, `:` né una `/` finale.
+
+## Metti da parte
+
+**Metti da parte** toglie di mezzo il lavoro in corso e riporta il progetto al suo ultimo punto di salvataggio. Il lavoro riceve un nome quando viene messo da parte; passare a un'altra Storyline offre lo stesso, con l'etichetta *Messo da parte prima di spostarsi su \{name\}*.
+
+| Controllo | Effetto |
+| --- | --- |
+| **Metti da parte ciò che c'è qui** | Mette da parte le modifiche correnti. Rifiutato quando è già tutto in un punto di salvataggio. |
+| **Ripristina** | Ripristina il lavoro messo da parte; resta nell'elenco finché non viene eliminato. Rifiutato quando tocca file modificati nel frattempo: salva o metti da parte prima ciò che c'è qui. |
+| **Elimina** | Chiede *Eliminare definitivamente?*; l'unica operazione della vista che non si può annullare. |
+
+## Annullati di recente
+
+**Annullati di recente** fa parte della vista **Metti da parte**. Annullare le modifiche a un file conserva prima ciò che viene scartato, sotto un tag nel repository, `refs/tags/ripple/undo/`, così resta raggiungibile da riga di comando. Ogni voce offre **Ripristina**; l'avviso successivo è *Ripristinato ciò che era stato annullato.* Il messaggio che lo offre resta in Messaggi dopo che la notifica è scomparsa.
+
+| Proprietà | Dettaglio |
+| --- | --- |
+| Durata dell'elenco | Conservato da quando il progetto è stato aperto; l'elenco riparte quando l'app si chiude. |
+| Cosa sopravvive alla chiusura | Ciò che ogni voce conteneva è ancora nella cronologia dopo. |
+| Ambito di un annullamento | Solo i percorsi dell'azione che annulla. |
+
+## Eseguire il backup
+
+Il backup è separato dal tenere una cronologia; un progetto può avere una cronologia e non essere mai salvato in backup. È supportato un solo remote.
+
+### Dove vive
+
+La finestra di dialogo **Dove deve essere effettuato il backup?** richiede un **Indirizzo**: un indirizzo web che inizia con `https://`, oppure il percorso completo di una cartella (un'unità condivisa o una cartella sincronizzata non richiede alcun account). Gli indirizzi SSH e `git://` vengono rifiutati con l'istruzione di usare quello HTTPS; qualsiasi altro indirizzo che non sia né l'uno né l'altro viene rifiutato con *Quello dovrebbe iniziare con https:// oppure essere il percorso completo di una cartella.*
+
+| Avviso | Contenuto |
+| --- | --- |
+| Crea prima il repository sul sito | L'app non lo crea. Un repository mancante viene segnalato come password errata. Vedi [Come tenere una cronologia e fare il backup di un progetto](/it/how-to/keep-a-history-and-back-up/). |
+| Controlla se è pubblico o privato | Un repository pubblico significa che chiunque può leggere la storia, comprese tutte le bozze salvate. |
+
+### Accesso
+
+Un indirizzo web chiede l'accesso una sola volta, con un token di accesso personale e un nome utente su quel sito. Una cartella non richiede accesso.
+
+| Proprietà | Dettaglio |
+| --- | --- |
+| Credenziale | Un token di accesso personale, non una password. |
+| Archiviazione | L'archivio sicuro del computer, un token per host, condiviso da ogni progetto di cui si fa il backup lì. |
+| Nessun archivio di password in esecuzione | *Conservato solo per questa sessione*; viene chiesto di nuovo la volta successiva. Non viene scritto alcun file in chiaro. |
+
+### La barra del backup
+
+Il pulsante principale dice cosa sta per fare.
+
+| Stato | Pulsante |
+| --- | --- |
+| Nessun remote | **Fai un backup da qualche parte** |
+| Storyline mai salvata in backup | **Crea un backup di questa Storyline** |
+| Il backup ha punti di salvataggio che mancano a questa copia | **Ottieni \{count\} modifiche** |
+| Questa copia ha punti di salvataggio che mancano al backup | **Crea il backup di \{count\} punti di salvataggio** |
+| Entrambi | **Ottieni \{behind\} modifiche, poi crea il backup di \{ahead\} punti di salvataggio** |
+
+Il menu **Altro** contiene **Controlla senza scaricare nulla**, **Cambia dove viene fatto il backup…** e **Accedi di nuovo a \{host\}…**. La barra mostra anche *Ultimo controllo \{date\} alle \{time\}*.
+
+### Risultati
+
+| Messaggio | Significato |
+| --- | --- |
+| Niente di nuovo. | Niente da ottenere. |
+| Portati \{count\} punti di salvataggio. | Fast-forward. |
+| Portati \{count\} punti di salvataggio e uniti ai tuoi. | Unione senza disaccordi. |
+| Parte di ciò che è arrivato non corrisponde a ciò che hai. | Un conflitto; vedi sotto. |
+| Non esiste ancora una copia di questa Storyline nel backup. | Niente da ottenere per questa Storyline. |
+| Qualcun altro ha apportato modifiche dall'ultima volta che hai guardato. | Il backup viene rifiutato; ottieni prima le loro modifiche, poi fai il backup delle tue. Un push forzato non viene mai offerto. |
+
+## Conflitti
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+Un conflitto nasce quando le modifiche ottenute dal backup toccano gli stessi punti delle modifiche locali. Il rilevamento avviene in memoria: i file di lavoro, l'area di staging e il punto di salvataggio corrente restano intatti finché ogni disaccordo non ha una risposta. Nei file non vengono scritti marcatori di conflitto.
+
+La vista ha come intestazione *Un file è in conflitto* oppure *\{count\} file sono in conflitto*, con *Qualcun altro ha modificato gli stessi punti che hai tu. Qui non è stato ancora cambiato nulla: scegli cosa mantenere o lascia stare per ora.* Le due versioni sono mostrate affiancate.
+
+| Scelta | Dettaglio |
+| --- | --- |
+| **Mantieni il mio** | Sempre offerta. Si chiama **Mantieni eliminato** quando il tuo lato ha eliminato il file. |
+| **Prendi il loro** | Sempre offerta. Si chiama **Accetta l'eliminazione dell'altro** quando il loro lato ha eliminato il file. |
+| **Scrivilo io stesso…** (*Cosa dovrebbe dire*, con *Il loro, da leggere*) | Offerta per i file di testo di tipo Markdown, testo semplice, bundle di narrazione e state machine; mai per lavagne o componenti. |
+| **Lascia stare per ora** | Sempre offerta; nessun file cambia |
+
+Lavagne e componenti offrono solo il mio o il loro, perché una combinazione riga per riga può produrre JSON non valido. Un file che non è testo offre l'uno o l'altro senza confronto. Il numero di file non risolti compare sul pulsante di conferma (*\{count\} ancora da scegliere*); l'unione viene rifiutata finché ogni disaccordo non è risolto. Quando tutti sono risolti: *Modifiche unite insieme.*
+
+A un assistente collegato via MCP viene rifiutato un documento con un conflitto in sospeso; vedi [Cosa può leggere, giocare e scrivere un assistente](/it/reference/mcp-permissions/).
+
+## Messaggi
+
+| Messaggio | Causa |
+| --- | --- |
+| Il controllo di versione non è disponibile in questa versione. | Il motore non è stato caricato. |
+| L'elenco delle modifiche non si aggiornerà automaticamente per questa cartella. | La cartella non ha potuto essere osservata; usa il pulsante di aggiornamento. |
+| È necessario un token di accesso personale per \{host\}. | Nessun token è memorizzato per quell'host. |
+| Ci sono modifiche qui che non sono ancora in un punto di salvataggio. | Emesso quando si cambia Storyline; salvale o mettile da parte prima. |
+| Questo progetto non ha ancora un indirizzo di backup. / Questo progetto non ha ancora un indirizzo di backup da cui recuperare le modifiche. | Nessun remote impostato. |
+| Non ci sono ancora punti di salvataggio da eseguire il backup. | |
+
+## Vedi anche
+
+- [Cronologia, condivisione e conflitti](/it/explanation/history-and-sharing/)
+- [Come tenere una cronologia e fare il backup di un progetto](/it/how-to/keep-a-history-and-back-up/)
+- [Cosa può leggere, giocare e scrivere un assistente](/it/reference/mcp-permissions/)
+- [File del progetto e cartella .ripple](/it/reference/project-files/)
+- [La finestra di lavoro, i menu e la paletta](/it/reference/workspace-window/)

@@ -1,0 +1,40 @@
+---
+title: Come esportare per un player senza Python
+description: Esporta una campagna che un gioco o un player costruito senza l'interprete Python può riprodurre, e risolvi ciò che blocca l'esportazione.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Usa questa guida quando il gioco o il player che eseguirà la campagna è costruito senza l'interprete Python. [Cos'è un'esportazione](/it/explanation/what-an-export-is/) spiega le due versioni del motore.
+
+## Esporta con Non richiede Python selezionato
+
+<Steps>
+
+1. Apri la finestra di dialogo Esporta come descritto in [Come esportare una copia del progetto o una campagna](/it/how-to/export-a-project-or-campaign/).
+2. In *Campagna*, seleziona **Non richiede Python**.
+3. Esporta. L'esportazione cerca ogni scheda Script e ogni passaggio con un blocco di codice `ripple` o con un `{{ … }}` inline in una qualsiasi delle sue lingue, e si ferma se ne trova uno.
+4. Se si è fermata, apri Messaggi. Ogni punto che eseguirebbe Python è elencato e apre la sua scheda. La finestra di dialogo resta aperta, così puoi correggere le schede oppure deselezionare la casella e riprovare.
+5. Esporta di nuovo. Una campagna che supera il controllo non contiene alcuno script.
+
+</Steps>
+
+## Risolvi ciò che blocca l'esportazione
+
+Messaggi elenca due codici. Ciascuno di essi blocca l'esportazione.
+
+- [`E.EX.01`](/it/reference/diagnostics/#eex01), una scheda Script. Sposta ciò che fa lo script su schede che non richiedono Python, come una variabile di console impostata e letta dalle sue schede, oppure una diramazione su un valore. Una scheda Script dentro una macro viene segnalata sulla scheda che richiama la macro quando esporti, e sulla lavagna della macro stessa mentre modifichi.
+- [`E.EX.02`](/it/reference/diagnostics/#eex02), un passaggio che esegue Python. Sostituisci ogni blocco `ripple` o `{{ … }}` inline con il testo che avrebbe prodotto, oppure dividi il passaggio in modo che una scelta o una diramazione selezioni tra le sue versioni.
+
+Se il player ha l'interprete, deseleziona invece **Non richiede Python**.
+
+## Disattiva Python per l'intero progetto
+
+Per far segnalare queste schede all'app mentre scrivi, invece di selezionare la casella a ogni esportazione, disattiva **Python** in *Capacità* nelle impostazioni del progetto; [Come costruire una campagna senza Python](/it/how-to/turn-python-off/) ne descrive i passaggi. La casella **Non richiede Python** nella finestra di dialogo Esporta viene allora selezionata per te e non può essere deselezionata.
+
+## Vedi anche
+
+- [Cos'è un'esportazione](/it/explanation/what-an-export-is/), per le due versioni del motore e il motivo per cui l'esportazione cerca gli script.
+- [Diagnostica](/it/reference/diagnostics/), per `E.EX.01` e `E.EX.02` per intero.
+- [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/), per il campo `needs` del manifest e le altre opzioni di Campagna.
+- [Come costruire una campagna senza Python](/it/how-to/turn-python-off/), per l'interruttore a livello di progetto.

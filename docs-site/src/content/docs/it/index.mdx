@@ -1,0 +1,47 @@
+---
+title: Documentazione di Ripple Effect
+description: Uno strumento di narrazione ramificata e di game design che conserva una storia come normali file sul tuo disco.
+template: splash
+hero:
+  tagline: Storie disegnate come grafi di schede, su una cartella che ti appartiene.
+  image:
+    light: ../../../assets/ripple-mark-light.svg
+    dark: ../../../assets/ripple-mark-dark.svg
+  actions:
+    - text: Che cos'è Ripple Effect
+      link: /it/start-here/what-ripple-effect-is/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+La documentazione è divisa in base a ciò che devi fare dopo. Scegli la scheda che fa al caso tuo.
+
+<CardGrid stagger>
+  <Card title="Impara" icon="pencil">
+    Sei nuovo di Ripple Effect. [La tua prima storia](/it/tutorials/your-first-story/)
+    ti porta da una cartella vuota a un ramo giocabile in pochi minuti; la pagina
+    dei [tutorial](/it/tutorials/) li elenca tutti.
+  </Card>
+  <Card title="Fai" icon="setting">
+    Hai un compito da svolgere. Le guide pratiche iniziano con
+    [l'installazione dell'app su ogni piattaforma](/it/how-to/install-the-app/) e proseguono con
+    [il collegamento di un client MCP](/it/how-to/connect-an-mcp-client/) come Claude Code,
+    Claude Desktop, Cursor o qualsiasi altro client, [la costruzione di una lavagna](/it/how-to/work-on-the-canvas/) e
+    [come giocare una campagna](/it/how-to/play-a-campaign/).
+  </Card>
+  <Card title="Consulta" icon="document">
+    Ti serve un dato preciso. Parti da [tutte le schede](/it/reference/nodes/); accanto
+    trovi il [riferimento Python](/it/reference/python/), gli [strumenti
+    MCP](/it/reference/mcp-tools/) che un agente può chiamare e le
+    [diagnostiche](/it/reference/diagnostics/) che il pannello Messaggi mostra con un codice.
+    Il riferimento Python elenca ogni funzione che uno script, un passaggio o
+    la console possono chiamare, che cosa risponde e che cosa rifiuta.
+  </Card>
+  <Card title="Comprendi" icon="open-book">
+    Vuoi sapere perché funziona così. Parti da [lavagne, schede e
+    macro](/it/explanation/boards-nodes-and-macros/), poi da [come viene eseguita una
+    storia](/it/explanation/how-a-story-runs/). [Che cos'è Ripple
+    Effect](/it/start-here/what-ripple-effect-is/) spiega a che cosa serve l'app.
+  </Card>
+</CardGrid>

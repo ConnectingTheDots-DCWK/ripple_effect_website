@@ -1,0 +1,146 @@
+---
+title: Come tenere una cronologia e fare il backup di un progetto
+description: Avvia una cronologia, crea punti di salvataggio, dirama una Storyline, fai il backup del progetto, risolvi un conflitto e recupera una modifica annullata.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+La cronologia è integrata nell'app e si trova sotto **Modifiche** nella barra laterale, la seconda icona della barra delle attività, accanto a File.
+
+{/* TODO(shots): <Shot name="changesTab" /> */}
+
+## Avviare una cronologia
+
+Ogni file di un progetto è testo semplice, quindi la cartella può avere una cronologia in qualsiasi momento. Per avviarla servono un nome e un indirizzo email, nient'altro.
+
+<Steps>
+
+1. Apri **Modifiche** nella barra laterale. Un progetto senza cronologia mostra *Questo progetto non ha ancora una cronologia.*
+
+2. Scegli **Lascia che ti aiutiamo a configurarla**.
+
+3. Controlla il nome e l'indirizzo email. Se git è già configurato sul computer, vengono compilati da `~/.gitconfig`; altrimenti inserisci i tuoi. Vengono scritti solo in questo progetto.
+
+4. Scegli **Inizia a tenere una cronologia**.
+
+</Steps>
+
+Questo avvia la cronologia nella cartella del progetto, scrive un breve elenco di ciò che va lasciato fuori e crea un primo punto di salvataggio di tutto. Un file di esclusione che avevi già non viene toccato e viene aggiunto solo ciò che manca. I fine riga restano coerenti per i coautori su altre piattaforme. I file troppo grandi per essere mai ripresi vengono lasciati fuori e indicati per nome.
+
+`.ripple/workspace.json` è l'unico file dell'app che viene ignorato, perché è specifico di ogni macchina. Fai il commit del resto di `.ripple/`. [File di progetto e cartella .ripple](/it/reference/project-files/) spiega a cosa serve ciascun file.
+
+## Creare un punto di salvataggio
+
+<Steps>
+
+1. Apri **Modifiche**. I file sono elencati in due gruppi: **Pronto per salvare** e **Non ancora incluso**. Fai clic su un file per vederlo affiancato alla versione precedente.
+
+2. Sposta i file in **Pronto per salvare** con **Prepara per il salvataggio (stage)**, oppure tutti quelli di un gruppo insieme con **Segna tutto questo come pronto (stage)**. **Ritira (unstage)** fa l'operazione inversa.
+
+3. Nella casella in fondo alla sezione, scrivi una riga sotto **Cosa è cambiato?**. Scegli **Aggiungi altri dettagli** se vuoi una nota più lunga.
+
+4. Scegli **Salva**, che riporta *Salva N file*.
+
+</Steps>
+
+Dei puntini colorati segnano i file modificati nell'albero dei file, e le cartelle che li contengono, così puoi seguire un capitolo modificato fino in fondo senza aprire nulla. Fai clic con il pulsante destro su un file nell'albero per vedere cosa è cambiato senza passare dall'elenco. L'elenco si aggiorna da solo quando i file cambiano in qualsiasi punto del progetto. Se la cartella non è osservata, scegli **Controlla di nuovo**.
+
+Per riprendere l'ultimo punto di salvataggio, usa **Riprendilo** in **Cronologia**. Ogni file resta dov'è e torna a essere segnato come pronto.
+
+**Cronologia**, accanto a Modifiche, elenca cosa è stato salvato, da chi e quanto tempo fa.
+
+## Diramare una Storyline
+
+Una Storyline è un branch. Usa i comandi delle Storyline nella paletta dei comandi.
+
+<Steps>
+
+1. Scegli **Nuova Storyline…**, dagli un nome e scegli **Inizia**. Parte dal punto di salvataggio corrente e ti ci sposti sopra.
+
+2. Per passare a un'altra, scegli **Passa a un'altra Storyline…**. Se hai lavoro non salvato, l'app te lo chiede prima. Scegli **Metti da parte e passa** per mettere da parte il lavoro e riprenderlo più tardi, oppure annulla e salvalo prima.
+
+3. Per rinominarne una, scegli **Rinomina questa…**. Per rimuoverne una, scegli **Elimina una…** e indica quale.
+
+</Steps>
+
+Una Storyline eliminata viene conservata e si può recuperare con **Ripristina**.
+
+## Mettere da parte il lavoro
+
+Usalo per accantonare un lavoro a metà e riprenderlo più tardi.
+
+<Steps>
+
+1. Apri la vista del lavoro messo da parte in **Modifiche** (il suo suggerimento dice *Stashes e modifiche annullate*).
+
+2. Scegli **Metti da parte ciò che c'è qui** e dai un nome a ciò che stai facendo. Il progetto torna al suo ultimo punto di salvataggio.
+
+3. Per riprenderlo, scegli **Ripristina**. La voce resta nell'elenco finché non la elimini.
+
+</Steps>
+
+:::caution
+**Elimina** è l'unica azione qui che non si può annullare.
+:::
+
+## Fare il backup del progetto
+
+Fallo per tenere una copia del progetto altrove.
+
+<Steps>
+
+1. Scegli **Fai un backup da qualche parte**.
+
+2. Sotto **Indirizzo**, indica un indirizzo web o il percorso completo di una cartella. Una cartella condivisa o sincronizzata non richiede un account.
+
+3. Per un indirizzo web, crea prima il repository sul sito. L'app non lo crea. Su GitHub si tratta di New repository, e l'indirizzo si trova sotto il pulsante Code, nella scheda HTTPS. Usa l'indirizzo HTTPS, non SSH.
+
+4. Controlla se il repository è pubblico o privato. Un repository pubblico significa che chiunque può leggere la tua storia, comprese tutte le bozze che salvi. Scegli privato, a meno che tu non voglia altro. Si può cambiare in seguito sul sito.
+
+5. Scegli **Usa questo**. Un indirizzo web ti chiede di accedere una volta, con un token di accesso personale che crei su quel sito. Inserisci il nome utente e il token, poi scegli **Accedi**. Il token resta su questo computer ed è condiviso da ogni progetto di cui fai il backup lì. Se il computer non ha un archivio di password, viene conservato solo per questa sessione e ti viene chiesto di nuovo la volta successiva.
+
+6. Usa il pulsante che ora compare nella sezione Modifiche. Ti dice cosa sta per fare prima di farlo: *Controlla le modifiche*, poi ad esempio *Ottieni 3 modifiche*, poi *Crea il backup di 2 punti di salvataggio*, oppure *Crea un backup di questa Storyline* la prima volta.
+
+</Steps>
+
+Fare il backup su un repository che non esiste ancora ha l'aspetto di una password sbagliata. Sotto **Altro**, usa **Controlla senza scaricare nulla** per guardare senza ottenere modifiche, **Cambia dove viene fatto il backup…** per cambiare l'indirizzo, e la voce che dice «Accedi di nuovo a» seguito dal nome host del sito e da «…» per sostituire il token.
+
+## Risolvere un conflitto
+
+Quando due persone hanno modificato lo stesso passaggio, il file è contrassegnato da **Due versioni non concordano**.
+
+{/* TODO(shots): <Shot name="conflict" /> */}
+
+<Steps>
+
+1. Apri il file. Le due versioni vengono mostrate affiancate.
+
+2. Scegli **Mantieni il mio** o **Prendi il loro**, oppure scegli **Scrivilo io stesso…** e scrivi il testo sotto **Cosa dovrebbe dire**. Dove l'altra parte ha eliminato il file, scegli **Mantieni eliminato** o **Accetta l'eliminazione dell'altro**.
+
+3. Ripeti per ogni file. Un file che non è testo non ha alcuna differenza leggibile da mostrare: tieni l'una o l'altra versione.
+
+</Steps>
+
+Nulla viene toccato finché non scegli, e i tuoi file restano com'erano mentre decidi, quindi rimandare non costa nulla. Scegli **Lascia stare per ora** per rimandare. A un assistente collegato tramite MCP viene rifiutato un documento con un conflitto in sospeso.
+
+## Recuperare una modifica annullata
+
+<Steps>
+
+1. Per annullare le modifiche a un file, scegli **Annulla queste modifiche** su di esso e conferma con **Annullale**. Ciò che viene scartato viene prima conservato.
+
+2. Per riaverlo, scegli **Ripristina** nel messaggio che lo propone. Quel messaggio resta in Messaggi, sotto i documenti, dopo che la notifica è scomparsa.
+
+3. Più tardi, apri la vista del lavoro messo da parte. **Annullati di recente** elenca tutto ciò che hai annullato.
+
+</Steps>
+
+L'elenco degli annullamenti viene conservato dall'apertura del progetto e riparte da capo quando chiudi l'app. Ciò che ciascuno conteneva è comunque ancora nella cronologia.
+
+## Vedi anche
+
+- [Controllo di versione nell'app](/it/reference/version-control/) per ogni controllo e cosa fa.
+- [Cronologia, condivisione e conflitti](/it/explanation/history-and-sharing/) per capire perché l'app condivide la cartella e non lascia mai che il salvataggio automatico sovrascriva una modifica.
+- [Un progetto è una cartella](/it/explanation/projects-are-folders/) per ciò che viaggia con la cartella.
+- [File di progetto e cartella .ripple](/it/reference/project-files/) per ciò che si trova in `.ripple/` e quali file vengono ignorati.

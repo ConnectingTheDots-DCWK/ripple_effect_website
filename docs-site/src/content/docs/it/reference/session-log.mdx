@@ -1,0 +1,188 @@
+---
+title: Il log di sessione e i rapporti
+description: "Cosa contiene una cartella di sessione, cosa viene oscurato e registrato, cosa elenca la finestra del rapporto di crash, cosa comprendono le statistiche di utilizzo e dove si trovano i file."
+---
+
+Ogni esecuzione dell'app scrive una **sessione**: una cartella di file di log e due piccoli registri. Nessuna impostazione carica il log di sessione. L'unica cosa che invia file di sessione è il rapporto di crash, che chiede prima il permesso; le statistiche di utilizzo inviano un piccolo registro a parte e nessun log, e restano disattivate finché non le attivi. Qui sotto trovi cosa contiene ciascuno, e in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+## Dove si trovano i file
+
+| | |
+| --- | --- |
+| Posizione | `diagnostics/sessions/<date>/<id>/` dentro la cartella application-support (la cartella dei dati dell'applicazione della piattaforma) |
+| `<date>` | Il giorno in cui la sessione è iniziata, in UTC, come `YYYY-MM-DD` |
+| `<id>` | Otto caratteri esadecimali minuscoli |
+| Apri quella corrente | **Aiuto ▸ Risoluzione dei problemi ▸ Apri la cartella di questa sessione** |
+| Id mostrato | **Impostazioni ▸ Assistenza**, sotto la riga *Apri la cartella di questa sessione*, come *Questa sessione è* seguito dall'id |
+| Comprimi quella corrente | **Impostazioni ▸ Assistenza ▸ Salva questa sessione come file zip**: il log e i rapporti della sessione in un solo file |
+
+Tutte queste azioni sono disponibili anche nella paletta dei comandi.
+
+## File in una cartella di sessione
+
+Ogni file ha un solo autore. Un autore che non ha nulla da dire non crea il suo file: un `engine.log` assente significa che il motore non è mai partito, e un `flutter.log` assente significa che non è stato segnalato alcun errore del framework.
+
+| File | Scritto da | Quando | Contenuto |
+| --- | --- | --- | --- |
+| `session.json` | l'app | all'apertura, al primo errore, alla chiusura | Quando la sessione è iniziata e finita, il suo verdetto, il numero di errori |
+| `metadata.json` | l'app | all'apertura, e di nuovo quando il motore si segnala | Versione e build dell'app, sistema operativo, un breve elenco consentito di campi del dispositivo, la versione del motore e se è stato compilato con Python |
+| `editor.log` | l'app | di continuo | Ogni record che l'app scrive |
+| `flutter.log` | l'app | a un errore del framework | Gli errori segnalati dall'app; presenti anche in `editor.log` |
+| `platform.log` | l'app | a un errore di piattaforma non gestito | Gli errori che il sistema operativo ha segnalato all'app; presenti anche in `editor.log` |
+| `engine.log` | il motore (la parte che riproduce e compila le campagne) | di continuo | I record del motore stesso, con lo stesso oscuramento. Un crash al suo interno registra il file e la riga da cui proviene, anche in una build di rilascio |
+
+Un file di log che supera i 16 MiB continua in una parte numerata nella stessa cartella: `editor.log`, `editor.2.log`, `editor.3.log`. Le parti vengono conservate ed eliminate insieme alla loro sessione.
+
+### `session.json`
+
+| Chiave | Significato |
+| --- | --- |
+| `version` | Intero, attualmente 1 |
+| `id` | Il nome della cartella |
+| `startedAt` | Data e ora UTC |
+| `endedAt` | Presente solo quando la sessione si è chiusa in modo ordinato |
+| `pid` | L'id del processo |
+| `verdict` | `clean`, `abnormal`, oppure assente |
+| `errors`, `fatals` | Conteggi dei record a quei livelli |
+
+Il file viene scritto all'apertura, di nuovo la prima volta che viene scritto un record a livello `ERROR` o `FATAL` (il verdetto diventa `abnormal`), e alla chiusura. Un crash scrive quello che è successo e chiude la sessione in un colpo solo, così il file è completo anche quando l'app non lo è. Le chiavi sconosciute vengono ignorate; un file di una versione più recente non viene né interpretato né eliminato.
+
+## La riga del record
+
+Un record è una riga, in colonne fisse:
+
+```
+2026-09-08T14:03:11.482Z  ERROR  workspace   could not open the project  {path: <path>/act1, ms: 12}
+```
+
+| Colonna | Contenuto |
+| --- | --- |
+| 1 | Data e ora UTC, `YYYY-MM-DDTHH:MM:SS.mmmZ`. Gli orari non sono mai nell'ora locale |
+| 2 | Livello: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL` |
+| 3 | La funzionalità che l'ha scritto |
+| 4 | Il messaggio, poi i campi facoltativi come `{key: value}` |
+
+| Marcatore di continuazione | Contiene |
+| --- | --- |
+| quattro spazi, `\|` | Il resto di un messaggio su più righe |
+| quattro spazi, `!` | L'errore |
+| quattro spazi, `#` | Un frame dello stack per riga |
+| quattro spazi, `…` | Un avviso che il record è stato troncato |
+
+Ogni riga dopo la prima inizia con quattro spazi, quindi solo la prima riga di un record parte dalla colonna 0. Un record è limitato a 8192 caratteri. Gli avvisi e i livelli superiori raggiungono subito il file, insieme ai record scritti poco prima.
+
+### Il campo `call`
+
+Un record su un lavoro che attraversa il confine tra l'app e il motore porta un intero `call`, ed entrambe le parti scrivono lo stesso, sia per l'inizio sia per l'esito. Una compilazione viene registrata così, in modo che le due metà si possano leggere insieme:
+
+```
+editor.log   INFO   compile     Compiling a campaign  {call: 1}
+engine.log   INFO   compiler    compiling a campaign  {call: 1, chars: 162}
+engine.log   INFO   compiler    compiled              {call: 1, ms: 2, chars: 133}
+```
+
+## Cosa viene registrato
+
+| Tipo | Cosa dice una riga | Non registrato |
+| --- | --- | --- |
+| Richieste di rete | Il controllo di un aggiornamento, il recupero dell'elenco dei contributori e lo scaricamento di un programma di installazione registrano ciascuno dove è andata la richiesta, cosa è tornato e quanto ci ha messo | La query string (tutto ciò che segue il `?`) e qualsiasi contenuto della risposta |
+| Chiamate MCP | Ogni chiamata a uno strumento, lettura di risorsa e prompt che un client MCP effettua: quale client, quale strumento, quali nomi di argomento, quanto ci ha messo e se è riuscita | Il contenuto degli argomenti |
+| Worker in background | Il worker del controllo di versione e, su Windows, il traffico degli agenti: ogni record in cui hanno fallito | |
+
+## Cosa viene oscurato
+
+Ogni stringa scritta in uno qualsiasi dei sei file viene oscurata prima di arrivare a un file. Le regole vengono applicate in quest'ordine:
+
+| # | Corrisponde a | Diventa |
+| --- | --- | --- |
+| 1 | Credenziali: token GitHub (`ghp_`, `gho_`, `ghu_`, `ghs_`, `ghr_`, `github_pat_`), chiavi `sk-`, intestazioni `Bearer`, `Basic` e `Token`, `key=value` dove la chiave ammette di essere un segreto | `<redacted>`, mantenendo lo schema o il nome della chiave |
+| 2 | Le informazioni utente in un URL (`://user:pass@`) | `://<redacted>@` |
+| 3 | Le cartelle dei progetti noti, dalla più lunga | `<project>` |
+| 4 | La tua cartella home | `~` |
+| 5 | Gli indirizzi e-mail, comprese le parti locali con accenti e caratteri non latini | `<email>` |
+| 6 | Il nome del tuo account, come parola intera, quando ha almeno 3 caratteri (compresi i nomi che finiscono con una lettera accentata) | `<user>` |
+| 7 | Qualsiasi altro percorso assoluto, mantenendo l'ultimo segmento | `<path>/act1.graph.json` |
+| 8 | Gli indirizzi IP, tranne `127.0.0.1`, `0.0.0.0` e `::1` | `<ip>` |
+
+Le cartelle di installazione dell'app stessa sono escluse dalla regola 7. 
+:::caution
+Nessun elenco di regole può sapere che il nome di una lavagna è privato, quindi controlla un log prima di pubblicarlo.
+:::
+
+## Conservazione
+
+All'avvio l'app giudica ogni sessione precedente dal solo `session.json`, senza leggere alcun file di log.
+
+| `endedAt` | `verdict` | Esito |
+| --- | --- | --- |
+| presente | `clean` | eliminata |
+| presente | `abnormal` | conservata |
+| assente | `abnormal` | conservata |
+| assente | assente | eliminata |
+| illeggibile, o con una `version` che non conosce | | conservata, fino al limite di età |
+
+Le sessioni conservate sono limitate a venti e a trenta giorni, le più recenti per prime. La sessione in corso non viene mai considerata.
+
+## Il rapporto di crash
+
+Se l'app è andata in crash, al lancio successivo compare una finestra di dialogo intitolata *Ripple Effect si è chiuso inaspettatamente*, con la data e l'ora del crash. Viene chiesto una volta per crash, e solo per il crash più recente. Se l'app non riesce a raggiungere il suo server quando dovrebbe chiedere, la domanda viene rimandata a un lancio successivo e dice che riguarda un crash precedente; non viene mai posta a sessione in corso.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Invia rapporto* | Invia il rapporto. La risposta è definitiva per quel rapporto |
+| *Non inviare* | Lo tiene sul computer. La risposta è definitiva per quel rapporto |
+| *Chiedimelo dopo* | Lascia la domanda in sospeso; è anche ciò che accade chiudendo l'app con la finestra aperta |
+| *Mostra file* | Apre i file così puoi leggerli prima di rispondere |
+
+Non esiste un'impostazione che invii i rapporti di crash automaticamente, né una che li rifiuti. Se un invio fallisce, la finestra nomina il tipo di errore (nessuna connessione, il server l'ha rifiutato, oppure altro) e offre anche *Chiedimelo dopo*.
+
+La finestra elenca ogni file del rapporto, la sua dimensione e cosa contiene. Il rapporto è l'istantanea della memoria più questi file di sessione, così come esistono al momento del crash.
+
+| File | Cosa dice la finestra che contiene |
+| --- | --- |
+| minidump | Un'istantanea dell'app nel momento in cui è andata in crash: cosa stava eseguendo ogni parte, le librerie caricate, lo stato del processore e piccoli frammenti della memoria circostante. Indica il tuo sistema operativo e processore e, su Linux e macOS, la riga di comando e le variabili d'ambiente con cui l'app è stata avviata |
+| `session.json` | Quando è iniziata quell'esecuzione, e se qualcosa era andato storto prima del crash |
+| `metadata.json` | La versione dell'app e come è stata installata, il tuo sistema operativo e la sua versione, e il modello del tuo dispositivo |
+| `editor.log` | Cosa l'app ha registrato durante quell'esecuzione |
+| `engine.log` | Cosa il motore della storia ha registrato durante quell'esecuzione |
+| `flutter.log` | Gli errori che l'app ha segnalato durante quell'esecuzione |
+| `platform.log` | Gli errori che il sistema operativo ha segnalato all'app durante quell'esecuzione |
+
+Quando un log è grande, ne viene inviata solo la parte finale, e la finestra segna il file *ultimi X di Y*. Di un log suddiviso in parti viene allegata solo la prima.
+
+Insieme ai file: la versione dell'app, se eri nella schermata iniziale o in un progetto (mai quale), l'id dell'esecuzione in modo che si possa abbinare ai suoi log, e un numero casuale che il sistema di segnalazione dei crash ha generato per questa installazione. La finestra dichiara che nel rapporto non ci sono né un account né un nome. Mostra anche un id del rapporto: citalo quando scrivi all'indirizzo mostrato nella finestra per chiedere l'eliminazione di un rapporto inviato.
+
+I file vengono oscurati come nella tabella qui sopra prima che la finestra si apra, e vengono oscurate anche le cartelle di ogni progetto noto. L'unica cosa che nessun oscuramento può promettere: l'istantanea della memoria può contenere frammenti di qualunque testo l'app stesse elaborando in quel momento.
+
+## Statistiche di utilizzo
+
+Disattivate finché non le attivi. L'interruttore è **Impostazioni ▸ Controllo dati ▸ Statistiche di utilizzo**, *Disattivate* o *Attivate*, e le pagine del primo avvio pongono la stessa domanda senza alcuna risposta preselezionata. Finché sono attive, la riga mostra l'identificativo ed elenca tutto ciò che viene inviato.
+
+| Campo | Contenuto |
+| --- | --- |
+| Utilizzo | Che questa installazione è stata usata oggi: al massimo un record al giorno |
+| Giorno | Il giorno in cui è stato inviato, in UTC, mai l'ora |
+| Identificativo | Un identificativo casuale per questa installazione, mostrato nella riga finché le statistiche sono attive |
+| Versione | La versione dell'app |
+| Sistema operativo | La famiglia: Linux, macOS o Windows |
+
+Non viene inviato nulla finché l'interruttore non è rimasto attivo per un'ora. Non sono inclusi nulla di ciò che scrivi, né nomi di file o di progetti, né indirizzi di rete, e non è coinvolto alcun account. Disattivare distrugge l'identificativo, così le righe già inviate non possono più essere ricondotte a te; riattivare avvia una nuova installazione. Per far eliminare le righe inviate con un identificativo, scrivi all'indirizzo mostrato nella riga con l'identificativo prima di disattivare. Il testo di riferimento è l'Informativa sulla privacy, sezione 4.5.
+
+## Segnalare un bug
+
+| Controllo | Dove |
+| --- | --- |
+| Pagina di assistenza | **Impostazioni ▸ Assistenza**, oppure *Supporto e feedback* nel menu Aiuto |
+| Copia i dettagli del pacchetto, copia i dettagli del dispositivo, apri la cartella di questa sessione | **Aiuto ▸ Risoluzione dei problemi** |
+| *Mostra di nuovo ogni suggerimento* | Il menu Aiuto stesso |
+
+{/* TODO(shots): <Shot name="support" /> */}
+
+La pagina di assistenza apre il modulo corrispondente, compilato con la versione, il tuo sistema operativo e il programma di installazione da cui proviene questa copia, nel repository pubblico [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), dove vanno anche le domande e le richieste di funzionalità. I passaggi sono in [Come segnalare un bug](/it/how-to/report-a-bug/).
+
+## Vedi anche
+
+- [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/): perché il log e i Messaggi sono tenuti separati, e cosa resta sulla macchina
+- [Come segnalare un bug](/it/how-to/report-a-bug/)
+- [Cosa invia l'app](/it/about/what-the-app-sends/)
+- [Impostazioni, accessibilità e controlli degli aggiornamenti](/it/reference/settings/)

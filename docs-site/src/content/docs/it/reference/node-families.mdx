@@ -1,0 +1,276 @@
+---
+title: Famiglie di schede, slot e stato
+description: Le famiglie di schede, i tipi e i valori predefiniti che ogni slot condivide, le regole per le macro e Do all, e ciò che viene ricordato per un'intera sessione di gioco.
+sidebar:
+  order: 2
+---
+
+Il [riferimento delle schede](/it/reference/nodes/) elenca ogni scheda, porta per porta. Questa pagina descrive ciò che le schede hanno in comune: le famiglie in cui le raggruppa il menu Crea, i tipi di slot, i valori predefiniti e i selettori di file, le coppie di schede che partecipano a una macro e ciò che conserva lo stato.
+
+## Famiglie
+
+Il menu Crea raggruppa le schede in queste famiglie. Lists e Maps sono descritte qui sotto; ogni altra scheda è nel [riferimento delle schede](/it/reference/nodes/).
+
+- Flow
+- Story
+- Math
+- Logic
+- Lists
+- Maps
+- Entities
+- Value
+- Chance
+- Macro In e Macro Out
+
+### Lists
+
+| Scheda | Comportamento |
+| --- | --- |
+| Insert | Antepone, aggiunge in coda, inserisce a un indice o sostituisce a un indice. Restituisce l'intera lista. |
+| At | Un singolo elemento. Un indice negativo conta dalla fine; -1 è l'ultimo. |
+| Remove | Rimuove con lo stesso conteggio. Restituisce l'intera lista. Un indice fuori intervallo la lascia invariata. |
+| Size | Quanti elementi ci sono e se non ce n'è nessuno. Il suo `length` è ciò che il limite di una scheda For accetta per scorrere una lista. |
+
+- Applicate a un testo, le schede delle liste lavorano un carattere alla volta e restituiscono lo stesso tipo che è entrato: aggiungere `!` a `hi` dà `hi!`.
+- Un indice fuori intervallo non ferma mai la storia.
+
+### Maps
+
+| Scheda | Comportamento |
+| --- | --- |
+| Get | Il valore associato a un nome, più un'uscita `found`. |
+| Set | Restituisce l'intera mappa. |
+| Remove | Restituisce l'intera mappa. |
+| Keys | Le chiavi, nello stesso ordine di Values. |
+| Values | I valori, nello stesso ordine di Keys, così il primo corrisponde alla prima. |
+| Merge | In caso di conflitto vince la seconda mappa. |
+| Size | Quanti elementi. |
+
+- Un ingresso che non è una mappa viene trattato come una mappa vuota. Un Set senza nulla collegato al suo soggetto crea una mappa di una sola coppia; più Set concatenati costruiscono una mappa.
+- Un nome che non c'è non ferma mai la storia.
+
+## Porte
+
+Una porta trasporta o il flusso o un valore. L'ingresso di ogni scheda è `exec`, salvo diversa indicazione nel [riferimento delle schede](/it/reference/nodes/). Le porte di valore sono tipizzate: un `number` si collega a un `number`, e `any` si collega a qualsiasi cosa.
+
+## Slot
+
+Uno slot è una riga con nome e tipo su una scheda che dichiara le proprie porte: gli ingressi e le risposte di una macro, una scheda Output, una scheda Input, una scheda Script, gli attributi di un componente e le variabili di console.
+
+### Tipi di slot
+
+Ogni slot offre gli stessi ventiquattro tipi: otto generi, ciascuno da solo, come lista o come mappa da nomi a quel genere.
+
+| Genere | Significato |
+| --- | --- |
+| `int` | Intero. |
+| `float` | Numero con una parte frazionaria. |
+| `bool` | Booleano. |
+| `string` | Testo. |
+| `markdown` | Testo Markdown. |
+| un percorso a un file | `asset`. |
+| un componente | `component`. |
+| JSON | `json`. |
+
+I menu non offrono né `number` né `entity`. I file che li contengono vengono letti, e la riga mostra la parola finché non viene ridigitato il tipo.
+
+### Tipo dichiarato e tipo della porta
+
+Ciò che uno slot dichiara e ciò che la sua porta trasporta non sono lo stesso insieme. Il file conserva la parola dichiarata, più ristretta.
+
+| Dichiarato | La porta trasporta |
+| --- | --- |
+| `int`, `float` | `number` |
+| Un singolo `asset`, `component` o `markdown` | `string` |
+| Una lista di asset o di componenti | L'etichetta che trasportano gli attributi `assetList` e `componentList` di un componente, così si collegano. |
+| Una mappa | `json` |
+
+I tipi di una scheda Input vengono ristretti all'ingresso in una campagna. È disegnata come un modulo, e un modulo non ha un selettore di file, quindi un campo `asset` arriva al lettore come una casella di testo che chiede un percorso. Può comunque essere dichiarato; la parola resta nel progetto.
+
+### Quali schede dichiarano porte
+
+Output, Input, Script, Macro In e Macro Out. Fai doppio clic sulla scheda; gli *Ingressi* e le *Uscite* di una scheda Script sono pulsanti che aprono la stessa finestra di dialogo. Ogni riga è un nome e un tipo, e un tipo risponde a due domande: che cos'è e quanti ne servono (uno, una lista o una mappa).
+
+### Coercizione
+
+- Uno slot riceve il tipo che ha richiesto. Un ingresso di script dichiarato `int` e collegato a `3.7` legge `3`.
+- Un valore che non può essere letto come quel tipo diventa il vuoto di quel tipo. Non ferma la storia.
+- Ciò che uno script scrive in un'uscita resta com'è.
+
+### Valori predefiniti
+
+Uno slot può avere un valore predefinito, usato quando nulla lo riempie.
+
+| Slot | Il valore predefinito si applica |
+| --- | --- |
+| Ingresso di una macro | Quando la scheda chiamante non collega e non digita nulla. |
+| Ingresso di uno script | Quando nulla è collegato. Un valore collegato prevale. |
+| Uscita di uno script | Solo dove il programma non ha mai impostato quel nome. |
+| Slot di una scheda Output | Quando nulla lo riempie. |
+| Risposta di Macro Out | Quando nulla la riempie. |
+| Campo di una scheda Input | Precompilato, perché il lettore lo accetti o ci scriva sopra. |
+
+Dove un collegamento e il valore scritto sulla scheda rispondono entrambi a una porta, vince il collegamento, e il campo sulla scheda scompare finché il collegamento è attaccato. Dove non c'è nessuno dei due, subentra il valore predefinito dichiarato, e poi il vuoto del tipo.
+
+Un valore predefinito su uno slot `json` o `map<...>` non può viaggiare, e l'app lo segnala quando compili.
+
+### Slot che puntano a un file
+
+Uno slot che punta a un'immagine, a un documento o a un componente offre i file del progetto per nome, con il percorso completo accanto a ciascuno.
+
+- La scelta appare come un chip con il suo nome. Passandoci sopra si vede il percorso, che è ciò che viene memorizzato.
+- Un chip il cui file è fuori dal progetto o manca viene contrassegnato, così un file rinominato fuori dall'app è visibile.
+- Su una scheda (l'ingresso di una macro, una scheda Set variable) lo slot è un menu a tendina con ricerca, come il selettore di passaggi della scheda Narration.
+
+### Nomi
+
+Un nome letto da uno script deve essere un nome che Python sa leggere.
+
+| Dove | Regola |
+| --- | --- |
+| Ingressi e uscite delle schede Script; gli ingressi di un passaggio | Una lettera o un trattino basso, seguiti da lettere, cifre e trattini bassi. Le parole riservate di Python, come `class`, vengono rifiutate, con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non sa leggere lo segnala. |
+| Slot delle schede Output e Input | Letti da persone; `Your roll` è un nome valido. |
+
+## Macro
+
+{/* TODO(shots): <Shot name="macro" /> */}
+
+Una macro è un file a sé, `*.macro.graph.json`, creato con il **+** dell'albero dei file accanto a una lavagna. Si apre sulla stessa tela, con due schede al posto dello Start e degli End di una lavagna.
+
+| Scheda | Dichiara | Porte | Quantità |
+| --- | --- | --- | --- |
+| Macro In | Ciò che la macro riceve, descritto come in una scheda Input: un nome e un tipo per riga, con un doppio clic. | Un'uscita per nome, che trasporta ciò che la lavagna chiamante ha collegato o digitato sulla scheda. | Esattamente una. |
+| Macro Out | Ciò che la macro risponde, descritto allo stesso modo. | Un ingresso per nome. Il suo ingresso accetta un numero qualsiasi di collegamenti, così ogni ramo dentro la macro può terminare alla stessa uscita. | Esattamente una. |
+
+Tutto ciò che sta tra le due è lo stesso insieme di schede di una lavagna.
+
+### La scheda Macro
+
+- Trascinare il file su una lavagna crea una scheda **Macro** con una porta per nome e un campo accanto a ogni nome che riceve.
+- Un campo può essere collegato o digitato. Il collegamento prevale.
+- Un ingresso può avere un valore predefinito.
+- Il pulsante «Gioca» nella scheda della macro la legge da sola, senza nulla collegato in ingresso.
+
+### Regole
+
+- Quando la campagna viene compilata, una macro viene copiata in ogni punto da cui è chiamata. Chiamarla due volte crea due copie indipendenti: un gate Once dentro un negozio scatta una volta per negozio, non una volta per l'intera storia.
+- Una macro non può chiamare se stessa.
+- A una macro non si può saltare e una lavagna non si può chiamare. Una scheda Jump elenca lavagne; una scheda Macro elenca macro.
+- Una storia può essere messa in pausa dentro una macro e ripresa da dove era rimasta.
+- Una riga di traccia nella finestra di gioco su qualcosa dentro una macro ti porta alla scheda che l'ha chiamata.
+- Un percorso tracciato tra lavagne entra nelle macro che chiama: i passaggi che una macro contiene sono disegnati dove avviene la chiamata, così una macro riutilizzata in più punti compare sul percorso in ciascuno.
+
+## Do all
+
+Una scheda **Do all** esegue tutto ciò che è collegato a essa, un ramo dopo l'altro, poi prosegue da `completed`.
+
+- Ogni ramo viene eseguito fino alla fine del suo collegamento prima che inizi il successivo.
+- Un passaggio non chiude un collegamento. Un passaggio sul secondo ramo trattiene il terzo finché ogni passaggio che lo segue non è stato letto.
+- `completed` è il punto da cui il flusso prosegue.
+- Una lavagna scritta prima che esistesse la porta `completed` la acquisisce quando viene aperta.
+
+## Entità su una lavagna
+
+Un `*.component.json` trascinato dall'albero dei file su una lavagna diventa una scheda **Component** con un'uscita tipizzata per attributo, più una che trasporta l'intero componente come mappa. La scheda indica in quale delle sue due modalità si trova.
+
+| Modalità | Comportamento |
+| --- | --- |
+| Component | Una finestra sul file. Solo uscite. |
+| Entity | Fa della storia una cosa, identificata dal nome sulla scheda. Gli ingressi degli attributi compaiono accanto alle uscite; non c'è una coppia Set/Get, perché una seconda scheda che nomina la stessa entità più avanti nella storia è quella che la imposta. |
+
+- Due schede con due nomi sono due entità indipendenti. Una scheda su una lavagna successiva che nomina la stessa entità è l'entità creata dalla prima lavagna.
+- Una scheda Component il cui nome è collegato a monte crea un'entità per ogni nome che riceve.
+
+La categoria Entities del menu delle schede ne contiene altre quattro.
+
+| Scheda | Comportamento |
+| --- | --- |
+| Spawn | Crea molte entità in una volta da un componente. Ingressi: una quantità; come vengono distinte, con numeri o lettere; e cosa sta tra il nome e il numero. «Goblin» con numeri e un trattino crea Goblin-1, Goblin-2 e così via. Uscita: i nomi, come lista. Tornare a una scheda Spawn trova le entità che ha già creato invece di crearne di nuove, così una campagna messa in pausa riprende nello scontro che aveva lasciato. Una seconda ondata richiede un nome diverso. |
+| Delete Entity | Ne dimentica una per nome. Eliminare un nome a cui nulla risponde non rimuove nulla e non è un errore. Il file del componente resta intatto, quindi una scheda che lo nomina più avanti ne crea una nuova. |
+| Entity Exists | Risponde se la campagna ha ancora l'entità. |
+| Entity Names | Risponde con ogni entità che la storia ha creato, come lista di nomi, ordinata per nome, oppure solo quelle create da un componente. Collega `names` a una scheda For con una scheda List at per agire su ciascuna. |
+
+## Variabili di console su una lavagna
+
+{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+
+Un Set su una lavagna e un Branch su un'altra non hanno bisogno di un collegamento tra loro: la variabile è il collegamento.
+
+| Scheda | Comportamento |
+| --- | --- |
+| Get variable | Pubblica su `value` ciò che la variabile contiene. |
+| Set variable | Scrive la variabile, da un collegamento in `value` o dal valore digitato sulla scheda (il collegamento prevale), e pubblica il nuovo valore su `result`. |
+| Variable branch | Confronta la variabile con un valore, sulla scheda o collegato, ed esce da `yes` o da `no`. L'uguaglianza legge entrambi i lati come testo. L'ordinamento funziona solo tra due numeri o due stringhe, secondo le regole del Comparator. |
+
+Tutte e tre ricevono il flusso invece di essere interrogate, così una lettura dopo una scrittura non è mai obsoleta.
+
+## Scheda State machine
+
+La scheda si crea trascinando un file di macchina a stati su una lavagna, oppure aggiungendo la scheda e scegliendo la macchina dall'elenco sulla scheda. Un nuovo file di macchina si crea dal menu del clic destro dell'albero dei file, **Nuova State machine**. La scheda riceve un evento e risponde con lo stato in cui si trova la macchina dopo di esso.
+
+| Ingresso o uscita | Comportamento |
+| --- | --- |
+| `event`, collegato o digitato | Se vuoto, legge lo stato senza muoversi. `[*]` riporta la macchina al suo inizio. |
+| `state` | Collegalo a uno Switch, una riga per stato, per ramificare in base a dove si trova la macchina. |
+| `changed` | Il flusso esce da qui quando è scattata una freccia o la macchina è stata riportata all'inizio. |
+| `unchanged` | Il flusso esce da qui in tutti gli altri casi. Un evento per cui lo stato corrente non ha frecce non è un errore: la macchina resta ferma e il flusso prende `unchanged`. |
+
+- Due schede in qualsiasi punto della storia pilotano la stessa macchina, a meno che a una non venga dato un nome di **istanza**.
+- Se lasciata vuota, l'istanza è il nome della macchina stessa.
+
+## Python su una lavagna
+
+| Dove | Comportamento |
+| --- | --- |
+| Scheda Script | Fa riferimento a un file `.py` del progetto, così uno script può servire molte schede. Dichiara ingressi e uscite come righe, ciascuna con un nome e un tipo, e ha una porta per nome. Le caselle *Ingressi* e *Uscite* nel suo editor sono pulsanti che aprono la finestra delle porte usata da ogni altra scheda. I valori attraversano il confine come tipi Python nativi. Qualunque cosa lo script assegni a un nome di uscita viene pubblicata su quella porta. |
+| Scheda Output | Mostra i suoi ingressi al lettore come una diapositiva con un solo modo per proseguire. Gli slot sono tipizzati come quelli di una scheda Script e possono avere un valore predefinito. |
+| Scheda Input | Chiede valori al lettore e passa ciò che è stato digitato come porte. Il suo valore predefinito è compilato perché il lettore lo accetti o ci scriva sopra. |
+| Passaggio | Un intervallo inline `{{ … }}` e un blocco delimitato ```` ```ripple ````. Entrambi vengono sostituiti da ciò che valutano quando il passaggio viene presentato. |
+
+Output e Input si descrivono con un doppio clic sulla scheda: un nome e un tipo per riga.
+
+Un passaggio può solo leggere. Creare, modificare o eliminare un'entità, o scrivere una variabile di console, viene rifiutato dall'interno della prosa. Il rifiuto compare sul posto come un chip `⚠` e la storia prosegue.
+
+````markdown
+The goblin has {{ entity_get("Goblin-1")["HP"] }} hit points left.
+
+```ripple
+names = entity_names(of="Goblin")
+f"{len(names)} goblins are still standing."
+```
+````
+
+### La console
+
+- La console accanto a ogni file `.py` è una sessione viva, una per progetto, così `x` sopravvive tra una riga e l'altra.
+- Il prompt cresce fino a tre righe mentre scrivi. Maiusc+Enter inizia una nuova riga; Enter esegue ciò che c'è. I tasti freccia scorrono ciò che è stato eseguito.
+- Durante una sessione di gioco, la stessa console è disponibile accanto ai pannelli Entità e Variabili, sopra la storia in esecuzione. Lì può fare tutto ciò che può fare una scheda Script, perché sostituisce le schede che la storia non ha eseguito, cosa che *Gioca da qui* richiede.
+
+## Play sound
+
+Un file, una volta, a un volume e a una velocità. La storia prosegue subito: `completed` scatta nel momento in cui il suono viene avviato.
+
+| Via | Comportamento |
+| --- | --- |
+| Scheda Play sound | Vedi il [riferimento delle schede](/it/reference/nodes/). |
+| `play_sound("sfx/bell.ogg")` da una scheda Script | Lo stesso, da Python, con la scrittura del percorso usata dal progetto o dal bundle. `volume` e `speed` per nome. Vedi il [riferimento di Python](/it/reference/python/sounds/). |
+
+Gli snippet di un passaggio non possono chiamarlo: vengono rieseguiti a ogni ridisegno e a ogni cambio di lingua, e un suono suonato dalla prosa suonerebbe due volte.
+
+## Stato conservato per l'intera sessione di gioco
+
+| Conservato | Azzerato da |
+| --- | --- |
+| FlipFlop, Once, State machine | Ricomincia. |
+| Il conteggio di utilizzi limitati di una scelta | Ricomincia. |
+
+- Lasciare una lavagna e tornarci non li azzera.
+- Salvare e caricare non li azzera. Una partita salvata porta con sé ciò che ricordano.
+
+## Vedi anche
+
+- [Lavagne, schede e macro](/it/explanation/boards-nodes-and-macros/)
+- [Come funziona una storia](/it/explanation/how-a-story-runs/)
+- [Come riutilizzare un tratto di storia con una macro](/it/how-to/make-a-macro/)
+- [Come eseguire più compiti prima di un passaggio](/it/how-to/order-jobs-before-a-passage/)
+- [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/)

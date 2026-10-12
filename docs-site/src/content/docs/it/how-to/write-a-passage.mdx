@@ -1,0 +1,54 @@
+---
+title: Come scrivere un passaggio
+description: "Scrivi il Markdown di una scheda Narration, aggiungi immagini e passa al passaggio dei valori da leggere con {{ name }}."
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Scrivi il testo
+
+<Steps>
+
+1. Fai doppio clic su una scheda Narration per aprire il suo editor.
+
+2. Scrivi il passaggio. Per far variare una frase invece di dividerla in due passaggi, metti del Python in un blocco inline `{{ … }}` o in un blocco delimitato ```` ```ripple ````. Vedi [Come eseguire Python in una storia](/it/how-to/script-a-passage/).
+
+</Steps>
+
+## Aggiungi un'immagine
+
+- **Trascina un file sull'editor.** Il collegamento si scrive da solo.
+- **Fai clic su Immagine**, accanto a Collegamento. Digita qualche lettera per scegliere un file del progetto in base al nome, oppure indica un URL o un percorso per qualsiasi cosa fuori dalla cartella.
+
+Un'immagine scelta da fuori dal progetto viene prima copiata in `.ripple/external/`. Se **Importazione di risorse esterne** è disattivata nel menu File, l'immagine viene invece collegata e Messaggi lo segnala. Il testo alternativo e il comportamento del prompt sono descritti in [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/).
+
+### Scrivi un collegamento a mano
+
+Inizia il percorso con una barra per misurarlo dalla radice del progetto, come in `![map](/art/map.png)`. Senza barra viene letto a partire dalla cartella superiore del bundle. Le regole e un esempio sono sotto [Grafie dei collegamenti](/it/reference/passages/).
+
+## Passa dei valori da leggere a un passaggio
+
+<Steps>
+
+1. Fai clic sulla riga **Legge** in fondo alla scheda, accanto al soundscape che la scheda porta con sé. Dice «Non legge nulla — clicca per dichiarare» finché non è dichiarato un nome, poi «Legge — N».
+
+2. Nella finestra di dialogo, dichiara ogni nome con un tipo, scritto come le porte di ogni altra scheda. Uno slot può avere un valore predefinito; i tipi e i valori predefiniti sono in [Famiglie di nodi, slot e stato](/it/reference/node-families/).
+
+3. Collega un valore alla porta che la scheda ha ora per ogni nome.
+
+4. Usa il nome nel passaggio: `You owe {{ gold }} crowns.` con un numero sulla porta `gold`. Uno slot con un valore predefinito e nessun collegamento usa il valore predefinito.
+
+</Steps>
+
+Dichiara i nomi su ogni scheda che mostra il passaggio: appartengono alla scheda, non al file del passaggio (vedi [Passaggi e traduzioni](/it/explanation/passages-and-translations/)).
+
+Se un nome non è collegato, compare un piccolo avviso nel punto in cui si trovava e il resto del passaggio viene mostrato come al solito. I nomi vengono proposti mentre digiti solo quando il passaggio è aperto da una lavagna.
+
+### Dai un nome a uno slot
+
+Usa lettere, cifre e trattini bassi, e non iniziare con una cifra. Se la finestra di dialogo rifiuta un nome, il motivo compare sotto il campo. La regola completa è sotto [Regola dei nomi](/it/reference/passages/). Se Messaggi segnala [`W.GE.15`](/it/reference/diagnostics/#wge15), rinomina lo slot.
+
+## Vedi anche
+
+- [Passaggi e traduzioni](/it/explanation/passages-and-translations/): perché un passaggio è una cartella di file Markdown, uno per lingua.
+- [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/): regole per collegamenti e nomi, i valori del tempo di lettura.

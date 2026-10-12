@@ -1,0 +1,75 @@
+---
+title: Lavagne, schede e macro
+description: Cosa sono una lavagna, una scheda Jump e una macro, e le ragioni delle regole che le plasmano.
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Un progetto contiene una storia a pezzi, e i pezzi hanno una dimensione voluta. Una **lavagna** è un filo di storia: un file `*.graph.json` disegnato come una tela di schede e dei collegamenti tra di esse. Un progetto ha tutte le lavagne che vuole, una per capitolo, una per conversazione o una per scontro, perché una lavagna è pensata per essere letta per intero e una storia no. Una scheda **Jump** passa la storia da una lavagna alla successiva. Una **macro** è il secondo tipo di pezzo, una lavagna che le altre lavagne *chiamano* invece di raggiungerla con un salto. Questa pagina spiega perché esistono questi tre elementi e perché le regole che li riguardano sono fatte così.
+
+<Shot name="board" />
+
+## Perché una lavagna ha un solo Start
+
+Ogni lavagna inizia con una scheda **Start**, e ne ha esattamente una. Il menu Crea non ne offre una seconda, e una lavagna che in qualche modo ne ha due viene rifiutata al momento di Gioca, con entrambe indicate per nome.
+
+Il punto in cui una lavagna inizia non dipende da dove si trovano le sue schede. La navigazione Script e la traccia unita si pongono la stessa domanda del motore di gioco, *qual è la scheda Start?*, così un percorso tracciato tra due passaggi è il percorso che la storia segue davvero.
+
+## Perché una scelta ripiega sulla lingua della storia
+
+Una scheda **Narration** contiene un passaggio e aggiunge una porta di uscita per ogni scelta. Collega l'ultima e sotto di essa compare una nuova porta libera.
+
+Una scelta ha due cose che puoi darle. Il suo **nome** è l'etichetta che la scheda mostra, così un ramo si trova anche su una lavagna ampia. Le sue **parole** sono ciò che viene offerto al lettore, in ogni lingua in cui la storia viene scritta. Anche un collegamento può avere una didascalia propria, ma è un'annotazione per te e nessun lettore la vede.
+
+Quando una scelta non ha nulla nella lingua del lettore, ripiega sulla lingua in cui la storia è stata scritta. Un passaggio non tradotto è prosa che si può leggere comunque, quindi può aspettare la sua traduzione. Una scelta non tradotta è un pulsante che non si può premere, quindi non può aspettare. [Passaggi e traduzioni](/it/explanation/passages-and-translations/) sviluppa l'idea.
+
+Una scelta può anche esaurirsi, o essere offerta solo finché vale una condizione. Entrambe le cose si appoggiano sulla stessa scelta invece che su schede in più, così «tre volte, e solo finché porti la lanterna» è una sola scelta con entrambe. Il conteggio vale per l'intera campagna, e una macro conta per ogni chiamata. I passaggi sono in [Come limitare una scelta](/it/how-to/limit-a-choice/).
+
+A una scheda Narration si possono dare anche ingressi con nome e tipo, dichiarati dalla riga *Legge*, che il suo passaggio legge per nome. I nomi appartengono alla scheda e non al file del passaggio, quindi un passaggio può fare da modello letto da due schede.
+
+## Perché una scheda Jump memorizza un id
+
+Le lavagne sono file separati, quindi una scheda Jump deve puntare a una di esse. Memorizza l'id di catalogo della lavagna di destinazione invece del suo percorso, così rinominare una lavagna o spostarla tra le cartelle non rompe mai un collegamento. La freccia sulla scheda apre la lavagna a cui punta.
+
+Una storia fatta di molte lavagne ha bisogno di una mappa. Come le lavagne si passano la storia l'una all'altra viene disegnato per te dalla **navigazione Script**, dal piè di pagina del pannello di sinistra. [Rileggere una storia ampia](/it/explanation/reading-a-story-back/) la descrive.
+
+<Shot name="overview" />
+
+I cicli sono lo scopo, e nulla ne rifiuta uno. Un hub a cui la storia continua a tornare, o una conversazione che gira finché il lettore non la lascia, è un collegamento che torna su se stesso. Il flusso di controllo e il flusso dei dati sono l'argomento di [Come funziona una storia](/it/explanation/how-a-story-runs/).
+
+## Perché la tela funziona così
+
+Ogni scheda si crea in un solo modo: fai clic con il tasto destro su una parte vuota della tela e scegline una dal menu Crea. Rilascia invece un collegamento sulla tela vuota e lo stesso menu si apre lì, già collegato a ciò che scegli.
+
+Ogni selettore di qualcosa che hai creato, come la lavagna di una scheda Jump, il componente di una scheda Component o il passaggio di una scheda Narration, è ricercabile e in ordine alfabetico. L'eccezione è il selettore di schede di una scheda Jump, che mantiene l'ordine di lettura di una lavagna perché quell'ordine ha un significato.
+
+Ogni scheda si spiega da sola. *Informazioni su questa scheda*, nel menu del tasto destro, mostra a cosa serve la scheda, cosa fa ogni controllo e cosa riceve o restituisce ogni porta, in formato Markdown. Il [riferimento alle schede](/it/reference/nodes/) è scritto a partire dallo stesso testo, così la scheda e la pagina non possono contraddirsi.
+
+{/* TODO(shots): <Shot name="nodeMenu" /> */}
+
+Le schede possono anche portare metadati tuoi, un elenco di nomi, tipi e valori, aggiunti con *Modifica i metadati…* nel menu del tasto destro. Nulla sulla lavagna li legge: sono tuoi, per uno stato, una nota di chi revisiona o un segno per uno strumento tuo. Viaggiano con la scheda in una campagna compilata e verso un agente, e una scheda copiata arriva con le sue note.
+
+{/* TODO(shots): <Shot name="metadataEditor" /> */}
+
+Le schede restano della dimensione con cui sono state disegnate qualunque sia la dimensione del testo del tuo desktop, perché la dimensione di una scheda fa parte della lavagna che condividi. Lo zoom è il modo per ingrandire una lavagna, mentre il resto dell'app cresce con l'impostazione, fino al doppio.
+
+## L'insieme delle schede
+
+Il menu Crea raggruppa le schede in Flow, Story, Math, Logic, Lists, Maps, Entities, Value, Chance e le due estremità di una macro. Quelle che una storia incontra per prime sono **Narration** per un passaggio, **Jump** per un'altra lavagna, **End** per il punto in cui un percorso si ferma, **If** e **Switch** per le ramificazioni, **Dice roller** per il caso, **Component** per un personaggio o un oggetto e **Script** per Python. [Schede](/it/reference/nodes/) descrive ciascuna di esse, e [Famiglie di schede, slot e stato](/it/reference/node-families/) tratta i tipi che uno slot offre, i valori predefiniti e come liste e mappe gestiscono una richiesta errata.
+
+## Perché le macro vengono copiate
+
+{/* TODO(shots): <Shot name="macro" /> */}
+
+Una **macro** è un tratto di storia che scrivi una volta e chiami da ovunque: un negozio, un riposo, una prova di abilità con tre passaggi suoi. È un file a sé, `*.macro.graph.json`, sulla stessa tela di una lavagna. È una piccola lavagna con una firma: una scheda **Macro In** che dice cosa riceve e una **Macro Out** che dice cosa restituisce, esattamente una per tipo. [Come riutilizzare un tratto di storia con una macro](/it/how-to/make-a-macro/) contiene i passaggi.
+
+Quando la campagna viene compilata, una macro viene **copiata dentro ciò che la chiama**. Chiamarla due volte produce due copie indipendenti. Una scheda *Once* dentro un negozio scatta quindi una volta per negozio invece che una volta per tutta la storia, e il conteggio degli usi limitati di una scelta in un corridoio chiamato da due punti ha un budget separato per ciascuno. Una macro non può chiamare se stessa.
+
+Una macro non può essere raggiunta con un salto e una lavagna non può essere chiamata: una scheda Jump elenca lavagne e una scheda Macro elenca macro. Una storia può essere messa in pausa dentro una macro e ripresa da dove si era fermata, e una riga della traccia della finestra di gioco che riguarda qualcosa dentro una macro ti porta alla scheda che l'ha chiamata. Un percorso tracciato tra più lavagne entra nelle macro che chiama, così un negozio o una prova di abilità riutilizzati in più punti compare sul percorso in ciascuno di essi.
+
+## Vedi anche
+
+- [Come costruire una lavagna](/it/how-to/work-on-the-canvas/), che applica le abitudini della tela descritte qui.
+- [Come riutilizzare un tratto di storia con una macro](/it/how-to/make-a-macro/), per crearne e chiamarne una.
+- [Schede](/it/reference/nodes/) e [Famiglie di schede, slot e stato](/it/reference/node-families/), per ogni scheda e le sue porte.
+- [Regole di lavagna e navigazione](/it/reference/canvas-rules/) e [Controlli di impostazioni, accessibilità e aggiornamenti](/it/reference/settings/), per i menu e le opzioni enunciati senza le ragioni.

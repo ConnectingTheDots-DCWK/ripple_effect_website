@@ -1,0 +1,86 @@
+---
+title: Come tracciare i percorsi tra due passaggi
+description: Apri Navigazione Script, scegli due passaggi o due capitoli, conferma e leggi ogni percorso tra di loro, oppure chiedi cosa porta a un passaggio.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
+
+Usa una traccia per rispondere a *come può arrivare un lettore da qui a lì* o *come ha potuto arrivare un lettore fin qui*, senza giocare la storia.
+
+## Vedere come sono collegate le lavagne
+
+<Steps>
+
+1. Premi **Navigazione Script**, il primo pulsante nel piè di pagina del pannello a sinistra. Si apre la panoramica: una scheda per ogni lavagna, un'uscita per ogni via d'uscita, ogni freccia etichettata con la scheda da cui parte. Un Jump nel mezzo di un capitolo indica anche dove arriva, per esempio `Down → The cellar`. I marcatori mostrano dove inizia e finisce un filo.
+
+</Steps>
+
+Nella panoramica nulla si può spostare né ricollegare, e lo stesso progetto viene disposto ogni volta nello stesso modo.
+
+<Shot name="overview" />
+
+## Tracciare ogni percorso tra due passaggi
+
+<Steps>
+
+1. Apri la lavagna e premi **Traccia i percorsi tra due passaggi** sulla sua quickbar. La quickbar mostra allora una spunta e una croce al posto dell'interruttore.
+2. Fai clic sul primo passaggio, poi sul secondo. Si possono scegliere solo le schede Start, Narration, Jump ed End; un clic su qualsiasi altra scheda non fa nulla. Lo stato accanto ai pulsanti indica *Seleziona due passaggi*, poi *Selezionane un altro*, poi *Pronto*.
+3. Premi la spunta, **Traccia ogni percorso tra di loro**. Ogni percorso si illumina a colori e il resto della lavagna viene coperto da un velo. Lo stato accanto ai pulsanti riporta il conteggio, per esempio *2 percorsi*, oppure *Nessun percorso tra di loro*, oppure *Loop — percorsi infiniti* quando la storia può girare in un ciclo un numero qualsiasi di volte.
+4. Leggi i colori. Ogni tratto lineare ha la sua tinta, quindi il punto in cui i percorsi si separano è il punto in cui cambia il colore. Puoi scegliere prima l'uno o l'altro passaggio. L'app prova entrambe le direzioni e disegna quella che ha un percorso; se ce l'hanno entrambe, decide l'ordine in cui hai scelto.
+5. Premi la croce, **Rimuovi la traccia**, quando hai finito. Anche modificare la lavagna elimina la traccia.
+
+</Steps>
+
+<Shot name="trace" />
+
+Confermare una traccia conclude la selezione: la lavagna conserva i suoi percorsi con la sola croce accanto, e il clic successivo è un clic normale. Due lavagne possono avere ciascuna una traccia nello stesso momento. Per abbandonare la selezione prima di confermare, premi la croce, **Interrompi la traccia**.
+
+## Tracciare tra due capitoli
+
+Nella panoramica delle lavagne usa lo stesso gesto per scegliere due lavagne invece di due passaggi: **Traccia i percorsi tra due lavagne**, fai clic su ciascuna, poi sulla spunta.
+
+## Chiedere cosa porta a un passaggio
+
+<Steps>
+
+1. Seleziona un passaggio su una lavagna. Se non è selezionato nulla, il pulsante riporta *Selezionane uno per vedere tutto ciò che vi porta*.
+2. Premi il pulsante della quickbar accanto all'interruttore della traccia, oppure esegui **Traccia ciò che porta qui** dalla Paletta dei comandi.
+
+</Steps>
+
+La risposta è ogni percorso che arriva al passaggio, da qualunque punto inizi la storia. Non scegli nessuna seconda estremità, e una storia ha spesso più inizi. Lo stato riporta un conteggio come *3 modi per arrivare qui*, *Niente porta qui* oppure *Loop — modi infiniti per arrivare qui*. Se ogni percorso resta sulla propria lavagna, la lavagna lo disegna e la croce lo rimuove. Se uno arriva attraverso un Jump, la lavagna non può disegnarlo e la risposta si apre in una vista unita.
+
+## Tracciare tra più lavagne nella vista unita
+
+{/* TODO(shots): <Shot name="mergedTrace" /> */}
+
+<Steps>
+
+1. Scegli un passaggio su una lavagna.
+2. Apri un'altra lavagna e scegli lì un secondo passaggio.
+3. Premi la spunta, che ora indica **Apri entrambe le lavagne in una vista e traccia tra di esse**. La vista unita si apre in una propria scheda, con il titolo formato dai nomi delle due lavagne uniti da ↔, oppure `In <board>` per una risposta a «cosa porta qui».
+4. Premi il pulsante di ricarica sulla barra per rileggere dal disco tutte le lavagne dopo aver modificato una di esse.
+
+</Steps>
+
+Nella vista unita:
+
+- Ogni lavagna sul percorso si trova su un unico canvas, e un passaggio è mostrato come la sua prosa. Passa il puntatore su un passaggio per vederne il nome, e fai clic per aprire il suo bundle nel pannello di visualizzazione.
+- Dove la storia è passata per una scheda *If*, una *Switch*, un tiro di dado o un loop, la freccia indica quella scheda e la via presa, per esempio `Hit? → true`, accanto alle parole della scelta, se ce n'era una.
+- Se l'intestazione dice che alcune lavagne sono compresse, premi **Espandi N capitoli in più**. Una lavagna che supera il limite di dimensione della vista appare come un'unica scheda, e il percorso la attraversa comunque.
+- Se un capitolo è stato eliminato nel frattempo, la vista dice *Uno di quei capitoli non è più in questo progetto.* Se nulla raggiunge la lavagna che hai chiesto, lo dice con *Nessuna parte di questo progetto raggiunge* seguito dal nome della lavagna.
+
+La vista unita è di sola lettura. Fai le modifiche sulle lavagne stesse. Una traccia su una lavagna e una vista unita non si mescolano: aprire una vista unita elimina la traccia di ogni lavagna, e finché ne è aperta una i due pulsanti di traccia della lavagna sono disattivati, con il suggerimento *Chiudi prima la traccia unita: una lavagna non può tracciare mentre una è aperta*. Chiudere l'ultima vista unita restituisce le lavagne.
+
+Per come vengono disegnati su un percorso i rami Do all, le macro e le scelte che eseguono uno script, vedi [Regole di lavagna e navigazione](/it/reference/canvas-rules/).
+
+## Chiedere a un assistente
+
+Un client MCP può porre le stesse tre domande con `trace_between`, `trace_into` e `board_links`, per esempio per verificare che un finale sia raggiungibile.
+
+## Vedi anche
+
+- [Leggere una storia grande a ritroso](/it/explanation/reading-a-story-back/)
+- [Regole di lavagna e navigazione](/it/reference/canvas-rules/)
+- [Strumenti MCP](/it/reference/mcp-tools/)

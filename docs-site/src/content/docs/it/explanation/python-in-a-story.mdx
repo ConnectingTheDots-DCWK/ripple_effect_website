@@ -1,0 +1,94 @@
+---
+title: Python in una storia
+description: Perché il Python di Ripple Effect è un sottoinsieme in sandbox, perché un passaggio legge ma non può scrivere e perché una lettura restituisce una copia.
+sidebar:
+  order: 5
+---
+
+import Shot from '../../../../components/Shot.astro';
+
+Una storia può contenere Python in tre posti: una scheda Script esegue un file di Python, una frase di un passaggio può contenere uno snippet e una console accanto a ogni script è il posto dove provare una riga. Le ramificazioni, i dadi, le variabili e le macchine a stati sono schede. Questa pagina parla della forma che quella decisione ha dato alla funzione: perché è una sandbox, perché non è tutto Python, perché un passaggio può guardare ma non toccare e perché la stessa campagna può essere distribuita con l'interprete o senza.
+
+<Shot name="python" />
+
+## Una sandbox, e che cosa esclude
+
+Quello che esegue il Python è un interprete pensato per eseguire in sicurezza il codice di qualcun altro, senza filesystem, senza rete e con una libreria standard ridotta. Il motivo è che una storia è un file che consegni ad altre persone: una campagna esportata viene giocata sulla macchina di un lettore o dentro il prodotto di qualcun altro. Togliere queste capacità, invece di chiedere all'autore di evitarle, è ciò che permette al motore di eseguire lo script di uno sconosciuto.
+
+Il prezzo è che è Python, ma non tutto Python. Non c'è `class`, non c'è un `import` del mondo esterno e non c'è `random`. Ci sono i dict, `def`, le lambda, le f-string, le comprehension e una manciata di moduli. Gli snippet hanno la forma del Python senza esserne portabili: uno script scritto qui non è garantito che giri altrove, e uno script scritto altrove non è garantito che giri qui.
+
+L'assenza di `random` è una lacuna voluta, con una risposta a misura di storia. Le schede Dice roller, Random number e Weighted branch sono il modo in cui una storia tira i dadi, quindi un tiro è una scheda e non una chiamata nascosta in un file.
+
+### Perché l'API passa dei dict
+
+L'assenza di `class` ha due conseguenze che modellano l'intera API. Un componente o un'entità entra in Python come **dict**, quindi si scrive `component_get("Goblin")["HP"]` e mai `goblin.hp`. E non c'è una sintassi a oggetti per costruirne una più comoda: non esiste `import ripple` e non c'è nulla da istanziare. Tutto ciò che uno script può chiamare è una **funzione dell'host**, legata al nome che l'autore scrive e presente senza alcun `import`, alla quale risponde l'app oppure il runtime che gioca la campagna.
+
+### Perché una lettura è una copia
+
+Un valore passa dall'app a Python attraverso JSON, quindi ciò che restituiscono `entity_get`, `component_get` e `cvar_get` è un'istantanea. `e = entity_get("Mira"); e["HP"] -= 3` è lecito, viene eseguito e non cambia nulla. È una trappola, e non verrà corretta: un riferimento attivo richiederebbe `__setitem__`, che richiede una classe, che l'interprete non ha. Scrivere è sempre un atto con un nome: `entity_set` e `cvar_set` sono l'unico modo in cui uno script cambia il mondo.
+
+### Perché una chiamata è rigorosa
+
+Ogni argomento opzionale è solo per parola chiave, e una chiamata sbagliata solleva un errore invece di rispondere. Il controllo esiste perché l'interprete fa passare una parola chiave sconosciuta senza alcun errore. Senza il controllo, un refuso in `of=` si comporterebbe come se l'argomento fosse stato omesso, e la chiamata si comporterebbe come se l'argomento fosse stato omesso. Un errore rumoroso alla chiamata costa meno di una risposta sbagliata ma plausibile. Le tre funzioni che precedono la regola, `component()`, `components()` e `set_attribute()`, sono escluse per il motivo opposto: ogni passaggio già scritto le chiama, quindi ciò che fanno davanti a un errore è congelato quanto i loro nomi. I nomi sono un contratto con ogni script scritto su di essi, e si aggiunge ad essi invece di riutilizzarli.
+
+Lo stesso ragionamento fa sì che `entity_create` rifiuti un nome già occupato invece di restituire l'entità esistente. Uno script che chiede un nome che può già vedere vuole essere avvisato, non scoprire l'errore passaggi dopo. Le schede Component e Spawn invece sono get-or-create, perché è ciò che permette a una scheda di essere rientrata e a una campagna in pausa di sopravvivere alla ripresa.
+
+Le funzioni dell'host non possono nemmeno essere chiamate dentro `map()`, `filter()` o `sorted(key=…)`; è una proprietà dell'interprete, e [I limiti della sandbox](/it/reference/python/sandbox/) ne contiene il dettaglio.
+
+## Dove va il Python, e chi può scrivere
+
+Il Python compare in cinque posti, che l'API chiama superfici: una scheda Script, un passaggio, la console in fase di progettazione, un agente tramite MCP e la console durante una sessione di gioco. Ogni funzione è disponibile su ogni superficie. Ciò che cambia è l'effetto di una chiamata, e le differenze seguono un'unica idea: **chi chiede decide che cosa può succedere**.
+
+Una scheda Script legge e scrive, perché è una scheda sulla lavagna. Un **passaggio** legge soltanto. Creare, modificare o eliminare un'entità, o scrivere una variabile di console, viene rifiutato da dentro la prosa, perché un cambiamento di stato dovrebbe essere qualcosa che si può indicare sul canvas, e un goblin eliminato da una frase non ha nulla sulla lavagna da indicare. Il rifiuto viene mostrato sul posto come un chip `⚠` e la storia prosegue, quindi un errore nella prosa degrada una frase invece di terminare la partita. Ogni rifiuto è una sola riga, un `RuntimeError` che uno script può intercettare, e le frasi sono fisse perché gli script già diramano in base ad esse.
+
+Riprodurre un suono viene rifiutato da un passaggio per un motivo diverso, e la differenza è la parte istruttiva. Un suono non cambia alcuno stato. Ciò che fa è accadere, e gli snippet di un passaggio vengono rieseguiti a ogni ridisegno e a ogni cambio di lingua, quindi una campana suonata dalla prosa suonerebbe due volte per un lettore passato all'italiano, senza alcuna scheda sulla lavagna a spiegare perché. La regola qui riguarda la ripetizione, non lo stato. Uno stinger va su una scheda Play sound prima del passaggio, oppure in una scheda Script. La frase pensata per la fase di progettazione della console e per un agente è ancora diversa, così che nessuno che ne incontri una vada a cercare la regola dell'altra.
+
+Tre cose non sono volutamente nella funzione dei suoni, e ciascuna è una decisione. Non c'è alcun soundscape da Python, perché ciò che suona sotto un passaggio si imposta sul passaggio come documento riutilizzabile da tutto il progetto, e uno script in grado di imporne uno sarebbe un cambiamento di stato senza una scheda da indicare. Non c'è modo di fermare, attendere o chiedere che cosa sta suonando, perché un cue è per costruzione fire and forget, e una funzione che si potesse attendere è una funzione che un autore attenderebbe. E non c'è alcun percorso fuori dal bundle, perché ogni suono che una storia può riprodurre è nella campagna, e un nome che non corrisponde a nulla là dentro viene rifiutato a parole. Il file può essere indicato come lo scrive il progetto o come lo scrive il bundle, perché un'esportazione archivia ogni risorsa sotto `media/` e un autore non dovrebbe doverlo sapere. Vedi [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/) per capire perché un cue e un soundscape sono cose diverse.
+
+La **console in fase di progettazione** e un **agente** si vedono rifiutare le scritture per un motivo più semplice: non c'è nulla da cambiare. Un progetto che non è in esecuzione non ha entità, e una variabile di console contiene soltanto il suo valore predefinito. Le letture funzionano comunque, e una risposta vuota è una risposta: `entity_names()` è `[]` e `entity_get(name)` è `None`. Le frasi di rifiuto distinguono di proposito i due casi, perché dire a qualcuno che una regola vieta ciò che in realtà è una sessione di gioco mancante lo manda a cercare la cosa sbagliata.
+
+La console **durante la sessione di gioco** può fare tutto ciò che può fare una scheda Script. Esiste perché *Gioca da qui* ti consegna una storia che parte senza nulla di creato, e la console è il modo in cui sostituisci le schede che la storia non ha eseguito. Le superfici sono riassunte in tabella nel [riferimento Python](/it/reference/python/), e [I limiti della sandbox](/it/reference/python/sandbox/) riporta che cosa consente ciascuna.
+
+## Slot, tipi e nomi
+
+Una scheda Script dichiara i propri ingressi e le proprie uscite come righe tipizzate, e i valori passano come tipi nativi di Python, quindi `total = hp - damage` è un'operazione aritmetica e non un'analisi di testo. [Schede](/it/reference/nodes/) descrive le schede Script, Output e Input.
+
+**Uno slot riceve il tipo che ha dichiarato.** Un ingresso `int` a cui viene dato `3.7` legge `3`, e una `list<int>` a cui viene data una lista di testo arriva come numeri. Un valore che non si può leggere come il tipo dichiarato diventa il vuoto di quel tipo invece di fermare la storia. Il compromesso è esplicito: la coercizione al confine significa che uno script può fidarsi di ciò che riceve, e la storia può sopravvivere a un valore sbagliato, al prezzo di una sostituzione silenziosa. Ciò che uno script scrive viene lasciato com'è. Uno slot può anche avere un valore predefinito, e le due regole sono asimmetriche perché le due direzioni sono diverse. Per un ingresso di uno script, un valore collegato prevale sul valore predefinito. Per un'uscita di uno script, il valore predefinito si applica solo dove il programma non ha mai impostato quel nome.
+
+I nomi sono l'unico punto in cui le regole di Python si riversano sulla lavagna. Gli ingressi e le uscite di una scheda Script, e gli ingressi di un passaggio, diventano variabili, quindi accettano solo una lettera o un trattino basso seguiti da lettere, cifre e trattini bassi, e le parole riservate di Python come `class` vengono rifiutate con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non può leggere lo segnala, invece di non riempire mai lo slot in silenzio. I nomi su una scheda Output o Input sono letti da persone, quindi `Your roll` è un nome perfetto lì.
+
+## Una console uguale ovunque
+
+La console accanto a ogni file `.py` e la console durante una sessione di gioco sono lo stesso strumento, e cambiano soltanto le scritture consentite. Il [riferimento Python](/it/reference/python/) descrive le sessioni.
+
+## Disattivarlo
+
+Un progetto scritto per un gioco, o per un lettore costruito senza l'interprete, può dichiararlo: disattiva **Python** sotto *Capacità* nelle impostazioni del progetto. Il motivo per cui è un interruttore del progetto e non qualcosa che si scopre all'esportazione è il momento in cui agisce. Ogni scheda Script, e ogni passaggio con un blocco `{{ … }}` o `ripple`, viene segnata come errore sulla propria scheda ed elencata in Messaggi mentre scrivi ([`E.EX.01`](/it/reference/diagnostics/#eex01) ed [`E.EX.02`](/it/reference/diagnostics/#eex02)), e la campagna non verrà giocata né esportata finché non ce ne sono più. Riattivarlo non cambia nulla del progetto, quindi provare l'interruttore non costa niente.
+
+Dietro c'è il fatto che il motore viene distribuito in due build, una con l'interprete e una molto più piccola senza. Ogni campagna esportata registra se richiede Python. L'opzione *Non richiede Python* della finestra di esportazione è il controllo fatto al momento dell'esportazione. Vedi [Che cos'è un'esportazione](/it/explanation/what-an-export-is/) per come viene costruita una campagna e [Come costruire una campagna senza Python](/it/how-to/turn-python-off/) per i passaggi.
+
+## Perché l'app sonda invece di elencare
+
+I limiti dell'interprete cambiano tra una sua versione e l'altra. Una pagina che elencasse ciò che è consentito sarebbe corretta il giorno in cui è stata scritta e sbagliata più avanti, e un lettore agirebbe sulla differenza. Quindi l'app non descrive la sandbox, la **sonda**: il rapporto sulla sandbox dietro il pulsante `i` della console esegue una serie di piccoli snippet (istruzioni, moduli, funzioni built-in, forme di chiamata) nel vero interprete e riporta che cosa è successo, riga per riga. Dice che cosa lega l'app, che cosa può raggiungere `import` e quali limiti vengono applicati. Un agente può chiedere lo stesso testo tramite `python_capabilities`. Dove una qualsiasi pagina e quel rapporto non concordano, ha ragione il rapporto, ed è ciò che va copiato in una segnalazione di bug.
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+L'interprete è [monty](/it/about/open-source/); la pagina open source dice di chi è.
+
+## I limiti riguardano le esecuzioni non presidiate
+
+Uno script che non ha terminato dopo **due secondi** viene fermato, e l'app non farà ripartire quello script nella stessa sessione di gioco. Dopo che tre script distinti sono stati fermati in una sessione di gioco, nessuno script parte più. La seconda regola è il motivo della forma della prima: evita che un percorso non presidiato di ogni ramo paghi lo stesso script fuori controllo a ogni passaggio. Uno script che incappa in questo contiene un ciclo infinito. Uno script è anche limitato a circa 64 megabyte e a 200 chiamate di profondità; una ricorsione fuori controllo solleva `RecursionError` e una lista che non entra solleva `MemoryError`.
+
+## Che cosa ricordano un salvataggio e un'esportazione
+
+Python può leggere e scrivere le variabili di console, quindi ciò che trasporta un salvataggio conta per chi scrive uno script. Una partita salvata contiene ogni variabile per nome. Un salvataggio precedente all'esistenza di una variabile la mantiene al suo valore predefinito; una variabile rimossa dalle dichiarazioni viene scartata alla ripresa; e una il cui tipo è cambiato in modo che il valore salvato non sia più adatto torna al valore predefinito. Un salvataggio registra che cosa conteneva ogni variabile e non il suo tipo, quindi una build più vecchia di quella che l'ha scritto avrebbe riportato una variabile `json` al valore predefinito senza dire nulla. Rifiuta invece il salvataggio più recente, e la soluzione è salvare di nuovo dalla build attuale.
+
+Una campagna compilata contiene le dichiarazioni (nome, tipo e valore predefinito), e un runtime avvia ogni sessione di gioco da esse. Una copia del progetto contiene il file stesso, `.ripple/cvars.json`. Quindi uno script che chiama `cvar_get` vede gli stessi valori iniziali ovunque la campagna venga giocata, e ciò che differisce tra una sessione e l'altra è lo stato salvato. Vedi [Variabili di console](/it/explanation/console-variables/) per sapere che cos'è una variabile.
+
+## Vedi anche
+
+- [Come eseguire Python in una storia](/it/how-to/script-a-passage/): scrivere una scheda Script e uno snippet.
+- [Come costruire una campagna senza Python](/it/how-to/turn-python-off/): l'interruttore del progetto e il controllo all'esportazione.
+- [Riferimento Python](/it/reference/python/): le diciotto funzioni, le superfici e le frasi di rifiuto.
+- [I limiti della sandbox](/it/reference/python/sandbox/): che cosa dice il rapporto e i numeri dietro i limiti.
+- [Come funziona una storia](/it/explanation/how-a-story-runs/): dove si colloca una scheda Script nel flusso.

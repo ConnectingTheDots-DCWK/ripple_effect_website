@@ -1,0 +1,107 @@
+---
+title: Come eseguire Python in una storia
+description: "Calcola con una scheda Script, mostra il risultato con una scheda Output, fai variare un passaggio con {{ }} e i blocchi ripple, e controlla cosa permette la sandbox."
+---
+
+import Shot from '../../../../components/Shot.astro';
+import { Steps } from '@astrojs/starlight/components';
+
+## Calcolare un valore con una scheda Script
+
+Una scheda Script fa riferimento a un file `.py` del progetto, quindi un solo script può servire molte schede.
+
+<Steps>
+
+1. Aggiungi una scheda Script e fai riferimento a un file `.py`.
+
+2. Premi **Inputs** oppure **Outputs** nel suo editor, a seconda di ciò che ti serve. Ognuno apre la stessa finestra di dialogo delle porte che usano tutte le altre schede. Dichiara un nome e un tipo per ogni riga; la scheda aggiunge una porta per ogni nome.
+
+3. Collega gli ingressi. I valori arrivano come tipi Python nativi, quindi `total = hp - damage` è un'operazione aritmetica, non un'analisi di testo.
+
+4. Assegna nello script ogni nome di uscita. Qualunque cosa lo script assegni a un nome di uscita viene pubblicata su quella porta.
+
+</Steps>
+
+Scegli nomi che Python sa leggere. Gli ingressi e le uscite di una scheda Script, e gli ingressi di un passaggio, accettano solo una lettera o un trattino basso seguiti da lettere, cifre e trattini bassi. Le parole riservate di Python, come `class`, vengono rifiutate, con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non sa leggere lo segnala.
+
+### Scegliere i tipi e i valori predefiniti degli slot
+
+Dai a ogni riga il tipo del valore che trasporta e, se lo slot può restare vuoto, un valore predefinito. Per un ingresso di uno script, un valore collegato prevale sul predefinito; per un'uscita, il predefinito si applica solo dove lo script non ha mai impostato quel nome. L'elenco dei tipi e le regole di conversione sono in [Famiglie di schede, slot e stato](/it/reference/node-families/).
+
+## Mostrare il risultato con una scheda Output
+
+Una scheda Script non presenta nulla; una scheda Output mostra i propri ingressi al lettore come una diapositiva con una sola via d'uscita.
+
+<Steps>
+
+1. Aggiungi una scheda Output e collega le uscite della scheda Script al suo interno.
+
+2. Fai doppio clic sulla scheda e dichiara un nome e un tipo per ogni riga. Questi nomi li leggono le persone, quindi `Your roll` è un nome perfetto qui, a differenza che in una scheda Script. Uno slot può avere un valore predefinito.
+
+</Steps>
+
+Per chiedere un nome o un numero al lettore, usa invece una scheda Input. Chiede dei valori al lettore e passa ciò che è stato digitato come porte, così una scheda Script può usarli. In una scheda Input il valore predefinito è già inserito, perché il lettore possa accettarlo o scriverci sopra.
+
+## Far variare un passaggio con Python
+
+Un passaggio ha due punti per Python: un intervallo `{{ … }}` nel testo e un blocco delimitato ```` ```ripple ````. Entrambi vengono sostituiti da ciò che valutano quando il passaggio viene presentato, così una frase può variare invece di dividersi in due passaggi.
+
+````markdown
+The goblin has {{ entity_get("Goblin-1")["HP"] }} hit points left.
+
+```ripple
+names = entity_names(of="Goblin")
+f"{len(names)} goblins are still standing."
+```
+````
+
+Un passaggio può solo leggere. Creare, modificare o eliminare un'entità, o scrivere una variabile di console, viene rifiutato dall'interno della prosa. Fallo in una scheda Script, dove la modifica si può indicare sulla tela. Il rifiuto compare al suo posto come un'etichetta `⚠` e la storia prosegue.
+
+## Provare una riga nella console
+
+Apri un file `.py` qualsiasi. La sua console è una sessione attiva, una per progetto, quindi `x` sopravvive da una riga all'altra.
+
+- **Enter** esegue ciò che c'è scritto; **Maiusc+Enter** inizia una nuova riga. Il prompt cresce fino a tre righe mentre scrivi.
+- I tasti freccia scorrono ciò che hai già eseguito.
+
+Durante una sessione di gioco la stessa console si trova accanto ai pannelli Entità e Variabili, sopra la storia in corso. Lì puoi eseguire istruzioni che creano o modificano entità, come può fare una scheda Script.
+
+## Lavorare entro i limiti della sandbox
+
+L'interprete esegue un sottoinsieme di Python; i limiti sono in [La sandbox e i suoi limiti](/it/reference/python/sandbox/). Per tirare i dadi, usa le schede Dice roller, Random number e Weighted branch. Per tenere in ordine le entità nella prosa e negli script, adotta queste abitudini.
+
+- **Leggi componenti ed entità come dict** (vedi [Come leggere e modificare le entità da Python](/it/how-to/use-entities-from-python/)). Scrivi `component_get("Goblin")["HP"]`, mai `goblin.hp`.
+- **Scrivi con `entity_set`.** Una lettura restituisce una copia: `e = entity_get("Mira"); e["HP"] -= 3` viene eseguito e non cambia nulla.
+- **Tieni le funzioni dell'host fuori da `map()`, `filter()` e `sorted(key=…)`.** Tutto ciò che l'app collega fallisce lì. All'interno di una `def` o di una comprehension funziona, quindi costruisci prima le coppie:
+
+```python
+pairs = [(entity_get(n)["HP"], n) for n in entity_names()]
+weakest = sorted(pairs)[0][1]
+```
+
+{/* TODO(shots): <Shot name="sandbox" /> */}
+
+### Controllare cosa permette la sandbox
+
+L'elenco qui sopra non fa fede; fa fede l'app. I limiti dell'interprete cambiano da una versione all'altra, quindi l'app li verifica.
+
+<Steps>
+
+1. Premi il pulsante **i** sulla console, oppure esegui dalla paletta dei comandi *Cosa può e non può fare questo Python*.
+
+2. Leggi il rapporto. Esegue nell'interprete reale una serie di piccoli frammenti (istruzioni, moduli, funzioni integrate, forme di chiamata) e riporta cosa è successo, riga per riga. Dice cosa collega l'app, cosa può raggiungere `import` e quali limiti vengono applicati.
+
+3. Premi **Copia rapporto** per incollarlo in una segnalazione di bug. Un agente può chiedere lo stesso testo tramite `python_capabilities`.
+
+</Steps>
+
+Dove questa pagina e il rapporto non concordano, ha ragione il rapporto.
+
+## Vedi anche
+
+- [Python in una storia](/it/explanation/python-in-a-story/): perché Python sta dove sta e a cosa serve la sandbox.
+- [Riferimento di Python](/it/reference/python/): ogni funzione che l'app collega, con ciò che risponde e ciò che rifiuta.
+- [La sandbox e i suoi limiti](/it/reference/python/sandbox/): i limiti che l'interprete applica.
+- [Famiglie di schede, slot e stato](/it/reference/node-families/): tipi di slot, conversione e valori predefiniti.
+
+Per lasciare Python fuori da una campagna, vedi [Come creare una campagna senza Python](/it/how-to/turn-python-off/).
