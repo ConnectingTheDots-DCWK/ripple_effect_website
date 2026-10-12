@@ -131,7 +131,7 @@ report** behind the console's `i` button says on the day you ask it, and
 `python_capabilities` answers the same text to an agent. Where this page and
 that report disagree, the report is right.
 
-A script that has not finished after five seconds is abandoned; see
+A script that has not finished after two seconds is stopped; see
 [Python scripting](/overviews/python-scripting/#limits).
 
 ## Versioning

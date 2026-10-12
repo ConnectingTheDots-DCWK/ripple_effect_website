@@ -128,6 +128,13 @@ had one holds it at its default; a variable removed from the declarations is
 dropped on resume; one retyped so its saved value no longer fits falls back
 to the default.
 
+Widening the types to twenty-four moved three versions: a campaign is
+recompiled (its bundle format moved), `.ripple/cvars.json` is version 3, and a save
+is format 5. A save records what each variable held and not its type, so a
+build older than this one would have reset a `json` variable to its default
+without a word; it refuses the newer save instead. Save again from this
+build.
+
 A compiled campaign carries the declarations — name, type and default — and a
 runtime starts every playthrough from them. A project copy carries the file
 itself, `.ripple/cvars.json`.

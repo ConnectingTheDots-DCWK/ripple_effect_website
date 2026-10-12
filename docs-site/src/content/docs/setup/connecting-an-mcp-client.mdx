@@ -21,13 +21,14 @@ from it, and paste that block where your client reads it.
 
 1. **Switch agent access on.**
 
-   Open the **Agents** panel from the robot button in the app bar, or from
-   the command palette. Switch on **Agent access**. From now on an assistant
-   can read the project and play it — but change nothing.
+   Open the gear in the app bar, which is on every screen, and pick the
+   **Agents** page; the command palette's Agents command opens the same page.
+   Switch on **Let agents reach this app**. From now on an assistant can read
+   the project and play it — but change nothing.
 
-   Leave **Agents may edit** off until you want an assistant to change files.
-   It only does anything while the first switch is on, and reading is useful
-   on its own.
+   Leave **Let agents change files** off until you want an assistant to
+   change files. It only does anything while the first switch is on, and
+   reading is useful on its own.
 
    Both switches are for the app rather than for one project: the app serves
    whichever project is open.
@@ -36,7 +37,7 @@ from it, and paste that block where your client reads it.
 
 2. **Copy the configuration.**
 
-   Press **Copy client configuration** in the panel. What lands on the
+   Press **Copy client configuration** on the page. What lands on the
    clipboard is the block most clients read, already pointing at the right
    place on your machine:
 
@@ -52,14 +53,14 @@ from it, and paste that block where your client reads it.
    ```
 
    The path is a small program installed beside the app that the client
-   starts and that talks to the app for it. Copy it from the panel rather
+   starts and that talks to the app for it. Copy it from the page rather
    than typing it — the app installs to a different place on each platform.
 
 3. **Paste it where your client reads it.**
 
    <Tabs syncKey="client">
      <TabItem label="Claude Code">
-       One command, with the path from the panel:
+       One command, with the path from the page:
 
        ```sh
        claude mcp add ripple_effect -- /opt/ripple_effect/ripple_effect_mcp
@@ -91,9 +92,11 @@ from it, and paste that block where your client reads it.
 
 4. **Ask it something.**
 
-   While a client is connected its mark appears in the app bar, with its
-   name and version on the tooltip, and the panel's *Who is connected* lists
-   it. A good first thing to ask for is `project_outline` — the shape of the
+   The app bar shows nothing for agents until there is news. While a client
+   is connected its mark appears there, with its name and version on the
+   tooltip, and the page's *Connected* list shows it. If the app could not
+   open its local connection, the mark appears in the error colour instead.
+   Either one opens the Agents page. A good first thing to ask for is `project_outline` — the shape of the
    whole story in about twenty lines — or simply *what is this project
    about?* and let the assistant find that tool itself.
 
@@ -108,10 +111,10 @@ off:
 
 ```text
 ripple_effect is not running, or agent access is switched off.
-Open the project in ripple_effect and enable agent access from the app bar.
+Open the project in ripple_effect and switch on "Let agents reach this app" under Settings → Agents.
 ```
 
-Open the project and switch access on; the client does not need restarting.
+Open the project and switch access on in the Agents page of Settings; the client does not need restarting.
 The assistant sees the full tool list either way, so it can tell you what it
 *would* be able to do before the app is up.
 
@@ -121,7 +124,7 @@ The program the client starts asks the running app what it offers, and is
 told the moment that changes — so from 1.4 on, an update to the app is seen
 by a client that was already running, and so is a project opened, a switch
 thrown or a variable declared. One visible consequence: a client with the
-bridge configured shows up in the agents panel as soon as agent access is
+bridge configured shows up on the Agents page as soon as agent access is
 on, rather than at its first call.
 
 A bridge from before 1.4 carried its tool list built in, so the one update
@@ -137,12 +140,12 @@ candidates rather than a guess.
 
 | | Tools | Needs |
 | --- | --- | --- |
-| Orientation | `project_info`, `project_outline`, `catalog_find` | Agent access |
-| Reading | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` | Agent access |
-| What only the app can answer | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` | Agent access |
-| Playtesting | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | Agent access |
-| Writing | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | Agents may edit |
-| Sound | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | Agents may edit |
+| Orientation | `project_info`, `project_outline`, `catalog_find` | *Let agents reach this app* |
+| Reading | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` | *Let agents reach this app* |
+| What only the app can answer | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` | *Let agents reach this app* |
+| Playtesting | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | *Let agents reach this app* |
+| Writing | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | *Let agents change files* |
+| Sound | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | *Let agents change files* |
 
 The list a client sees is the app's own for the build and the project it has
 open: `board_add_node`'s node types are an enum off the editor's palette,
@@ -152,7 +155,7 @@ tool says in its description when editing is off. Two prompts,
 board you name already in it. A write tool called with editing off answers
 `refused`. Every write goes through the app's own document
 sessions, so it is one undo, autosave sees it, and it is posted to Messages
-and listed in the panel as it happens.
+and listed in the Agents page as it happens.
 
 ## Where the program is, if you need it by hand
 

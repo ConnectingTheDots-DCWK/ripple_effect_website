@@ -37,7 +37,7 @@ catalog id.
     {"label": "Rate",  "type": "float",     "value": 1.5},
     {"label": "Alive", "type": "bool",      "value": True},
     {"label": "Bio",   "type": "markdown",  "value": "A small, angry thing."},
-    {"label": "Loot",  "type": "assetList", "items": ["gold.png"]}
+    {"label": "Loot",  "type": "list<asset>", "items": ["gold.png"]}
   ]
 }
 ```
@@ -48,7 +48,9 @@ catalog id.
   decoded dict or list.
 - **`type` is an open set.** It is the wire name: one of `int`, `float`,
   `bool`, `string`, `markdown`, `asset`, `componentRef` or `json`, on its own
-  or as `list<…>` or `map<…>`. The older spellings — `assetList`,
+  or as `list<…>` or `map<…>` — twenty-four in all, where a component
+  attribute could be one of eight before 1.5. Component files are now written
+  as version 3, which an older build refuses to open. The older spellings — `assetList`,
   `componentList`, `numberList` — are still in files written before those
   words changed, and a type this version does not know keeps the spelling the
   file gave it. A script switching on `type` needs a default branch.
