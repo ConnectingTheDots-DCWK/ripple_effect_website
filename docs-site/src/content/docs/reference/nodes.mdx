@@ -20,7 +20,11 @@ table says otherwise, and every value port is typed: a `number` joins a
 `number`, `any` joins anything.
 
 **Five cards let you declare their own ports** — Output, Input, Script, Macro
-In and Macro Out. Double-click one and each row is a name and a type, and a
+In and Macro Out — and a sixth, Narration, lets you declare what its passage
+is handed. Double-click one of the five (a Script node's *Inputs* and *Outputs*
+are buttons that open the same dialog) or click a Narration node's *Reads* row,
+at the bottom of the card, which says how many names the passage is given, and
+each row is a name and a type, and a
 type is two questions: **what it is** — `int`, `float`, `bool`, `string`,
 `markdown`, `asset`, `component` or `json` — and **how many of it**: one, a
 list, or a map of names to it. Twenty-four in all, and every one of the five
@@ -47,13 +51,40 @@ field reaches whoever is playing as a text box asking for a path. You may
 still declare it: the word is kept in your project, where it says what the
 field is for.
 
-**A Macro In's takes and a Script node's inputs can carry a default** — what
-the slot is worth when nothing fills it. Where the card's own literal and a
+**A name that becomes a Python variable has to be one Python can read.** A
+passage's inputs and a Script node's inputs and outputs take a letter or an
+underscore, then letters, digits and underscores; a Python keyword such as
+`class` is refused, with the reason under the field. An Output node's rows and
+an Input node's fields are read by people, so `Your roll` is still a fine name
+there. A board from an older version that carries a name Python cannot read now
+says so instead of silently never filling the slot.
+
+**A slot gets the type it declared.** An `int` Script input given `3.7` reads
+`3`, and a `list<int>` input handed a list of text receives numbers. This holds
+for a Script node's inputs and an Output node's rows; a value that cannot be
+read as the declared type becomes that type's blank rather than stopping the
+story. What a script *writes* is left as it is.
+
+**Any slot can carry a default** — what the slot is worth when nothing fills
+it. A Macro In's takes, a Script node's inputs and outputs, an Output node's
+slots, a Macro Out's answers and an Input node's form fields all take one.
+Where the card's own literal and a
 wire both answer a port, **the wire wins**, and the field on the card
 disappears while the wire is attached; where neither is there, the declared
 default stands in, and where there is no default either, the type's own blank
-does. A default on a `json` or a `map<…>` slot cannot travel, and the app
+does. A form field's default is filled in for the reader to accept or type
+over, and a script output's applies only where the program never set that
+name. A default on a `json` or a `map<…>` slot cannot travel, and the app
 says so when you compile.
+
+**A slot that points at a file is filled by name.** For a picture, a document
+or a component — a component's attributes, a macro take's or script input's
+default, a console variable — type a name and pick from the project's files,
+with the full path beside each; the pick sits there as a chip, hover shows the
+path, and the path is still what is stored. A chip whose file is outside the
+project or missing is marked. On a card (a macro take, a Set variable node) the
+slot is a searchable dropdown instead, like the Narration node's passage
+picker.
 
 **Every card can carry metadata of your own.** Right-click it and choose
 *Edit metadata…*: a list of names, types and values — `int`, `float`, `bool`,
@@ -147,6 +178,8 @@ Wire the end of the loop back into `continue` and it goes round again through `l
 
 It holds no condition of its own: what decides is whatever you wired to those two inputs.
 
+A loop nothing breaks out of does not run for ever: one loop node may go round 512 times in a board before the campaign stops and offers the node that ran away. The ceiling is under *Playing* in Settings.
+
 **Takes**
 
 | Port | Carries | Meaning |
@@ -171,7 +204,7 @@ Repeats a stretch of the story, but not forever.
 
 The same two ways in and two ways out as a While. What it adds is a ceiling: once it has gone round that many times it leaves through `exit` whatever the graph says.
 
-It is the loop to reach for when the condition is somebody else's and you would rather not find out the hard way that it never comes false.
+It is the loop to reach for when the condition is somebody else's and you would rather not find out the hard way that it never comes false. Its own ceiling applies before the one under *Playing* in Settings when it is lower.
 
 **On the card:** **Max iterations**, default `100` — The ceiling.
 
@@ -430,6 +463,10 @@ The text lives in a localised passage beside the board rather than on the node, 
 It always carries one spare choice at the bottom. Wire that one up and another appears beneath it, so a passage grows as many branches as the reader needs. Click a choice's row on the card to give it a name, which is what the card shows, and its words, which are what the reader is offered — in every language the story is written in.
 
 A soundscape — a timeline of music and sounds, a file of its own — plays from the moment this passage is shown, and **stays in force** through every passage after it until one brings its own: a tavern goes on being a tavern. A passage with none changes nothing; a passage set to *Silence* stops whatever is playing. A soundscape marked *tied* belongs to its passage and stops when the story moves on.
+
+The *Reads* row at the bottom of the card says how many names the passage is handed and opens the dialog that declares them; each grows a port, and the passage's Python reads it by that name. The names belong to the card, not the passage, so one passage can be read by two cards that fill it differently.
+
+A choice has a *Times* box beside its name: blank for as often as the reader likes, or a number, shown as `×3` at the end of its row. Every wired choice also grows a `bool` input: wired, the choice is offered only while it is true. A choice that has run out, or whose answer is false, stays on screen greyed out and unpressable.
 
 **On the card:** **Passage** — Which passage file the card reads. New makes one beside the board; **Soundscape** — *None*, *Silence*, or one of the project's soundscapes.
 
@@ -900,7 +937,7 @@ Drag one out of the file tree and drop it on the canvas, or pick it here. Every 
 
 `component` carries the whole thing as one value, for passing along rather than picking apart.
 
-It has two modes. In **Reference** it is a window onto the file: outputs, and nothing else.
+It has two modes. In **Component** it is a window onto the file: outputs, and nothing else.
 
 In **Entity** it stops being a window and makes the story a *thing*: one entity, kept for the length of the campaign under the name you give it. Every attribute grows an input, so what happens earlier in the story can set it. Two nodes with two names are two independent swords; a node on a later board with the same name is the same sword.
 
@@ -908,7 +945,7 @@ Either way it reads the file and never writes to it. The component itself is edi
 
 Plus one **output per attribute**, typed as the component declares it — and in Entity mode one **input per attribute** as well.
 
-**On the card:** **Component**; **Entity mode**, default `false` — Reference off, Entity on; **Name** — The entity's name, in Entity mode.
+**On the card:** **Component**; **Entity mode**, default `false` — Component off, Entity on; **Name** — The entity's name, in Entity mode.
 
 **Answers**
 
@@ -992,7 +1029,7 @@ Asks whether the campaign has an entity under a name, and answers true or false.
 
 Name it on the card, or wire a name in — a name from upstream wins.
 
-It asks about entities, not about components. False means the story has not made this one, or has deleted it; the component file may be sitting there all the same, and a Component node set to Reference would read it happily.
+It asks about entities, not about components. False means the story has not made this one, or has deleted it; the component file may be sitting there all the same, and a Component node in Component mode would read it happily.
 
 It runs when the flow reaches it, so anything reading `exists` has to be wired after `completed` — an If node hanging off it with nothing flowing in reads nothing.
 
@@ -1045,7 +1082,7 @@ It runs when the flow reaches it, so anything reading `names` has to be wired af
 | `completed` | `flow` | Taken when the node has run. |
 | `names` | `stringList` | Every name, in alphabetical order. |
 
-**Read more:** [Components and entities](${DocsPage.componentsAndEntities.url})
+**Read more:** [Components and entities](/overviews/components-and-entities/)
 
 
 ## Value
@@ -1056,7 +1093,7 @@ It runs when the flow reaches it, so anything reading `names` has to be wired af
 
 Runs a Python file, and publishes what it assigned.
 
-Pick the script, then say what it reads and what it writes — the same rows of name and type every other card's ports are written in, behind the *Inputs* and *Outputs* buttons — and the node grows a port per name. Inputs arrive in Python as globals of that name; assign the output names and they come back out. An input may declare a default, which stands in when nothing is wired to it.
+Pick the script, then say what it reads and what it writes — the same rows of name and type every other card's ports are written in, behind the *Inputs* and *Outputs* buttons — and the node grows a port per name. Inputs arrive in Python as globals of that name; assign the output names and they come back out. An input may declare a default, which stands in when nothing is wired to it, and an output a default used only where the program never set that name. An input gets the type it declared: an `int` input given 3.7 reads 3.
 
 Double-click to write the script, and to try it in the console beside it. The file is a real `.py` in the project, so a snippet can be shared by as many nodes as want it.
 
@@ -1439,7 +1476,7 @@ Offered on a macro's own canvas only, where a board would have its Start and its
 
 Where this macro begins, and what it takes.
 
-Double-click to say what it takes — a name and a type per row — and it grows a port per name, carrying what the board that called the macro wired in or typed on the card.
+Double-click to say what it takes — a name and a type per row — and it grows a port per name, carrying what the board that called the macro wired in or typed on the card. A take declared as a map or as JSON cannot be typed on the calling card.
 
 A macro has exactly one of these, and it stands where a Start would.
 
