@@ -34,10 +34,50 @@ written in — an untranslated passage is prose somebody can read past, and an
 untranslated choice is a button they cannot press. A wire can carry a caption
 of its own as well; that is an annotation for you, and no reader sees it.
 
+A choice can also **run out** and can **ask a question**. Open a choice and
+there is a *Times* box beside its name: blank for as often as the reader
+likes, or a number. Once a playthrough has taken that path that many times it
+is still on screen, greyed out and unpressable, and the card shows the ceiling
+as `×3` at the end of the choice's row. The count is kept for the whole
+campaign: jumping away and back, or saving and loading, finds the path as
+spent as it was, and starting over reopens it. A macro counts per call, so a
+corridor called from two places has a separate budget for each. A choice with
+no number set remembers nothing.
+
+Every wired choice also has a small input on its row. Wire a `bool` into it
+and the choice is offered only while that is true; otherwise it is greyed out
+and unpressable, the same as a path that has run out — so *three times, and
+only while you carry the lantern* is one choice with both. Put the cards that
+work the answer out in the flow leading to the passage (a **Do all** with a
+chain per branch and `completed` into the passage is the tidy shape); a card
+hanging off the side of the board is worked out once before the story starts
+and answers the same for ever, and the messages panel names the choice. A
+Comparator reading a dice roll already follows the same rule.
+
+A Narration node can also be **given things**. Its *Reads* row, at the bottom
+of the card beside the soundscape it brings, shows how many names the passage
+is handed and opens the dialog that declares them — named, typed inputs, with
+an optional default. The card grows a port for each, and the passage's Python
+reads them by name: `You owe {{ gold }} crowns.` A slot with a default and
+nothing wired uses the default. The names belong to the card, not the passage
+file, so one passage can be a template read by two cards; a name the card does
+not supply shows a small warning where it stood and the rest renders. Opened
+from a board, the names are offered as you type; opened in its own tab, they
+are not. The names must be ones Python can read.
+
 Every card is made the same way: right-click an empty part of the canvas and
 pick it from the Create menu — a passage, a Jump, a Script, a loop, a
 component. Drop a wire on empty canvas instead and the same menu opens there,
-already wired to whatever you pick.
+already wired to whatever you pick. The board's toolbar has no *add a passage*
+button, no Undo and Redo, and no shortcuts-card toggle: Undo and Redo are in
+the Edit menu and on their keystrokes, and the shortcuts card comes back from
+View ▸ Shortcuts card.
+
+**Every card explains itself.** Right-click a node and choose *About this
+node*: what the card is for, what each control on it does, what each port takes
+or answers, and a link to the docs page, rendered as Markdown. The [nodes
+reference](/reference/nodes/) is written from the same text, so the card and
+the page cannot disagree.
 
 **Every picker of something you made is searchable, and alphabetical.** A
 Jump's board, a Component's component, a Script's `.py`, a Narration node's
@@ -69,6 +109,14 @@ story back](/overviews/reading-a-story-back/).
 
 Cycles are the point, and nothing refuses one.
 
+Wires are curved by default. **Settings ▸ Links ▸ Right-angled** draws every
+wire on every canvas as straight legs with rounded corners instead; a handle
+on a wire is then a corner, and lines up with its neighbours as you drag it.
+
+Cards stay at the size they were drawn at whatever your desktop's text size
+says — zoom is how a board gets bigger — while the rest of the app grows with
+the setting, up to double.
+
 ## Two kinds of wire
 
 Every port on a card is one of two kinds, and the canvas draws them apart.
@@ -84,6 +132,13 @@ branch a condition never takes would wait forever.
 **Data** ports carry values: a number, a name, a list of goblins, the state a
 machine is in. A data wire is not a step in the story. It is a question the
 card at its end asks when its turn comes.
+
+The canvas draws the two apart in shape too: the way in and the way out of a
+card are **triangles** pointing the way the flow runs, and everything that
+carries a value stays a **dot**. Rest the pointer on a value port and it says
+what it will take — `number`, `list<string>`, or `anything` for the ports that
+accept whatever you give them, like a Comparator's two sides. Flow ports show
+no tooltip, because their shape already says it.
 
 The engine runs the two in opposite directions: **control is pushed, data is
 pulled** — and it is one engine, the same one whether you press play in the app
@@ -141,9 +196,19 @@ So a value is in one of three states, and only the first is the one you want:
   because a running total and a flag set once on the way in are both meant to
   be read that way — and it can be answered per card with *I meant that*.
 
-Both of these are drawn on the board as well as listed: a card something was
-said about wears a halo and a small mark in its header. Every check is in the
-[diagnostics reference](/reference/diagnostics/).
+Both of these are drawn on the board as well as listed: a card the engine has
+something to say about wears a halo in the colour of how serious it is, plus a
+small mark at the end of its header whose tooltip names the check and the
+reason. Only problems and cautions are marked; the full records are in the
+messages panel, where they can be filtered.
+
+These are two of **fourteen coded checks** on a board's shape. They cover a
+missing or duplicated Start, an empty required input, cards the story can never
+reach, values evaluated before the story that changes what they depend on, a
+value not set on some path, a While with no break, a Jump that cannot land,
+several wires where one is read, a circle of reads, and paths that stop without
+an End. Pressing Play checks every board, and a finding names the cards it
+concerns. Every check is in the [diagnostics reference](/reference/diagnostics/).
 
 **Wires that go back on themselves are fine.** A control wire back to an
 earlier card is a loop, which is how a hub or a conversation works. A data wire
@@ -152,13 +217,58 @@ a running total works — it is a value, not a question being asked in a circle.
 
 ## Every kind of node
 
-Grouped the way the Create menu groups them — Flow, Story,
-Value, Chance, Math and Logic, and the two ends of a macro. Each is described,
+Grouped the way the Create menu groups them — Flow, Story, Math, Logic, Lists,
+Maps, Entities, Value, Chance, and the two ends of a macro. Each is described,
 with what it takes and what it answers, on the [nodes
 reference](/reference/nodes/). The ones a story meets first: **Narration**
 for a passage, **Jump** for another board, **End** for where a path stops,
 **If** and **Switch** for branching, **Dice roller** for chance, **Component**
 for a character or an item, and **Script** for Python.
+
+**Lists** has four nodes: *Insert* (prepend, append, insert at an index, or
+replace at one; returns the whole list), *At* (a single item; a negative index
+counts from the end, so -1 is the last), *Remove* (by the same counting;
+returns the whole list, and an index out of range leaves it unchanged) and
+*Size* (how many, and whether there are none). Pointed at text they work a
+character at a time and return the kind that went in — appending `!` to `hi`
+gives `hi!`. An index out of range never stops the story, and *Size*'s `length`
+is what a For node's ceiling wants to walk a list.
+
+**Maps** has seven: *Get* (the value under a name, plus a `found` output),
+*Set* and *Remove* (each returns the whole map), *Keys* and *Values* (in the
+same order, so the first goes with the first), *Merge* (the second map wins on
+conflicts) and *Size*. An input that is not a map is treated as an empty map,
+so a *Set* with nothing wired to its subject makes a map of one pair and
+chained *Set*s build a map. A name that is not there never stops the story.
+
+**Entities** holds Component, Spawn, Entity Exists, Delete Entity and *Entity
+Names*, which answers every entity the story has made as a list of names, or
+only those of one component. Wire `names` into a *For* node with a *List at* to
+act on each one.
+
+**Every slot offers the same twenty-four types** — `int`, `float`, `bool`,
+`string`, `markdown`, a path to a file, a component and JSON, each alone, as a
+list, or as a map from names to it. That covers a macro's takes and answers, an
+Output node, an Input node, a Script node, a component's attributes and the
+console variables. Older files keep reading; the words `number` and `entity`
+left the menus but still show on a row that holds one until it is retyped. A
+slot gets the type it asked for: a script input declared `int` and wired `3.7`
+reads `3`, and a value that cannot be read as the type becomes that type's
+blank rather than stopping the story.
+
+**A slot can carry a default**, used when nothing fills it: macro takes, script
+inputs and outputs, Output node slots, a Macro Out's answers and the fields an
+Input node asks the reader for. A wired value, or one typed on the calling
+card, wins; a form's default is prefilled for the reader to accept or type over;
+a script output's default applies only where the program never set that name.
+
+**A slot that points at a file** — a picture, a document, a component — is
+filled by typing a name and picking from the project's files, with the full
+path beside each. The pick shows as a chip with its name; hover it for the
+path, which is still what is stored. A chip whose file is outside the project
+or missing is marked, so a file renamed behind the app's back is visible. On a
+card (a macro take, a Set variable node) the slot is a searchable dropdown
+instead, like the Narration node's passage picker.
 
 ## Macros
 
@@ -183,6 +293,9 @@ onto a board and a **Macro** card appears with a port per name, and a field
 beside every one it takes: wire it or type it, and the wire wins. Press play on
 the macro's own tab to read it on its own, with nothing wired in.
 
+A macro take can carry a default, which is used when the calling card wires
+nothing and types nothing.
+
 A macro is copied into whatever calls it when the campaign is compiled, so
 calling one twice is two independent copies — a *Once* gate inside a shop
 fires once per shop rather than once for the whole story — and a macro cannot
@@ -191,6 +304,10 @@ lists boards and a Macro card lists macros. A story can be paused inside one
 and picked up where it left off, and a line in the play window's
 [trace](/overviews/playing-a-campaign/#the-four-panels) about something inside
 a macro takes you to the card that called it.
+
+A route traced across boards goes inside the macros it calls: the passages a
+macro holds are drawn where the call is, so a shop or a skill check reused in
+several places appears on the route in each.
 
 ## Doing several things before a passage
 
@@ -207,7 +324,9 @@ Boards written before the port existed grow it the moment they open.
 
 FlipFlop, Once and State machine remember for the whole playthrough. Leaving
 the board and coming back, or saving and loading, does not reset them;
-starting over does. A saved game carries what they remember.
+starting over does. A saved game carries what they remember. A choice's
+limited-use count is remembered the same way, as described under
+[the canvas](#the-canvas).
 
 ## Where the story begins
 

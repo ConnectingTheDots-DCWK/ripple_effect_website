@@ -46,7 +46,8 @@ the top of each slope — drag it inward to make the ramp longer, back into the
 corner to take it off. An auto-loop clip shows the same shape on every
 repeat, because that is where it ramps. The two fields in the panel are still
 there when you want a ramp measured to the millisecond, and they say how long
-it lasts, not when it begins: a quarter-second fade reads `0.25 s`.
+it lasts, not when it begins: a quarter-second fade reads `0.25 s`, not
+`0:00.250`. A clock typed there is still understood.
 
 A clip whose two ramps together outlast it is allowed, and sounds the way it
 looks — it rises and falls without ever reaching full, because the two ramps
@@ -59,7 +60,7 @@ are taken at whichever is quieter rather than multiplied together.
 | **Playback** | *Once* — at its position on the first pass of the timeline and never again; *Loop* — on every pass of a looping timeline, cut where the timeline ends; *Auto-loop* — over and over for as long as the soundscape plays, with no regard for where the timeline ends, which is what music wants |
 | **Rest** | *Auto-loop* only: a silence between one play and the next. Off is gapless — a bed; on, a bell every so often, on its own rhythm across the whole soundscape, and the lane shows where every play will fall |
 | **Volume**, **Speed** | its own gain, relative to the timeline's, and its rate |
-| **Fade in**, **Fade out** | how long it ramps at either end of every play, in seconds — the same two ramps the grips on the block pull. An auto-loop ramps at every turn of its clip, rest or no rest, which is what lets a file that does not loop cleanly be used as a bed: the fade covers the seam |
+| **Fade in**, **Fade out** | how long it ramps at either end of every play, written as a length, `0.25 s` — the same two ramps the grips on the block pull. An auto-loop ramps at every turn of its clip, rest or no rest, which is what lets a file that does not loop cleanly be used as a bed: the fade covers the seam |
 
 **Lanes have names.** Double-click a lane's header to call it *Bed* or
 *Weather*; right-click one for the same and a **lock**, which is a lane that
@@ -70,7 +71,8 @@ fit the pane, the row height, undo and redo.
 
 The timeline's own six properties live behind the gear in the toolbar:
 **Length**; **Loop timeline**; **Fade in** and **Fade out**, over which the
-whole soundscape rises when it begins and falls when it is replaced;
+whole soundscape rises when it begins and falls when it is replaced, and
+which are written as lengths like a clip's;
 **Volume**, which every clip's is relative to; and **Tied to the passage**,
 below. A clip past the length is legal and shaded — the length is a field you
 may lengthen next, and what lies past it is cut at play time rather than

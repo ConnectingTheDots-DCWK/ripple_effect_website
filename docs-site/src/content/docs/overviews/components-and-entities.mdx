@@ -51,7 +51,8 @@ Paths in the file — the cover, a `list<asset>` item — are measured from the
 project root, so a folder can be renamed and a component dragged into it and
 every picture still points where it did. A component file is **format 3**: an
 older one is lifted when it is opened or moved, and a build that predates a
-format refuses a newer component rather than misreading it.
+format refuses a newer component rather than misreading it. An attribute
+whose type this build cannot name keeps whatever it arrived with.
 
 A cover picked from outside the project is copied into `.ripple/external/`
 first, so the file never records a path that only works on one machine.
@@ -65,13 +66,32 @@ about it on every open rather than once on the day the link was made.
 The editor is a form over this: a name, a cover, and a row per attribute with
 its type and its value. Rows reorder by drag.
 
+A slot that points at a file — an `asset` or `componentRef`
+attribute, or the items of a list of them — is filled by name: type, and pick
+from a list of the project's files with the full path beside each. The pick
+sits there as a chip with its name on it, and hovering shows the path. The file
+still stores the path, so nothing written before reads differently. A chip
+whose file is outside the project, or is not there at all, is marked, which is
+how a picture renamed behind the app's back stops being a silent hole in an
+export. A `markdown` attribute keeps its six-line editor when you touch the
+type menu.
+
+Every file in the project — pictures, videos, PDFs, notes — is indexed as soon
+as it is in the folder, not only the ones the app makes, so it can be offered
+in these lists. Dotted folders and files, and anything outside the project, are
+left out. What an export or a compiled campaign carries is still decided by
+what points at a file, so nothing extra ships; a list of files held by a
+component attribute is carried along with its paths rewritten, and a
+component written by a later version keeps its paths, in lists and maps both,
+when you open and save it.
+
 ## On a board
 
 Drag a `*.component.json` out of the file tree onto a board and it becomes a
 **Component** node with one typed output per attribute, plus one carrying the
 whole component as a map. The node has two modes, and it says which it is in:
 
-- **Reference** is a window onto the file. Outputs, and nothing else.
+- **Component** is a window onto the file. Outputs, and nothing else.
 - **Entity** makes the story a *thing*, keyed by the name on the node. Two
   nodes with two names are two independent swords; a node on a later board
   naming the same entity is the sword the first board made. Attribute inputs
@@ -81,7 +101,7 @@ whole component as a map. The node has two modes, and it says which it is in:
 A Component node whose name is wired from upstream makes one entity per name
 it is handed, so a loop forging a sword a turn forges a sword a turn.
 
-Three more nodes work on entities:
+Four more nodes work on entities, all under the **Entities** category of the node menu beside Component:
 
 - **Spawn** makes many at once. Point it at a component, say how many, and
   choose how they are told apart — numbers or letters, and what goes between.
@@ -96,6 +116,10 @@ Three more nodes work on entities:
   naming it later makes a fresh one.
 - **Entity Exists** answers whether the campaign still has one. Wire that into
   an If and the story decides for itself what a missing sword means.
+- **Entity Names** answers every entity the story has made, as a list of names
+  in alphabetical order, or only those made from one component. Wire `names`
+  into a For node with a List at node to do something to each one — the
+  goblins still standing two passages later, say — which used to need Python.
 
 ## In the campaign window
 

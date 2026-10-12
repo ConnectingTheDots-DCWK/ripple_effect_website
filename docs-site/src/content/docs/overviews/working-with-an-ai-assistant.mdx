@@ -19,12 +19,13 @@ Python can actually do, and playing the story.
 
 ## Off until you turn it on, in two steps
 
-The **Agents** panel opens from the robot button in the app bar, or from the
-palette. It has two switches, and both default to off:
+The **Agents** page is one of the pages of the Settings dialog — open it with
+the gear, which every screen carries, or from the palette. It has two
+switches, and both default to off:
 
-- **Agent access** — the server listens. An assistant can read the project and
+- **Let agents reach this app** — the server listens. An assistant can read the project and
   play it. Reading is useful on its own and cannot touch a thing.
-- **Agents may edit** — subordinate to the first, and off independently. An
+- **Let agents change files** — subordinate to the first, and off independently. An
   assistant can change files.
 
 The server is a private local channel that only your own account can open —
@@ -53,7 +54,7 @@ it, and the app answers for *this* build and *this* project: the node types
 `board_add_node` takes are an enum off the editor's own palette with the card
 names beside them, every `locale` argument names the languages the project is
 written in, `cvar` names the variables it declares, and a write tool says in
-its description when *Agents may edit* is off. The client is told the moment
+its description when the edit switch is off. The client is told the moment
 any of that changes — a project opened, a switch thrown, a language or a
 variable declared. A node's metadata reaches it too: `board_read` prints it
 as a `meta` line under the node, and `board_set_node` and `board_add_node`
@@ -85,11 +86,13 @@ and a Macro call with its ports already on the card; nodes removed or
 re-pointed; a soundscape laid out clip by clip, with each clip answered
 where it settled on the timeline; files moved or removed; and a way to write
 out work the app is still holding. The [MCP tools
-reference](/reference/mcp-tools/) lists every one.
+reference](/reference/mcp-tools/) lists every one; each tool's description
+ends with a link to its own page, and the Python tools and the node-building
+tools point at the Python API and the node catalog.
 
 Every write goes through the app's own sessions, so **adding a passage is a
 single undo**, autosave sees it, and version control lists it. Everything
-changed this session is listed in the agents panel, and every change is
+changed this session is listed on the Agents page, and every change is
 posted to Messages as it happens.
 
 {/* TODO(shots): <Shot name="agentConnected" /> */}
@@ -110,10 +113,22 @@ posted to Messages as it happens.
 
 ## Who is connected
 
-While a client is connected its mark appears in the app bar — Claude's,
+The app bar keeps only what has news, and the agents mark is one of those
+things. While a client is connected its mark appears there — Claude's,
 OpenAI's, Gemini's, or a plain robot for everything else — with the client's
-name and version on the tooltip, and pressing it opens the panel. Two or more
-stack.
+name and version on the tooltip, and pressing it opens the Agents page. If the
+local connection could not be opened, a plug in the error colour takes its
+place, with *Agents cannot reach this app* on the tooltip. With the switch off,
+or on and nobody there, the bar shows nothing; the page is behind the gear.
+Two or more connected clients are counted on the tooltip.
+
+## What the app writes down
+
+Every tool call, resource read and prompt a client makes leaves a line in the
+session log: which client, which tool, which argument *names* it passed, how
+long it took and whether it worked. Argument contents are never recorded — a
+path would be anonymised, and a passage you wrote would not be — so the log
+can say that an assistant wrote to a board but not what it wrote.
 
 ## Two prompts it can be handed
 
@@ -122,3 +137,9 @@ board you asked about already in it. They carry the two things an assistant
 gets wrong first: that Python in prose is monty rather than CPython, so an
 attribute is `component("X")["attr"]`, and that a node id is numbered across a
 whole board rather than per type.
+
+## For an assistant that reads the docs
+
+This documentation site publishes `llms.txt`, `llms-full.txt` and
+`llms-small.txt`, so an assistant can take the whole of it as one file;
+`llms.txt` and `llms-full.txt` are linked from the site's header.
