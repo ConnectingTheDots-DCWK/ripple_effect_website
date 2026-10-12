@@ -85,19 +85,19 @@
 		--muted-foreground: #99a0ae; /* onSurfaceVariant */
 		--border: #262a32; /* outlineVariant   */
 
-		/* Light accent, dark label — the direction the app's own dark scheme
-		   takes the seed. `--brand` is the mark's colour and stays put across
-		   modes; `--primary` is the legible derivative links and controls use. */
-		--brand: #6c7bf5;
-		--primary: #a8b1fa;
-		--primary-foreground: #14171c;
-		--ring: #a8b1fa;
+		/* The accent is the ink, as in the app since 1.5: a pale fill takes a
+		   dark label. `--brand` is the mark's colour, a token of its own;
+		   `--primary` is what links and controls use. Both are the ink. */
+		--brand: #e8eaef;
+		--primary: #e8eaef;
+		--primary-foreground: #0d0f13;
+		--ring: #e8eaef;
 
 		/* The glint's sweep. White in both modes, because a highlight is
 		   lighter than the thing it crosses; only how hard it has to be pushed
-		   changes. #a8b1fa is already pale, so 0.55 here against 0.4 on the
-		   light theme's indigo lands at a comparable step. */
-		--glint: rgb(255 255 255 / 0.55);
+		   changes. #e8eaef is nearly white already, so 0.85 here against 0.4
+		   on the light theme's ink is what registers at all. */
+		--glint: rgb(255 255 255 / 0.85);
 
 		--destructive: #cf4538; /* AppStatus.stop.dark    */
 		--go: #398358; /* AppStatus.go.dark      */
@@ -121,12 +121,11 @@
 		--muted-foreground: #5a6070; /* onSurfaceVariant */
 		--border: #dfe3eb; /* outlineVariant   */
 
-		/* White on the seed #6C7BF5 is 3.63:1; on this it is 5.63:1, which is
-		   why the seed is never the thing text sits on. */
-		--brand: #6c7bf5;
-		--primary: #4a57e0;
+		/* The ink. White on it is 18:1. */
+		--brand: #15171c;
+		--primary: #15171c;
 		--primary-foreground: #ffffff;
-		--ring: #4a57e0;
+		--ring: #15171c;
 		--glint: rgb(255 255 255 / 0.4);
 
 		--destructive: #c0392b; /* AppStatus.stop.light    */

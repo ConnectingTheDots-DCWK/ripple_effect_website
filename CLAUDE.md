@@ -90,8 +90,8 @@ both of them *the one thing on the page you are meant to look at*, which is
 the same job the app's "one accent-filled action per view" rule does. It is
 still a gradient. It is allowed here because a marketing page has to catch an
 eye once, where a tool people work in for hours must not; `--brand-from` and
-`--brand-to` are both the brand hue so it reads as a highlight moving over an
-edge rather than as a second colour arriving. **Two instances is the budget.**
+`--brand-to` are a grey ramp off the ink so it reads as a highlight moving
+over an edge rather than as a colour arriving. **Two instances is the budget.**
 A third would make it decoration, and the reason above would stop being true.
 
 **Everything else that moves is listed here, and each is allowed for a
@@ -154,17 +154,16 @@ owns `shimmer-once`, `-reverse`, `-none`, `-color-*`, `-duration-*`,
 
 **The glint is white in both modes and the *alpha* is the token.** velora's
 `ShimmerButton` sweeps a hardcoded `rgba(255,255,255,0.35)`, tuned for one dark
-button. Light mode's `--primary` is `#4a57e0`, where `0.4` white lands at
-`#929aec` — a long step. Dark mode's is `#a8b1fa`, already pale, so the same
-alpha barely registers and it takes `0.55` to reach `#d8dcfd`, a comparable
-step. Same colour, different push.
+button. Light mode's `--primary` is the ink, `#15171c`, where `0.4` white
+lands at `#737476` — a long step. Dark mode's is `#e8eaef`, nearly white
+already, so the same alpha does not register and it takes `0.85`. Same
+colour, different push.
 
 **Inverting it in dark mode was tried and is wrong, which is worth recording
 because the argument for it sounds right.** The reasoning was that a pale
-lavender has no headroom above it, so the sweep should darken instead. The
-arithmetic disagrees — white still moves `#a8b1fa` by about fifty points of red
-— and more to the point, a dark band travelling across a light button does not
-read as a highlight. It reads as a smudge, which is what it was called the
+button has no headroom above it, so the sweep should darken instead. It was
+tried on the old lavender `--primary`, and a dark band travelling across a
+light button does not read as a highlight. It reads as a smudge, which is what it was called the
 first time somebody looked at it. **A glint is lighter than the thing it
 crosses, in both themes.**
 
@@ -317,8 +316,10 @@ the two would disagree the day 1.1 ships.
 
 **`--premium` is the paid tier's accent, and it is the one token here that is
 not the app's.** The app has no paid surface yet, so there is nothing to
-transcribe; the colour was chosen for the site — the complement of the
-brand's indigo, kept olive-gold rather than amber so nobody reads it as
+transcribe; the colour was chosen for the site — as the complement of the
+indigo the brand was until 1.5, and kept when the rest went monochrome, so it
+is now the one hue on the site that is not a status — olive-gold rather than
+amber so nobody reads it as
 `--caution`, which sits two doors down the hue circle — and measured the way
 the others were: `#8a6512` light is 4.87:1 on the page and carries white at
 5.32:1, `#e3c06a` dark is 10.97:1 and carries ink, the brand foreground's own
@@ -328,10 +329,12 @@ wears, the roadmap chip of a paywalled release. A gold thing on this site
 means "this is about the paid tier", and the meaning only holds while nothing
 else borrows it for emphasis.
 
-`--brand` is the seed, `#6C7BF5`, and it is the **mark's** colour. `--primary`
-is a legible derivative — `#4A57E0` light, `#A8B1FA` dark — because white on
-the seed is 3.63:1. That is not a departure from the app: `ColorScheme.fromSeed`
-means the app's `primary` is not the seed either.
+**The accent is the ink, as in the app since 1.5.** `--primary` and `--ring`
+are `#15171c` light and `#e8eaef` dark — the app's `onSurface`, which is what
+its `primary` now is — and `--brand`, the **mark's** colour, is the same ink.
+It stays a token of its own so the mark can move without moving every
+control. Until 1.5 it was the periwinkle seed `#6C7BF5`, with `--primary` a
+legible indigo derived from it.
 
 The radius scale is `AppRadius` — 8 / 12 / 16 / 24 — overriding the template's
 multipliers off `0.625rem`, which landed on none of them.
@@ -734,11 +737,11 @@ breaks.**
 It wears a full-width brand gradient, which nothing else on the site does. An
 announcement's whole job is to be noticed once, and what keeps that honest is
 that it is transient by construction rather than by discipline: three days
-after a release it stops rendering on its own. **`--brand-foreground` is
-`#14171c` in *both* themes**, which looks like a copy-paste error and is not —
-the gradient is light lavender either way, so white on it is 3.63:1 at the
-darkest stop and 2.3:1 at the lightest, which is not text. A foreground that
-followed the theme would be wrong in one of them.
+after a release it stops rendering on its own. **`--brand-foreground`
+follows the theme**, because the gradient does: a dark grey ramp under white
+in light mode (18:1 to 6.3:1), a pale one under `#0d0f13` in dark (15.9:1 to
+7.3:1). Until 1.5 the gradient was light lavender in both and the foreground
+was one ink in both.
 
 ## The tool list is transcribed, not summarised
 
@@ -797,12 +800,14 @@ exactly one colour. There is no `grayscale()` in front — the blend already
 discards the source's colour, and a filter would cost a raster pass to change
 nothing. The alternative was an SVG `feColorMatrix` duotone, which is more
 precise and would have meant a hand-written matrix per theme, recomputed by
-hand every time the seed moved. This one follows the token.
+hand every time the token moved. This one follows the token — which is why,
+when `--brand` became the ink in 1.5, the painting became greyscale with no
+change here.
 
-It tints to **`--brand`, not `--primary`**. Everywhere else on the site that
-rule runs the other way, because `--primary` is the *legible* derivative and
-almost everything else is text or a control. Nothing here has to be legible;
-it is the identity hue doing the one job it is actually for.
+It tints to **`--brand`, not `--primary`**. The two are the same ink today,
+but they are different promises: `--primary` is what text and controls are
+drawn in, and `--brand` is the identity, which is what a picture of the
+product's world is tinted to.
 
 **`isolate` on the wrapper is load-bearing.** A blend mode composites against
 everything beneath it in its stacking context, which without isolation is the
@@ -813,7 +818,7 @@ and braces — but it is what records the intent.
 the first guess. The painting is high key: most of its area is bright sky. On
 the dark ground that reads as a glow and takes `0.18`. On the near-white light
 ground the *dark* parts are what show, against almost nothing, so the same
-value turns the top of the page lavender; light gets `0.10`.
+value turns the top of the page grey; light gets `0.10`.
 
 The fade is a `mask-image`, not a gradient overlay. An overlay would have to
 be painted in `--background`, and would then be a rectangle of the wrong
