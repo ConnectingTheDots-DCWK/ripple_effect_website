@@ -1,2 +1,10 @@
 public/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text
 docs-site/src/assets/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text
+
+# The published agreements, checked out byte for byte on every platform.
+# Their sha256 is what legal/manifest.json freezes and what the app's
+# legal:check compares, and a Windows checkout turned their LF into CRLF:
+# every digest failed there, and `sha256sum` run on one to freeze a version
+# would have recorded bytes nobody published. `-text` stops the conversion;
+# `diff` keeps them reading as text. These files are LF in the repository.
+legal/en/** -text diff
