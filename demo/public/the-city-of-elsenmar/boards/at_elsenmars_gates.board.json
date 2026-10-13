@@ -1,0 +1,2262 @@
+{
+  "id": "28cfc98736b002ca109e9581b29985df",
+  "name": "at_elsenmars_gates",
+  "start": 36,
+  "prime": [
+    37,
+    38
+  ],
+  "nodes": [
+    {
+      "id": "component_1",
+      "type": "component",
+      "title": "adventurer",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 39,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data"
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        },
+        {
+          "id": "set.Last round",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data",
+          "to": [
+            {
+              "node": 21,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data",
+          "to": [
+            {
+              "node": 16,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "attr.Last round",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "component": 0,
+        "materialise": true,
+        "instance": "You",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour",
+          "Last round"
+        ]
+      }
+    },
+    {
+      "id": "component_2",
+      "type": "component",
+      "title": "guard",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 0,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data"
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 35,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data",
+          "to": [
+            {
+              "node": 20,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data",
+          "to": [
+            {
+              "node": 15,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "data": {
+        "component": 1,
+        "materialise": true,
+        "instance": "Captain of the Watch",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour"
+        ]
+      }
+    },
+    {
+      "id": "component_28",
+      "type": "component",
+      "title": "guard",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 10,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data",
+          "from": [
+            {
+              "node": 20,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 11,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "component": 1,
+        "materialise": true,
+        "instance": "Captain of the Watch",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour"
+        ]
+      }
+    },
+    {
+      "id": "component_29",
+      "type": "component",
+      "title": "adventurer",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 11,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data",
+          "from": [
+            {
+              "node": 21,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        },
+        {
+          "id": "set.Last round",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Last round",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "component": 0,
+        "materialise": true,
+        "instance": "You",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour",
+          "Last round"
+        ]
+      }
+    },
+    {
+      "id": "component_30",
+      "type": "component",
+      "title": "adventurer",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 11,
+              "port": 1
+            },
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data"
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        },
+        {
+          "id": "set.Last round",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 5,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data",
+          "to": [
+            {
+              "node": 6,
+              "port": 5
+            },
+            {
+              "node": 18,
+              "port": 1
+            },
+            {
+              "node": 19,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Last round",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "component": 0,
+        "materialise": true,
+        "instance": "You",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour",
+          "Last round"
+        ]
+      }
+    },
+    {
+      "id": "component_31",
+      "type": "component",
+      "title": "guard",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "instance",
+          "kind": "data"
+        },
+        {
+          "id": "set.HP",
+          "kind": "data"
+        },
+        {
+          "id": "set.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "set.Armour",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 6,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "kind": "data"
+        },
+        {
+          "id": "attr.HP",
+          "kind": "data",
+          "to": [
+            {
+              "node": 6,
+              "port": 6
+            },
+            {
+              "node": 17,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "attr.Attack bonus",
+          "kind": "data"
+        },
+        {
+          "id": "attr.Armour",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "component": 1,
+        "materialise": true,
+        "instance": "Captain of the Watch",
+        "attributes": [
+          "HP",
+          "Attack bonus",
+          "Armour"
+        ]
+      }
+    },
+    {
+      "id": "display_43",
+      "type": "display",
+      "title": "The exchange",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 5,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "in.Your roll",
+          "kind": "data",
+          "from": [
+            {
+              "node": 35,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "in.Your damage",
+          "kind": "data",
+          "from": [
+            {
+              "node": 32,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "in.Captain roll",
+          "kind": "data",
+          "from": [
+            {
+              "node": 33,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "in.Captain damage",
+          "kind": "data",
+          "from": [
+            {
+              "node": 34,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "in.Your HP",
+          "kind": "data",
+          "from": [
+            {
+              "node": 4,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "in.Captain HP",
+          "kind": "data",
+          "from": [
+            {
+              "node": 5,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 17,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "inputs": [
+          "Your roll",
+          "Your damage",
+          "Captain roll",
+          "Captain damage",
+          "Your HP",
+          "Captain HP"
+        ],
+        "inputTypes": {
+          "Your roll": "number",
+          "Your damage": "number",
+          "Captain roll": "number",
+          "Captain damage": "number",
+          "Your HP": "number",
+          "Captain HP": "number"
+        }
+      }
+    },
+    {
+      "id": "end_47",
+      "type": "end",
+      "title": "Dead at the gates of Elsenmar",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 28,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [],
+      "data": {}
+    },
+    {
+      "id": "flow.if_23",
+      "type": "flow.if",
+      "title": "Captain down?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 18,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "condition",
+          "kind": "data",
+          "from": [
+            {
+              "node": 17,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "trueBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 39,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "falseBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 12,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "flow.if_27",
+      "type": "flow.if",
+      "title": "Still standing?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 19,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "condition",
+          "kind": "data",
+          "from": [
+            {
+              "node": 19,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "trueBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 29,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "falseBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 28,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "flow.if_39",
+      "type": "flow.if",
+      "title": "Hit?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 21,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "condition",
+          "kind": "data",
+          "from": [
+            {
+              "node": 15,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "trueBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 2,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "falseBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 11,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "flow.if_40",
+      "type": "flow.if",
+      "title": "Cut?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 10,
+              "port": 1
+            },
+            {
+              "node": 2,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "condition",
+          "kind": "data",
+          "from": [
+            {
+              "node": 16,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "trueBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "falseBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "flow.if_41",
+      "type": "flow.if",
+      "title": "You down?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 8,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "condition",
+          "kind": "data",
+          "from": [
+            {
+              "node": 18,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "trueBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 39,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "falseBranch",
+          "kind": "control",
+          "to": [
+            {
+              "node": 39,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "jump_0",
+      "type": "jump",
+      "title": "Seek shelter",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 24,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [],
+      "data": {
+        "board": 1,
+        "node": null
+      }
+    },
+    {
+      "id": "jump_13",
+      "type": "jump",
+      "title": "Wanted in Elsenmar",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 26,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [],
+      "data": {
+        "board": 2,
+        "node": null
+      }
+    },
+    {
+      "id": "logic.comparator_32",
+      "type": "logic.comparator",
+      "title": "Your blade lands?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 34,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 35,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 1,
+              "port": 4
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 20,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 10,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "comparator": "greaterEqual"
+      }
+    },
+    {
+      "id": "logic.comparator_33",
+      "type": "logic.comparator",
+      "title": "His blade lands?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 20,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 33,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 0,
+              "port": 4
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 21,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 11,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "comparator": "greaterEqual"
+      }
+    },
+    {
+      "id": "logic.comparator_34",
+      "type": "logic.comparator",
+      "title": "Captain out of HP?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 6,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 5,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 38,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 18,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 8,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "comparator": "lessEqual"
+      }
+    },
+    {
+      "id": "logic.comparator_35",
+      "type": "logic.comparator",
+      "title": "You out of HP?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 17,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 4,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 38,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 8,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 12,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "comparator": "lessEqual"
+      }
+    },
+    {
+      "id": "logic.comparator_36",
+      "type": "logic.comparator",
+      "title": "Still on your feet?",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 39,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 4,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 38,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 9,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 9,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "comparator": "greater"
+      }
+    },
+    {
+      "id": "math.operator_37",
+      "type": "math.operator",
+      "title": "Captain's HP minus your damage",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 15,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 1,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 32,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 16,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 2,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "data": {
+        "operation": "subtract"
+      }
+    },
+    {
+      "id": "math.operator_38",
+      "type": "math.operator",
+      "title": "Your HP minus his damage",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 16,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "kind": "data",
+          "from": [
+            {
+              "node": 0,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "kind": "data",
+          "from": [
+            {
+              "node": 34,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 10,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "kind": "data",
+          "to": [
+            {
+              "node": 3,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "data": {
+        "operation": "subtract"
+      }
+    },
+    {
+      "id": "narration_0",
+      "type": "narration",
+      "title": "Closing an eye? Maybe two?",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 25,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 31,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 0,
+        "choices": {
+          "choice_0": {
+            "en-US": "Count out thirty and look sorry about it",
+            "it-IT": "Count out thirty and look sorry about it"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_1",
+      "type": "narration",
+      "title": "Up for some parkour?",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 25,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 31,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 8,
+        "choices": {
+          "choice_0": {
+            "en-US": "Trust the gutter",
+            "it-IT": "Trust the gutter"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_12",
+      "type": "narration",
+      "title": "Path of least resistance",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 31,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 13,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 4,
+        "choices": {
+          "choice_0": {
+            "en-US": "Follow her",
+            "it-IT": "Follow her"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_2",
+      "type": "narration",
+      "title": "Reaching Elsenmar's gates",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 36,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 23,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "choice_1",
+          "kind": "control",
+          "to": [
+            {
+              "node": 22,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "choice_2",
+          "kind": "control",
+          "to": [
+            {
+              "node": 27,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 5,
+        "soundscape": 1,
+        "choices": {
+          "choice_0": {
+            "en-US": "Climb over the wall",
+            "it-IT": "Climb over the wall"
+          },
+          "choice_1": {
+            "en-US": "Bribe the guards",
+            "it-IT": "Bribe the guards"
+          },
+          "choice_2": {
+            "en-US": "Kill the guards",
+            "it-IT": "Kill the guards"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_3",
+      "type": "narration",
+      "title": "Victorious... but at a price",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 30,
+              "port": 0
+            },
+            {
+              "node": 29,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 14,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 9,
+        "choices": {
+          "choice_0": {
+            "en-US": "Find a doorway and wait for morning",
+            "it-IT": "Find a doorway and wait for morning"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_4",
+      "type": "narration",
+      "title": "There will be blood",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 25,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_1",
+          "kind": "control",
+          "to": [
+            {
+              "node": 30,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "choice_2",
+          "kind": "control",
+          "to": [
+            {
+              "node": 39,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 7,
+        "soundscape": 0,
+        "choices": {
+          "choice_1": {
+            "en-US": "Go for the winch",
+            "it-IT": "Go for the winch"
+          },
+          "choice_2": {
+            "en-US": "Take the captain first",
+            "it-IT": "Take the captain first"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_45",
+      "type": "narration",
+      "title": "Cut down at the gate",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 9,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 7,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 1,
+        "silence": true,
+        "choices": {
+          "choice_0": {
+            "en-US": "Let go",
+            "it-IT": "Let go"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_5",
+      "type": "narration",
+      "title": "The captain first",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 9,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 26,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 6,
+        "choices": {
+          "choice_0": {
+            "en-US": "Walk in before the watch arrives",
+            "it-IT": "Walk in before the watch arrives"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_6",
+      "type": "narration",
+      "title": "Drop the gate",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 27,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "when.choice_0",
+          "kind": "data",
+          "from": [
+            {
+              "node": 37,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 26,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 2,
+        "choices": {
+          "choice_0": {
+            "en-US": "Climb down the inside",
+            "it-IT": "Climb down the inside"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_8",
+      "type": "narration",
+      "title": "Inside the walls",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 23,
+              "port": 0
+            },
+            {
+              "node": 22,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 24,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 3,
+        "choices": {
+          "choice_0": {
+            "en-US": "Keep to the back streets",
+            "it-IT": "Keep to the back streets"
+          }
+        }
+      }
+    },
+    {
+      "id": "random.dice_13",
+      "type": "random.dice",
+      "title": "Your damage",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 35,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "notation",
+          "kind": "data"
+        },
+        {
+          "id": "count",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 33,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "total",
+          "kind": "data",
+          "to": [
+            {
+              "node": 20,
+              "port": 2
+            },
+            {
+              "node": 6,
+              "port": 2
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "data"
+        },
+        {
+          "id": "dice",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalHit",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalFailure",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "notation": "1d8+3",
+        "count": 1
+      }
+    },
+    {
+      "id": "random.dice_15",
+      "type": "random.dice",
+      "title": "The captain's attack",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 32,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "notation",
+          "kind": "data"
+        },
+        {
+          "id": "count",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 34,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "total",
+          "kind": "data",
+          "to": [
+            {
+              "node": 16,
+              "port": 1
+            },
+            {
+              "node": 6,
+              "port": 3
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "data"
+        },
+        {
+          "id": "dice",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalHit",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalFailure",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "notation": "1d20+4",
+        "count": 1
+      }
+    },
+    {
+      "id": "random.dice_17",
+      "type": "random.dice",
+      "title": "The captain's damage",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 33,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "notation",
+          "kind": "data"
+        },
+        {
+          "id": "count",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 15,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "total",
+          "kind": "data",
+          "to": [
+            {
+              "node": 21,
+              "port": 2
+            },
+            {
+              "node": 6,
+              "port": 4
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "data"
+        },
+        {
+          "id": "dice",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalHit",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalFailure",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "notation": "1d6+2",
+        "count": 1
+      }
+    },
+    {
+      "id": "random.dice_4",
+      "type": "random.dice",
+      "title": "Your attack",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control",
+          "from": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "notation",
+          "kind": "data"
+        },
+        {
+          "id": "count",
+          "kind": "data"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control",
+          "to": [
+            {
+              "node": 32,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "total",
+          "kind": "data",
+          "to": [
+            {
+              "node": 15,
+              "port": 1
+            },
+            {
+              "node": 6,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "data"
+        },
+        {
+          "id": "dice",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalHit",
+          "kind": "data"
+        },
+        {
+          "id": "isCriticalFailure",
+          "kind": "data"
+        }
+      ],
+      "data": {
+        "notation": "1d20+5",
+        "count": 1
+      }
+    },
+    {
+      "id": "start_0",
+      "type": "start",
+      "title": "Start",
+      "in": [],
+      "out": [
+        {
+          "id": "out",
+          "kind": "control",
+          "to": [
+            {
+              "node": 25,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    },
+    {
+      "id": "value.bool_0",
+      "type": "value.bool",
+      "title": "bool",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control"
+        },
+        {
+          "id": "value",
+          "kind": "data",
+          "to": [
+            {
+              "node": 30,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "data": {
+        "value": false
+      }
+    },
+    {
+      "id": "value.number_42",
+      "type": "value.number",
+      "title": "Nothing left",
+      "in": [
+        {
+          "id": "exec",
+          "kind": "control"
+        }
+      ],
+      "out": [
+        {
+          "id": "completed",
+          "kind": "control"
+        },
+        {
+          "id": "value",
+          "kind": "data",
+          "to": [
+            {
+              "node": 17,
+              "port": 2
+            },
+            {
+              "node": 18,
+              "port": 2
+            },
+            {
+              "node": 19,
+              "port": 2
+            }
+          ]
+        }
+      ],
+      "data": {
+        "value": 0
+      }
+    },
+    {
+      "id": "while_3",
+      "type": "while",
+      "title": "Fight",
+      "in": [
+        {
+          "id": "continue",
+          "kind": "control",
+          "from": [
+            {
+              "node": 27,
+              "port": 1
+            },
+            {
+              "node": 12,
+              "port": 1
+            }
+          ]
+        },
+        {
+          "id": "break",
+          "kind": "control",
+          "from": [
+            {
+              "node": 8,
+              "port": 0
+            },
+            {
+              "node": 12,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "loop",
+          "kind": "control",
+          "to": [
+            {
+              "node": 0,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "exit",
+          "kind": "control",
+          "to": [
+            {
+              "node": 19,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "iteration",
+          "kind": "data"
+        }
+      ],
+      "data": {}
+    }
+  ]
+}

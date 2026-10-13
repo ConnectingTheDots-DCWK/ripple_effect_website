@@ -8,3 +8,4 @@ docs-site/src/assets/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text
 # would have recorded bytes nobody published. `-text` stops the conversion;
 # `diff` keeps them reading as text. These files are LF in the repository.
 legal/en/** -text diff
+demo/public/*/media/** filter=lfs diff=lfs merge=lfs -text

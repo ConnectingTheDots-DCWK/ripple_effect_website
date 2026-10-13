@@ -1,0 +1,27 @@
+{
+  "id": "bb4000d1627722ff58dd1cd86c0f5989",
+  "name": "adventurer",
+  "cover": 0,
+  "attributes": [
+    {
+      "label": "HP",
+      "type": "int",
+      "value": 24
+    },
+    {
+      "label": "Attack bonus",
+      "type": "int",
+      "value": 5
+    },
+    {
+      "label": "Armour",
+      "type": "int",
+      "value": 14
+    },
+    {
+      "label": "Last round",
+      "type": "string",
+      "value": ""
+    }
+  ]
+}

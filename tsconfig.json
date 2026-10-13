@@ -37,5 +37,5 @@
   // a Starlight plugin's own regexes, none of which this project can act on.
   // `eslint.config.mjs` ignores the same two directories for the same reason,
   // and neither tool stops at a directory boundary on its own.
-  "exclude": ["node_modules", "docs-site", "legal"]
+  "exclude": ["node_modules", "docs-site", "legal", "demo"]
 }

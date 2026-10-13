@@ -1,0 +1,12 @@
+# This file's first job is to be *here*, for the reason docs-site/'s gives:
+# pnpm takes the nearest workspace root, and without this one an install in
+# `demo/` would be an install into the landing page's. Its own lockfile, its
+# own Vercel project, nothing shared.
+#
+# Its second is to let our own packages through pnpm's release-age gate, which
+# holds back a version for a day after it is published. The gate is against
+# somebody else's compromised release; `@ripplefx/*` is ours, published from
+# ripple_effect_js_ts_integration, and the demo is where a new one is first
+# played in public.
+minimumReleaseAgeExclude:
+  - '@ripplefx/*'

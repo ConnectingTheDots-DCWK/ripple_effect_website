@@ -1,0 +1,38 @@
+{
+  "id": "3d5b8e5a920e68fa4747de6efc240a73",
+  "name": "tavern",
+  "length": 158800,
+  "loop": false,
+  "fadeIn": 0,
+  "fadeOut": 0,
+  "volume": 1.0,
+  "tied": false,
+  "tracks": [
+    {
+      "media": 8,
+      "lane": 0,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 0.6002237455263991,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "once",
+      "interval": 0
+    },
+    {
+      "media": 11,
+      "lane": 1,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 0.9013749661537838,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "auto",
+      "interval": 0
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "9734720f7623d56bc107d89c48154ea0",
+  "name": "watch",
+  "length": 187200,
+  "loop": false,
+  "fadeIn": 0,
+  "fadeOut": 0,
+  "volume": 1.0,
+  "tied": false,
+  "tracks": [
+    {
+      "media": 5,
+      "lane": 0,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 1.0,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "once",
+      "interval": 0
+    },
+    {
+      "media": 9,
+      "lane": 1,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 1.0,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "auto",
+      "interval": 30000
+    },
+    {
+      "media": 10,
+      "lane": 2,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 1.0,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "auto",
+      "interval": 0
+    }
+  ]
+}

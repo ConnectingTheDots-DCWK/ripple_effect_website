@@ -1,0 +1,240 @@
+{
+  "format": 15,
+  "contract": "1.5",
+  "generator": "ripple_effect demo",
+  "project": {
+    "title": "The City Of Elsenmar",
+    "description": "An example project to showcase Ripple Effect's latest version's features and to act as a reference for newcomers.",
+    "defaultLocale": "en-US",
+    "locales": [
+      "en-US",
+      "it-IT"
+    ],
+    "cover": "media/images/cover.jpg"
+  },
+  "entries": [
+    0
+  ],
+  "boards": [
+    {
+      "id": "28cfc98736b002ca109e9581b29985df",
+      "name": "at_elsenmars_gates",
+      "path": "boards/at_elsenmars_gates.board.json"
+    },
+    {
+      "id": "2286d746ff09b7d0158036ae99448153",
+      "name": "seeking_shelter",
+      "path": "boards/seeking_shelter.board.json"
+    },
+    {
+      "id": "82fbc03e21e0c79f31f279a636350c57",
+      "name": "wanted_in_elsenmar",
+      "path": "boards/wanted_in_elsenmar.board.json"
+    }
+  ],
+  "passages": [
+    {
+      "id": "ab6f70e7a3fabb75c6bfb67e36d47d4a",
+      "name": "at-elsenmars-gates-closing-an-eye-maybe-two",
+      "path": "passages/at-elsenmars-gates-closing-an-eye-maybe-two.passage.json"
+    },
+    {
+      "id": "63dab35a6bb8c656de87730fb02b5e5b",
+      "name": "at-elsenmars-gates-cut-down-at-the-gate",
+      "path": "passages/at-elsenmars-gates-cut-down-at-the-gate.passage.json"
+    },
+    {
+      "id": "8afd02783f8dd01d2b534f022daa82ef",
+      "name": "at-elsenmars-gates-drop-the-gate",
+      "path": "passages/at-elsenmars-gates-drop-the-gate.passage.json"
+    },
+    {
+      "id": "0338422c0fc21c1300168f6096234896",
+      "name": "at-elsenmars-gates-inside-the-walls",
+      "path": "passages/at-elsenmars-gates-inside-the-walls.passage.json"
+    },
+    {
+      "id": "3cbce08dd29b3549a81bce1ffe5f7b1e",
+      "name": "at-elsenmars-gates-path-of-least-resistance",
+      "path": "passages/at-elsenmars-gates-path-of-least-resistance.passage.json"
+    },
+    {
+      "id": "6148777e6d7a6fd3b724480a963e5720",
+      "name": "at-elsenmars-gates-reaching-elsenmar-s-gates",
+      "path": "passages/at-elsenmars-gates-reaching-elsenmar-s-gates.passage.json"
+    },
+    {
+      "id": "933ed0714d3629f8ce7a4a8b6aee0c30",
+      "name": "at-elsenmars-gates-the-captain-first",
+      "path": "passages/at-elsenmars-gates-the-captain-first.passage.json"
+    },
+    {
+      "id": "7912c291b868a50239b74e42d6d73eaa",
+      "name": "at-elsenmars-gates-there-will-be-blood",
+      "path": "passages/at-elsenmars-gates-there-will-be-blood.passage.json"
+    },
+    {
+      "id": "c71ad890606505dda4dd3df1bd4c4c92",
+      "name": "at-elsenmars-gates-up-for-some-parkour",
+      "path": "passages/at-elsenmars-gates-up-for-some-parkour.passage.json"
+    },
+    {
+      "id": "9c8fbb94983abe323df3c069d6f75fcd",
+      "name": "at-elsenmars-gates-victorious-but-at-a-price",
+      "path": "passages/at-elsenmars-gates-victorious-but-at-a-price.passage.json"
+    },
+    {
+      "id": "ee968da5b159fa95637cd599d9529d34",
+      "name": "seeking-shelter-a-bed-of-a-kind",
+      "path": "passages/seeking-shelter-a-bed-of-a-kind.passage.json"
+    },
+    {
+      "id": "f179c630f567a3519f740f2b13dd9405",
+      "name": "seeking-shelter-rain-on-the-ninth-bell",
+      "path": "passages/seeking-shelter-rain-on-the-ninth-bell.passage.json"
+    },
+    {
+      "id": "513e7dbe55813a5156794995d5a4a92c",
+      "name": "seeking-shelter-sermon-and-straw",
+      "path": "passages/seeking-shelter-sermon-and-straw.passage.json"
+    },
+    {
+      "id": "5ce16d40dd7de99fe26f03fbb63bcda5",
+      "name": "seeking-shelter-the-salt-cask",
+      "path": "passages/seeking-shelter-the-salt-cask.passage.json"
+    },
+    {
+      "id": "1d0a36e38de4bf9d8c78423c2261bc5a",
+      "name": "wanted-in-elsenmar-a-handful-of-paper",
+      "path": "passages/wanted-in-elsenmar-a-handful-of-paper.passage.json"
+    },
+    {
+      "id": "885186ee47b7ea8353c9f0830d6719c2",
+      "name": "wanted-in-elsenmar-let-it-stand",
+      "path": "passages/wanted-in-elsenmar-let-it-stand.passage.json"
+    },
+    {
+      "id": "43f5cc8d9ac63667bdf5b7a58bb790f9",
+      "name": "wanted-in-elsenmar-the-face-on-the-notice copy",
+      "path": "passages/wanted-in-elsenmar-the-face-on-the-notice-copy.passage.json"
+    },
+    {
+      "id": "0aea2ee4a7a64312c7a33f9d789d3567",
+      "name": "wanted-in-elsenmar-the-face-on-the-notice",
+      "path": "passages/wanted-in-elsenmar-the-face-on-the-notice.passage.json"
+    }
+  ],
+  "components": [
+    {
+      "id": "bb4000d1627722ff58dd1cd86c0f5989",
+      "name": "adventurer",
+      "path": "components/adventurer.component.json"
+    },
+    {
+      "id": "58e9e443c34772e594a2d437f8d5e641",
+      "name": "guard",
+      "path": "components/guard.component.json"
+    },
+    {
+      "id": "cd991ff994d30f1f88b9b589bdfcd05f",
+      "name": "sword",
+      "path": "components/sword.component.json"
+    }
+  ],
+  "scripts": [],
+  "media": [
+    {
+      "id": "84b8563a7ea7f2e13ea532d6c68ebfa2",
+      "name": "adventurer.jpg",
+      "path": "media/images/adventurer.jpg"
+    },
+    {
+      "id": "3997eb92d61576f878e93c464b479635",
+      "name": "cover.jpg",
+      "path": "media/images/cover.jpg"
+    },
+    {
+      "id": "dab514b1fb342f15698bc920d408cc76",
+      "name": "guard.jpg",
+      "path": "media/images/guard.jpg"
+    },
+    {
+      "id": "a8883df9527873c3c6b726c1cf1910e9",
+      "name": "sword.jpg",
+      "path": "media/images/sword.jpg"
+    },
+    {
+      "id": "d31b10ccffd68da57fa916fba9e0fb4d",
+      "name": "tavern.jpg",
+      "path": "media/images/tavern.jpg"
+    },
+    {
+      "id": "f9c6fb682d88a0cc047082a76ef5feef",
+      "name": "Dorian Watch.mp3",
+      "path": "media/music/Dorian Watch.mp3"
+    },
+    {
+      "id": "94ca2a70187b7038a43ea5fb7b11550d",
+      "name": "Stone Archway Struggle.mp3",
+      "path": "media/music/Stone Archway Struggle.mp3"
+    },
+    {
+      "id": "01a305793a5d8e4b7502905f8d2ceb13",
+      "name": "The Gate Holds.mp3",
+      "path": "media/music/The Gate Holds.mp3"
+    },
+    {
+      "id": "1866c6e8cd512f714143eb3259395433",
+      "name": "The Jig Outside.mp3",
+      "path": "media/music/The Jig Outside.mp3"
+    },
+    {
+      "id": "98844f64d0e625ec8713da8579ddbec6",
+      "name": "church_bell.mp3",
+      "path": "media/sfx/church_bell.mp3"
+    },
+    {
+      "id": "76972afdba64b255695834ed429c549d",
+      "name": "rain.mp3",
+      "path": "media/sfx/rain.mp3"
+    },
+    {
+      "id": "4048c666e72787f426ceaf8b1ebe64be",
+      "name": "tavern_chatter.mp3",
+      "path": "media/sfx/tavern_chatter.mp3"
+    }
+  ],
+  "machines": [],
+  "cvars": [
+    {
+      "name": "gate_open",
+      "type": "int",
+      "default": 0
+    }
+  ],
+  "soundscapes": [
+    {
+      "id": "d7de6855597371fc5264b3ed90aa94ed",
+      "name": "combat",
+      "path": "soundscapes/combat.soundscape.json"
+    },
+    {
+      "id": "31b9951d506422c5cae69d8887498471",
+      "name": "gates",
+      "path": "soundscapes/gates.soundscape.json"
+    },
+    {
+      "id": "3d5b8e5a920e68fa4747de6efc240a73",
+      "name": "tavern",
+      "path": "soundscapes/tavern.soundscape.json"
+    },
+    {
+      "id": "9734720f7623d56bc107d89c48154ea0",
+      "name": "watch",
+      "path": "soundscapes/watch.soundscape.json"
+    }
+  ],
+  "needs": [
+    "python"
+  ]
+}

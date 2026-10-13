@@ -1,0 +1,22 @@
+{
+  "id": "58e9e443c34772e594a2d437f8d5e641",
+  "name": "guard",
+  "cover": 2,
+  "attributes": [
+    {
+      "label": "HP",
+      "type": "int",
+      "value": 18
+    },
+    {
+      "label": "Attack bonus",
+      "type": "int",
+      "value": 4
+    },
+    {
+      "label": "Armour",
+      "type": "int",
+      "value": 13
+    }
+  ]
+}
