@@ -64,8 +64,8 @@ export const platforms: PlatformInfo[] = [
     key: "macos",
     name: "macOS",
     format: ".dmg",
-    distros: "Apple silicon and Intel, in one universal build",
-    requires: "macOS 11 Big Sur or newer",
+    distros: "Apple silicon (M1 or newer)",
+    requires: "macOS 12 Monterey or newer",
     caveat:
       "The .dmg is neither signed nor notarised, so Gatekeeper blocks it on first launch. Drag the app to Applications, then either right-click it and choose Open, or run the command below.",
     install: 'xattr -dr com.apple.quarantine "/Applications/Ripple Effect.app"',
