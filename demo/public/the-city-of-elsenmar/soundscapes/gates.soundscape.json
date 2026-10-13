@@ -1,0 +1,25 @@
+{
+  "id": "31b9951d506422c5cae69d8887498471",
+  "name": "gates",
+  "length": 207680,
+  "loop": true,
+  "fadeIn": 0,
+  "fadeOut": 5000,
+  "volume": 1.0,
+  "tied": false,
+  "tracks": [
+    {
+      "media": 7,
+      "lane": 0,
+      "start": 0,
+      "clipStart": 0,
+      "clipEnd": null,
+      "volume": 1.0,
+      "speed": 1.0,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "mode": "once",
+      "interval": 0
+    }
+  ]
+}

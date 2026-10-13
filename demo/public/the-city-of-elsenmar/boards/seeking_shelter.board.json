@@ -1,0 +1,218 @@
+{
+  "id": "2286d746ff09b7d0158036ae99448153",
+  "name": "seeking_shelter",
+  "start": 5,
+  "prime": [],
+  "nodes": [
+    {
+      "id": "end_0",
+      "type": "end",
+      "title": "Dawn over the Reach",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [],
+      "data": {}
+    },
+    {
+      "id": "narration_0",
+      "type": "narration",
+      "title": "Rain on the ninth bell",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 5,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 2,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "choice_1",
+          "kind": "control",
+          "to": [
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 11,
+        "soundscape": 3,
+        "choices": {
+          "choice_0": {
+            "en-US": "The Salt Cask, and its open shutters",
+            "it-IT": "The Salt Cask, and its open shutters"
+          },
+          "choice_1": {
+            "en-US": "The almshouse, and its sermon",
+            "it-IT": "The almshouse, and its sermon"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_1",
+      "type": "narration",
+      "title": "The Salt Cask",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 13,
+        "soundscape": 2,
+        "choices": {
+          "choice_0": {
+            "en-US": "Take the bench and keep your back to the wall",
+            "it-IT": "Take the bench and keep your back to the wall"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_2",
+      "type": "narration",
+      "title": "Sermon and straw",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 1,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 12,
+        "choices": {
+          "choice_0": {
+            "en-US": "Eat, and sleep with your boots on",
+            "it-IT": "Eat, and sleep with your boots on"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_3",
+      "type": "narration",
+      "title": "A bed, of a kind",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 2,
+              "port": 0
+            },
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 0,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 10,
+        "choices": {
+          "choice_0": {
+            "en-US": "Sleep",
+            "it-IT": "Sleep"
+          }
+        }
+      }
+    },
+    {
+      "id": "start_0",
+      "type": "start",
+      "title": "Start",
+      "in": [],
+      "out": [
+        {
+          "id": "out",
+          "kind": "control",
+          "to": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    }
+  ]
+}

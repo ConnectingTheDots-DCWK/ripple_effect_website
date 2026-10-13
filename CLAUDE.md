@@ -49,7 +49,13 @@ available there are silent and neither is a build error:
 decision behind the scheme is ADR *a-licence-follows-the-product* in the
 application repository; nothing else in this file describes `legal/`.
 
-**It is named in this project's `tsconfig.json` `exclude` and in
+**`demo/` is a fourth** — plain Vite, its own Vercel project with that
+directory as its Root Directory, at `demo.ripplefx.app`: the example campaign
+played in a page by the engine's web component, through the published
+`@ripplefx/*` packages. Its compiled bundle is committed, its media in LFS.
+[`CLAUDE.md`](demo/CLAUDE.md) is the authority for it.
+
+**All three are named in this project's `tsconfig.json` `exclude` and in
 `eslint.config.mjs`'s `globalIgnores`, and both entries have to be there.**
 Neither tool stops at a directory boundary on its own. TypeScript's
 `exclude: ["node_modules"]` matches only the one at the root, so without that

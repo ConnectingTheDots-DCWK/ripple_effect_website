@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>The City of Elsenmar — a Ripple Effect demo</title>
+    <meta
+      name="description"
+      content="A branching tabletop adventure written in Ripple Effect, played in your browser by its engine: pictures, music, dice and two languages, as the author exported them."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="https://ripplefx.app">ripple<span>_effect</span></a>
+      <div class="controls">
+        <select id="locale" aria-label="Language" hidden></select>
+        <button id="mute" type="button" aria-pressed="false" hidden>Sound on</button>
+        <button id="restart" type="button" hidden>Restart</button>
+      </div>
+    </header>
+    <main id="stage" aria-live="polite">
+      <p class="note">Loading the engine…</p>
+    </main>
+    <footer>
+      <span id="credit">Written in Ripple Effect and played by its engine, in this page.</span>
+      <span>
+        <a id="get-editor" href="https://ripplefx.app/download">Write your own — get the editor</a> ·
+        <a href="https://www.npmjs.com/package/@ripplefx/player">@ripplefx/player</a> ·
+        <a href="https://legal.ripplefx.app/privacy">Privacy</a>
+      </span>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

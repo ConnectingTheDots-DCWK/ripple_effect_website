@@ -1,0 +1,12 @@
+{
+  "id": "cd991ff994d30f1f88b9b589bdfcd05f",
+  "name": "sword",
+  "cover": 3,
+  "attributes": [
+    {
+      "label": "Integrity",
+      "type": "string",
+      "value": ""
+    }
+  ]
+}

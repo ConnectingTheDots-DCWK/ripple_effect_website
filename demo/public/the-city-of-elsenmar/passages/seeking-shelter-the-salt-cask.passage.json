@@ -1,0 +1,21 @@
+{
+  "id": "5ce16d40dd7de99fe26f03fbb63bcda5",
+  "name": "seeking-shelter-the-salt-cask",
+  "text": {
+    "en-US": "![gates](/images/tavern.jpg)\n\nWarm, loud, and full of exactly the sort of people who remember faces. The\nlandlord takes your coin without looking at it and points you to a bench by the\nfire that is already occupied by a dog.\n\nThe dog is negotiable. The three men at the corner table who stopped talking\nwhen you came in are, perhaps, less so.\n\n0",
+    "it-IT": "Calda, rumorosa, e piena esattamente del genere di persone che si ricordano le\nfacce. L'oste prende la tua moneta senza guardarla e ti indica una panca vicino\nal fuoco già occupata da un cane.\n\nSul cane si può trattare. Sui tre uomini al tavolo d'angolo che hanno smesso di\nparlare quando sei entrato, forse un po' meno.\n\n1\n"
+  },
+  "snippets": [
+    {
+      "code": "return \"Python Test\"",
+      "inline": false
+    },
+    {
+      "code": "return \"Python Test\"",
+      "inline": false
+    }
+  ],
+  "media": {
+    "/images/tavern.jpg": 4
+  }
+}

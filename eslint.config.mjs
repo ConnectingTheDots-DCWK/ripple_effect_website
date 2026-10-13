@@ -12,14 +12,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // `docs-site/` and `legal/` are the other applications in this repository
-    // and each checks itself with `astro check`. Without this, a bare
+    // `docs-site/`, `legal/` and `demo/` are the other applications in this
+    // repository and each checks itself — `astro check`, or `tsc` in `demo/`. Without this, a bare
     // `eslint` walks into their build output — `dist/_astro`,
     // `dist/pagefind`, `.astro` — and reports a thousand problems in minified
     // vendor bundles, which buries anything real. `tsconfig.json` excludes
-    // the same two directories for the same reason.
+    // the same directories for the same reason.
     "docs-site/**",
     "legal/**",
+    "demo/**",
   ]),
   {
     // shadcn/ui generated components are kept as upstream ships them

@@ -1,0 +1,178 @@
+{
+  "id": "82fbc03e21e0c79f31f279a636350c57",
+  "name": "wanted_in_elsenmar",
+  "start": 4,
+  "prime": [],
+  "nodes": [
+    {
+      "id": "end_1",
+      "type": "end",
+      "title": "A different name by morning",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 2,
+              "port": 0
+            },
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [],
+      "data": {}
+    },
+    {
+      "id": "narration_1",
+      "type": "narration",
+      "title": "The face on the notice",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 4,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 2,
+              "port": 0
+            }
+          ]
+        },
+        {
+          "id": "choice_1",
+          "kind": "control",
+          "to": [
+            {
+              "node": 3,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 17,
+        "choices": {
+          "choice_0": {
+            "en-US": "Tear it down",
+            "it-IT": "Strappalo via"
+          },
+          "choice_1": {
+            "en-US": "Leave it where it is",
+            "it-IT": "Lascialo dov'è"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_3",
+      "type": "narration",
+      "title": "A handful of paper",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 0,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 14,
+        "choices": {
+          "choice_0": {
+            "en-US": "Go, before somebody reads it twice",
+            "it-IT": "Vattene, prima che qualcuno lo legga due volte"
+          }
+        }
+      }
+    },
+    {
+      "id": "narration_5",
+      "type": "narration",
+      "title": "Let it stand",
+      "in": [
+        {
+          "id": "in",
+          "kind": "control",
+          "from": [
+            {
+              "node": 1,
+              "port": 1
+            }
+          ]
+        }
+      ],
+      "out": [
+        {
+          "id": "choice_0",
+          "kind": "control",
+          "to": [
+            {
+              "node": 0,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {
+        "passage": 15,
+        "choices": {
+          "choice_0": {
+            "en-US": "Give them somebody else to look for",
+            "it-IT": "Dai loro qualcun altro da cercare"
+          }
+        }
+      }
+    },
+    {
+      "id": "start_0",
+      "type": "start",
+      "title": "Start",
+      "in": [],
+      "out": [
+        {
+          "id": "out",
+          "kind": "control",
+          "to": [
+            {
+              "node": 1,
+              "port": 0
+            }
+          ]
+        }
+      ],
+      "data": {}
+    }
+  ]
+}
