@@ -13,7 +13,19 @@
   </head>
   <body>
     <header>
-      <a class="brand" href="https://ripplefx.app">ripple<span>_effect</span></a>
+      <!-- The landing page's BrandLockup, transcribed: the mark from
+           src/components/ripple-mark.tsx (the app's three-ring table, in a
+           32x32 box, unit 16) and the wordmark, the display name with the
+           second word in the accent. -->
+      <a class="brand" href="https://ripplefx.app">
+        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <circle cx="16" cy="16" r="7.36" stroke="currentColor" stroke-opacity="0.95" stroke-width="2.08" />
+          <circle cx="16" cy="16" r="11.52" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.76" />
+          <circle cx="16" cy="16" r="15.36" stroke="currentColor" stroke-opacity="0.28" stroke-width="1.44" />
+          <circle cx="16" cy="16" r="2.72" fill="currentColor" />
+        </svg>
+        <span>Ripple <span class="accent">Effect</span></span>
+      </a>
       <div class="controls">
         <select id="locale" aria-label="Language" hidden></select>
         <button id="mute" type="button" aria-pressed="false" hidden>Sound on</button>
