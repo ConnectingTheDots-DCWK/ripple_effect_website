@@ -73,6 +73,9 @@ export const siteConfig = {
     // because it is another host, and one string here so the header and the
     // footer cannot point at two spellings of it.
     docs: "https://docs.ripplefx.app",
+    // The example campaign played in a page, deployed from `demo/` in this
+    // repository as its own Vercel project. The hero's second button.
+    demo: "https://demo.ripplefx.app",
     // The node editor underneath, which *is* public and does take pull
     // requests. Worth linking precisely because the app itself is not.
     editor: "https://github.com/ConnectingTheDots-DCWK/fl_nodes_v2",

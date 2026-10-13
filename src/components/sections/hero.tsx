@@ -38,7 +38,13 @@ export async function Hero() {
       />
       <div className="relative mx-auto max-w-6xl px-4 lg:px-8">
         <BlurFade direction="down">
-          <div className="mx-auto max-w-3xl text-center">
+          {/*
+            * 4xl rather than 3xl so the headline's first line — "The
+            * interactive narrative design tool", 781px of Geist at 48px —
+            * stays one line on a desktop and the flipping word gets the
+            * second to itself. The paragraph keeps its own 2xl measure.
+            */}
+          <div className="mx-auto max-w-4xl text-center">
             {latest && (
               <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
                 Version {latest.version}
@@ -61,14 +67,19 @@ export async function Hero() {
               * judgement rather than a fact, and it is the one the canvas is
               * built to earn.
               *
+              * The sentence names what the thing *is* — a tool — before it says
+              * what the tool is like, so a reader who stops at the first line
+              * has still been told. It read "Interactive narrative design, and
+              * it's", which described an activity rather than a product.
+              *
               * "Interactive stories, drawn as graphs" is not lost with the old
               * headline: it is the page title and the OG title, which is where
               * a search result and a shared link read it from.
               */}
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance lg:text-5xl">
-              Interactive narrative design,{" "}
+              The interactive narrative design tool{" "}
               <span className="block">
-                and it&rsquo;s{" "}
+                that&rsquo;s{" "}
                 <FlipWords
                   words={["free", "fast", "local", "yours"]}
                   className="text-primary"
@@ -83,8 +94,13 @@ export async function Hero() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <HeroDownload assets={latest?.assets ?? []} />
+              {/*
+                * The demo rather than `#features`: a campaign playing, pictures
+                * and sound, shows what a scroll down the page can only
+                * describe. Another host, so a plain anchor and not `Link`.
+                */}
               <Button asChild variant="outline" className="h-11 px-6 text-base">
-                <Link href="#features">See what it does</Link>
+                <a href={siteConfig.links.demo}>See it in action</a>
               </Button>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
