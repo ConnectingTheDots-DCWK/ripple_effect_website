@@ -17,7 +17,7 @@ The dialog has six pages down a rail on its left. Every page has the same height
 | --- | --- | --- |
 | *General* | Appearance, accessibility, language | How the app looks, reads and plays |
 | *Data control* | What leaves this machine | *Usage statistics* |
-| *Updates* | Release notes, engine fixes | *Release notes* and its filters, *Engine updates*, *Use the bundled engine* |
+| *Updates* | Channel, release notes, engine fixes | *Release channel*, *Release notes* and its filters, *Engine updates*, *Use the bundled engine* |
 | *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
 | *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
 | *About* | Version, credits, licences | The About box |
@@ -126,6 +126,21 @@ Switching off destroys the identifier. To have what was sent deleted, write to t
 
 ## Updates
 
+### Release channel
+
+Which releases the app offers you. **Stable** offers tested releases only. **Preview** also offers early builds of the next version, as soon as they are ready: their version ends in `-prev` and a number, such as 1.6.0-prev.2. A preview can change or break things before they reach Stable, and a project saved in one may be written in a newer format that Stable cannot open until it catches up.
+
+| Control | Effect |
+| --- | --- |
+| *Release channel*: *Stable* | Only stable releases are offered. |
+| *Release channel*: *Preview* | Previews are offered too. When a stable release is newer than the latest preview, that release is offered instead. Switching asks you to confirm first. |
+
+After a switch the app checks again and says what it found under the control: a newer release, and that the download button at the top of the window installs it; nothing newer, so you stay where you are; or that the update server could not be reached. A version you install from the app is never older than the one you are running, on either channel. Switching back to Stable stops the previews; it does not reinstall an older version.
+
+When you switch back to Stable while running a preview that is newer than Stable, the app warns you first and recommends staying on Preview. If you switch anyway, the preview you are running gets no updates until Stable passes it, and a project saved in the preview may not open in Stable.
+
+A copy installed from a preview starts on Preview. The download page only ever offers Stable: Preview is reached from inside the app.
+
 ### Release notes
 
 After an update the app shows what changed in each release you have not read yet, newest first. An update that skipped versions shows every one in between. Each release wears tags under its name: its size, and what it brings.
@@ -149,7 +164,7 @@ After an update the app shows what changed in each release you have not read yet
 | *Release type* | Which sizes of release are announced. |
 | *Contents* | Which kinds of change are announced. |
 
-A release is announced when its size is ticked **and** at least one of its contents is ticked. Unticking *Patch* hides every patch, whatever it fixes. With nothing ticked in a group, no release is announced. Releases you skip while the notice is off or filtered out are not shown later.
+A release is announced when its size is ticked **and** at least one of its contents is ticked. Unticking *Patch* hides every patch, whatever it fixes. With nothing ticked in a group, no release is announced. Releases you skip while the notice is off or filtered out are not shown later. A preview's notes are shown only to a preview, and wear a *Preview* tag; a stable release's notes cover every preview before it.
 
 ### Engine updates
 

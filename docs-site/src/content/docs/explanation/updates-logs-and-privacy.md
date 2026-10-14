@@ -11,6 +11,8 @@ After the first install, the app installs its own updates. Once per launch it as
 
 Handing the installer to the platform's own installer window, rather than replacing files from inside the running app, means you get the ordinary window and can still say no to it. A download that does not match its checksum is thrown away. Where the app cannot tell how it arrived, it opens the download page instead. An update never closes the app over unsaved work: a file that changed on disk while you were editing it stops the update, and the app says which one.
 
+Previews are the same mechanism with one more choice. A copy following the Preview release channel is offered early builds of the next version as well as every stable release, whichever is newer. The website answers every copy with every channel's latest release, so the request never says which channel you follow; the choice is made on your machine. Nothing older than the version you are running is ever offered, on either channel. That is why switching back to Stable from a preview never downgrades you. It stops the previews, and the app waits for Stable to catch up, because a project a newer version has saved is exactly what an older one may refuse to open, as the section on files from a newer version explains. [Settings](/reference/settings/#release-channel) has the controls.
+
 Installing a downloaded installer is a step the platform may question, because nothing is code-signed yet; [Why the installers are unsigned](/explanation/unsigned-installers/) gives the reasoning, and [Installers and first launch](/reference/installers/) says what each platform asks.
 
 ## Engine fixes travel separately

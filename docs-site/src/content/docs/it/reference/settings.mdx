@@ -17,7 +17,7 @@ La finestra ha sei pagine lungo una barra sulla sinistra. Ogni pagina ha la stes
 | --- | --- | --- |
 | *Generale* | Aspetto, accessibilità, lingua | Come l'app appare, si legge e riproduce |
 | *Controllo dati* | Cosa lascia questo computer | *Statistiche di utilizzo* |
-| *Aggiornamenti* | Note di rilascio, correzioni del motore | *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso* |
+| *Aggiornamenti* | Canale, note di rilascio, correzioni del motore | *Canale di rilascio*, *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso* |
 | *Agenti* | Assistenti che raggiungono l'app | La connessione dell'assistente; vedi [Strumenti MCP](/it/reference/mcp-tools/) |
 | *Assistenza* | Domande, bug, idee | [La pagina Assistenza](#pagina-assistenza) |
 | *Informazioni* | Versione, crediti, licenze | La finestra Informazioni |
@@ -126,6 +126,21 @@ Disattivarle distrugge l'identificatore. Per far cancellare ciò che è stato in
 
 ## Aggiornamenti
 
+### Canale di rilascio
+
+Quali versioni l'app ti propone. **Stabile** propone solo versioni collaudate. **Anteprima** propone anche le prime build della prossima versione, appena sono pronte: la loro versione finisce con `-prev` e un numero, come 1.6.0-prev.2. Un'anteprima può cambiare o rompere qualcosa prima che arrivi in Stabile, e un progetto salvato in un'anteprima può essere scritto in un formato più recente che Stabile non sa aprire finché non la raggiunge.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Canale di rilascio*: *Stabile* | Vengono proposte solo le versioni stabili. |
+| *Canale di rilascio*: *Anteprima* | Vengono proposte anche le anteprime. Quando una versione stabile è più recente dell'ultima anteprima, viene proposta quella. Il passaggio chiede una conferma. |
+
+Dopo un cambio di canale l'app controlla di nuovo e scrive sotto il controllo cosa ha trovato: una versione più recente, che si installa dal pulsante di download in cima alla finestra; nulla di più recente, quindi resti dove sei; oppure che il server degli aggiornamenti non era raggiungibile. Una versione installata dall'app non è mai più vecchia di quella in uso, su nessuno dei due canali. Tornare a Stabile interrompe le anteprime; non reinstalla una versione più vecchia.
+
+Se torni a Stabile mentre usi un'anteprima più recente di Stabile, l'app ti avvisa prima e consiglia di restare su Anteprima. Se cambi comunque, l'anteprima in uso non riceve aggiornamenti finché Stabile non la supera, e un progetto salvato nell'anteprima potrebbe non aprirsi in Stabile.
+
+Una copia installata da un'anteprima parte su Anteprima. La pagina di download propone sempre e solo Stabile: ad Anteprima si arriva dall'interno dell'app.
+
 ### Note di rilascio
 
 Dopo un aggiornamento l'app mostra cosa è cambiato in ogni versione che non hai ancora letto, dalla più recente. Un aggiornamento che ha saltato versioni le mostra tutte. Ogni versione porta delle etichette sotto il nome: la sua dimensione e cosa porta.
@@ -149,7 +164,7 @@ Dopo un aggiornamento l'app mostra cosa è cambiato in ogni versione che non hai
 | *Tipo di versione* | Quali dimensioni di versione vengono annunciate. |
 | *Contenuti* | Quali tipi di modifica vengono annunciati. |
 
-Una versione viene annunciata quando la sua dimensione è spuntata **e** almeno uno dei suoi contenuti è spuntato. Togliere la spunta a *Patch* nasconde ogni patch, qualunque cosa corregga. Senza nulla di spuntato in un gruppo, nessuna versione viene annunciata. Le versioni saltate mentre l'avviso è disattivato o filtrato non vengono mostrate in seguito.
+Una versione viene annunciata quando la sua dimensione è spuntata **e** almeno uno dei suoi contenuti è spuntato. Togliere la spunta a *Patch* nasconde ogni patch, qualunque cosa corregga. Senza nulla di spuntato in un gruppo, nessuna versione viene annunciata. Le versioni saltate mentre l'avviso è disattivato o filtrato non vengono mostrate in seguito. Le note di un'anteprima vengono mostrate solo a un'anteprima e portano l'etichetta *Anteprima*; le note di una versione stabile coprono tutte le anteprime che l'hanno preceduta.
 
 ### Aggiornamenti del motore
 

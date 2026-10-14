@@ -32,8 +32,8 @@ Until you answer, the app underneath has not been built, so there is nothing the
 | --- | --- |
 | Destination | `ripplefx.app` |
 | Frequency | Once per launch |
-| Question | What is the most recent release? The app compares the answer with its own version on your machine. |
-| Carries | No identifier, no version number and nothing about you. |
+| Question | What is the most recent release on each release channel? The answer lists Stable and Preview both, and the app picks the one for the channel you follow and compares it with its own version on your machine. |
+| Carries | No identifier, no version number, not which release channel you follow, and nothing about you. |
 | Server sees | The address the request came from, as with any request over the internet. |
 | Distinguishes installations | No. Nothing in the request is unique to one. |
 | Switch | *Engine updates* under **Settings ▸ Updates** switches this off together with the engine fix check. |
