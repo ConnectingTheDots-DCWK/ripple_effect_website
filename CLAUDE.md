@@ -533,8 +533,8 @@ consequences, both load-bearing:
   response and sends the download straight from GitHub's CDN. Never "improve"
   this into a proxy that streams.
 
-The id is checked against the latest release's asset list before anything is
-fetched. Without that check the route is a general read oracle for every asset
+The id is checked against the asset list of each channel's newest release
+before anything is fetched. Without that check the route is a general read oracle for every asset
 of every release in a private repository, which is a larger thing than a
 download button.
 
@@ -544,9 +544,9 @@ Three operational facts that will otherwise bite:
    repository cuts editor releases (`v*`) and engine releases (`engine-v*`),
    and *latest* is whichever was created last unless every workflow says
    otherwise — one engine release holding it would stop every installed
-   editor being offered updates. `pickEditorRelease` lists the releases and
-   takes the highest `v<major>.<minor>.<patch>` that is neither a draft nor a
-   prerelease. The release workflow's `draft` input defaults to `true`, so a
+   editor being offered updates. `pickChannelRelease` lists the releases and
+   takes, for Stable, the highest `v<major>.<minor>.<patch>` that is neither a
+   draft nor a prerelease. The release workflow's `draft` input defaults to `true`, so a
    release that has been cut but not undrafted is invisible here — correctly,
    but confusingly if you are waiting for it.
 2. **Filenames are never hardcoded.** Three spellings of the same artifact are
@@ -568,6 +568,40 @@ Three operational facts that will otherwise bite:
    the reasonable-until-it-wasn't grounds that "nothing published yet" is
    ordinary. A token that cannot see a private repository 404s identically.
    The reason names a class of problem and never a value.
+
+### Channels: every one in the answer, and the app chooses
+
+Releases come in **channels**, and a channel is a tag shape — `CHANNELS` in
+`src/lib/releases.ts`. Stable is `v1.5.0`, never a GitHub prerelease. Preview
+is `v1.6.0-prev.2`, always one; its key is the three numbers and then the
+preview number, so `-prev.10` beats `-prev.2`. An `-rc.N` belongs to neither
+and is offered to nobody.
+
+**`/api/releases` takes no parameter and lists every channel.** The top level
+is Stable, exactly what it was before channels existed, so an installed 1.5.0
+— which reads only that — can never be offered a preview. Beside it,
+`channels: { stable, preview }` carries each channel's newest release in the
+same shape, or `null`. The app picks on its own machine. The reason is legal,
+not stylistic: the EULA and the Privacy Notice, both frozen, promise the
+update check carries "no identifier, no version number and no information
+about you", and which channel somebody follows is information about them. A
+`?channel=` would have meant new versions of both and everybody accepting
+again. ADR *a-channel-is-a-tag* in the app repository has the alternatives.
+
+**Every page here still reads Stable** — `fetchLatestRelease`. A preview is
+reached from inside the app, never from `/download`, which was the owner's
+call. `/api/download/[id]` accepts an asset of **any channel's** newest
+release, because the app downloads a preview through it too; still never an
+older release's.
+
+**Only public channels go in the table.** A build made for one partner would
+be listed to everybody from this endpoint. It wants its own authenticated
+route, and the table is the shape that route would read.
+
+There are no tests on this site. The picker was exercised against a fixture
+list — rc, drafts, a non-prerelease `-prev`, an engine tag, `-prev.10` against
+`-prev.2` — by copying `releases.ts` beside a script with its two imports
+stubbed and running it under `node`, which strips the types itself.
 
 ## What the release feeds, and what is written down
 
