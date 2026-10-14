@@ -1,6 +1,6 @@
 ---
 title: Settings, accessibility and updates controls
-description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the engine update controls and the Support page.
+description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the release notes and engine update controls and the Support page.
 ---
 
 The gear in the app bar, on every screen, opens the Settings dialog. Settings belong to the app, not to a project, so they follow you from project to project.
@@ -17,7 +17,7 @@ The dialog has six pages down a rail on its left. Every page has the same height
 | --- | --- | --- |
 | *General* | Appearance, accessibility, language | How the app looks, reads and plays |
 | *Data control* | What leaves this machine | *Usage statistics* |
-| *Updates* | Engine fixes | *Engine updates*, *Use the bundled engine* |
+| *Updates* | Release notes, engine fixes | *Release notes* and its filters, *Engine updates*, *Use the bundled engine* |
 | *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
 | *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
 | *About* | Version, credits, licences | The About box |
@@ -125,6 +125,33 @@ Text size is not a setting of the app.
 Switching off destroys the identifier. To have what was sent deleted, write to the address shown on the page with the identifier before switching off. Switching on again starts a new installation. What is sent is listed in [What the app sends](/about/what-the-app-sends/).
 
 ## Updates
+
+### Release notes
+
+After an update the app shows what changed in each release you have not read yet, newest first. An update that skipped versions shows every one in between. Each release wears tags under its name: its size, and what it brings.
+
+| Tag | Meaning |
+| --- | --- |
+| *Major*, *Minor*, *Patch* | The size of the release, read from its version number: 2.0.0, 1.5.0, 1.5.1. |
+| *Hotfix* | A patch cut quickly to fix one problem. It takes the place of *Patch*. |
+| *New features* | Something you could not do before. |
+| *Improvements* | Something you could already do works better. |
+| *Fixes* | Something that did not work now does. |
+| *Action needed* | Something you have to do or know, such as a file older versions cannot open. |
+| *Security* | A security problem is fixed. |
+
+*Don't show release notes again*, at the bottom of the notice, turns it off. The notice says where to turn it back on.
+
+| Control | Effect |
+| --- | --- |
+| *Release notes*: *Show after an update* | The notice appears after an update, for the releases the filters below let through. |
+| *Release notes*: *Don't show* | No notice appears. *What's new*, on the About page, still lists every release. The filters stay on the page, greyed. |
+| *Release type* | Which sizes of release are announced. |
+| *Contents* | Which kinds of change are announced. |
+
+A release is announced when its size is ticked **and** at least one of its contents is ticked. Unticking *Patch* hides every patch, whatever it fixes. With nothing ticked in a group, no release is announced. Releases you skip while the notice is off or filtered out are not shown later.
+
+### Engine updates
 
 The part of the app that plays and compiles campaigns can be fixed without a new installer. A fix is fetched in the background, checked against a signature before it is trusted, and used from the next launch. If the app crashes with a fix, the fix is set aside automatically. A fix never changes what the app can do.
 
