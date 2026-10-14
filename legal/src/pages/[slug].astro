@@ -54,6 +54,18 @@ const superseded = document.versions.filter((v) => v.version !== document.curren
           ? " Until then the version below it is the one that binds."
           : " It is the first version of this document, and binds from that date.")
     }
+    {
+      /*
+       * The acceptance-shaped counterpart of the sentence above. An agreement
+       * that attaches on acceptance is in force for one installation and not
+       * for the next, so the page cannot say "until then" — there is no then.
+       * What it can say is what governs somebody who accepted the one before,
+       * which is the question a reader of a second version arrives with.
+       */
+      version.effectiveOn === "acceptance" &&
+        superseded.length > 0 &&
+        " An installation that accepted an earlier version stays under it until it accepts this one, which the application asks no sooner than thirty days after telling you this version exists."
+    }
     <br />
     This version will always be at{" "}
     <a href={`/${version.path}/`}>{legal.origin}/{version.path}/</a>, whatever

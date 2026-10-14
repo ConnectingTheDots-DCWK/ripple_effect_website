@@ -189,7 +189,12 @@ export default function PrivacyPage() {
             exception: each contributor&apos;s avatar is loaded from
             avatars.githubusercontent.com by your machine rather than through
             this site, so opening the About box does make a request to GitHub
-            for the images. The rest reach this
+            for the images. From version 1.5.1 — once you have accepted version
+            2.0 of the licence, and unless you switch it off in Settings — it
+            also asks this site once per launch for the news it shows on its
+            home screen, and loads the pictures that go with it from this site
+            and nowhere else; which items you have read stays on your machine.
+            The rest reach this
             site the way any other request does, so an address and a
             browser-style identifier appear in a server log; nothing
             distinguishes one installation from another, because nothing in
