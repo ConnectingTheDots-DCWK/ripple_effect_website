@@ -11,6 +11,8 @@ Dopo la prima installazione, l'app installa da sola i propri aggiornamenti. Una 
 
 Passare il programma di installazione alla finestra di installazione della piattaforma, invece di sostituire i file dall'interno dell'app in esecuzione, significa che ottieni la finestra consueta e puoi ancora dire di no. Un download che non corrisponde al suo checksum viene scartato. Dove l'app non riesce a capire come è arrivata, apre invece la pagina di download. Un aggiornamento non chiude mai l'app lasciando lavoro non salvato: un file modificato su disco mentre lo stavi modificando blocca l'aggiornamento, e l'app dice quale.
 
+Le anteprime usano lo stesso meccanismo, con una scelta in più. Una copia che segue il canale di rilascio Anteprima riceve le prime build della prossima versione oltre a ogni versione stabile, quale delle due sia più recente. Il sito risponde a ogni copia con l'ultima versione di ogni canale, così la richiesta non dice mai quale canale segui: la scelta avviene sul tuo computer. Non viene mai proposto nulla di più vecchio della versione in uso, su nessuno dei due canali. Per questo tornare a Stabile da un'anteprima non ti riporta mai a una versione precedente: interrompe le anteprime, e l'app aspetta che Stabile la raggiunga, perché un progetto salvato da una versione più recente è proprio ciò che una più vecchia può rifiutarsi di aprire, come spiega la sezione sui file di una versione più recente. Le [Impostazioni](/it/reference/settings/#canale-di-rilascio) hanno i controlli.
+
 Installare un programma di installazione scaricato è un passaggio che la piattaforma può mettere in dubbio, perché per ora nulla è firmato digitalmente; [Perché i programmi di installazione non sono firmati](/it/explanation/unsigned-installers/) ne spiega le ragioni, e [Programmi di installazione e primo avvio](/it/reference/installers/) dice cosa chiede ciascuna piattaforma.
 
 ## Le correzioni del motore viaggiano a parte
@@ -18,6 +20,12 @@ Installare un programma di installazione scaricato è un passaggio che la piatta
 La parte dell'app che gioca e compila le campagne può essere corretta senza un nuovo programma di installazione. Una correzione viene scaricata in background, controllata con una firma prima di essere considerata affidabile e usata dall'avvio successivo. Se l'app va in crash con una correzione attiva, la correzione viene messa da parte automaticamente. Una correzione non cambia mai ciò che l'app può fare.
 
 Poiché avviene senza chiedere nulla, è visibile e reversibile: la barra dell'app mostra un pulsante mentre una correzione sta arrivando e quando è pronta, e il download può essere disattivato, o le correzioni rimosse, in Impostazioni. [Impostazioni, accessibilità e controlli degli aggiornamenti](/it/reference/settings/) elenca i controlli, e [Cosa invia l'app](/it/about/what-the-app-sends/) dice cosa contiene la richiesta.
+
+## Le novità senza un aggiornamento
+
+Alcune cose che vale la pena dirti non riguardano affatto l'editor: un nuovo binding per il motore, un'integrazione, una pagina che si è spostata. Non hanno posto nelle note di una versione, e aspettare la versione successiva per dirle sarebbe il modo sbagliato. Per questo la pagina iniziale ha un pulsante Novità, e le notizie dietro di esso arrivano da un feed sul sito, non dall'app.
+
+Valgono le stesse regole del controllo degli aggiornamenti. Chiede una volta a ogni avvio, non contiene nulla che ti riguardi e scarica immagini solo dal nostro sito. Cosa hai letto è una data conservata sul tuo computer. Dipende anche da una licenza: la versione 1.0 del contratto elencava ogni richiesta che l'app poteva fare, e le novità non erano nell'elenco. La versione 2.0 ammette come categoria una richiesta che non contiene nulla che ti riguardi, fatta solo al nostro sito, e a una copia che ha accettato la 1.0 viene chiesto trenta giorni dopo averla avvisata. [Impostazioni](/it/reference/settings/) ha l'interruttore, e [Cosa invia l'app](/it/about/what-the-app-sends/) dice cosa contiene la richiesta.
 
 ## Il log di sessione serve per la segnalazione di un bug, e sei tu a decidere cosa ne esce
 

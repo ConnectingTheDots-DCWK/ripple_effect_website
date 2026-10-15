@@ -1,13 +1,13 @@
 ---
 title: Settings, accessibility and updates controls
-description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the engine update controls and the Support page.
+description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the release notes and engine update controls and the Support page.
 ---
 
 The gear in the app bar, on every screen, opens the Settings dialog. Settings belong to the app, not to a project, so they follow you from project to project.
 
 Every option is a choice among a few named things, drawn as a segmented control with the current choice lit, and a line under the control says what that choice means. A choice takes effect when pressed; there is no Apply. The exception to the segmented control is *Language*, a drop-down.
 
-The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app.
+The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app. The home page's bar also has the News button, with a count while something is unread; see [News](#news).
 
 ## Pages
 
@@ -17,7 +17,7 @@ The dialog has six pages down a rail on its left. Every page has the same height
 | --- | --- | --- |
 | *General* | Appearance, accessibility, language | How the app looks, reads and plays |
 | *Data control* | What leaves this machine | *Usage statistics* |
-| *Updates* | Engine fixes | *Engine updates*, *Use the bundled engine* |
+| *Updates* | Channel, release notes, engine fixes, news | *Release channel*, *Release notes* and its filters, *Engine updates*, *Use the bundled engine*, *News* |
 | *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
 | *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
 | *About* | Version, credits, licences | The About box |
@@ -126,6 +126,48 @@ Switching off destroys the identifier. To have what was sent deleted, write to t
 
 ## Updates
 
+### Release channel
+
+Which releases the app offers you. **Stable** offers tested releases only. **Preview** also offers early builds of the next version, as soon as they are ready: their version ends in `-prev` and a number, such as 1.6.0-prev.2. A preview can change or break things before they reach Stable, and a project saved in one may be written in a newer format that Stable cannot open until it catches up.
+
+| Control | Effect |
+| --- | --- |
+| *Release channel*: *Stable* | Only stable releases are offered. |
+| *Release channel*: *Preview* | Previews are offered too. When a stable release is newer than the latest preview, that release is offered instead. Switching asks you to confirm first. |
+
+After a switch the app checks again and says what it found under the control: a newer release, and that the download button at the top of the window installs it; nothing newer, so you stay where you are; or that the update server could not be reached. A version you install from the app is never older than the one you are running, on either channel. Switching back to Stable stops the previews; it does not reinstall an older version.
+
+When you switch back to Stable while running a preview that is newer than Stable, the app warns you first and recommends staying on Preview. If you switch anyway, the preview you are running gets no updates until Stable passes it, and a project saved in the preview may not open in Stable.
+
+A copy installed from a preview starts on Preview. The download page only ever offers Stable: Preview is reached from inside the app.
+
+### Release notes
+
+After an update the app shows what changed in each release you have not read yet, newest first. An update that skipped versions shows every one in between. Each release wears tags under its name: its size, and what it brings.
+
+| Tag | Meaning |
+| --- | --- |
+| *Major*, *Minor*, *Patch* | The size of the release, read from its version number: 2.0.0, 1.5.0, 1.5.1. |
+| *Hotfix* | A patch cut quickly to fix one problem. It takes the place of *Patch*. |
+| *New features* | Something you could not do before. |
+| *Improvements* | Something you could already do works better. |
+| *Fixes* | Something that did not work now does. |
+| *Action needed* | Something you have to do or know, such as a file older versions cannot open. |
+| *Security* | A security problem is fixed. |
+
+*Don't show release notes again*, at the bottom of the notice, turns it off. The notice says where to turn it back on.
+
+| Control | Effect |
+| --- | --- |
+| *Release notes*: *Show after an update* | The notice appears after an update, for the releases the filters below let through. |
+| *Release notes*: *Don't show* | No notice appears. *What's new*, on the About page, still lists every release. The filters stay on the page, greyed. |
+| *Release type* | Which sizes of release are announced. |
+| *Contents* | Which kinds of change are announced. |
+
+A release is announced when its size is ticked **and** at least one of its contents is ticked. Unticking *Patch* hides every patch, whatever it fixes. With nothing ticked in a group, no release is announced. Releases you skip while the notice is off or filtered out are not shown later. A preview's notes are shown only to a preview, and wear a *Preview* tag; a stable release's notes cover every preview before it.
+
+### Engine updates
+
 The part of the app that plays and compiles campaigns can be fixed without a new installer. A fix is fetched in the background, checked against a signature before it is trusted, and used from the next launch. If the app crashes with a fix, the fix is set aside automatically. A fix never changes what the app can do.
 
 A button in the app bar shows while a fix is arriving, and again once it is ready, with the version it moves to.
@@ -137,6 +179,17 @@ A button in the app bar shows while a fix is arriving, and again once it is read
 | *Use the bundled engine* | Removes the fixes already fetched. The bundled engine is used from the next launch, and the page confirms it. |
 
 While a fix is in use the page reads *Running engine* followed by its version, a fix fetched after this version was installed. The engine button opens a dialog with two states. While a fix downloads, it says the fix is being downloaded and checked and that nothing changes until the app next starts. When the fix is ready, it says it has been downloaded and checked, takes effect at the next start, and that there is nothing to install. What the request carries is in [What the app sends](/about/what-the-app-sends/).
+
+### News
+
+Short items from us, such as a new binding or integration, a change worth knowing about, or something to do before an update, shown on the home screen without an update. The **News** button on the home page's bar opens them as a screen of their own, newest first, each with a banner and its title. A number on the button counts the items you have not opened. Opening an item marks it and everything older as read, and *Mark all as read* does it for the lot. The first time, only items from the last thirty days count as unread.
+
+| Control | Effect |
+| --- | --- |
+| *News*: *On* | Once per launch the app asks `ripplefx.app` for the news. The request carries nothing about you, and which items you have read stays on your machine. |
+| *News*: *Off* | Nothing is fetched, and the News button is hidden. |
+
+The news needs version 2.0 of the licence agreement. A copy that accepted 1.0 fetches nothing until it has accepted 2.0, whatever the switch says, and the page says so under it. If the news cannot be loaded, the screen says so and the next launch tries again. What the request carries is in [What the app sends](/about/what-the-app-sends/#news).
 
 ## Support page
 

@@ -1,13 +1,13 @@
 ---
 title: "Controlli di impostazioni, accessibilità e aggiornamenti"
-description: "Ogni pagina e opzione della finestra Impostazioni, cosa cambiano Contrasto e Visione dei colori, i controlli degli aggiornamenti del motore e la pagina Assistenza."
+description: "Ogni pagina e opzione della finestra Impostazioni, cosa cambiano Contrasto e Visione dei colori, i controlli delle note di rilascio e degli aggiornamenti del motore e la pagina Assistenza."
 ---
 
 L'ingranaggio nella barra dell'app, in ogni schermata, apre la finestra Impostazioni. Le impostazioni appartengono all'app, non a un progetto, quindi ti seguono da un progetto all'altro.
 
 Ogni opzione è una scelta tra poche voci con un nome, disegnata come controllo segmentato con la scelta attuale evidenziata, e una riga sotto il controllo spiega cosa significa quella scelta. Una scelta ha effetto non appena la premi; non c'è Applica. L'eccezione al controllo segmentato è *Lingua*, un menu a tendina.
 
-La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app.
+La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app. La barra della pagina iniziale ha anche il pulsante Novità, con un numero finché qualcosa resta da leggere; vedi [Novità](#novità).
 
 ## Pagine
 
@@ -17,7 +17,7 @@ La finestra ha sei pagine lungo una barra sulla sinistra. Ogni pagina ha la stes
 | --- | --- | --- |
 | *Generale* | Aspetto, accessibilità, lingua | Come l'app appare, si legge e riproduce |
 | *Controllo dati* | Cosa lascia questo computer | *Statistiche di utilizzo* |
-| *Aggiornamenti* | Correzioni del motore | *Aggiornamenti del motore*, *Usa il motore incluso* |
+| *Aggiornamenti* | Canale, note di rilascio, correzioni del motore, novità | *Canale di rilascio*, *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso*, *Novità* |
 | *Agenti* | Assistenti che raggiungono l'app | La connessione dell'assistente; vedi [Strumenti MCP](/it/reference/mcp-tools/) |
 | *Assistenza* | Domande, bug, idee | [La pagina Assistenza](#pagina-assistenza) |
 | *Informazioni* | Versione, crediti, licenze | La finestra Informazioni |
@@ -126,6 +126,48 @@ Disattivarle distrugge l'identificatore. Per far cancellare ciò che è stato in
 
 ## Aggiornamenti
 
+### Canale di rilascio
+
+Quali versioni l'app ti propone. **Stabile** propone solo versioni collaudate. **Anteprima** propone anche le prime build della prossima versione, appena sono pronte: la loro versione finisce con `-prev` e un numero, come 1.6.0-prev.2. Un'anteprima può cambiare o rompere qualcosa prima che arrivi in Stabile, e un progetto salvato in un'anteprima può essere scritto in un formato più recente che Stabile non sa aprire finché non la raggiunge.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Canale di rilascio*: *Stabile* | Vengono proposte solo le versioni stabili. |
+| *Canale di rilascio*: *Anteprima* | Vengono proposte anche le anteprime. Quando una versione stabile è più recente dell'ultima anteprima, viene proposta quella. Il passaggio chiede una conferma. |
+
+Dopo un cambio di canale l'app controlla di nuovo e scrive sotto il controllo cosa ha trovato: una versione più recente, che si installa dal pulsante di download in cima alla finestra; nulla di più recente, quindi resti dove sei; oppure che il server degli aggiornamenti non era raggiungibile. Una versione installata dall'app non è mai più vecchia di quella in uso, su nessuno dei due canali. Tornare a Stabile interrompe le anteprime; non reinstalla una versione più vecchia.
+
+Se torni a Stabile mentre usi un'anteprima più recente di Stabile, l'app ti avvisa prima e consiglia di restare su Anteprima. Se cambi comunque, l'anteprima in uso non riceve aggiornamenti finché Stabile non la supera, e un progetto salvato nell'anteprima potrebbe non aprirsi in Stabile.
+
+Una copia installata da un'anteprima parte su Anteprima. La pagina di download propone sempre e solo Stabile: ad Anteprima si arriva dall'interno dell'app.
+
+### Note di rilascio
+
+Dopo un aggiornamento l'app mostra cosa è cambiato in ogni versione che non hai ancora letto, dalla più recente. Un aggiornamento che ha saltato versioni le mostra tutte. Ogni versione porta delle etichette sotto il nome: la sua dimensione e cosa porta.
+
+| Etichetta | Significato |
+| --- | --- |
+| *Major*, *Minor*, *Patch* | La dimensione della versione, letta dal suo numero: 2.0.0, 1.5.0, 1.5.1. |
+| *Hotfix* | Una patch rilasciata in fretta per correggere un problema. Prende il posto di *Patch*. |
+| *Nuove funzionalità* | Qualcosa che prima non potevi fare. |
+| *Miglioramenti* | Qualcosa che potevi già fare funziona meglio. |
+| *Correzioni* | Qualcosa che non funzionava ora funziona. |
+| *Azione richiesta* | Qualcosa che devi fare o sapere, come un file che le versioni precedenti non aprono. |
+| *Sicurezza* | È stato corretto un problema di sicurezza. |
+
+*Non mostrare più le note di rilascio*, in fondo all'avviso, lo disattiva. L'avviso dice dove riattivarlo.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Note di rilascio*: *Mostra dopo un aggiornamento* | L'avviso compare dopo un aggiornamento, per le versioni che i filtri qui sotto lasciano passare. |
+| *Note di rilascio*: *Non mostrare* | Nessun avviso compare. *Novità*, nella pagina Informazioni, elenca comunque ogni versione. I filtri restano nella pagina, in grigio. |
+| *Tipo di versione* | Quali dimensioni di versione vengono annunciate. |
+| *Contenuti* | Quali tipi di modifica vengono annunciati. |
+
+Una versione viene annunciata quando la sua dimensione è spuntata **e** almeno uno dei suoi contenuti è spuntato. Togliere la spunta a *Patch* nasconde ogni patch, qualunque cosa corregga. Senza nulla di spuntato in un gruppo, nessuna versione viene annunciata. Le versioni saltate mentre l'avviso è disattivato o filtrato non vengono mostrate in seguito. Le note di un'anteprima vengono mostrate solo a un'anteprima e portano l'etichetta *Anteprima*; le note di una versione stabile coprono tutte le anteprime che l'hanno preceduta.
+
+### Aggiornamenti del motore
+
 La parte dell'app che riproduce e compila le campagne può essere corretta senza un nuovo programma di installazione. Una correzione viene scaricata in background, verificata rispetto a una firma prima di essere considerata affidabile e usata dall'avvio successivo. Se l'app va in crash con una correzione, la correzione viene messa da parte automaticamente. Una correzione non cambia mai ciò che l'app può fare.
 
 Un pulsante nella barra dell'app compare mentre una correzione sta arrivando, e di nuovo quando è pronta, con la versione a cui passa.
@@ -137,6 +179,17 @@ Un pulsante nella barra dell'app compare mentre una correzione sta arrivando, e 
 | *Usa il motore incluso* | Rimuove le correzioni già scaricate. Dall'avvio successivo viene usato il motore incluso, e la pagina lo conferma. |
 
 Mentre una correzione è in uso la pagina riporta *Motore in esecuzione* seguito dalla sua versione, una correzione scaricata dopo l'installazione di questa versione. Il pulsante del motore apre una finestra con due stati. Mentre una correzione viene scaricata, dice che la correzione è in fase di download e verifica e che nulla cambia fino al prossimo avvio dell'app. Quando la correzione è pronta, dice che è stata scaricata e verificata, ha effetto al prossimo avvio e che non c'è niente da installare. Cosa contiene la richiesta è in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+### Novità
+
+Brevi notizie da parte nostra, come un nuovo binding o una nuova integrazione, un cambiamento da conoscere o qualcosa da fare prima di un aggiornamento, mostrate nella schermata iniziale senza bisogno di aggiornare. Il pulsante **Novità** nella barra della pagina iniziale le apre in una schermata a sé, dalla più recente, ognuna con il suo banner e il suo titolo. Un numero sul pulsante conta le notizie che non hai ancora aperto. Aprirne una segna come lette lei e tutte le precedenti, e *Segna tutto come letto* lo fa per tutte. La prima volta contano come da leggere solo le notizie degli ultimi trenta giorni.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Novità*: *Attivate* | A ogni avvio l'app chiede a `ripplefx.app` le novità. La richiesta non contiene nulla che ti riguardi, e quali notizie hai letto resta sul tuo computer. |
+| *Novità*: *Disattivate* | Non viene scaricato nulla e il pulsante Novità è nascosto. |
+
+Le novità richiedono la versione 2.0 del contratto di licenza. Una copia che ha accettato la 1.0 non scarica nulla finché non accetta la 2.0, qualunque cosa dica l'interruttore, e la pagina lo dice sotto di esso. Se le novità non si possono caricare, la schermata lo dice e il prossimo avvio riprova. Cosa contiene la richiesta è in [Cosa invia l'app](/it/about/what-the-app-sends/).
 
 ## Pagina Assistenza
 

@@ -3,13 +3,15 @@ title: Updates, logs and Messages
 description: Why updates are verified and never silent, why the session log has no always-send setting, and why Messages and the log are kept apart.
 ---
 
-The app does three things on its own account: it keeps itself current, it writes down what it did, and it tells you things about your folder. Each has a different audience, and the design choices below follow from keeping the audiences apart. The page takes them in turn: updates, engine fixes, the session log and what leaves it, reporting a bug, then Messages and files from a newer version.
+The app does three things on its own account: it keeps itself current, it writes down what it did, and it tells you things about your folder. Each has a different audience, and the design choices below follow from keeping the audiences apart. The page takes them in turn: updates, engine fixes, the news, the session log and what leaves it, reporting a bug, then Messages and files from a newer version.
 
 ## An update is something you can refuse
 
 After the first install, the app installs its own updates. Once per launch it asks the website whether a newer release exists. When one does, the notice can do the update: it fetches the installer for the way *this* copy was installed (the `.deb`, the `.rpm`, the Windows Setup or the `.dmg`), checks it against the checksum the release publishes, hands it to Setup, Finder or your package manager, and closes so that can happen. On Windows, Setup offers to reopen the app when it has finished; on macOS and Linux you start it again yourself.
 
 Handing the installer to the platform's own installer window, rather than replacing files from inside the running app, means you get the ordinary window and can still say no to it. A download that does not match its checksum is thrown away. Where the app cannot tell how it arrived, it opens the download page instead. An update never closes the app over unsaved work: a file that changed on disk while you were editing it stops the update, and the app says which one.
+
+Previews are the same mechanism with one more choice. A copy following the Preview release channel is offered early builds of the next version as well as every stable release, whichever is newer. The website answers every copy with every channel's latest release, so the request never says which channel you follow; the choice is made on your machine. Nothing older than the version you are running is ever offered, on either channel. That is why switching back to Stable from a preview never downgrades you. It stops the previews, and the app waits for Stable to catch up, because a project a newer version has saved is exactly what an older one may refuse to open, as the section on files from a newer version explains. [Settings](/reference/settings/#release-channel) has the controls.
 
 Installing a downloaded installer is a step the platform may question, because nothing is code-signed yet; [Why the installers are unsigned](/explanation/unsigned-installers/) gives the reasoning, and [Installers and first launch](/reference/installers/) says what each platform asks.
 
@@ -18,6 +20,12 @@ Installing a downloaded installer is a step the platform may question, because n
 The part of the app that plays and compiles campaigns can be fixed without a new installer. A fix is fetched in the background, checked against a signature before it is trusted, and used from the next launch. If the app crashes with a fix in place, the fix is set aside automatically. A fix never changes what the app can do.
 
 Because it happens without a prompt, it is visible and reversible: the app bar shows a button while a fix arrives and when it is ready, and the fetching can be switched off, or the fixes removed, in Settings. [Settings, accessibility and updates controls](/reference/settings/) lists the controls, and [What the app sends](/about/what-the-app-sends/#engine-fix-check) says what the request carries.
+
+## News without an update
+
+Some things worth telling you are not about the editor at all: a new binding for the engine, an integration, a page that moved. They have no place in a release's notes, and waiting for the next release to say them would be the wrong way round. So the home page has a News button, and the items behind it come from a feed on the website rather than from the app.
+
+It is held to the same rules as the update check. It asks once per launch, carries nothing about you, and fetches pictures from our own site and nowhere else. What you have read is a date kept on your machine. It also waits on a licence: version 1.0 of the agreement listed every request the app could make, and the news was not on the list. Version 2.0 allows a request that carries nothing about you, made only to our own site, as a kind, and a copy that accepted 1.0 is asked about it thirty days after being told. [Settings](/reference/settings/#news) has the switch, and [What the app sends](/about/what-the-app-sends/#news) says what the request carries.
 
 ## The session log is for a bug report, and you decide what leaves it
 

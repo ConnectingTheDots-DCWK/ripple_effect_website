@@ -5,7 +5,9 @@ sidebar:
   order: 3
 ---
 
-Ripple Effect works on files on your own disk and needs no network to do it. This page lists what leaves your machine anyway: six things. Three the app asks the website for without being told to (the update check, the engine fix check and the contributor list with its avatars), one you have to switch on, one asked for every time, and one that is only ever something you did yourself.
+Ripple Effect works on files on your own disk and needs no network to do it. This page lists what leaves your machine anyway. Some of it the app asks the website for without being told to (the update check, the engine fix check, the news and the contributor list with its avatars), one you have to switch on, one asked for every time, and one that is only ever something you did yourself.
+
+From version 2.0 of the [End-User Licence Agreement](https://legal.ripplefx.app/eula/) the agreement does not list these one by one. It sets four rules every request has to keep: nothing before you accept; nothing you author and no identifier without your say; anything about you only if you switch it on or answer yes; and nobody but us reached unless the agreement names them. A request carrying nothing about you, made only to `ripplefx.app` or a subdomain, is allowed as a kind. The [Privacy Notice](https://legal.ripplefx.app/privacy/) is still the complete list, and says each new one before the release that makes it.
 
 The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version, with legal bases and retention periods. This page states the same facts.
 
@@ -13,8 +15,9 @@ The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version,
 
 | Request | Destination | When | Switch | Carries anything of yours |
 | --- | --- | --- | --- | --- |
-| [Update check](#update-check) | `ripplefx.app` | Once per launch | Settings ▸ Updates | No |
+| [Update check](#update-check) | `ripplefx.app` | Once per launch | None | No |
 | [Engine fix check](#engine-fix-check) | `ripplefx.app` | Once per launch, half a minute after start | Settings ▸ Updates | No |
+| [News](#news) | `ripplefx.app`, and pictures from `ripplefx.app` or a subdomain only | Once per launch, from 1.5.1, once you have accepted EULA 2.0 | Settings ▸ Updates | No |
 | [Contributor list and avatars](#contributor-list-and-avatars) | `ripplefx.app` for the list, `avatars.githubusercontent.com` for the images | When the About box opens | None | No |
 | [Usage statistics](#usage-statistics) | Ripple Effect's hosted backend | At most one row a day, after an hour on | Settings ▸ Data control, off until you switch it on | No |
 | [Crash report](#crash-report) | Ripple Effect's hosted backend | Only when you press *Send report* | Asked once per crash | It can |
@@ -24,6 +27,8 @@ The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version,
 
 From version 1.5 the app asks you to accept the [End-User Licence Agreement](https://legal.ripplefx.app/eula/) at first launch and makes no network request of any kind until you have: not an update check, not anything. If you close that window, nothing has been sent.
 
+A copy that accepted version 1.0 is told about version 2.0 on the home page and asked to accept it no sooner than thirty days later. Until then 1.0 governs it, and it makes only the requests 1.0 lists.
+
 Until you answer, the app underneath has not been built, so there is nothing there to make a request.
 
 ## Update check
@@ -32,11 +37,11 @@ Until you answer, the app underneath has not been built, so there is nothing the
 | --- | --- |
 | Destination | `ripplefx.app` |
 | Frequency | Once per launch |
-| Question | What is the most recent release? The app compares the answer with its own version on your machine. |
-| Carries | No identifier, no version number and nothing about you. |
+| Question | What is the most recent release on each release channel? The answer lists Stable and Preview both, and the app picks the one for the channel you follow and compares it with its own version on your machine. |
+| Carries | No identifier, no version number, not which release channel you follow, and nothing about you. |
 | Server sees | The address the request came from, as with any request over the internet. |
 | Distinguishes installations | No. Nothing in the request is unique to one. |
-| Switch | *Engine updates* under **Settings ▸ Updates** switches this off together with the engine fix check. |
+| Switch | None. It carries nothing at all, and the agreement names it as the one request of its kind with no switch. |
 
 ## Engine fix check
 
@@ -49,6 +54,19 @@ Until you answer, the app underneath has not been built, so there is nothing the
 | A fix that exists | Downloaded, checked against our signature, and used from the next launch. It never changes what the app can do. |
 | Switch | *Engine updates* under **Settings ▸ Updates**. *Use the bundled engine* there goes back to the engine that shipped with the app. |
 | Safeguard | A fix is set aside automatically if the app crashes with it. |
+
+## News
+
+| Field | Detail |
+| --- | --- |
+| Destination | `ripplefx.app`, which serves the feed at `get.ripplefx.app/news/feed.xml` |
+| Availability | From version 1.5.1, and only once you have accepted version 2.0 of the licence agreement. A copy that accepted 1.0 asks nothing until then. |
+| Frequency | Once per launch. If it fails, the next launch tries again; nothing retries in between. |
+| Question | What is the current news? |
+| Carries | No identifier, no version number, no cookie and nothing about you. No conditional header either, so the site cannot tell what your copy saw last time. |
+| Pictures | Fetched from `ripplefx.app` or one of its subdomains, and from nowhere else. A picture an item points at anywhere else is not fetched. |
+| What you have read | Recorded on your machine only, as the date of the newest item you opened. Never sent. |
+| Switch | *News* under **Settings ▸ Updates**. Off, nothing is fetched and the News button is hidden. |
 
 ## Contributor list and avatars
 
@@ -152,7 +170,7 @@ These are yours rather than the app's, and are listed because they put bytes on 
 | Your work | Passages, boards, projects, components, scripts and exports are not sent anywhere. There is no background sync. |
 | What you do in the app | Which boards you open, how long you spend and what you click are not recorded or sent, with or without statistics switched on. The statistics say that the app was used on a day, and nothing about how. |
 | The session log | Not sent, unless it goes inside a crash report you sent. It is written on your machine, with private things replaced as they are written, and a run where nothing went wrong is deleted the next time you start the app. |
-| Network responses | The update check, the contributor list and an installer download each leave a line in the session log saying where the request went, what came back and how long it took. The address is recorded without anything after the `?`, and no response content is written. |
+| Network responses | The update check, the news, the contributor list and an installer download each leave a line in the session log saying where the request went, what came back and how long it took. The address is recorded without anything after the `?`, and no response content is written. |
 
 ## What is planned
 

@@ -26,13 +26,14 @@ The licence for the app is the **End-User Licence Agreement** (EULA), published 
 | --- | --- |
 | Earlier than 1.5 | The short Ripple Effect Licence that shipped with it, for as long as you use it. 1.4 was the last release that did not ask you to accept anything. The notice stays published, unchanged. |
 | 1.5 and later | The EULA, from the first build that asks you to accept it. It replaces the earlier licence rather than sitting on top of it. Everything the earlier licence permitted, the EULA permits. |
+| 1.5.1 and later | EULA 2.0 for a new installation, accepted at first launch. An installation that accepted 1.0 stays under 1.0 until it accepts 2.0: the home page says 2.0 exists, and the app asks no sooner than thirty days later. You can decline, and keep using the last release made under 1.0. |
 
 ## Acceptance at first launch
 
 | Item | Behaviour |
 | --- | --- |
 | Agreement | Shown at first launch. |
-| Network requests | None of any kind, including an update check, until you accept. |
+| Network requests | None of any kind, including an update check, until you accept. After that, version 2.0 sets four rules every request keeps: nothing you author and no identifier without your say, anything about you only if you switch it on or answer yes, and nobody but us reached unless the agreement names them. [What the app sends](/about/what-the-app-sends/) lists every request. |
 | Mechanism | The app underneath is not started until you answer. |
 | Privacy Notice | Shown alongside the Agreement, to read rather than to accept. |
 
