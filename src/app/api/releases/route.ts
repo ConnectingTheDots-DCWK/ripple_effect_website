@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { loadLatestRelease } from "@/lib/releases";
+import {
+  channels,
+  type LatestRelease,
+  loadReleases,
+} from "@/lib/releases";
 
 export const runtime = "nodejs";
 
@@ -16,15 +20,40 @@ export const runtime = "nodejs";
  *
  * The reason names a class of problem and never a value: no token, no header,
  * no repository path that is not already public in the app's own metadata.
+ *
+ * **The top level is Stable, byte for byte what it was before channels**, so
+ * an installed 1.5.0 — which reads only that — can never be offered a preview.
+ * `channels` beside it carries every public channel's newest release in the
+ * same shape, or `null` for a channel with nothing in it, and a build that
+ * knows about channels picks from it on its own machine: the request takes no
+ * parameter, because which channel somebody follows is information about them
+ * and the update check is promised to carry none. See `CHANNELS` in
+ * `src/lib/releases.ts`.
  */
 export async function GET() {
-  const { release, problem } = await loadLatestRelease();
+  const { releases, problem } = await loadReleases();
+  const stable = releases.stable;
+  const listed = Object.fromEntries(
+    channels.map((channel) => {
+      const release = releases[channel];
+      return [channel, release ? body(release) : null];
+    }),
+  );
 
-  if (!release) {
-    return NextResponse.json({ published: false, problem, assets: [] });
+  if (!stable) {
+    return NextResponse.json({
+      published: false,
+      problem,
+      assets: [],
+      channels: listed,
+    });
   }
 
-  return NextResponse.json({
+  return NextResponse.json({ ...body(stable), channels: listed });
+}
+
+function body(release: LatestRelease) {
+  return {
     published: true,
     version: release.version,
     tag: release.tag,
@@ -39,5 +68,5 @@ export async function GET() {
           href: `/api/download/${release.certificate.id}`,
         }
       : null,
-  });
+  };
 }

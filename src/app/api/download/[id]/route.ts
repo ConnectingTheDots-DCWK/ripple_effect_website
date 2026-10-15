@@ -20,7 +20,7 @@ export async function GET(
   const url = await signedAssetUrl(Number(id));
   if (!url) {
     return NextResponse.json(
-      { error: "That download is not part of the current release." },
+      { error: "That download is not part of a current release." },
       { status: 404 }
     );
   }

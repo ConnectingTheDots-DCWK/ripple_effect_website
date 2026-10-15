@@ -132,12 +132,48 @@ type GitHubRelease = {
   }[];
 };
 
-/** An editor release's tag, and only an editor release's: `v1.5.0`, `v1.5.0+6`. */
-const EDITOR_TAG = /^v(\d+)\.(\d+)\.(\d+)(?:\+[0-9A-Za-z.-]+)?$/;
+/**
+ * The release channels an installed app can follow, and how each one's tags
+ * are spelled.
+ *
+ * **A channel is a tag shape**, not a separate repository or a separate
+ * endpoint: Stable is `v1.5.0` (or `v1.5.0+6`), Preview is `v1.6.0-prev.2`, and
+ * both are cut by the same workflow into the same repository. Preview is
+ * published as a GitHub *prerelease* and Stable never is, so a row also says
+ * which of the two it accepts — a stable-looking tag on a prerelease is
+ * somebody's mistake, not a release.
+ *
+ * **`/api/releases` lists every row here, and the app chooses.** The update
+ * check is promised, in the EULA and the Privacy Notice, to carry "no
+ * identifier, no version number and no information about you" — and which
+ * channel somebody follows is information about them. So the request stays
+ * bare and the answer carries all of them; see ADR *a-channel-is-a-tag* in the
+ * app repository.
+ *
+ * That is also why **only public channels go in this table**. A build made for
+ * one partner would be served to everybody from here; it wants its own
+ * authenticated route, and this table is the shape that route would read.
+ *
+ * The key is the numbers, then the preview number, compared left to right.
+ */
+const CHANNELS = {
+  stable: {
+    tag: /^v(\d+)\.(\d+)\.(\d+)(?:\+[0-9A-Za-z.-]+)?$/,
+    prerelease: false,
+  },
+  preview: {
+    tag: /^v(\d+)\.(\d+)\.(\d+)-prev\.(\d+)(?:\+[0-9A-Za-z.-]+)?$/,
+    prerelease: true,
+  },
+} as const;
+
+export type Channel = keyof typeof CHANNELS;
+
+export const channels = Object.keys(CHANNELS) as Channel[];
 
 /**
- * The editor release an installed app should be offered, out of a page of the
- * repository's releases.
+ * The release of one [channel] an installed app should be offered, out of a
+ * page of the repository's releases.
  *
  * **Chosen by tag, never by GitHub's *latest* badge.** The repository cuts two
  * kinds of release — the editor's `v*` and the engine's `engine-v*` (ADR
@@ -145,18 +181,20 @@ const EDITOR_TAG = /^v(\d+)\.(\d+)\.(\d+)(?:\+[0-9A-Za-z.-]+)?$/;
  * whichever was created last unless every workflow remembers otherwise. One
  * engine release holding it would make every installed editor, 1.4 included,
  * quietly stop being offered updates and blank the download page. So: drafts
- * and prereleases out, anything not tagged like an editor out, highest version
- * by number.
+ * out, anything not tagged like the channel out, a prerelease only where the
+ * channel is one, highest version by number.
  */
-export function pickEditorRelease(
+export function pickChannelRelease(
   releases: GitHubRelease[],
+  channel: Channel,
 ): GitHubRelease | null {
+  const { tag, prerelease } = CHANNELS[channel];
   let best: { release: GitHubRelease; key: number[] } | null = null;
   for (const release of releases) {
-    if (release.draft || release.prerelease) continue;
-    const match = EDITOR_TAG.exec(release.tag_name);
+    if (release.draft || release.prerelease !== prerelease) continue;
+    const match = tag.exec(release.tag_name);
     if (!match) continue;
-    const key = [Number(match[1]), Number(match[2]), Number(match[3])];
+    const key = match.slice(1).map(Number);
     if (!best || compareKeys(key, best.key) > 0) best = { release, key };
   }
   return best?.release ?? null;
@@ -170,38 +208,45 @@ function compareKeys(a: number[], b: number[]): number {
 }
 
 /**
- * The latest published release, or `null`.
+ * The latest published **stable** release, or `null`.
  *
  * `null` is a designed answer rather than a failure: before 1.0.0 is published
  * there genuinely is no release, and the download page draws its four
  * platforms in a "not published yet" state instead of buttons that 404.
  *
- * Drafts and prereleases are skipped (see `pickEditorRelease`), and the
+ * Drafts and prereleases are skipped (see `pickChannelRelease`), and the
  * release workflow's `draft` input **defaults to true** — so a release that
- * has been cut but not undrafted is invisible here, correctly.
+ * has been cut but not undrafted is invisible here, correctly. Every page on
+ * this site reads this one: a preview is reached from inside the app, never
+ * from the download page.
  */
 export async function fetchLatestRelease(): Promise<LatestRelease | null> {
-  return (await loadLatestRelease()).release;
+  return (await loadReleases()).releases.stable;
 }
 
 /**
- * The same fetch, with the reason it failed kept rather than flattened.
+ * The newest release of every channel, with the reason the fetch failed kept
+ * rather than flattened.
  *
- * Every branch logs, **404 included**. It used to be the one that did not, on
- * the grounds that "nothing published yet" is ordinary and not an error — true
- * before the first release, and misleading after it, since a token that cannot
- * see a private repository 404s in exactly the same way.
+ * `problem` is about **Stable**: a channel with nothing in it yet — Preview,
+ * most of the time — is an ordinary `null`, not an outage, and logs nothing.
+ *
+ * Every other branch logs, **404 included**. It used to be the one that did
+ * not, on the grounds that "nothing published yet" is ordinary and not an
+ * error — true before the first release, and misleading after it, since a
+ * token that cannot see a private repository 404s in exactly the same way.
  */
-export async function loadLatestRelease(): Promise<{
-  release: LatestRelease | null;
+export async function loadReleases(): Promise<{
+  releases: Record<Channel, LatestRelease | null>;
   problem: ReleaseProblem | null;
 }> {
+  const none = { stable: null, preview: null };
   const auth = headers();
   if (!auth) {
     console.error(
       "RIPPLE_EFFECT_EDITOR_RELEASES is not set. /download will show every platform as unpublished, whatever is actually released.",
     );
-    return { release: null, problem: "no-token" };
+    return { releases: none, problem: "no-token" };
   }
 
   let response: Response;
@@ -212,7 +257,7 @@ export async function loadLatestRelease(): Promise<{
     });
   } catch (error) {
     console.error("Could not reach the GitHub API", error);
-    return { release: null, problem: "unreachable" };
+    return { releases: none, problem: "unreachable" };
   }
 
   if (!response.ok) {
@@ -220,26 +265,45 @@ export async function loadLatestRelease(): Promise<{
       console.error(
         `GitHub answered ${response.status} for ${REPO}/releases. The token is present but rejected — expired, revoked, or not granted Contents: read on that repository.`,
       );
-      return { release: null, problem: "unauthorized" };
+      return { releases: none, problem: "unauthorized" };
     }
     if (response.status === 404) {
       console.error(
         `GitHub answered 404 for ${REPO}/releases. The token cannot see that repository.`,
       );
-      return { release: null, problem: "not-found" };
+      return { releases: none, problem: "not-found" };
     }
     console.error(`GitHub answered ${response.status} for ${REPO}/releases`);
-    return { release: null, problem: "unreachable" };
+    return { releases: none, problem: "unreachable" };
   }
 
-  const release = pickEditorRelease((await response.json()) as GitHubRelease[]);
-  if (!release) {
+  const all = (await response.json()) as GitHubRelease[];
+  const releases = Object.fromEntries(
+    channels.map((channel) => {
+      const picked = pickChannelRelease(all, channel);
+      return [channel, picked ? describe(picked) : null];
+    }),
+  ) as Record<Channel, LatestRelease | null>;
+
+  if (!releases.stable) {
     console.error(
       `${REPO} has no published editor release: nothing tagged v<major>.<minor>.<patch> that is neither a draft nor a prerelease.`,
     );
-    return { release: null, problem: "not-found" };
+    return { releases, problem: "not-found" };
   }
+  return { releases, problem: null };
+}
 
+/** The stable release alone, with its problem — what `/api/releases` has always led with. */
+export async function loadLatestRelease(): Promise<{
+  release: LatestRelease | null;
+  problem: ReleaseProblem | null;
+}> {
+  const { releases, problem } = await loadReleases();
+  return { release: releases.stable, problem };
+}
+
+function describe(release: GitHubRelease): LatestRelease {
   const assets = release.assets
     .map((asset) => {
       const platform = platformOf(asset.name);
@@ -262,24 +326,21 @@ export async function loadLatestRelease(): Promise<{
   const parsed = parseTag(release.tag_name);
 
   return {
-    release: {
-      tag: release.tag_name,
-      // A tag in a spelling this does not know reads as the tag itself rather
-      // than as nothing: a badge saying `v1.0.0-rc1` is worse than a blank one
-      // only if it is wrong, and it is not.
-      version: parsed?.version ?? release.tag_name.replace(/^v/, ""),
-      build: parsed?.build ?? null,
-      publishedAt: release.published_at,
-      assets,
-      certificate: cer ? { id: cer.id, name: cer.name, size: cer.size } : null,
-    },
-    problem: null,
+    tag: release.tag_name,
+    // A tag in a spelling this does not know reads as the tag itself rather
+    // than as nothing: a badge saying `v1.0.0-rc1` is worse than a blank one
+    // only if it is wrong, and it is not.
+    version: parsed?.version ?? release.tag_name.replace(/^v/, ""),
+    build: parsed?.build ?? null,
+    publishedAt: release.published_at,
+    assets,
+    certificate: cer ? { id: cer.id, name: cer.name, size: cer.size } : null,
   };
 }
 
 /**
  * A short-lived, signed URL for one release asset, or `null` if that asset is
- * not part of the latest release.
+ * not part of the newest release of some channel.
  *
  * The membership check is the reason this takes an id rather than passing one
  * through: without it the route would be a general read oracle for every asset
@@ -295,10 +356,16 @@ export async function signedAssetUrl(assetId: number): Promise<string | null> {
   const auth = headers();
   if (!auth) return null;
 
-  const latest = await fetchLatestRelease();
-  const known =
-    latest?.assets.some((asset) => asset.id === assetId) ||
-    latest?.certificate?.id === assetId;
+  // Any channel's, because the app downloads a preview through this route
+  // too; never an older release's, which is what keeps the check a check.
+  const { releases } = await loadReleases();
+  const known = channels.some((channel) => {
+    const release = releases[channel];
+    return (
+      release?.assets.some((asset) => asset.id === assetId) ||
+      release?.certificate?.id === assetId
+    );
+  });
   if (!known) return null;
 
   const response = await fetch(
