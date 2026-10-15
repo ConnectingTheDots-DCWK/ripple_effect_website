@@ -3,6 +3,8 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 
+import { checkDate, readFrontmatter } from "@/lib/frontmatter";
+
 /**
  * The blog, read off disk at build time.
  *
@@ -76,73 +78,16 @@ const REQUIRED = ["title", "description", "date", "category"] as const;
 /** Accepted, and absent from most posts. */
 const OPTIONAL = ["seoTitle"] as const;
 
-const FIELDS = [...REQUIRED, ...OPTIONAL] as const;
-
 /**
- * Frontmatter, parsed strictly and by hand.
- *
- * It is four scalar keys, so a YAML engine in the dependency tree would be
- * paying for a language to read `key: value` four times. The cost of doing it
- * by hand is that it must be *strict*: an unknown key, a missing one, a
- * malformed date or a category that is not in the list stops the build and
- * names the file. A lenient parser here would drop a typo'd `discription` on
- * the floor and publish a card with no excerpt.
- *
- * What it understands: `key: value` on one line, with the value optionally
- * wrapped in matching single or double quotes. Nothing else — no lists, no
- * nesting, no folded blocks. A post that needs one of those wants a real
- * parser, and that is the moment to add one rather than now.
+ * A post's frontmatter, read by the shared strict parser
+ * (`src/lib/frontmatter.ts`), with the two values only the blog knows the
+ * meaning of checked here: the date and the category.
  */
 function parse(slug: string, raw: string): Omit<Post, "minutes"> {
   const where = `content/blog/${slug}.md`;
+  const { fields, body } = readFrontmatter(where, raw, REQUIRED, OPTIONAL);
 
-  if (!raw.startsWith("---\n")) {
-    throw new Error(`${where}: no frontmatter — the file must open with ---`);
-  }
-  const end = raw.indexOf("\n---\n", 3);
-  if (end === -1) {
-    throw new Error(`${where}: the frontmatter block is never closed`);
-  }
-
-  const fields = new Map<string, string>();
-  for (const line of raw.slice(4, end).split("\n")) {
-    if (line.trim() === "") continue;
-    const colon = line.indexOf(":");
-    if (colon === -1) {
-      throw new Error(`${where}: frontmatter line is not \`key: value\` — ${line}`);
-    }
-    const key = line.slice(0, colon).trim();
-    let value = line.slice(colon + 1).trim();
-    // A title with a colon in it is the common case, and it survives because
-    // only the *first* colon splits the line.
-    if (
-      value.length > 1 &&
-      (value.startsWith('"') || value.startsWith("'")) &&
-      value.endsWith(value[0])
-    ) {
-      value = value.slice(1, -1);
-    }
-    if (!(FIELDS as readonly string[]).includes(key)) {
-      throw new Error(
-        `${where}: unknown frontmatter key \`${key}\` — expected one of ${FIELDS.join(", ")}`
-      );
-    }
-    if (value === "") {
-      throw new Error(`${where}: frontmatter key \`${key}\` is empty`);
-    }
-    fields.set(key, value);
-  }
-
-  for (const field of REQUIRED) {
-    if (!fields.has(field)) {
-      throw new Error(`${where}: frontmatter is missing \`${field}\``);
-    }
-  }
-
-  const date = fields.get("date")!;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date))) {
-    throw new Error(`${where}: \`date\` must be YYYY-MM-DD — got ${date}`);
-  }
+  const date = checkDate(where, fields.get("date")!);
 
   const category = fields.get("category")!;
   if (!(categories as readonly string[]).includes(category)) {
@@ -158,7 +103,7 @@ function parse(slug: string, raw: string): Omit<Post, "minutes"> {
     date,
     category: category as Category,
     seoTitle: fields.get("seoTitle"),
-    body: raw.slice(end + 5),
+    body,
   };
 }
 
