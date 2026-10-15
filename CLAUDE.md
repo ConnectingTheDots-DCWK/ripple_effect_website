@@ -3,9 +3,10 @@
 The marketing site for Ripple Effect — and, under `docs-site/`, the
 documentation site, which is why the repository is no longer called
 `ripple_effect_landing_page`. Next.js 16 App Router, Tailwind CSS 4,
-TypeScript, pnpm, deployed on Vercel. Six pages — `/`, `/download`,
-`/pricing`, `/privacy`, `/thanks` and `/blog` — plus a page per blog post,
-three API routes, a feed, and the `/go/` redirects every build of the app
+TypeScript, pnpm, deployed on Vercel. Seven pages — `/`, `/download`,
+`/pricing`, `/privacy`, `/thanks`, `/blog` and `/news` — plus a page per
+blog post and per news item, three API routes, two feeds, and the `/go/`
+redirects every build of the app
 links through.
 
 Scaffolded from [velora-ui](https://github.com/ColorlibHQ/velora-ui) (MIT),
@@ -1165,6 +1166,52 @@ unchecked — so what a revision adds is looked up in the package before it
 stays. And a post is dated: when what it describes has moved on, it says so
 **once**, in an editorial note at the top, rather than in three places or by
 rewriting history into the author's mouth.
+
+## The news
+
+`/news`, `/news/<slug>` and `/news/feed.xml`. **Its main reader is the app**:
+from 1.5.1, every installation that has accepted EULA 2.0 and not switched
+*News* off fetches the feed once per launch and draws each item on its home
+screen, with an unread count. The pages are the same items for anybody who
+arrives from a link, a search or a feed reader. The app's half and the
+decision are in the application repository (`apps/editor/lib/src/news/`, ADR
+*a-request-to-ourselves-is-a-class*); Privacy Notice 2.0 §4.7 is what every
+claim about it paraphrases.
+
+**News is not the blog.** A post is an essay for somebody following the
+project; an item is a few paragraphs for somebody using the app, about what
+the editor's own release notes never carry — a binding, an integration, a
+page that moved, something to do before an update. It has no category, no
+reading time and no search, and it is not put through the blog's writing
+procedure: it says what changed for the reader and stops.
+
+`src/lib/news.ts` reads `content/news/*.md` through the blog's strict parser,
+now shared as `src/lib/frontmatter.ts`. Four keys — `title`, `description`,
+`date`, `banner` — and `bannerAlt`, required for an image banner and refused
+for any other. `banner` is one flat value: `image <file>` (beside the item,
+under `public/news/<slug>/`), `colour #RRGGBB` or `gradient #RRGGBB #RRGGBB`.
+**The build refuses what the app could not show**: an image banner that is an
+address rather than a file here, because the app fetches pictures from
+`ripplefx.app` and its subdomains and nowhere else; a body image that is not
+`/news/<slug>/<file>`; and a ```` ```ripple ```` fence, which the app's
+Markdown widget would run as a snippet.
+
+**The feed is a contract with installed builds.** RSS 2.0 for every reader,
+plus the namespace `https://ripplefx.app/ns/news/1` for the banner
+(`<rfx:banner kind=…>`) and the body as Markdown (`<rfx:body
+type="text/markdown">`, in CDATA). The app matches by that URI, never by the
+prefix, and draws a banner kind it does not know as a flat neutral. A change
+an installed build would misread is a `/2` beside `/1`, not an edit.
+Site-relative addresses in a body are made absolute in the feed. Thirty
+items, because it is the one file here fetched on every launch of every
+installation.
+
+**The banner is the third gradient on the site**, after the beam and the
+release banner, and the reason is different: it is content an author chose
+for one item, not chrome. The scrim over it is fixed — black, from nothing to
+55% a third of the way down and 75% at the foot — so white text clears 4.5:1
+over a pure-white banner wherever the title can sit. The app draws the same
+ramp; change one and change the other.
 
 ## `/thanks`, and the Buy Me a Coffee ask
 

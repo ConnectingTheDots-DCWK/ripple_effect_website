@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { allPosts } from "@/lib/blog";
+import { allArticles } from "@/lib/news";
 import { siteConfig } from "@/lib/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ["", "/download", "/pricing", "/privacy", "/blog"].map(
+  const pages = ["", "/download", "/pricing", "/privacy", "/blog", "/news"].map(
     (path) => ({
       url: `${siteConfig.url}${path}`,
       changeFrequency: "weekly" as const,
@@ -21,5 +22,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...pages, ...posts];
+  const news = allArticles().map((article) => ({
+    url: `${siteConfig.url}/news/${article.slug}`,
+    lastModified: new Date(`${article.date}T00:00:00Z`),
+    changeFrequency: "yearly" as const,
+    priority: 0.5,
+  }));
+
+  return [...pages, ...posts, ...news];
 }

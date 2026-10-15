@@ -12,6 +12,7 @@ const groups = [
       { text: "Docs", href: siteConfig.links.docs },
       { text: "Pricing", href: "/pricing" },
       { text: "Blog", href: "/blog" },
+      { text: "News", href: "/news" },
     ],
   },
   {
