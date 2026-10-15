@@ -7,7 +7,7 @@ The gear in the app bar, on every screen, opens the Settings dialog. Settings be
 
 Every option is a choice among a few named things, drawn as a segmented control with the current choice lit, and a line under the control says what that choice means. A choice takes effect when pressed; there is no Apply. The exception to the segmented control is *Language*, a drop-down.
 
-The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app.
+The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app. The home page's bar also has the News button, with a count while something is unread; see [News](#news).
 
 ## Pages
 
@@ -17,7 +17,7 @@ The dialog has six pages down a rail on its left. Every page has the same height
 | --- | --- | --- |
 | *General* | Appearance, accessibility, language | How the app looks, reads and plays |
 | *Data control* | What leaves this machine | *Usage statistics* |
-| *Updates* | Channel, release notes, engine fixes | *Release channel*, *Release notes* and its filters, *Engine updates*, *Use the bundled engine* |
+| *Updates* | Channel, release notes, engine fixes, news | *Release channel*, *Release notes* and its filters, *Engine updates*, *Use the bundled engine*, *News* |
 | *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
 | *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
 | *About* | Version, credits, licences | The About box |
@@ -179,6 +179,17 @@ A button in the app bar shows while a fix is arriving, and again once it is read
 | *Use the bundled engine* | Removes the fixes already fetched. The bundled engine is used from the next launch, and the page confirms it. |
 
 While a fix is in use the page reads *Running engine* followed by its version, a fix fetched after this version was installed. The engine button opens a dialog with two states. While a fix downloads, it says the fix is being downloaded and checked and that nothing changes until the app next starts. When the fix is ready, it says it has been downloaded and checked, takes effect at the next start, and that there is nothing to install. What the request carries is in [What the app sends](/about/what-the-app-sends/).
+
+### News
+
+Short items from us, such as a new binding or integration, a change worth knowing about, or something to do before an update, shown on the home screen without an update. The **News** button on the home page's bar opens them as a screen of their own, newest first, each with a banner and its title. A number on the button counts the items you have not opened. Opening an item marks it and everything older as read, and *Mark all as read* does it for the lot. The first time, only items from the last thirty days count as unread.
+
+| Control | Effect |
+| --- | --- |
+| *News*: *On* | Once per launch the app asks `ripplefx.app` for the news. The request carries nothing about you, and which items you have read stays on your machine. |
+| *News*: *Off* | Nothing is fetched, and the News button is hidden. |
+
+The news needs version 2.0 of the licence agreement. A copy that accepted 1.0 fetches nothing until it has accepted 2.0, whatever the switch says, and the page says so under it. If the news cannot be loaded, the screen says so and the next launch tries again. What the request carries is in [What the app sends](/about/what-the-app-sends/#news).
 
 ## Support page
 

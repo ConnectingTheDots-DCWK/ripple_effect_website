@@ -7,7 +7,7 @@ L'ingranaggio nella barra dell'app, in ogni schermata, apre la finestra Impostaz
 
 Ogni opzione è una scelta tra poche voci con un nome, disegnata come controllo segmentato con la scelta attuale evidenziata, e una riga sotto il controllo spiega cosa significa quella scelta. Una scelta ha effetto non appena la premi; non c'è Applica. L'eccezione al controllo segmentato è *Lingua*, un menu a tendina.
 
-La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app.
+La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app. La barra della pagina iniziale ha anche il pulsante Novità, con un numero finché qualcosa resta da leggere; vedi [Novità](#novità).
 
 ## Pagine
 
@@ -17,7 +17,7 @@ La finestra ha sei pagine lungo una barra sulla sinistra. Ogni pagina ha la stes
 | --- | --- | --- |
 | *Generale* | Aspetto, accessibilità, lingua | Come l'app appare, si legge e riproduce |
 | *Controllo dati* | Cosa lascia questo computer | *Statistiche di utilizzo* |
-| *Aggiornamenti* | Canale, note di rilascio, correzioni del motore | *Canale di rilascio*, *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso* |
+| *Aggiornamenti* | Canale, note di rilascio, correzioni del motore, novità | *Canale di rilascio*, *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso*, *Novità* |
 | *Agenti* | Assistenti che raggiungono l'app | La connessione dell'assistente; vedi [Strumenti MCP](/it/reference/mcp-tools/) |
 | *Assistenza* | Domande, bug, idee | [La pagina Assistenza](#pagina-assistenza) |
 | *Informazioni* | Versione, crediti, licenze | La finestra Informazioni |
@@ -179,6 +179,17 @@ Un pulsante nella barra dell'app compare mentre una correzione sta arrivando, e 
 | *Usa il motore incluso* | Rimuove le correzioni già scaricate. Dall'avvio successivo viene usato il motore incluso, e la pagina lo conferma. |
 
 Mentre una correzione è in uso la pagina riporta *Motore in esecuzione* seguito dalla sua versione, una correzione scaricata dopo l'installazione di questa versione. Il pulsante del motore apre una finestra con due stati. Mentre una correzione viene scaricata, dice che la correzione è in fase di download e verifica e che nulla cambia fino al prossimo avvio dell'app. Quando la correzione è pronta, dice che è stata scaricata e verificata, ha effetto al prossimo avvio e che non c'è niente da installare. Cosa contiene la richiesta è in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+### Novità
+
+Brevi notizie da parte nostra, come un nuovo binding o una nuova integrazione, un cambiamento da conoscere o qualcosa da fare prima di un aggiornamento, mostrate nella schermata iniziale senza bisogno di aggiornare. Il pulsante **Novità** nella barra della pagina iniziale le apre in una schermata a sé, dalla più recente, ognuna con il suo banner e il suo titolo. Un numero sul pulsante conta le notizie che non hai ancora aperto. Aprirne una segna come lette lei e tutte le precedenti, e *Segna tutto come letto* lo fa per tutte. La prima volta contano come da leggere solo le notizie degli ultimi trenta giorni.
+
+| Controllo | Effetto |
+| --- | --- |
+| *Novità*: *Attivate* | A ogni avvio l'app chiede a `ripplefx.app` le novità. La richiesta non contiene nulla che ti riguardi, e quali notizie hai letto resta sul tuo computer. |
+| *Novità*: *Disattivate* | Non viene scaricato nulla e il pulsante Novità è nascosto. |
+
+Le novità richiedono la versione 2.0 del contratto di licenza. Una copia che ha accettato la 1.0 non scarica nulla finché non accetta la 2.0, qualunque cosa dica l'interruttore, e la pagina lo dice sotto di esso. Se le novità non si possono caricare, la schermata lo dice e il prossimo avvio riprova. Cosa contiene la richiesta è in [Cosa invia l'app](/it/about/what-the-app-sends/).
 
 ## Pagina Assistenza
 

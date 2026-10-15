@@ -21,6 +21,12 @@ La parte dell'app che gioca e compila le campagne può essere corretta senza un 
 
 Poiché avviene senza chiedere nulla, è visibile e reversibile: la barra dell'app mostra un pulsante mentre una correzione sta arrivando e quando è pronta, e il download può essere disattivato, o le correzioni rimosse, in Impostazioni. [Impostazioni, accessibilità e controlli degli aggiornamenti](/it/reference/settings/) elenca i controlli, e [Cosa invia l'app](/it/about/what-the-app-sends/) dice cosa contiene la richiesta.
 
+## Le novità senza un aggiornamento
+
+Alcune cose che vale la pena dirti non riguardano affatto l'editor: un nuovo binding per il motore, un'integrazione, una pagina che si è spostata. Non hanno posto nelle note di una versione, e aspettare la versione successiva per dirle sarebbe il modo sbagliato. Per questo la pagina iniziale ha un pulsante Novità, e le notizie dietro di esso arrivano da un feed sul sito, non dall'app.
+
+Valgono le stesse regole del controllo degli aggiornamenti. Chiede una volta a ogni avvio, non contiene nulla che ti riguardi e scarica immagini solo dal nostro sito. Cosa hai letto è una data conservata sul tuo computer. Dipende anche da una licenza: la versione 1.0 del contratto elencava ogni richiesta che l'app poteva fare, e le novità non erano nell'elenco. La versione 2.0 ammette come categoria una richiesta che non contiene nulla che ti riguardi, fatta solo al nostro sito, e a una copia che ha accettato la 1.0 viene chiesto trenta giorni dopo averla avvisata. [Impostazioni](/it/reference/settings/) ha l'interruttore, e [Cosa invia l'app](/it/about/what-the-app-sends/) dice cosa contiene la richiesta.
+
 ## Il log di sessione serve per la segnalazione di un bug, e sei tu a decidere cosa ne esce
 
 Ripple Effect tiene un diario di ogni esecuzione. L'app non lo carica mai da sola, e quando vuoi segnalare un bug decidi tu cosa consegnare.
