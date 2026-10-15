@@ -26,7 +26,7 @@ The licence for the app is the **End-User Licence Agreement** (EULA), published 
 | --- | --- |
 | Earlier than 1.5 | The short Ripple Effect Licence that shipped with it, for as long as you use it. 1.4 was the last release that did not ask you to accept anything. The notice stays published, unchanged. |
 | 1.5 and later | The EULA, from the first build that asks you to accept it. It replaces the earlier licence rather than sitting on top of it. Everything the earlier licence permitted, the EULA permits. |
-| 1.5.1 and later | EULA 2.0 for a new installation, accepted at first launch. An installation that accepted 1.0 stays under 1.0 until it accepts 2.0: the home page says 2.0 exists, and the app asks no sooner than thirty days later. You can decline, and keep using the last release made under 1.0. |
+| 1.5.1 and later | EULA 2.0 for a new installation, accepted at first launch. An installation that accepted 1.0 stays under 1.0 until it accepts 2.0. The first launch of 1.5.1 shows 2.0 with **Not now** beside the boxes, and you can accept it then, or later from the home page or **Settings › About**. The app requires it no sooner than thirty days after that first launch. You can decline, and keep using the last release made under 1.0. |
 
 ## Acceptance at first launch
 

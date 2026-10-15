@@ -27,7 +27,7 @@ The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version,
 
 From version 1.5 the app asks you to accept the [End-User Licence Agreement](https://legal.ripplefx.app/eula/) at first launch and makes no network request of any kind until you have: not an update check, not anything. If you close that window, nothing has been sent.
 
-A copy that accepted version 1.0 is told about version 2.0 on the home page and asked to accept it no sooner than thirty days later. Until then 1.0 governs it, and it makes only the requests 1.0 lists.
+A copy that accepted version 1.0 is shown version 2.0 on its first launch of 1.5.1, may accept it then or choose **Not now**, and is required to accept it no sooner than thirty days later. Until then 1.0 governs it, and it makes only the requests 1.0 lists.
 
 Until you answer, the app underneath has not been built, so there is nothing there to make a request.
 
