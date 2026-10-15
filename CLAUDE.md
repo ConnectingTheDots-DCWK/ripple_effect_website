@@ -247,7 +247,7 @@ tense: anonymous, opt-in, off until switched on, asked once with the complete
 list in front of the question rather than behind a link, neither answer
 preselected, and recording that the app was in use on a given day rather than
 anything about what was done with it. Those five places change together, and
-`legal/en/privacy/1.0.md` §4.5 is what every one of them paraphrases — where
+`legal/en/privacy/2.0.md` §4.5 is what every one of them paraphrases — where
 a page disagrees with it, the page is wrong. **No page may say there are
 none**, which is what all five said until 2026-10-10 while the feature was
 built and about to ship, and none may call it planned.
@@ -257,11 +257,16 @@ reason and found the same way. **From 1.5 the app asks you to accept the
 licence at first launch and makes no network request of any kind before you
 answer** — so a page listing what leaves the machine says that first, in the
 present tense, and not as something a later version will do. And that list is
-**six** things rather than four: the update check, the engine-fix check, the
+**seven** things rather than four: the update check, the engine-fix check, the
 contributor list and the pictures that go with it, a crash report, usage
-statistics, and whatever you sent yourself — including an image a document
-references by address. `legal/en/privacy/1.0.md` §4 is the one that counts,
-and §3 states the number.
+statistics, the news (from 1.5.1, once somebody has accepted EULA 2.0), and
+whatever you sent yourself — including an image a document references by
+address. `legal/en/privacy/2.0.md` §4 is the one that counts. **It no longer
+states a number**, and that is the point of version 2.0: EULA 2.0 §7 governs
+requests by four rules instead of a closed list, so a request carrying nothing
+about anybody, made only to this site, is a Privacy Notice entry rather than a
+new licence everybody has to accept. A page here that counts them is a page
+that goes stale the day the list grows — say what they are, not how many.
 
 **All four apply to a blog post as much as to a page**, and a post is the
 easiest place on the site to drift — it is prose, and nobody diffs prose

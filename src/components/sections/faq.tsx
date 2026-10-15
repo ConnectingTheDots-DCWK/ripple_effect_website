@@ -97,14 +97,19 @@ const faq = [
       <>
         Not until you have accepted the licence — from version 1.5 the app asks
         at first launch and makes no request of any kind before you answer.
-        After that, three without asking, and all three are nameable. Once per
+        After that, a few without asking, and each of them is nameable. Once per
         launch it asks this site whether a newer version exists, a plain request
         for the release number carrying nothing about you or your project. Once
         per launch, unless you switch it off in Settings, it asks whether a fix
         exists for its engine. And the About box asks this site for the
         contributor list if you open it, which the site fetches from GitHub on
         its own behalf — their pictures are the exception, loaded from GitHub by
-        your own machine. There is no account and no sync, nothing records which
+        your own machine. From version 1.5.1, once you have accepted version 2.0
+        of the licence and unless you switch it off, it asks this site once per
+        launch for the news on its home screen — the pictures with them come
+        from this site too, and from nowhere else. None of these carries
+        anything about you, and since that licence a request that does not
+        carry anything about you may go to this site and nowhere else. There is no account and no sync, nothing records which
         boards you open or how long you spend in them, and nothing you write
         leaves the machine.
         <br />

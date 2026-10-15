@@ -6,7 +6,7 @@
       "slug": "eula",
       "title": "End-User Licence Agreement",
       "summary": "What you may do with the Ripple Effect application on your own machine.",
-      "current": "1.0",
+      "current": "2.0",
       "languages": ["en"],
       "versions": [
         {
@@ -17,6 +17,15 @@
           "sha256": "ac1e97bb3346cdd547b2e7b17c997b6a6a4a4d5c9ba4dcd9502a558d54dcad50",
           "path": "v/eula-1.0",
           "source": "en/eula/1.0.md"
+        },
+        {
+          "version": "2.0",
+          "effectiveOn": "acceptance",
+          "effectiveFrom": "1.5.1",
+          "frozen": false,
+          "sha256": null,
+          "path": "v/eula-2.0",
+          "source": "en/eula/2.0.md"
         }
       ]
     },
@@ -60,17 +69,26 @@
       "slug": "privacy",
       "title": "Privacy Notice",
       "summary": "What personal data is processed, on what basis, and for how long.",
-      "current": "1.0",
+      "current": "2.0",
       "languages": ["en"],
       "versions": [
         {
           "version": "1.0",
           "effectiveOn": "processing",
           "effectiveFrom": null,
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "78165e1c71ffad0e824d1a6006525c58bd0949bfd00a3dee128cede2d799cf24",
           "path": "v/privacy-1.0",
           "source": "en/privacy/1.0.md"
+        },
+        {
+          "version": "2.0",
+          "effectiveOn": "processing",
+          "effectiveFrom": null,
+          "frozen": false,
+          "sha256": null,
+          "path": "v/privacy-2.0",
+          "source": "en/privacy/2.0.md"
         }
       ]
     },
