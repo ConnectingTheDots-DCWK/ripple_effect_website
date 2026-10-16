@@ -344,8 +344,10 @@ which the messages panel links. The nodes page is generated, below.
 not ours, and what the app sends.
 
 Two claims deliberately not made anywhere: that nothing leaves the machine
-(a paid tier with cloud-hosted writing help is planned, and it was never the
-intro's fact to state), and what the interpreter is compiled to — the Python
+(the update check, the news and a crash report do, and it was never the
+intro's fact to state — what *does* stay is said feature by feature, as the
+spelling page and *What never leaves* say it of checking), and what the
+interpreter is compiled to — the Python
 page says a sandbox exists and where the app reports its limits, not how it
 is built.
 
