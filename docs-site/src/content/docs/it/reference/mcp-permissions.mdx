@@ -29,7 +29,7 @@ All'assistente viene mostrato comunque l'elenco completo degli strumenti.
 
 ## Gruppi di strumenti per permesso
 
-Trentanove strumenti in sei gruppi. Ogni strumento è descritto nella pagina [Strumenti MCP](/it/reference/mcp-tools/).
+Quarantaquattro strumenti in sette gruppi. Ogni strumento è descritto nella pagina [Strumenti MCP](/it/reference/mcp-tools/).
 
 | Gruppo | Strumenti | Richiede |
 | --- | --- | --- |
@@ -39,6 +39,8 @@ Trentanove strumenti in sei gruppi. Ogni strumento è descritto nella pagina [St
 | Playtest | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | **Consenti agli agenti di raggiungere questa app** |
 | Scrittura | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | **Consenti agli agenti di modificare i file** |
 | Suono | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | **Consenti agli agenti di modificare i file** |
+| Ortografia, grammatica e stile | `writing_read`, `grammar_check` | **Consenti agli agenti di raggiungere questa app** |
+| | `dictionary_edit`, `style_rule_write`, `style_rule_delete` | **Consenti agli agenti di modificare i file** |
 
 Ogni strumento che accetta una lavagna, un passaggio, un componente, un soundscape o un suono accetta un id, un nome o un percorso relativo al progetto. Un nome ambiguo restituisce un elenco di candidati invece di una scelta a caso.
 
@@ -57,6 +59,8 @@ Ogni strumento che accetta una lavagna, un passaggio, un componente, un soundsca
 | Python | Cosa dice la sandbox che il Python può fare; `python_eval` valuta Python rispetto alle definizioni del progetto, in sola lettura. | `python_capabilities`, `python_eval` |
 | Tipi di scheda | `node_types` elenca ogni tipo di scheda di questa versione: il nome con cui aggiungerla, il nome della scheda e cosa fa. Se gli si dà un nome, ne descrive una per intero, con i campi da compilare e le porte da collegare. Viene letto dalla paletta dell'editor stesso al momento della richiesta. | `node_types` |
 | Metadati della scheda | `board_read` li stampa come riga `meta` sotto la scheda. | `board_read` |
+| Il dizionario e le regole di stile | Quante parole, una ricerca, ogni regola e se si compila, il testo di una regola. Mai il dizionario intero. | `writing_read` |
+| Ortografia e grammatica | Ciò che il controllo sottolinea in un passaggio o in una nota, su richiesta. | `grammar_check` |
 
 ### Cosa può giocare l'assistente
 
@@ -85,6 +89,8 @@ Richiede **Consenti agli agenti di modificare i file**.
 | Un soundscape disposto clip per clip, con la risposta di dove si è posata ogni clip sulla timeline | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
 | File spostati o rimossi | `file_move`, `file_delete` |
 | Il lavoro che l'app sta ancora trattenendo, scritto su disco | `save` |
+| Parole aggiunte al dizionario del progetto o tolte, senza leggerlo | `dictionary_edit` |
+| Regole di stile scritte, controllate mentre vengono scritte, o eliminate | `style_rule_write`, `style_rule_delete` |
 
 Ogni scrittura passa dalle sessioni di documento dell'app: aggiungere un passaggio è un singolo annullamento, il salvataggio automatico lo vede, il controllo di versione lo elenca, la modifica viene segnalata in Messaggi nel momento in cui avviene e l'elenco **Modificati in questa sessione** della pagina Agenti la mostra.
 
@@ -107,6 +113,7 @@ Il bridge chiede all'app in esecuzione cosa offre quando un client lo avvia, e i
 | I tipi di scheda di `board_add_node` | Un'enumerazione ricavata dalla paletta dell'editor stesso, con i nomi delle schede accanto. |
 | Ogni argomento `locale` | Le lingue in cui è scritto il progetto. |
 | `cvar` | Le variabili che il progetto dichiara. |
+| Il `name` di una regola di stile | Le regole che il progetto ha. |
 | La descrizione di uno strumento di scrittura | Dice quando la modifica è disattivata. |
 
 Un client con il bridge configurato compare nella pagina Agenti non appena l'accesso degli agenti è attivo, non alla sua prima chiamata.

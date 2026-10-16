@@ -29,7 +29,7 @@ The assistant is shown the full tool list either way.
 
 ## Tool groups by permission
 
-Thirty-nine tools in six groups. Each tool is described on the [MCP tools](/reference/mcp-tools/) page.
+Forty-four tools in seven groups. Each tool is described on the [MCP tools](/reference/mcp-tools/) page.
 
 | Group | Tools | Needs |
 | --- | --- | --- |
@@ -39,6 +39,8 @@ Thirty-nine tools in six groups. Each tool is described on the [MCP tools](/refe
 | Playtesting | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_end`, `campaign_autoplay` | **Let agents reach this app** |
 | Writing | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` | **Let agents change files** |
 | Sound | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` | **Let agents change files** |
+| Spelling, grammar and style | `writing_read`, `grammar_check` | **Let agents reach this app** |
+| | `dictionary_edit`, `style_rule_write`, `style_rule_delete` | **Let agents change files** |
 
 Every tool that takes a board, passage, component, soundscape or sound accepts an id, a name or a project-relative path. An ambiguous name comes back as a list of candidates rather than a guess.
 
@@ -57,6 +59,8 @@ Every tool that takes a board, passage, component, soundscape or sound accepts a
 | Python | What the sandbox says the Python can do; `python_eval` evaluates Python against the project's definitions, read-only. | `python_capabilities`, `python_eval` |
 | Node kinds | `node_types` lists every kind of node in this build: the name to add it by, the card's name and what it does. Named, it describes one in full with the fields to fill in and the ports to wire. It is read off the editor's own palette when asked. | `node_types` |
 | Node metadata | `board_read` prints it as a `meta` line under the node. | `board_read` |
+| The dictionary and the style rules | How many words, a lookup, every rule and whether it compiles, one rule's source. Never the whole dictionary. | `writing_read` |
+| Spelling and grammar | What the checker underlines in one passage or note, when asked. | `grammar_check` |
 
 ### What the assistant can play
 
@@ -85,6 +89,8 @@ Needs **Let agents change files**.
 | A soundscape laid out clip by clip, each clip answered where it settled on the timeline | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
 | Files moved or removed | `file_move`, `file_delete` |
 | Work the app is still holding, written out | `save` |
+| Words added to the project's dictionary or taken out, without reading it | `dictionary_edit` |
+| Style rules written, checked as they are written, or deleted | `style_rule_write`, `style_rule_delete` |
 
 Every write goes through the app's own document sessions: adding a passage is a single undo, autosave sees it, version control lists it, the change is posted to Messages as it happens, and the **Changed this session** list on the Agents page shows it.
 
@@ -107,6 +113,7 @@ The bridge asks the running app what it offers when a client starts it, and the 
 | `board_add_node`'s node types | An enum off the editor's own palette, with the card names beside them. |
 | Every `locale` argument | The languages the project is written in. |
 | `cvar` | The variables the project declares. |
+| A style rule's `name` | The rules the project has. |
 | A write tool's description | Says when editing is off. |
 
 A client with the bridge configured appears on the Agents page as soon as agent access is on, not at its first call.

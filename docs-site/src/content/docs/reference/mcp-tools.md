@@ -1,6 +1,6 @@
 ---
 title: MCP tools
-description: The thirty-nine tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Let agents change files.
+description: The forty-four tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Let agents change files.
 sidebar:
   order: 2
 ---
@@ -17,7 +17,7 @@ The tools the app offers a connected MCP client, with the arguments each takes. 
 
 The first two are linked from the site's header.
 
-Thirty-nine tools, in six groups. The first four groups need **Let agents reach this app**. The last two need **Let agents change files** as well; a write tool called while that is off answers `refused`.
+Forty-four tools, in seven groups. The first four groups need **Let agents reach this app**. The next two need **Let agents change files** as well; a write tool called while that is off answers `refused`. The last group mixes the two: `writing_read` and `grammar_check` read, and the other three write.
 
 | | Tools |
 | --- | --- |
@@ -27,6 +27,7 @@ Thirty-nine tools, in six groups. The first four groups need **Let agents reach 
 | [Playtesting](#playtesting) | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_autoplay`, `campaign_end` |
 | [Writing](#writing) | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` |
 | [Sound](#sound) | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
+| [Spelling, grammar and style](#spelling-grammar-and-style) | `writing_read`, `grammar_check`, `dictionary_edit`, `style_rule_write`, `style_rule_delete` |
 
 ## How to read the tables
 
@@ -615,6 +616,89 @@ clip back to the end of its file.
 | `audio` | | A different sound for this clip, by id, name or path. The trim, the gain and the mode stay as they are. |
 | `lane`, `start`, `clipStart`, `clipEnd`, `volume`, `speed`, `fadeIn`, `fadeOut`, `mode`, `interval` | | As on `soundscape_add_clip`. |
 | `remove` | | `true` takes the clip off the timeline; every other argument is then ignored. |
+
+## Spelling, grammar and style
+
+The project's spelling dictionary, its style rules, and what the checker
+underlines — the *Writing* page of project settings and the editor's
+squiggles, as tools. Each is shaped by what it costs to read: nothing lists
+the whole dictionary, which can run to thousands of words, and findings are
+asked for one document at a time rather than arriving with every passage
+read. The checker reads English only. See [How to check spelling and
+grammar](/how-to/check-spelling-and-grammar/) and [How to write a style
+rule](/how-to/write-a-style-rule/).
+
+### `writing_read`
+
+The project's spelling dictionary and its style rules, as cheaply as the
+question allows. Bare, it answers how many words the dictionary holds and
+every rule by name with whether it compiles — never the words themselves.
+Pass `find` to look words up, and `rule` to read one rule's source with how
+its own tests fare. There is no call that lists the whole dictionary, on
+purpose: `dictionary_edit` adds and removes without it.
+
+| Argument | | What |
+| --- | --- | --- |
+| `find` | | Words containing this, ignoring case — a whole word answers whether it is there. At most a hundred come back. |
+| `rule` | | A rule by name. Answers its source, whether it compiles, and which of its `test` and `allows` lines pass. |
+
+### `grammar_check`
+
+What the checker underlines in one passage or one Markdown note, as the
+editor would: with the project's dictionary, the names it declares and its
+own style rules, and with the Python in the prose left out. Each finding is
+its line and column, the words, its tier and Harper's kind, Harper's message,
+and the suggestions already applied — the text to put in place of the words.
+Ask when you want it, after writing a passage or before a review, rather
+than for everything. Read from disk, so unsaved edits are not in it, and the
+answer says so when there are some.
+
+| Argument | | What |
+| --- | --- | --- |
+| `passage` | | The passage. Give this or `note`. |
+| `note` | | A Markdown note, by its project-relative path, read as the project's default language. |
+| `locale` | | Which of a passage's languages to check. Omit for every English one it has; one that is not English is listed as not checked. |
+| `tiers` | | Only these: `spelling` (red in the editor), `grammar` (amber), `style` (blue). Omit for all three. |
+| `limit` | | At most this many findings in each language, from the top. Defaults to 50; the answer says how many more there were. |
+
+### `dictionary_edit`
+
+Adds words to the project's spelling dictionary and takes words out, in one
+write, without reading it first. A word added stops being underlined
+everywhere in the project, for everyone who opens it. Answers what changed,
+what was already there, and what was not — naming the same word in another
+case when that is why. One word each: a phrase with a space is refused. A
+dictionary saved by a newer version of the app is refused whole.
+
+| Argument | | What |
+| --- | --- | --- |
+| `add` | | Words to add. Case is kept: add a name as it is spelt. |
+| `remove` | | Words to take out, exactly as the dictionary has them. |
+
+### `style_rule_write`
+
+Writes one of the project's style rules, in Weir, creating it or replacing it
+whole, and answers what the checker made of it: whether it compiles, and how
+many of its own `test` and `allows` lines pass, with what each failing one
+expected and got. **A rule that does not compile is refused** unless
+`allowBroken` is true, which saves it anyway as the editor's *Save anyway*
+does; it is then listed in Messages until it compiles, and the write posts a
+caution. Two rules may not share a name in different cases.
+
+| Argument | | What |
+| --- | --- | --- |
+| `name` | required | The rule's name, which is its file: letters, digits, `_` and `-`, starting with a letter or a digit, up to 64. |
+| `source` | required | The whole rule — see [What a rule says](/how-to/write-a-style-rule/#what-a-rule-says). |
+| `allowBroken` | | Save a rule that does not compile. Off by default; a broken rule catches nothing. |
+
+### `style_rule_delete`
+
+Deletes one style rule. It is not in any undo stack, so the write posts a
+caution; version control is the way back.
+
+| Argument | | What |
+| --- | --- | --- |
+| `name` | required | The rule, by its exact name. A name that differs only in case is answered with the one it meant. |
 
 ## Beyond the tools
 
