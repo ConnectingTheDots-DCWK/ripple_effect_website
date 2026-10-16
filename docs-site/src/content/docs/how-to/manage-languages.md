@@ -7,7 +7,7 @@ The language a story is written in is chosen when the project is made, as [How t
 
 ## Add a translation language
 
-1. Open Project settings from the bottom of the activity bar. It is a set of pages down a rail: *General*, *Languages*, *Narration roots* and *Capabilities*.
+1. Open Project settings from the bottom of the activity bar. It is a set of pages down a rail: *General*, *Languages*, *Writing*, *Narration roots* and *Capabilities*.
 2. Pick *Languages*.
 3. Tick the language. Use *Find a language* to search the list.
 4. Save.

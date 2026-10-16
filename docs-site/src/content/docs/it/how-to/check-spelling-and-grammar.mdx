@@ -1,0 +1,57 @@
+---
+title: Come controllare ortografia e grammatica
+description: Leggi le sottolineature in un passaggio o in una nota, accetta un suggerimento, insegna una parola al dizionario del progetto, modifica il dizionario e disattiva il controllo.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+I passaggi in una lingua inglese e le note Markdown vengono controllati mentre scrivi, da [Harper](https://writewithharper.com/). Un passaggio in un'altra lingua non viene controllato, e nemmeno il Python di un passaggio. Il controllo avviene sul tuo computer: niente di ciò che scrivi viene inviato altrove per essere controllato.
+
+Il colore di una sottolineatura dice cosa ha trovato: rosso per l'ortografia, ambra per la grammatica, blu per lo stile.
+
+## Accettare un suggerimento
+
+<Steps>
+
+1. Fai clic con il tasto destro sulle parole sottolineate, oppure metti il cursore al loro interno e premi **Ctrl+.** (**⌘.** su Mac).
+2. Scegli un suggerimento. Sostituisce le parole sottolineate.
+
+</Steps>
+
+La riga in cima al menu è la spiegazione del controllo, in inglese come l'ha scritta. **Ignora** smette di sottolineare quella segnalazione finché il progetto resta aperto.
+
+## Insegnare una parola al progetto
+
+Su una sottolineatura di ortografia, scegli **Aggiungi al dizionario** nello stesso menu. La parola non viene più sottolineata in tutto il progetto.
+
+I nomi che il progetto ha già sono parole senza bisogno di aggiungerli: i nomi dei suoi file, le sue variabili di console, i suoi callback dell'host e gli stati delle sue macchine a stati.
+
+## Vedere o modificare il dizionario
+
+<Steps>
+
+1. Apri Impostazioni progetto dal fondo della barra delle attività e scegli *Scrittura*.
+2. Sotto *Dizionario*, scrivi una parola in *Aggiungi una parola* e premi Invio o scegli **Aggiungi**. Una parola alla volta: una frase con uno spazio viene rifiutata.
+3. Usa *Trova una parola* per cercare nell'elenco, e il cestino accanto a una parola per toglierla.
+4. Salva. Annulla rimette ogni parola com'era.
+
+</Steps>
+
+Il dizionario viene salvato con il progetto, quindi chiunque lo apra lo condivide. Un dizionario salvato da una versione più recente dell'app non viene mostrato né modificato: aggiorna l'app per modificarlo.
+
+## Disattivare il controllo
+
+<Steps>
+
+1. Premi l'ingranaggio nella barra dell'app. Si apre la finestra di dialogo Impostazioni.
+2. Nella pagina *Generale*, imposta *Scrittura* su *Disattivato*.
+
+</Steps>
+
+Il comando della paletta **Attiva o disattiva ortografia e grammatica** fa lo stesso. Le parole nel dizionario di un progetto restano.
+
+## Vedi anche
+
+- [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/)
+- [Controlli di impostazioni, accessibilità e aggiornamenti](/it/reference/settings/)
+- [File del progetto e cartella .ripple](/it/reference/project-files/)

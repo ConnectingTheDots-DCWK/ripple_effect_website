@@ -168,6 +168,7 @@ These are yours rather than the app's, and are listed because they put bytes on 
 | Item | Detail |
 | --- | --- |
 | Your work | Passages, boards, projects, components, scripts and exports are not sent anywhere. There is no background sync. |
+| Spelling and grammar | Checked on your machine, as you type. Your words, the project's dictionary and its style rules are not sent anywhere. |
 | What you do in the app | Which boards you open, how long you spend and what you click are not recorded or sent, with or without statistics switched on. The statistics say that the app was used on a day, and nothing about how. |
 | The session log | Not sent, unless it goes inside a crash report you sent. It is written on your machine, with private things replaced as they are written, and a run where nothing went wrong is deleted the next time you start the app. |
 | Network responses | The update check, the news, the contributor list and an installer download each leave a line in the session log saying where the request went, what came back and how long it took. The address is recorded without anything after the `?`, and no response content is written. |

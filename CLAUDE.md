@@ -229,12 +229,14 @@ Stated because the template actively invites all four:
    card says so and shows an em dash.
 
    Its *contents* used to be on this list too, and are not any more: `/pricing`
-   now previews what the tier is for, and every line of that preview is
-   `ROADMAP.md`'s own — the value proposition under its SaaS line, and the one
-   release number that file gives (real-time collaboration, 1.8). The card
+   now previews what the tier is for, and every line of that preview was the
+   old `ROADMAP.md`'s own — the value proposition under its SaaS line, and the
+   release numbers `src/lib/roadmap.ts` gives (generative AI, 1.7; real-time
+   collaboration, 1.8). Spelling and grammar checking left the preview when
+   1.6 moved it onto the author's machine and made the release free. The card
    says the list is from the roadmap, subject to change and not a promise, and
-   the `planned` array in `pricing/page.tsx` says to keep it in step with that
-   file rather than with what would fill a column. What has not changed: no
+   the `planned` array in `pricing/page.tsx` says to keep it in step with the
+   roadmap rather than with what would fill a column. What has not changed: no
    price, and nothing free today is planned to stop being free. **An item that
    is not on the roadmap is an invention.**
 4. **No invented numbers.** No download counts, no user counts, no stars.
@@ -956,9 +958,11 @@ roadmap with dates on it is a set of promises, and the only honest thing this
 page can say about a version that has not been started is *what* it is. The
 order of the list is the entire schedule. The numbering has a gap — 1.1 is
 missing — because that was a fix release and a fix release does not get a
-codename. 1.4 was such a gap once and became a pack of its own, which is the
-reminder that the list is a copy of `ROADMAP.md` in the app repository and
-follows it rather than deciding anything.
+codename. 1.4 was such a gap once and became a pack of its own. The list used
+to be a copy of `ROADMAP.md` in the app repository; that file was removed,
+and the list is the plan now. 1.6 is the reminder that it moves: it was a paid
+release until its checking moved onto the author's machine, and its chip
+says *Free*.
 
 **A shipped release gets three lines, read off its changelog section.** Three
 is what a card holds, and the lines are the ones a reader of the release notes

@@ -1,0 +1,61 @@
+---
+title: Come scrivere una regola di stile
+description: Insegna al controllo lo stile del tuo progetto in Weir — dai un nome a una regola, di' cosa cerca e cosa suggerisce, mettila alla prova e correggi una che non si compila.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Una regola di stile è un controllo tuo: una frase da cercare, cosa dirne e cosa suggerire al suo posto. Si scrive in Weir, il linguaggio di regole di Harper, il controllo ortografico, e vale per ogni passaggio e nota in inglese del progetto. Ciò che trova viene sottolineato come qualsiasi altra segnalazione, e il suo suggerimento è nel menu.
+
+## Scrivere una regola
+
+<Steps>
+
+1. Apri Impostazioni progetto dal fondo della barra delle attività e scegli *Scrittura*.
+2. Sotto *Regole di stile*, scrivi un nome nel campo e scegli **Nuova regola**. Un nome è fatto di lettere, cifre, `_` e `-`, inizia con una lettera o una cifra, e due regole non possono averne uno uguale, maiuscole o minuscole che siano.
+3. L'editor si apre su una regola d'esempio che funziona già. Cambiala perché dica ciò che intendi; [Cosa dice una regola](#cosa-dice-una-regola) è qui sotto.
+4. Leggi la riga sotto l'editor. *Si compila, e tutti i 2 test passano.* vuol dire che la regola funziona e fa ciò che dicono i suoi test.
+5. Scegli **Salva**, poi salva le impostazioni.
+
+</Steps>
+
+## Cosa dice una regola
+
+```weir
+expr main [(magic user), (magic-user)]
+
+let message "This setting calls them spellwrights."
+let description "Suggests the setting's own word."
+let kind "Style"
+let becomes "spellwright"
+
+test "A magic user knocked at the gate." "A spellwright knocked at the gate."
+allows "The spellwright knocked at the gate."
+```
+
+La regola è in inglese perché controlla l'inglese.
+
+- `expr main` è cosa cercare. Le parole in fila vanno tra `( )`, le alternative tra `[ ]` separate da virgole. Dentro `[ ]`, una parola con il trattino va tra parentesi a sé: `(magic-user)`.
+- `message` è ciò che il menu dice sopra la sottolineatura.
+- `description` dice a cosa serve la regola.
+- `becomes` è il suggerimento.
+- `kind` sceglie il colore della sottolineatura: `Style`, o nessun `kind`, è blu; `Grammar`, `Usage` o `WordChoice` è ambra; `Spelling` è rosso.
+- `test "prima" "dopo"` verifica che la regola trasformi la prima frase nella seconda. `allows "frase"` verifica che ne lasci stare una.
+
+Il resto del linguaggio, dalle parti del discorso alle eccezioni, è nella pagina [Weir](https://writewithharper.com/docs/weir) di Harper, in inglese. **Guida a Weir** nell'editor la apre.
+
+## Correggere una regola che non funziona
+
+- **Un test non passa.** La riga sotto l'editor elenca ogni test che non passa, con cosa si aspettava e cosa ha ottenuto.
+- **La regola non si compila.** La riga sotto l'editor dice perché, nell'inglese del controllo, e **Salva** diventa **Salva comunque**. Una regola salvata così è segnata in rosso nella pagina *Scrittura* ed elencata nei Messaggi finché non si compila; le altre regole continuano a funzionare.
+
+Una regola è un file, `.ripple/style/<nome>.weir`, e si può modificare anche con qualsiasi editor di testo. L'app vede una modifica fatta lì.
+
+## Eliminare una regola
+
+Scegli il cestino accanto alla regola nella pagina *Scrittura*, poi salva.
+
+## Vedi anche
+
+- [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/)
+- [File del progetto e cartella .ripple](/it/reference/project-files/)

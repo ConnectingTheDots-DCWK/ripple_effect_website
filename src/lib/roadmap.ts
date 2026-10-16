@@ -16,14 +16,15 @@
  * they are the three a reader of its release notes would pick — the
  * changelog is the source, in the app repository, and a line here is a
  * reading of it rather than a claim of its own. A planned release says only
- * what its pack is; the plan is `ROADMAP.md` in the app repository, and this
- * list is its public copy.
+ * what its pack is. The plan used to be `ROADMAP.md` in the app repository;
+ * that file is gone, and this list is the plan now rather than a copy of it.
  *
- * **`paid: true` is `ROADMAP.md`'s line, not a judgement made here.** That
- * file draws the SaaS switch between 1.5 and 1.6 and says everything after
- * it assumes the backend and a paid plan, so 1.6, 1.7, 1.8 and 2.x carry the
- * chip and 1.5 does not. `/pricing` previews the tier off the same file. The
- * price is still undecided and still says so.
+ * **`paid: true` marks a release whose pack needs the hosted service.** The
+ * old plan drew the SaaS switch between 1.5 and 1.6, and 1.6 has since moved
+ * back across it: its spelling and grammar checking runs on the author's
+ * machine, with Harper, so there is nothing to host and nothing to charge
+ * for. 1.7, 1.8 and 2.x still carry the chip. `/pricing` previews the tier
+ * off this list. The price is still undecided and still says so.
  */
 export interface Milestone {
   /** "1.2", "2.x". */
@@ -114,11 +115,16 @@ export const roadmap: Milestone[] = [
   {
     version: "1.6",
     codename: "Grammar Lich",
-    note: "Paid tier",
+    note: "Free",
     tone: "planned",
-    paid: true,
-    // Their note said "ortographic-check"; the service checks orthography.
-    features: ["Integration with an orthography-checking service"],
+    // The plan said "integration with an orthography-checking service", and
+    // a paid one. What is being built checks on the author's machine instead,
+    // which is why the chip moved to free.
+    features: [
+      "Spelling and grammar checked as you type, on your machine, by Harper",
+      "A dictionary per project, shared with everyone who opens it",
+      "Style rules of your own, written in Weir",
+    ],
   },
   {
     version: "1.7",

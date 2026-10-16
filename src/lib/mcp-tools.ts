@@ -1,19 +1,22 @@
 /**
  * The tools the MCP server exposes, by their wire names.
  *
- * **Thirty-nine, and the number is worth being exact about** — it is the one
+ * **Forty-four, and the number is worth being exact about** — it is the one
  * claim in that section a reader can check in an afternoon. Thirty-two landed
  * with the server, 1.3.2 added three — `node_types`, `campaign_trace` and
- * `campaign_answer` — and 1.4 added the four soundscape tools. They are transcribed from the app's dispatch table rather
+ * `campaign_answer` — 1.4 added the four soundscape tools, and 1.6 the five
+ * for the spelling dictionary, the style rules and the checker. They are transcribed from the app's dispatch table rather
  * than counted off the spec, because the spec describes the surface and the
  * table *is* it. `board` and `passage` look like tool names in a naive grep of
  * that directory and are not: they are resource URI segments,
  * `ripple://board/{id}` and `ripple://passage/{id}`, and counting them gives
  * thirty-seven.
  *
- * The grouping is the app's own, and the split that matters is the last one:
- * everything under `write` is unreachable unless the author has turned on
- * *Agents may edit*, which is a second switch subordinate to the first.
+ * The grouping is the app's own, and the split that matters is between
+ * reading and writing: every write — the Writing, Editing and Sound groups,
+ * and three of the five under Spelling and style — is unreachable unless the
+ * author has turned on *Agents may edit*, which is a second switch
+ * subordinate to the first.
  */
 export interface ToolGroup {
   label: string;
@@ -85,6 +88,16 @@ export const mcpToolGroups: ToolGroup[] = [
   {
     label: "Sound",
     tools: ["soundscape_set", "soundscape_add_clip", "soundscape_set_clip"],
+  },
+  {
+    label: "Spelling and style",
+    tools: [
+      "writing_read",
+      "grammar_check",
+      "dictionary_edit",
+      "style_rule_write",
+      "style_rule_delete",
+    ],
   },
 ];
 

@@ -29,22 +29,25 @@ const included = [
   "Internationalisation tools",
   "MCP integration",
   "Git integration",
+  "Spelling, grammar and style checking",
 ];
 
 /**
- * What the paid tier is shaping up to hold — `ROADMAP.md`'s own list under
- * its SaaS line, in its own words. A version is given only where the roadmap
- * gives one; the rest is the tier's value proposition and is not scheduled.
- * Keep this in step with that file, not with what would look good in a
- * column: an item that is not on the roadmap is an invention.
+ * What the paid tier is shaping up to hold — the old `ROADMAP.md`'s list
+ * under its SaaS line, in its own words, less spelling and grammar, which
+ * moved onto the author's machine and into the free column in 1.6. A version
+ * is given only where `src/lib/roadmap.ts` gives one; the rest is the tier's
+ * value proposition and is not scheduled. Keep this in step with that list,
+ * not with what would look good in a column: an item that is not on the
+ * roadmap is an invention.
  */
 const planned: { text: string; version?: string }[] = [
   { text: "Real-time collaboration on a project, Figma-style", version: "1.8" },
   { text: "Team workspaces, and managing who is in them" },
   { text: "Cost-effective storage for large media, through git LFS" },
   {
-    text: "An AI services package: spelling and grammar checking, image generation, and generative narration",
-    version: "1.6 – 1.7",
+    text: "An AI services package: image generation and generative narration",
+    version: "1.7",
   },
   { text: "Inference for games built on the runtime" },
 ];
@@ -139,7 +142,7 @@ export default function PricingPage() {
             </div>
 
             {/*
-              * A preview, not a column of ticks. Every line is on
+              * A preview, not a column of ticks. Every line was on the old
               * `ROADMAP.md` in the app repository, and the two that have a
               * release number carry it; the rest are the plan's own words
               * for what the tier is for, and the caption says they can

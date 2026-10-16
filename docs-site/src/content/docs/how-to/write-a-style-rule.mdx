@@ -1,0 +1,59 @@
+---
+title: How to write a style rule
+description: Teach the checker your project's house style in Weir — name a rule, say what it catches and what it suggests, test it, and fix one that does not compile.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A style rule is a check of your own: a phrase to look for, what to say about it, and what to suggest instead. It is written in Weir, the rule language of Harper, the spelling checker, and it applies to every English passage and note in the project. What it catches is underlined like any other finding, and its suggestion is in the menu.
+
+## Write a rule
+
+<Steps>
+
+1. Open Project settings from the bottom of the activity bar and pick *Writing*.
+2. Under *Style rules*, type a name in the field and choose **New rule**. A name is letters, digits, `_` and `-`, starting with a letter or a digit, and no two rules share one, whatever their case.
+3. The editor opens on an example rule that already works. Change it to say what you mean; [What a rule says](#what-a-rule-says) is below.
+4. Read the line under the editor. *Compiles, and all 2 tests pass.* means the rule works and does what its tests say.
+5. Choose **Save**, then Save the settings.
+
+</Steps>
+
+## What a rule says
+
+```weir
+expr main [(magic user), (magic-user)]
+
+let message "This setting calls them spellwrights."
+let description "Suggests the setting's own word."
+let kind "Style"
+let becomes "spellwright"
+
+test "A magic user knocked at the gate." "A spellwright knocked at the gate."
+allows "The spellwright knocked at the gate."
+```
+
+- `expr main` is what to look for. Words in a row go in `( )`, alternatives in `[ ]` separated by commas. Inside `[ ]`, put a hyphenated word in brackets of its own: `(magic-user)`.
+- `message` is what the menu says over the underline.
+- `description` says what the rule is for.
+- `becomes` is the suggestion.
+- `kind` sets the colour of the underline: `Style`, or no `kind` at all, is blue; `Grammar`, `Usage` or `WordChoice` is amber; `Spelling` is red.
+- `test "before" "after"` checks the rule turns the first sentence into the second. `allows "sentence"` checks it leaves one alone.
+
+The rest of the language, from parts of speech to exceptions, is on Harper's [Weir](https://writewithharper.com/docs/weir) page. **Weir reference** in the editor opens it.
+
+## Fix a rule that does not work
+
+- **A test fails.** The line under the editor lists each failing test, with what it expected and what it got.
+- **The rule does not compile.** The line under the editor says why, in the checker's English, and **Save** becomes **Save anyway**. A rule saved like that is marked in red on the *Writing* page and listed in Messages until it compiles; the other rules go on working.
+
+A rule is a file, `.ripple/style/<name>.weir`, and can be edited in any text editor as well. The app picks up a change made there.
+
+## Delete a rule
+
+Choose the bin beside the rule on the *Writing* page, then Save.
+
+## Related
+
+- [How to check spelling and grammar](/how-to/check-spelling-and-grammar/)
+- [Project files](/reference/project-files/)
