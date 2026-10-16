@@ -1,4 +1,5 @@
 // @ts-check
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
@@ -212,6 +213,13 @@ export default defineConfig({
 			 * honest borrowed one.
 			 */
 			expressiveCode: {
+				// Weir — the spelling checker's rule language, on the style-rule
+				// how-to — is no language Shiki ships, and borrowing one coloured
+				// its brackets and its test lines wrong. The grammar is ours,
+				// small, and mirrors the app's own Weir highlighter.
+				shiki: {
+					langs: [JSON.parse(readFileSync(new URL('./src/weir.tmLanguage.json', import.meta.url), 'utf8'))],
+				},
 				styleOverrides: {
 					codeBackground: 'var(--card)',
 					codeFontFamily: 'var(--sl-font-mono)',
@@ -284,6 +292,8 @@ export default defineConfig({
 							{ slug: 'how-to/write-a-passage' },
 							{ slug: 'how-to/limit-a-choice' },
 							{ slug: 'how-to/manage-languages' },
+							{ slug: 'how-to/check-spelling-and-grammar' },
+							{ slug: 'how-to/write-a-style-rule' },
 						] },
 						{ label: 'Data and state', translations: { it: 'Dati e stato' }, collapsed: false, items: [
 							{ slug: 'how-to/use-components-and-entities' },

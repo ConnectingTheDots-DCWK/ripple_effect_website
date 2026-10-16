@@ -1,0 +1,50 @@
+{
+  "name": "weir",
+  "displayName": "Weir",
+  "scopeName": "source.weir",
+  "fileTypes": ["weir"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#declaration" },
+    { "include": "#test" },
+    { "include": "#string" },
+    { "include": "#reference" },
+    { "include": "#tag" },
+    { "include": "#operator" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.weir",
+      "match": "#.*$"
+    },
+    "declaration": {
+      "match": "^\\s*(expr|let)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.control.weir" },
+        "2": { "name": "variable.other.weir" }
+      }
+    },
+    "test": {
+      "match": "^\\s*(test|allows)\\b",
+      "captures": { "1": { "name": "keyword.control.weir" } }
+    },
+    "string": {
+      "name": "string.quoted.double.weir",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.character.escape.weir", "match": "\\\\." }]
+    },
+    "reference": {
+      "name": "variable.other.reference.weir",
+      "match": "@[A-Za-z0-9_\\-]+"
+    },
+    "tag": {
+      "name": "entity.name.type.weir",
+      "match": "\\b[A-Z][A-Z_]+\\b"
+    },
+    "operator": {
+      "name": "keyword.operator.weir",
+      "match": "[\\[\\]()<>!*,]"
+    }
+  }
+}

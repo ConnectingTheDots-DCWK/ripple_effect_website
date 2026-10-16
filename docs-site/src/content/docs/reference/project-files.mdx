@@ -39,10 +39,12 @@ Nothing the app keeps about a project is written into your story. It lives in `.
     - workspace.json the layout, the open documents, the side bar and Messages, and which folders were open
     - cvars.json the console variables the project declares
     - callbacks.json the host callbacks the project declares
+    - dictionary.json the words added to the spelling dictionary
     - lints.json the diagnostics the author has answered
     - saves/ paused and bookmarked playthroughs
     - export/ export profiles
     - external/ pictures and audio picked from outside the project, copied in
+    - style/ the project's own style rules, one Weir file each
   - chapters/
     - the_gates.graph.json
     - the_gates_opening.loc.narr.bdl/
@@ -66,10 +68,12 @@ Nothing the app keeps about a project is written into your story. It lives in `.
 | `workspace.json` | The layout, the open documents, the side bar and Messages, and which folders were open. Per machine | Ignored by the built-in version control |
 | `cvars.json` | The console variables the project declares. See [Console variable declarations](/reference/console-variable-declarations/) | Travels |
 | `callbacks.json` | The named host callbacks: a name, an event and what the event is aimed at. See [Host callbacks](/reference/host-callbacks/) | Travels |
+| `dictionary.json` | The words added to the spelling dictionary, in sorted order. A newer version is refused and never written over. See [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) | Travels |
 | `lints.json` | What the author has answered about the boards, for one card and one rule, keyed by lint name. Written even when empty. Not catalogued. A version this build does not know, or a file that is not this shape, reads as nothing answered, so the warning returns | Travels |
 | `saves/` | Paused and bookmarked playthroughs, one file a slot | Ignored by the built-in version control: a playthrough is a fact about your reading, not about the story |
 | `export/` | Export profiles, as `<name>.profile.json`. See [Export options and bundle contents](/reference/export-options/) | Travels |
 | `external/` | Pictures and audio picked from outside the project, copied in | Travels |
+| `style/` | The project's style rules, as `<name>.weir`, in Weir, Harper's rule language. No version of the app's; a rule that does not compile is reported, never refused. See [How to write a style rule](/how-to/write-a-style-rule/) | Travels |
 
 ### The registry
 

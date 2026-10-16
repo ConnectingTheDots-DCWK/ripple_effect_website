@@ -1,0 +1,57 @@
+---
+title: How to check spelling and grammar
+description: Read the underlines in a passage or a note, take a suggestion, teach the project's dictionary a word, edit the dictionary, and switch checking off.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Passages in an English language and Markdown notes are checked as you type, by [Harper](https://writewithharper.com/). A passage in another language is not checked, and neither is the Python in a passage.
+
+The colour of an underline says what it found: red for spelling, amber for grammar, blue for style.
+
+## Take a suggestion
+
+<Steps>
+
+1. Right-click the underlined words, or put the caret in them and press **Ctrl+.** (**⌘.** on a Mac).
+2. Pick a suggestion. It replaces the underlined words.
+
+</Steps>
+
+The line at the top of the menu is the checker's explanation, in English as the checker wrote it. **Ignore** stops underlining that one until the project is closed.
+
+## Teach the project a word
+
+On a spelling underline, choose **Add to dictionary** in the same menu. The word stops being underlined everywhere in the project.
+
+Names the project already has are words without being added: its files' names, its console variables, its host callbacks and its state machines' states.
+
+## See or change the dictionary
+
+<Steps>
+
+1. Open Project settings from the bottom of the activity bar and pick *Writing*.
+2. Under *Dictionary*, type a word in *Add a word* and press Enter or choose **Add**. One word at a time: a phrase with a space is refused.
+3. Use *Find a word* to search the list, and the cross beside a word to take it out.
+4. Save. Cancel puts every word back.
+
+</Steps>
+
+The dictionary is saved with the project, so everyone who opens it shares it. A dictionary saved by a newer version of the app is not shown or changed: update the app to edit it.
+
+## Switch checking off
+
+<Steps>
+
+1. Press the gear in the app bar. The Settings dialog opens.
+2. On the *General* page, set *Writing* to *Off*.
+
+</Steps>
+
+The command palette's **Toggle spelling and grammar** does the same. The words in a project's dictionary are kept.
+
+## Related
+
+- [How to write a style rule](/how-to/write-a-style-rule/)
+- [Settings, accessibility and updates controls](/reference/settings/)
+- [Project files](/reference/project-files/)

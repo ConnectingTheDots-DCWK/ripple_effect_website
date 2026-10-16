@@ -7,7 +7,7 @@ La lingua in cui è scritta una storia si sceglie quando si crea il progetto, co
 
 ## Aggiungere una lingua di traduzione
 
-1. Apri Impostazioni progetto dal fondo della barra delle attività. È un insieme di pagine lungo una barra laterale: *Generale*, *Lingue*, *Radici della narrazione* e *Capacità*.
+1. Apri Impostazioni progetto dal fondo della barra delle attività. È un insieme di pagine lungo una barra laterale: *Generale*, *Lingue*, *Scrittura*, *Radici della narrazione* e *Capacità*.
 2. Scegli *Lingue*.
 3. Spunta la lingua. Usa *Trova una lingua* per cercare nell'elenco.
 4. Salva.

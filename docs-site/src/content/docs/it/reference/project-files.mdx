@@ -39,10 +39,12 @@ Nulla di ciò che l'app conserva su un progetto viene scritto dentro la tua stor
     - workspace.json il layout, i documenti aperti, la barra laterale e i Messaggi, e quali cartelle erano aperte
     - cvars.json le variabili di console dichiarate dal progetto
     - callbacks.json i callback dell'host dichiarati dal progetto
+    - dictionary.json le parole aggiunte al dizionario ortografico
     - lints.json le diagnostiche a cui l'autore ha risposto
     - saves/ sessioni di gioco in pausa e con segnalibro
     - export/ profili di esportazione
     - external/ immagini e audio scelti da fuori del progetto, copiati dentro
+    - style/ le regole di stile del progetto, un file Weir ciascuna
   - chapters/
     - the_gates.graph.json
     - the_gates_opening.loc.narr.bdl/
@@ -66,10 +68,12 @@ Nulla di ciò che l'app conserva su un progetto viene scritto dentro la tua stor
 | `workspace.json` | Il layout, i documenti aperti, la barra laterale e i Messaggi, e quali cartelle erano aperte. Per macchina | Ignorato dal controllo di versione integrato |
 | `cvars.json` | Le variabili di console dichiarate dal progetto. Vedi [Dichiarazioni delle variabili di console](/it/reference/console-variable-declarations/) | Viaggia con il progetto |
 | `callbacks.json` | I callback dell'host con nome: un nome, un evento e ciò a cui l'evento è destinato. Vedi [Callback dell'host](/it/reference/host-callbacks/) | Viaggia con il progetto |
+| `dictionary.json` | Le parole aggiunte al dizionario ortografico, in ordine alfabetico. Una versione più recente viene rifiutata e mai sovrascritta. Vedi [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) | Viaggia con il progetto |
 | `lints.json` | Ciò a cui l'autore ha risposto riguardo alle lavagne, per una scheda e una regola, con chiave il nome del lint. Scritto anche quando è vuoto. Non catalogato. Una versione che questa build non conosce, o un file che non ha questa forma, si legge come nessuna risposta data, quindi l'avviso ritorna | Viaggia con il progetto |
 | `saves/` | Sessioni di gioco in pausa e con segnalibro, un file per slot | Ignorato dal controllo di versione integrato: una sessione di gioco è un fatto sulla tua lettura, non sulla storia |
 | `export/` | Profili di esportazione, come `<name>.profile.json`. Vedi [Opzioni di esportazione e contenuto del bundle](/it/reference/export-options/) | Viaggia con il progetto |
 | `external/` | Immagini e audio scelti da fuori del progetto, copiati dentro | Viaggia con il progetto |
+| `style/` | Le regole di stile del progetto, come `<nome>.weir`, in Weir, il linguaggio di regole di Harper. Nessuna versione dell'app; una regola che non si compila viene segnalata, mai rifiutata. Vedi [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/) | Viaggia con il progetto |
 
 ### Il registro
 
