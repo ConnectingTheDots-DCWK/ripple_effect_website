@@ -22,8 +22,8 @@
           "version": "2.0",
           "effectiveOn": "acceptance",
           "effectiveFrom": "1.5.1",
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "05717dc6b3d1fd8e7dfc13d24e3e0be44c19970cb51d172c12f7ba4a19b69097",
           "path": "v/eula-2.0",
           "source": "en/eula/2.0.md"
         }
@@ -85,8 +85,8 @@
           "version": "2.0",
           "effectiveOn": "processing",
           "effectiveFrom": null,
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "af8ea8d8df8326c869c79b4e3f8c92c9b23a9b1b034491db01e25b098a803eb2",
           "path": "v/privacy-2.0",
           "source": "en/privacy/2.0.md"
         }
