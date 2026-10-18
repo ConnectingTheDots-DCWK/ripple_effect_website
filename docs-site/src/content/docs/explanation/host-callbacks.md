@@ -54,3 +54,4 @@ The editor publishes names but has no game to react to them, so in the play wind
 - [How to declare, aim and forget a host callback](/how-to/declare-a-host-callback/)
 - [Host callbacks reference](/reference/host-callbacks/): the events, the aiming fields, what a missing target does and what travels with a project
 - [What an export is](/explanation/what-an-export-is/)
+- [How to play a campaign in your own program](/how-to/play-a-campaign-in-your-program/): registering a handler against a name, in each binding's language

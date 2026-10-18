@@ -1,9 +1,9 @@
 ---
 title: Open source
-description: Ripple Effect is proprietary, but several packages it stands on are open source, four of them ours, and this page explains which, why, and whose the rest is.
+description: Ripple Effect is proprietary, but several packages it stands on are open source, four of them ours, and so are the engine's bindings; this page explains which, why, and whose the rest is.
 ---
 
-Ripple Effect is [proprietary](/about/licensing/) and its source is not published. Several of the packages it is built on are open source, and four of them are ours: the node editor, the docking layout the workspace is drawn with, the reading-time estimate and the crash reporter. The distinction is worth keeping straight, because the two halves are easy to blur: **the packages are open, the app is not.** The four are published on their own and take pull requests. `fl_nodes_v2`, `fl_panel` and `fl_crashpad` are Flutter packages and need Flutter; `dart_read_time` is pure Dart.
+Ripple Effect is [proprietary](/about/licensing/) and its source is not published. Several of the packages it is built on are open source, and four of them are ours: the node editor, the docking layout the workspace is drawn with, the reading-time estimate and the crash reporter. The distinction is worth keeping straight, because the two halves are easy to blur: **the packages are open, the app is not.** The four are published on their own and take pull requests. `fl_nodes_v2`, `fl_panel` and `fl_crashpad` are Flutter packages and need Flutter; `dart_read_time` is pure Dart. The bindings that let other programs play a campaign are open source too, though the engine they carry is not.
 
 ## fl_nodes_v2: the node editor
 
@@ -30,6 +30,17 @@ This is the estimate under every passage: fifty-four languages, mixed scripts co
 [github.com/ConnectingTheDots-DCWK/fl_crashpad](https://github.com/ConnectingTheDots-DCWK/fl_crashpad) · MIT
 
 This is native crash reporting for Flutter over Google Crashpad, on desktop, Android and iOS. It knows nothing about any app, logger or backend. In Ripple Effect it catches a native crash; every report is sanitised before it can be read or sent. [Updates, logs and Messages](/explanation/updates-logs-and-privacy/) covers what the app does with a report.
+
+## The engine's bindings
+
+| Binding | Repository | Published as |
+| --- | --- | --- |
+| JavaScript and TypeScript | [ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration) | `@ripplefx/player` and `@ripplefx/soundscape` on npm |
+| C and C++ | [ripple_effect_c_cpp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration) | GitHub releases, consumed with CMake |
+| C# | [ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration) | `RippleFx.Engine` on NuGet |
+| Dart | [ripple_effect_dart_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration) | `ripplefx_engine` on pub.dev |
+
+These are how a game, an app or a page plays a campaign exported from the editor. Each is MIT. **The engine each one carries or downloads is not**: it is a compiled build of the engine, under the [Runtime Licence](/about/licensing/#the-runtime-licence), which lets you ship it unmodified in function as part of your own product. `@ripplefx/soundscape` carries no engine and is plain MIT. [Embedding the engine](/explanation/embedding-the-engine/) explains what they share, and [How the engine ships](/explanation/how-the-engine-ships/) explains what they put in your build.
 
 ## monty: Python, in a sandbox
 
