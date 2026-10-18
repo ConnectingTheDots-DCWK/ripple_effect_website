@@ -159,6 +159,11 @@ export default defineConfig({
 						'- Python in this app is a restricted subset, not CPython. A ' +
 							'component attribute is read as `component("X")["attr"]` and ' +
 							'never as an attribute.',
+						'- A compiled campaign is played outside the app through the ' +
+							'engine\'s bindings for JavaScript/TypeScript, C/C++, C# and ' +
+							'Dart. They share one API: a campaign, a session whose verbs ' +
+							'each return an ordered list of effects (the turn last), and ' +
+							'an optional player loop.',
 						'- The app can be driven over MCP. Every tool it offers carries a ' +
 							'link back to its own section of the MCP reference here, so a ' +
 							'connected assistant never has to guess where a page is.',
@@ -170,9 +175,26 @@ export default defineConfig({
 						{
 							label: 'Reference',
 							description:
-								'the node catalog, the MCP tool list, the diagnostic codes ' +
-								'and the Python API',
+								'the node catalog, the MCP tool list, the diagnostic codes, ' +
+								'the Python API and the engine bindings',
 							paths: ['reference/**'],
+						},
+						// What a programmer embedding the engine wants, and nothing
+						// about authoring: the design, the shipping, the steps and
+						// the four APIs.
+						{
+							label: 'Engine bindings',
+							description:
+								'playing a compiled campaign from your own program: the ' +
+								'API design, how the engine ships, and the JavaScript, ' +
+								'C/C++, C# and Dart bindings',
+							paths: [
+								'explanation/embedding-the-engine',
+								'explanation/how-the-engine-ships',
+								'how-to/play-a-campaign-in-your-program',
+								'reference/engine-targets',
+								'reference/binding-*',
+							],
 						},
 					],
 					// The front page first, then what the tool is, before anything
@@ -320,6 +342,9 @@ export default defineConfig({
 						{ label: 'Host callbacks', translations: { it: 'Callback dell\'host' }, collapsed: false, items: [
 							{ slug: 'how-to/declare-a-host-callback' },
 						] },
+						{ label: 'Embedding the engine', translations: { it: 'Integrare il motore' }, collapsed: false, items: [
+							{ slug: 'how-to/play-a-campaign-in-your-program' },
+						] },
 					],
 				},
 				{
@@ -361,6 +386,13 @@ export default defineConfig({
 							{ slug: 'reference/session-log' },
 							{ slug: 'reference/installers' },
 						] },
+						{ label: 'Embedding the engine', translations: { it: 'Integrare il motore' }, collapsed: false, items: [
+							{ slug: 'reference/engine-targets' },
+							{ slug: 'reference/binding-javascript' },
+							{ slug: 'reference/binding-c-cpp' },
+							{ slug: 'reference/binding-csharp' },
+							{ slug: 'reference/binding-dart' },
+						] },
 					],
 				},
 				{
@@ -384,6 +416,10 @@ export default defineConfig({
 							{ slug: 'explanation/what-an-export-is' },
 							{ slug: 'explanation/host-callbacks' },
 							{ slug: 'explanation/working-with-an-assistant' },
+						] },
+						{ label: 'Embedding the engine', translations: { it: 'Integrare il motore' }, collapsed: false, items: [
+							{ slug: 'explanation/embedding-the-engine' },
+							{ slug: 'explanation/how-the-engine-ships' },
 						] },
 						{ label: 'The workspace, versions and the app', translations: { it: 'Lo spazio di lavoro, le versioni e l\'app' }, collapsed: false, items: [
 							{ slug: 'explanation/projects-are-folders' },

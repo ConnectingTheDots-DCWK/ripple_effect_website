@@ -40,7 +40,7 @@ The engine that plays a campaign comes in two builds: one with the Python interp
 
 If the whole project is meant for such a player, say so once instead, by turning **Python** off under *Capabilities* in the project's settings. Every card that runs Python is then marked as an error on its board as you write, Play refuses to start while any is left, and the export's box is ticked for you and cannot be unticked. The check moves from the end of the work to the moment of writing it.
 
-Separately, every campaign records in its manifest whether it needs Python, under `needs`. That is information, not a gate: a player without the interpreter still plays the campaign, and a host that would rather refuse one reads the flag to do it. See [Python in a story](/explanation/python-in-a-story/) for what the interpreter is for, and [Diagnostics](/reference/diagnostics/) for the codes.
+Separately, every campaign records in its manifest whether it needs Python, under `needs`. That is information, not a gate: a player without the interpreter still plays the campaign, and a host that would rather refuse one reads the flag to do it. The engine's own bindings do: their builds without Python refuse such a campaign when it is opened, as [How the engine ships](/explanation/how-the-engine-ships/#two-variants-of-every-build) explains. See [Python in a story](/explanation/python-in-a-story/) for what the interpreter is for, and [Diagnostics](/reference/diagnostics/) for the codes.
 
 ## Why HTML is shaped by a profile in the project
 
