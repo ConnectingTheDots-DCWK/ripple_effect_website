@@ -48,6 +48,9 @@ W.GE.05
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
 | [`W.RT.04`](#wrt04) | Una scheda con più uscite non aveva alcun comportamento |
+| [`I.RT.05`](#irt05) | Alla storia è stato dato il tuo sostituto |
+| [`W.RT.06`](#wrt06) | Alla storia è stato negato qualcosa che ha letto |
+| [`I.RT.07`](#irt07) | La storia poteva leggere qualcosa che non c'era |
 | [`E.EX.01`](#eex01) | Scheda Script in una campagna senza Python |
 | [`E.EX.02`](#eex02) | Passaggio che esegue Python in una campagna senza Python |
 
@@ -218,6 +221,22 @@ Cose che il motore ha notato mentre la storia era in esecuzione.
 ### `W.RT.04`
 
 **Una scheda con più uscite non aveva alcun comportamento,** quindi la storia si è fermata lì anziché indovinare quale strada prendere.
+
+I tre seguenti riguardano ciò che una storia legge dal tuo computer: la data e l'ora, e dove ti trovi. Cosa può leggere ciascuna è in *Impostazioni › Autorizzazioni*, insieme al sostituto che le viene detto al suo posto. Compaiono in cima alla finestra di gioco oltre che nel pannello dei messaggi, una volta ciascuno per partita.
+
+### `I.RT.05`
+
+**Alla storia è stato dato il tuo sostituto.** Ha letto la data e l'ora o la posizione, non poteva avere quella vera — non l'hai permesso, o non c'era niente da leggere — e le è stato detto il sostituto che hai scritto. La storia non vede la differenza: a questo serve un sostituto.
+
+### `W.RT.06`
+
+**Alla storia è stato negato qualcosa che ha letto.** Ha letto la data e l'ora o la posizione, che qui non è permessa, e non hai dato un sostituto, quindi il suo script ha ricevuto un `PermissionError`. Se lo script lo intercetta con `except PermissionError:`, la storia prosegue con ciò che dice al suo posto; altrimenti il passaggio mostra un avviso dove sarebbe andato il testo.
+
+Correzione: permettilo in *Impostazioni › Autorizzazioni*, dai lì un sostituto, oppure scrivi l'alternativa nello script.
+
+### `I.RT.07`
+
+**La storia poteva leggere qualcosa che non c'era.** Può leggere la posizione, ma l'editor non legge una posizione reale, quindi `current_position()` ha restituito `None`. Dai un sostituto in *Impostazioni › Autorizzazioni* per dire alle storie un luogo.
 
 ## Un'esportazione
 

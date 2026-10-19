@@ -48,6 +48,9 @@ W.GE.05
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
 | [`W.RT.04`](#wrt04) | Card with several ways out had no behaviour |
+| [`I.RT.05`](#irt05) | Story was given your stand-in |
+| [`W.RT.06`](#wrt06) | Story was refused something it read |
+| [`I.RT.07`](#irt07) | Story was allowed something there was nothing of |
 | [`E.EX.01`](#eex01) | Script node in a no-Python campaign |
 | [`E.EX.02`](#eex02) | Passage that runs Python in a no-Python campaign |
 
@@ -218,6 +221,22 @@ Things the engine noticed while the story was running.
 ### `W.RT.04`
 
 **A card with several ways out had no behaviour,** so the story stopped there rather than guess which way to go.
+
+The next three are about what a story reads from your computer: the date and time, and where you are. What each may read is under *Settings › Permissions*, and so is the stand-in each is told instead. They appear at the top of the play window as well as in the messages panel, once per playthrough each.
+
+### `I.RT.05`
+
+**The story was given your stand-in.** It read the date and time or the location, could not have the real one — you have not allowed it, or there was nothing to read — and was told the stand-in you typed instead. The story cannot tell the difference; that is what a stand-in is for.
+
+### `W.RT.06`
+
+**The story was refused something it read.** It read the date and time or the location, which is not allowed here, and you have given no stand-in, so its script got a `PermissionError`. If the script catches it with `except PermissionError:`, the story carries on with whatever it says instead; if not, the passage shows a warning in its place.
+
+Fix: allow it under *Settings › Permissions*, give a stand-in there, or write the fallback in the script.
+
+### `I.RT.07`
+
+**The story was allowed something there was nothing of.** It may read the location, but the editor does not read a real position, so `current_position()` gave `None`. Give a stand-in under *Settings › Permissions* to tell stories a place.
 
 ## An export
 
