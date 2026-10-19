@@ -1343,6 +1343,134 @@ Wire `value` into whatever needs it. Its `exec` lets it sit in the story rather 
 | `value` | `stringList` | The list typed on the card. |
 
 
+## World
+
+What the story reads of the reader's world: where they are and what time it is, each only when the reader allows it. A story with one of these on a board asks before it begins. Each takes the flow and has an `unavailable` way out for a read that got nothing; left unwired, the story carries on by `completed` or `no`. Python reads the same things — see [The world outside the story](/reference/python/the-world/).
+
+### Get location
+
+<NodePreview type="location.get" />
+
+Reads where the reader is, if they allowed it.
+
+A story that has one of these asks the reader before it begins, and the answer is kept under Settings → Permissions. What comes out is what `location_get()` hands a script: a real reading has a latitude, a longitude and how many metres it may be off, and no label — nothing is looked up to name the place. A stand-in the reader typed as a place name has the `label` and nothing else.
+
+Without a reading the flow leaves by `unavailable`, or by `completed` with nothing on the outputs when that is not wired. Either way the play window and Messages say what happened.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken with a reading, a stand-in included. |
+| `unavailable` | `flow` | Taken when there was no reading: the reader did not allow it and gave no stand-in, or allowed it and there was nothing to give. Unwired, the story carries on the way it would have otherwise. |
+| `label` | `string` | The place's name, from a stand-in typed as one. |
+| `latitude` | `number` | Degrees north, or south when negative. |
+| `longitude` | `number` | Degrees east, or west when negative. |
+| `accuracy` | `number` | How many metres the reading may be off. |
+
+**Read more:** [The world outside the story](/reference/python/the-world/)
+
+
+### Near
+
+<NodePreview type="location.near" />
+
+Sends the flow one way when the reader is near a place, and another when they are not.
+
+Type the place as a latitude and a longitude — `41.9028, 12.4964` — which is what a map gives you when you copy a point, or wire them in; a wire beats the card. *Within* is how close counts, in metres. `distance` is how far the reader was, measured along the ground.
+
+A reading with no coordinates is no reading here: a stand-in the reader typed as a town has nothing to measure from, and leaves by `unavailable` — or by `no` when that is not wired.
+
+**On the card:** **Place** — A latitude and a longitude, as `41.9028, 12.4964`; **Within**, default `1000.0` — How close counts, in metres.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+| `latitude` | `number` | The place's latitude. A wire beats the card. |
+| `longitude` | `number` | The place's longitude. A wire beats the card. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `yes` | `flow` | Taken when the reader is within the distance. |
+| `no` | `flow` | Taken when they are further away. |
+| `unavailable` | `flow` | Taken when there was no reading: the reader did not allow it and gave no stand-in, or allowed it and there was nothing to give. Unwired, the story carries on the way it would have otherwise. |
+| `distance` | `number` | How far the reader was, in metres. |
+
+**Read more:** [The world outside the story](/reference/python/the-world/)
+
+
+### Get date & time
+
+<NodePreview type="clock.get" />
+
+Reads what time it is where the reader is, if they allowed it.
+
+The editor allows the clock unless the reader said otherwise under Settings → Permissions. Every number is on the reader's own wall clock, and `weekday` counts from Monday, which is 1. `iso` is the whole moment as one piece of text, with its offset from UTC — what `datetime.now().isoformat()` gives a script.
+
+Without a reading the flow leaves by `unavailable`, or by `completed` with nothing on the outputs when that is not wired.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken with a reading, a stand-in included. |
+| `unavailable` | `flow` | Taken when there was no reading: the reader did not allow it and gave no stand-in, or allowed it and there was nothing to give. Unwired, the story carries on the way it would have otherwise. |
+| `iso` | `string` | The moment, as `2026-10-19T18:30:00+02:00`. |
+| `year` | `number` | The year. |
+| `month` | `number` | The month, January 1. |
+| `day` | `number` | The day of the month. |
+| `hour` | `number` | The hour, 0 to 23. |
+| `minute` | `number` | The minute. |
+| `weekday` | `number` | The day of the week, Monday 1, Sunday 7. |
+
+**Read more:** [The world outside the story](/reference/python/the-world/)
+
+
+### Time branch
+
+<NodePreview type="clock.branch" />
+
+Sends the flow one way at certain hours or on certain days, and another otherwise.
+
+Type a window — *From* `18:00` *until* `22:00` — and pick the days it holds on. The start is in it and the end is not, so 18:00 until 22:00 is over at ten. A window whose start is later than its end runs past midnight; leave a side empty to run from midnight or to it, both for the whole day. No days picked is every day. All of it is the reader's own wall clock.
+
+Without a reading the flow leaves by `unavailable`, or by `no` when that is not wired.
+
+**On the card:** **From** — When the window opens, as `18:00`. Empty is midnight; **Until** — When it closes, as `22:00`. Empty is midnight; **Days** — The days it holds on. None picked is every day.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `yes` | `flow` | Taken inside the window, on one of its days. |
+| `no` | `flow` | Taken otherwise. |
+| `unavailable` | `flow` | Taken when there was no reading: the reader did not allow it and gave no stand-in, or allowed it and there was nothing to give. Unwired, the story carries on the way it would have otherwise. |
+
+**Read more:** [The world outside the story](/reference/python/the-world/)
+
+
 ## Chance
 
 ### Dice roller

@@ -236,7 +236,7 @@ Fix: allow it under *Settings › Permissions*, give a stand-in there, or write 
 
 ### `I.RT.07`
 
-**The story was allowed something there was nothing of.** It may read the location, but the editor does not read a real position, so `current_position()` gave `None`. Give a stand-in under *Settings › Permissions* to tell stories a place.
+**The story was allowed something there was nothing of.** It may read the location, but this computer's location service gave no position in time — it may be off, or have none to give — so `location_get()` gave `None` and a World node left by `unavailable`. Give a stand-in under *Settings › Permissions* to tell stories a place when that happens.
 
 ## An export
 
