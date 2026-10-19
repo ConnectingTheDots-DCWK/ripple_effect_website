@@ -1,13 +1,13 @@
 ---
 title: Python reference
-description: The eighteen host functions Python in a story may call, the five surfaces they run on, how arguments are checked and how a refusal reads.
+description: The twenty host functions Python in a story may call, the five surfaces they run on, how arguments are checked and how a refusal reads.
 ---
 
 Every function a script may call is a **host function**: bound under the name an author types, present without an `import`, and answered by the app or by the runtime playing a campaign. There is no `import ripple`, no class to instantiate and no object syntax. A component or an entity crosses as a dict, because the interpreter has no `class`.
 
 ## Functions
 
-Eighteen names, bound on every surface, in three groups. Signatures are the ones the app registers; the page for each group lists what every function answers and refuses.
+Twenty names, bound on every surface, in four groups. Signatures are the ones the app registers; the page for each group lists what every function answers and refuses.
 
 ### Components and entities
 
@@ -49,6 +49,17 @@ Detail: [Sounds](/reference/python/sounds/).
 | `play_sound(path, volume=1.0, speed=1.0)` | Plays the file at `path` (`sfx/bell.ogg`, as the project spells it) once and returns at once. `volume` runs from 0 to 1, `speed` from a little above 0. |
 
 A soundscape is set on a passage, not from Python.
+
+### The world outside the story
+
+Detail: [The world outside the story](/reference/python/the-world/). Read only when the reader allows it; a read they did not allow raises `PermissionError`, unless they gave a stand-in.
+
+| Function | Does |
+| --- | --- |
+| `location_get()` | Where the reader is, as a dict of `label`, `latitude`, `longitude`, `accuracy` and `when`, any of which may be `None`; or `None` when there is no position yet. |
+| `location_distance(latitude, longitude)` | How far the reader is from there, in metres, or `None` when the reading has no coordinates. |
+
+The clock is the standard library's own: `datetime.now()` and `date.today()`, read the same way.
 
 ## Surfaces
 
@@ -129,6 +140,8 @@ The sentences a surface refuses with are fixed, because a script may already hav
 | A passage, `play_sound` | `a passage cannot play a sound — its snippets run again every time it is redrawn, so put this on a Play sound node or in a Script node` |
 | Console or agent, `play_sound` | `no campaign is running, so there is nothing to play this through — press play, or put this on a Play sound node` |
 
+A read of the world the reader did not allow is the one refusal that is not a `RuntimeError`: it is Python's own `PermissionError`, so `except PermissionError:` catches it and nothing else. See [The world outside the story](/reference/python/the-world/#when-a-read-is-refused).
+
 A refusal inside a passage does not end the run. It renders in place as a `⚠ RuntimeError: …` chip and the story carries on, which is why every message is one line. A name quoted in a refusal is cut to about forty characters.
 
 ## Interpreter
@@ -139,7 +152,7 @@ A script that has not finished after two seconds is stopped. See [The sandbox an
 
 ## Versioning
 
-These names are a contract with every passage and script written against them from 1.3 onward (`play_sound` from 1.4), and are added to rather than repurposed. The shape `component_get` answers is shared with `component_read` over MCP.
+These names are a contract with every passage and script written against them from 1.3 onward (`play_sound` from 1.4, `location_get` and `location_distance` from 1.6), and are added to rather than repurposed. The shape `component_get` answers is shared with `component_read` over MCP.
 
 ## Related
 

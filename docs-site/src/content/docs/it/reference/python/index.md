@@ -1,13 +1,13 @@
 ---
 title: Riferimento Python
-description: Le diciotto funzioni host che il Python di una storia può chiamare, le cinque superfici su cui girano, come vengono controllati gli argomenti e come si legge un rifiuto.
+description: Le venti funzioni host che il Python di una storia può chiamare, le cinque superfici su cui girano, come vengono controllati gli argomenti e come si legge un rifiuto.
 ---
 
 Ogni funzione che uno script può chiamare è una **funzione host**: è legata al nome che l'autore digita, è presente senza un `import` e riceve risposta dall'app o dal runtime che sta giocando una campagna. Non esiste `import ripple`, nessuna classe da istanziare e nessuna sintassi a oggetti. Un componente o un'entità attraversa il confine come dict, perché l'interprete non ha `class`.
 
 ## Funzioni
 
-Diciotto nomi, legati su ogni superficie, in tre gruppi. Le firme sono quelle che l'app registra; la pagina di ciascun gruppo elenca che cosa risponde e che cosa rifiuta ogni funzione.
+Venti nomi, legati su ogni superficie, in quattro gruppi. Le firme sono quelle che l'app registra; la pagina di ciascun gruppo elenca che cosa risponde e che cosa rifiuta ogni funzione.
 
 ### Componenti ed entità
 
@@ -49,6 +49,17 @@ Dettaglio: [Suoni](/it/reference/python/sounds/).
 | `play_sound(path, volume=1.0, speed=1.0)` | Riproduce una volta il file in `path` (`sfx/bell.ogg`, come lo scrive il progetto) e ritorna subito. `volume` va da 0 a 1, `speed` da poco sopra 0. |
 
 Un soundscape si imposta su un passaggio, non da Python.
+
+### Il mondo fuori dalla storia
+
+Dettaglio: [Il mondo fuori dalla storia](/it/reference/python/the-world/). Si legge solo se chi legge lo consente; una lettura non consentita solleva `PermissionError`, a meno che non abbia indicato un sostituto.
+
+| Funzione | Cosa fa |
+| --- | --- |
+| `location_get()` | Dove si trova chi legge, come dict di `label`, `latitude`, `longitude`, `accuracy` e `when`, ognuno dei quali può essere `None`; oppure `None` quando non c'è ancora una posizione. |
+| `location_distance(latitude, longitude)` | Quanto dista chi legge da quel punto, in metri, oppure `None` quando la lettura non ha coordinate. |
+
+L'orologio è quello della libreria standard: `datetime.now()` e `date.today()`, letti allo stesso modo.
 
 ## Superfici
 
@@ -129,6 +140,8 @@ Le frasi con cui una superficie rifiuta sono fisse, perché uno script potrebbe 
 | Un passaggio, `play_sound` | `a passage cannot play a sound — its snippets run again every time it is redrawn, so put this on a Play sound node or in a Script node` |
 | Console o agente, `play_sound` | `no campaign is running, so there is nothing to play this through — press play, or put this on a Play sound node` |
 
+Una lettura del mondo che chi legge non ha consentito è l'unico rifiuto che non è un `RuntimeError`: è il `PermissionError` di Python, quindi `except PermissionError:` cattura quello e nient'altro. Vedi [Il mondo fuori dalla storia](/it/reference/python/the-world/).
+
 Un rifiuto dentro un passaggio non interrompe l'esecuzione. Viene mostrato sul posto come un chip `⚠ RuntimeError: …` e la storia prosegue, ed è per questo che ogni messaggio è di una sola riga. Un nome citato in un rifiuto viene tagliato a circa quaranta caratteri.
 
 ## Interprete
@@ -139,7 +152,7 @@ Uno script che non ha finito dopo due secondi viene interrotto. Vedi [La sandbox
 
 ## Versioni
 
-Questi nomi sono un contratto con ogni passaggio e ogni script scritto su di essi dalla 1.3 in poi (`play_sound` dalla 1.4), e vengono ampliati senza essere riutilizzati per altro. La forma che `component_get` restituisce è condivisa con `component_read` tramite MCP.
+Questi nomi sono un contratto con ogni passaggio e ogni script scritto su di essi dalla 1.3 in poi (`play_sound` dalla 1.4, `location_get` e `location_distance` dalla 1.6), e vengono ampliati senza essere riutilizzati per altro. La forma che `component_get` restituisce è condivisa con `component_read` tramite MCP.
 
 ## Vedi anche
 

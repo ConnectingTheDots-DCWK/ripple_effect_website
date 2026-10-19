@@ -236,7 +236,7 @@ Correzione: permettilo in *Impostazioni › Autorizzazioni*, dai lì un sostitut
 
 ### `I.RT.07`
 
-**La storia poteva leggere qualcosa che non c'era.** Può leggere la posizione, ma l'editor non legge una posizione reale, quindi `current_position()` ha restituito `None`. Dai un sostituto in *Impostazioni › Autorizzazioni* per dire alle storie un luogo.
+**La storia poteva leggere qualcosa che non c'era.** Può leggere la posizione, ma il servizio di localizzazione di questo computer non ha dato una posizione in tempo — può essere spento o non averne una — quindi `location_get()` ha restituito `None` e un nodo World è uscito da `unavailable`. Dai un sostituto in *Impostazioni › Autorizzazioni* per dire alle storie un luogo quando succede.
 
 ## Un'esportazione
 

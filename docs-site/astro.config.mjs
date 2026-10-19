@@ -367,6 +367,7 @@ export default defineConfig({
 							{ slug: 'reference/python/components-and-entities' },
 							{ slug: 'reference/python/console-variables' },
 							{ slug: 'reference/python/sounds' },
+							{ slug: 'reference/python/the-world' },
 							{ slug: 'reference/python/sandbox' },
 						] },
 						{ label: 'Project files and formats', translations: { it: 'File e formati del progetto' }, collapsed: false, items: [
