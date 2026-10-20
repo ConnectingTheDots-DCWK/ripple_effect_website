@@ -19,22 +19,17 @@ Un conto alla rovescia rende un passaggio impaziente: dopo un po' inizia a conta
 
 </Steps>
 
-La riga della scheda dice allora quanto dura e quale scelta prende, e un piccolo orologio segna la riga di quella scelta.
+La riga della scheda dice allora quanto dura e quale scelta prende, e un piccolo orologio segna la riga di quella scelta. Quando la storia viene giocata, il pulsante di quella scelta si riempie dal bordo man mano che il tempo scorre, a meno che il conto alla rovescia non sia nascosto.
 
 Senza un tempo scritto non c'è conto alla rovescia. *Rimuovi* lo toglie del tutto.
 
 ## Prendere un'impostazione da un collegamento
 
-Ognuna delle quattro impostazioni può arrivare da un'altra parte della lavagna, per esempio da una variabile o da un tiro di dadi.
+Ognuna delle quattro impostazioni può arrivare da un'altra parte della lavagna, per esempio da una variabile o da un tiro di dadi. Ogni scheda Narrazione ha un ingresso per ciascuna, sopra le scelte, con le etichette *timeout*, *starts after*, *shown* e *default*.
 
-<Steps>
+Collega un valore all'ingresso. Una durata o un'attesa accettano un numero di secondi o il testo di una durata; la scelta accetta la sua posizione tra le scelte offerte, da `0`, o l'id della sua porta.
 
-1. Nella finestra del conto alla rovescia, attiva *Da un collegamento* accanto all'impostazione. La scheda aggiunge un ingresso per quell'impostazione.
-2. Collega un valore a quell'ingresso. Una durata o un'attesa accettano un numero di secondi o il testo di una durata; la scelta accetta la sua posizione tra le scelte offerte, da `0`, o l'id della sua porta.
-
-</Steps>
-
-Finché il collegamento porta qualcosa, vince lui. Finché non è collegato o non porta nulla, si usa il valore scritto nella finestra.
+Finché il collegamento porta qualcosa, vince sulla finestra, e una durata collegata fa partire il conto alla rovescia anche se non è scritto nessun tempo. Finché l'ingresso non è collegato o il collegamento non porta nulla, si usa il valore scritto nella finestra. La finestra indica quali impostazioni arrivano da un collegamento.
 
 ## Quando il conto alla rovescia non parte
 
