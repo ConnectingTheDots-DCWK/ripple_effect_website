@@ -438,7 +438,7 @@ The *Reads* row at the bottom of the card says how many names the passage is han
 
 A choice has a *Times* box beside its name: blank for as often as the reader likes, or a number, shown as `×3` at the end of its row. Every wired choice also grows a `bool` input: wired, the choice is offered only while it is true. A choice that has run out, or whose answer is false, stays on screen greyed out and unpressable.
 
-The *countdown* row under the choices makes the passage impatient: after a while it starts counting, and when it runs out the story takes the choice you picked, as if the reader had. Set how long, how long before it starts, and whether the reader sees it. Any of the four can come from a wire instead — switch on *From a wire* and the card grows an input for it. A countdown whose choice is spent or closed on a visit does not run on that visit.
+The *countdown* row under the choices makes the passage impatient: after a while it starts counting, and when it runs out the story takes the choice you picked, as if the reader had. Set how long, how long before it starts, and whether the reader sees it. Each of the four is also an input above the choices, and a wire into one wins over what is set — a wired timeout counts down even with no time typed. A countdown whose choice is spent or closed on a visit does not run on that visit.
 
 **On the card:** **Passage** — Which passage file the card reads. New makes one beside the board; **Soundscape** — *None*, *Silence*, or one of the project's soundscapes.
 
@@ -447,6 +447,10 @@ The *countdown* row under the choices makes the passage impatient: after a while
 | Port | Carries | Meaning |
 | --- | --- | --- |
 | `in` | `flow` | The way in, at the title. |
+| `timer.timeout` | `any` | How long the countdown runs: a number of seconds, or a duration such as PT10S. Nothing, zero or less is no countdown. |
+| `timer.after` | `any` | How long the passage waits before its countdown begins: seconds, or a duration. |
+| `timer.visible` | `bool` | Whether the reader is shown the countdown. |
+| `timer.default` | `any` | The choice taken when the countdown runs out: its place among the choices offered, from 0, or its port id. |
 
 **Answers**
 

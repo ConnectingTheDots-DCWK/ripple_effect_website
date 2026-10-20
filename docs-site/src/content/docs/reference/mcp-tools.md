@@ -465,8 +465,9 @@ may be taken, which a reader sees greyed out once it is spent.
 A passage's countdown: after a while it starts, and when it runs out the story
 takes a choice by itself. Merges, so setting one part leaves the others;
 `clear: true` takes the countdown away. With no timeout there is no
-countdown. `wired` names the parameters that grow an input port on the card,
-each beating what is typed while a wire carries something.
+countdown. Every passage has an input port per parameter — `timer.timeout`,
+`timer.after`, `timer.visible`, `timer.default` — and a wire into one beats
+what is set here, a timeout included.
 
 | Argument | | What |
 | --- | --- | --- |
@@ -476,8 +477,7 @@ each beating what is typed while a wire carries something.
 | `after` | | How long the passage waits before the countdown begins. An empty string is at once. |
 | `visible` | | Whether the reader is shown it count. |
 | `default` | | The choice it takes, by port id — `choice_0`, `choice_1` — which must be wired. |
-| `wired` | | Which of `timeout`, `after`, `visible` and `default` get an input port. Replaces the list; leave it out to keep it. |
-| `clear` | | Take the countdown away, its ports included. |
+| `clear` | | Take the countdown away. |
 
 ### `board_set_node`
 

@@ -25,16 +25,11 @@ With no time typed there is no countdown. *Remove* takes it away entirely.
 
 ## Take a setting from a wire
 
-Any of the four settings can come from somewhere else on the board, such as a variable or a dice roll.
+Any of the four settings can come from somewhere else on the board, such as a variable or a dice roll. Every Narration card has an input for each, labelled *timeout*, *starts after*, *shown* and *default*, above its choices.
 
-<Steps>
+Wire a value into the input. A timeout or a delay takes a number of seconds or a duration's text; the choice takes its place among the choices offered, from `0`, or its port id.
 
-1. In the countdown dialog, turn on *From a wire* beside the setting. The card grows an input for it.
-2. Wire a value into that input. A timeout or a delay takes a number of seconds or a duration's text; the choice takes its place among the choices offered, from `0`, or its port id.
-
-</Steps>
-
-While the wire carries something, it wins. While it is unwired or carries nothing, the value typed in the dialog is used.
+While the wire carries something, it wins over the dialog, and a wired timeout counts down even when no time is typed. While the input is unwired or the wire carries nothing, the value typed in the dialog is used. The dialog says which settings a wire answers.
 
 ## When the countdown does not run
 
