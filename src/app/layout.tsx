@@ -30,8 +30,6 @@ export const metadata: Metadata = {
     "dialogue tree editor",
     "quest design",
     "node graph editor",
-    "arcweave alternative",
-    "twine alternative",
     "tabletop rpg prep",
     "visual scripting",
   ],

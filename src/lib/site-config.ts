@@ -34,11 +34,11 @@ export const siteConfig = {
 
   /** AppInfo.tagline, unchanged. */
   tagline:
-    "A branching narrative and game design tool for D&D and much more, inspired by ArcWeave.",
+    "A branching narrative and game design tool for tabletop RPGs and much more.",
 
   /** The rpm package's own description. */
   description:
-    "Ripple Effect is a branching narrative and game design tool for D&D and much more, inspired by ArcWeave. Stories are drawn as node graphs: passages hold Markdown, wires carry the choices between them, and components, loops and restricted Python give a story the shape of a program without asking anyone to write one.",
+    "Ripple Effect is a branching narrative and game design tool for tabletop RPGs and much more. Stories are drawn as node graphs: passages hold Markdown, wires carry the choices between them, and components, loops and restricted Python give a story the shape of a program without asking anyone to write one.",
 
   /**
    * The single best trust line the product has.
@@ -87,7 +87,6 @@ export const siteConfig = {
     // one of the three that was public and published before this site was.
     readTime: "https://github.com/ConnectingTheDots-DCWK/dart_read_time",
     monty: "https://github.com/pydantic/monty",
-    arcweave: "https://arcweave.com",
     funding: "https://buymeacoffee.com/wilielmus",
     // Interest in the paid tier. A hosted form rather than a field of our own,
     // so there is no address of anybody's sitting in a database we run.
