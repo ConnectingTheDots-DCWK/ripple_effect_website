@@ -31,7 +31,7 @@ export function UseCases() {
                 For anything whose shape is the paths through it
               </h2>
               <p className="mt-4 text-lg text-muted-foreground text-pretty">
-                It began as a tool for D&amp;D prep. What it turned out to be is
+                It began as a tool for tabletop prep. What it turned out to be is
                 a place to write anything that branches.
               </p>
               <dl className="mt-8 space-y-6">
