@@ -40,7 +40,7 @@ Il motore che gioca una campagna esiste in due versioni: una con l'interprete Py
 
 Se l'intero progetto è pensato per un player di questo tipo, dillo una volta sola, disattivando **Python** sotto *Capacità* nelle impostazioni del progetto. Ogni scheda che esegue Python viene allora segnalata come errore sulla sua lavagna mentre scrivi, Gioca rifiuta di partire finché ne resta qualcuna, e la casella dell'esportazione viene selezionata per te e non può essere deselezionata. Il controllo passa dalla fine del lavoro al momento in cui lo scrivi.
 
-Inoltre, ogni campagna registra nel proprio manifest se ha bisogno di Python, sotto `needs`. È un'informazione, non un blocco: un player senza interprete gioca comunque la campagna, e un host che preferisce rifiutarla legge quel flag per farlo. Vedi [Python in una storia](/it/explanation/python-in-a-story/) per sapere a cosa serve l'interprete, e [Diagnostica](/it/reference/diagnostics/) per i codici.
+Inoltre, ogni campagna registra nel proprio manifest se ha bisogno di Python, sotto `needs`. È un'informazione, non un blocco: un player senza interprete gioca comunque la campagna, e un host che preferisce rifiutarla legge quel flag per farlo. I binding del motore lo fanno: le loro build senza Python rifiutano una campagna del genere quando viene aperta, come spiega [Come viene distribuito il motore](/it/explanation/how-the-engine-ships/). Vedi [Python in una storia](/it/explanation/python-in-a-story/) per sapere a cosa serve l'interprete, e [Diagnostica](/it/reference/diagnostics/) per i codici.
 
 ## Perché l'HTML è modellato da un profilo nel progetto
 

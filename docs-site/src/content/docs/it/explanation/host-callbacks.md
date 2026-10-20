@@ -54,3 +54,4 @@ L'editor pubblica i nomi ma non ha un gioco che reagisca, quindi nella finestra 
 - [Come dichiarare, puntare e dimenticare una callback dell'host](/it/how-to/declare-a-host-callback/)
 - [Riferimento delle callback dell'host](/it/reference/host-callbacks/): gli eventi, i campi di puntamento, che cosa fa una destinazione mancante e che cosa viaggia con un progetto
 - [Che cos'è un'esportazione](/it/explanation/what-an-export-is/)
+- [Come eseguire una campagna nel tuo programma](/it/how-to/play-a-campaign-in-your-program/): registrare un gestore con un nome, nel linguaggio di ciascun binding

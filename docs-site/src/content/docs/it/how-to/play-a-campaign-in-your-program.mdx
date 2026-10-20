@@ -1,0 +1,344 @@
+---
+title: Come eseguire una campagna nel tuo programma
+description: Esporta una campagna, aggiungi il binding del motore per il tuo linguaggio e gioca la storia con le sue scelte, i moduli, le attese, le callback, il suono e i salvataggi.
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, un'app, una pagina o uno strumento. Ogni passo mostra il codice di ciascun binding, e il linguaggio che scegli una volta vale per tutta la pagina. Cosa fa ogni chiamata, e ogni opzione che accetta, è nel riferimento del binding: [JavaScript e TypeScript](/it/reference/binding-javascript/), [C e C++](/it/reference/binding-c-cpp/), [C#](/it/reference/binding-csharp/), [Dart](/it/reference/binding-dart/).
+
+<Steps>
+
+1. **Esporta la storia come campagna.** Nell'editor, scegli *Esporta progetto* nel pannello del progetto, scegli **Campagna** ed esporta in una cartella. La cartella, con `campaign.json` nella sua radice, è ciò che il tuo programma apre. Se il tuo programma userà il motore senza Python, seleziona prima **Non richiede Python**. Vedi [Come esportare una copia del progetto o una campagna](/it/how-to/export-a-project-or-campaign/).
+
+2. **Aggiungi il binding.**
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```sh
+   npm install @ripplefx/player @ripplefx/soundscape
+   ```
+   Servi la cartella della campagna accanto alla tua pagina, e servi i file `.wasm` come `application/wasm`. Il tuo bundler copia i file del motore dal pacchetto.
+   </TabItem>
+   <TabItem label="C++">
+   ```cmake
+   include(FetchContent)
+   FetchContent_Declare(
+       ripple_effect
+       GIT_REPOSITORY https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration
+       GIT_TAG v1.5.2)
+   FetchContent_MakeAvailable(ripple_effect)
+   target_link_libraries(my_game PRIVATE Ripple::cpp)
+   ```
+   La configurazione scarica e verifica il motore per la tua piattaforma. Per il solo C, collega invece `Ripple::engine`.
+   </TabItem>
+   <TabItem label="C#">
+   ```sh
+   dotnet add package RippleFx.Engine
+   dotnet add package RippleFx.Engine.Native
+   ```
+   Referenzia esattamente un pacchetto del motore: `RippleFx.Engine.Native`, oppure `RippleFx.Engine.Native.NoPython` per il motore senza Python.
+   </TabItem>
+   <TabItem label="Dart">
+   ```sh
+   dart pub add ripplefx_engine    # or: flutter pub add ripplefx_engine
+   ```
+   L'hook di build del pacchetto scarica, verifica e include il motore per la piattaforma per cui compili.
+   </TabItem>
+   </Tabs>
+
+3. **Scegli la variante**, se la campagna non richiede Python e vuoi il motore più piccolo.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   Non devi fare nulla: `Campaign.load` legge il manifest della campagna e carica il motore con Python solo quando la campagna ne ha bisogno. Passa `python: false` per rifiutarne una che ne ha bisogno.
+   </TabItem>
+   <TabItem label="C++">
+   ```sh
+   cmake -B build -DRIPPLE_ENGINE_PYTHON=OFF
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   Referenzia `RippleFx.Engine.Native.NoPython` al posto di `RippleFx.Engine.Native`.
+   </TabItem>
+   <TabItem label="Dart">
+   Nel tuo pubspec, e sul web `--dart-define=RIPPLEFX_PYTHON=false`:
+   ```yaml
+   hooks:
+     user_defines:
+       ripplefx_engine:
+         python: false
+   ```
+   </TabItem>
+   </Tabs>
+
+   Il motore senza Python rifiuta una campagna che ne ha bisogno quando la campagna viene aperta.
+
+4. **Apri la campagna, crea una sessione e avvolgila in un player.** Scegli tu il seed: lo stesso seed e le stesse risposte riproducono la stessa storia.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   import { Campaign, Player } from '@ripplefx/player';
+
+   const campaign = await Campaign.load('/campaigns/the-city-of-elsenmar/');
+   const player = new Player(campaign.session({ seed: BigInt(Date.now()) }), {
+     onEffect: draw,                       // step 5
+     onError: (error) => console.error(error),
+   });
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   #include <ripple/ripple.hpp>
+
+   const ripple::Campaign campaign = ripple::Campaign::open_dir("assets/story");
+   ripple::SessionConfig config;
+   config.board = campaign.manifest().entries.front();
+   config.seed = seed;
+
+   ripple::PlayerHandlers handlers;
+   handlers.on_effect = [&](const ripple::Effect& effect) { draw(effect); };   // step 5
+   handlers.on_error = [](const ripple::Failure& failure) { log(failure.message); };
+   ripple::Player player(ripple::Session::create(campaign, config), handlers);
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   using RippleFx.Engine;
+
+   using var campaign = Campaign.OpenDirectory("Assets/Story");
+   var config = new SessionConfig { Board = campaign.Manifest.Entries[0], Seed = seed };
+   using var player = new Player(Session.Create(campaign, config), new PlayerHandlers
+   {
+       OnEffect = Draw,                                     // step 5
+       OnError = error => Log(error.Message),
+   });
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   import 'package:ripplefx_engine/ripplefx_engine.dart';
+
+   final campaign = await Campaign.openDirectory('assets/story');
+   final player = Player(
+     Session.create(
+       campaign,
+       SessionConfig(board: campaign.manifest.entries.first, seed: seed),
+     ),
+     onEffect: draw,                                      // step 5
+     onError: (error, stack) => log('$error'),
+   );
+   ```
+   </TabItem>
+   </Tabs>
+
+   Un programma che impacchetta le proprie risorse a modo suo apre invece la campagna dai suoi file in memoria: `Campaign.fromFiles`, `Campaign::open_files`, `Campaign.OpenFiles` o `Campaign.openFiles`.
+
+5. **Disegna il turno.** Ogni effetto raggiunge il tuo gestore in ordine. Quelli da disegnare sono un passaggio (`show`), un modulo (`ask`) e una fine (`ended`, `failed`, `stopped`). Disegna una scelta non disponibile in grigio e non permettere che venga premuta.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   function draw(effect: Effect) {
+     switch (effect.kind) {
+       case 'show':  showPassage(effect.passage); break;   // passage.text, passage.choices[i].available
+       case 'ask':   showForm(effect.prompt); break;
+       case 'ended': showEnding(effect.title); break;
+       case 'failed': showProblem(effect.message); break;
+     }
+   }
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   void draw(const ripple::Effect& effect) {
+       if (const auto* shown = std::get_if<ripple::Show>(&effect)) show_passage(shown->passage);
+       else if (const auto* asked = std::get_if<ripple::Ask>(&effect)) show_form(asked->prompt);
+       else if (const auto* ended = std::get_if<ripple::Ended>(&effect)) show_ending(ended->title);
+       else if (const auto* failed = std::get_if<ripple::Failed>(&effect)) show_problem(failed->message);
+   }
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   void Draw(Effect effect)
+   {
+       switch (effect)
+       {
+           case Effect.Show s:   ShowPassage(s.Passage); break;   // Passage.Choices[i].Available
+           case Effect.Ask a:    ShowForm(a.Prompt); break;
+           case Effect.Ended e:  ShowEnding(e.Title); break;
+           case Effect.Failed f: ShowProblem(f.Message); break;
+       }
+   }
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   void draw(Effect effect) {
+     switch (effect) {
+       case Show(:final passage): showPassage(passage);   // passage.choices[i].available
+       case Ask(:final prompt): showForm(prompt);
+       case Ended(:final title): showEnding(title);
+       case Failed(:final message): showProblem(message);
+       default:
+     }
+   }
+   ```
+   </TabItem>
+   </Tabs>
+
+   Il testo di un passaggio è Markdown, oppure HTML quando la campagna è stata esportata in quel modo, come indica il formato del testo nel manifest. Visualizzalo con una libreria a tua scelta.
+
+6. **Avvia la storia, rispondi al lettore e dai al player il tuo orologio.** Chiama il verbo corrispondente a ciò che ha fatto il lettore. Fuori da JavaScript, chiama `update` del player dal tuo ciclo di frame o di eventi: risponde a un'attesa quando il suo momento è arrivato.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   player.start();
+   choiceButton.onclick = () => player.choose(index);
+   leaveButton.onclick = () => player.choose();           // the reader leaves the passage
+   form.onsubmit = () => player.answer({ name: 'Ada', age: 31n });   // an Int is a bigint
+   // The player waits out a hold by itself.
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   player.start();
+   player.choose(index);                     // or player.choose(ripple::leave)
+   player.answer(answers);                   // a ripple::Value::Map, or std::nullopt to leave the form
+   // every frame:
+   player.update();
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   player.Start();
+   player.Choose(index);                     // or player.Leave()
+   player.Answer(answers);                   // field name to Value; null leaves the form
+   // every frame:
+   player.Update();
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   player.start();
+   player.choose(index);                     // or player.leave()
+   player.answer({'name': TextValue('Ada')});   // null leaves the form
+   // every frame:
+   player.update();
+   ```
+   </TabItem>
+   </Tabs>
+
+   Un verbo che la storia non stava chiedendo viene rifiutato e nulla si muove. Intercetta il rifiuto per una scelta esaurita e per una lingua sconosciuta, che sono i due che si incontrano nell'uso normale.
+
+7. **Registra le callback dell'autore.** Concorda i nomi con l'autore. Un gestore non deve chiamare un verbo, quindi mettine uno in coda per dopo il suo ritorno.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   player.onCallback('chapterTwoBegan', (fired) => game.unlock('chapter-2'));
+   player.onCallback('quitToTitle', () => queueMicrotask(() => player.stop()));
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   player.on_callback("chapterTwoBegan", [&](const ripple::CallbackEvent&) { game.unlock("chapter-2"); });
+   player.on_callback("quitToTitle", [&](const ripple::CallbackEvent&) { later.push_back([&] { player.stop(); }); });
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   player.OnCallback("chapterTwoBegan", fired => game.Unlock("chapter-2"));
+   player.OnCallback("quitToTitle", fired => later.Enqueue(() => player.Stop()));
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   player.onCallback('chapterTwoBegan', (fired) => game.unlock('chapter-2'));
+   player.onCallback('quitToTitle', (fired) => scheduleMicrotask(player.stop));   // dart:async
+   ```
+   </TabItem>
+   </Tabs>
+
+8. **Dai alla storia uno speaker.** Crea un driver di soundscape sulla campagna e uno speaker, passa il driver al player come suo audio e fallo avanzare insieme al player. In un browser, `@ripplefx/soundscape` è lo speaker; altrove implementi l'interfaccia speaker del binding sopra la tua API audio, come descrive il suo riferimento.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   import { Player, SoundscapeDriver } from '@ripplefx/player';
+   import { WebAudioSpeaker } from '@ripplefx/soundscape';
+
+   const speaker = new WebAudioSpeaker();
+   const audio = new SoundscapeDriver(campaign, speaker);
+   const player = new Player(campaign.session({ seed }), { onEffect: draw, audio });
+   begin.onclick = async () => { await speaker.unlock(); player.start(); };   // sound needs a click first
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   MySpeaker speaker;                                     // implements ripple::Speaker
+   auto audio = ripple::SoundscapeDriver::create(campaign, speaker);
+   handlers.audio = audio.get();
+   // every frame:  audio->update();  player.update();
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   using var audio = new SoundscapeDriver(campaign, new MySpeaker());   // implements ISpeaker
+   // in PlayerHandlers:  Audio = audio,
+   // every frame:  audio.Update();  player.Update();
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   final audio = SoundscapeDriver(campaign, MySpeaker());   // implements Speaker
+   // in Player(...):  audio: audio,
+   // every frame:  audio.update();  player.update();
+   ```
+   </TabItem>
+   </Tabs>
+
+9. **Salva e riprendi.** Crea un checkpoint mentre la storia è su un passaggio o su un modulo, e conserva il salvataggio insieme al seed. Per riprendere, apri una sessione dal salvataggio sulla stessa campagna e avviala: mostra di nuovo il turno salvato.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   const save = player.session.checkpoint();            // undefined except on a passage or a form
+   const resumed = Session.resume(campaign, save, { seed });
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   std::optional<std::string> save = player.session().checkpoint();
+   ripple::Session resumed = ripple::Session::resume(campaign, *save, seed, options);
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   string? save = player.Session.Checkpoint();
+   var resumed = Session.Resume(campaign, save, seed, options);
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   final save = player.session.checkpoint();
+   final resumed = Session.resume(campaign, save!, seed: seed);
+   ```
+   </TabItem>
+   </Tabs>
+
+   Un salvataggio di una campagna che nel frattempo è cambiata troppo viene rifiutato quando lo si riprende. Di' al giocatore che il salvataggio proviene da una versione più vecchia della storia. Se il motore segnala un **trap**, da quel momento la campagna è inutilizzabile: eliminala, aprila di nuovo e riprendi dall'ultimo checkpoint.
+
+10. **Distribuisci l'avviso del motore.** Riproduci il `NOTICE` del motore ovunque il tuo prodotto elenchi il software di terze parti. Ogni binding indica il file: `ENGINE-NOTICE` nel pacchetto npm, `share/ripple_effect/ENGINE-NOTICE` in un'installazione CMake, `ENGINE-NOTICE.txt` nei pacchetti del motore per C# e il `NOTICE` dell'archivio per Dart.
+
+</Steps>
+
+## Vedi anche
+
+- [Incorporare il motore](/it/explanation/embedding-the-engine/): perché l'API è una sessione che risponde con un elenco di effetti.
+- [Come viene distribuito il motore](/it/explanation/how-the-engine-ships/): cosa il binding mette nella tua build, e le due varianti.
+- [Piattaforme e varianti del motore](/it/reference/engine-targets/): le piattaforme per cui ogni binding è distribuito.
+- [Callback dell'host](/it/explanation/host-callbacks/): il lato dell'autore di una callback con nome.
