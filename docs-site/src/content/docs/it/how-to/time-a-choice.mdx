@@ -1,0 +1,52 @@
+---
+title: Come mettere un conto alla rovescia su una scelta
+description: Fai prendere a un passaggio una scelta da solo se il lettore aspetta troppo.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Un conto alla rovescia rende un passaggio impaziente: dopo un po' inizia a contare e, quando scade, la storia prende una delle scelte del passaggio, come se l'avesse scelta il lettore.
+
+## Impostare un conto alla rovescia
+
+<Steps>
+
+1. Clicca la riga del conto alla rovescia in fondo a una scheda Narration, sotto le scelte. Dice *Nessun conto alla rovescia — clicca per impostarlo*.
+2. Scrivi quanto dura in *Dura*, come durata: `PT10S` sono dieci secondi, `PT1M30S` un minuto e mezzo.
+3. Se vuoi, scrivi in *Inizia dopo* quanto aspetta il passaggio prima che il conto alla rovescia parta. Lascialo vuoto per partire subito.
+4. Scegli in *Poi prende* la scelta che la storia prende. Sono offerte solo le scelte collegate.
+5. Disattiva *Mostra il conto alla rovescia al lettore* se il lettore non deve vederlo. Continua comunque a scorrere.
+
+</Steps>
+
+La riga della scheda dice allora quanto dura e quale scelta prende, e un piccolo orologio segna la riga di quella scelta.
+
+Senza un tempo scritto non c'è conto alla rovescia. *Rimuovi* lo toglie del tutto.
+
+## Prendere un'impostazione da un collegamento
+
+Ognuna delle quattro impostazioni può arrivare da un'altra parte della lavagna, per esempio da una variabile o da un tiro di dadi.
+
+<Steps>
+
+1. Nella finestra del conto alla rovescia, attiva *Da un collegamento* accanto all'impostazione. La scheda aggiunge un ingresso per quell'impostazione.
+2. Collega un valore a quell'ingresso. Una durata o un'attesa accettano un numero di secondi o il testo di una durata; la scelta accetta la sua posizione tra le scelte offerte, da `0`, o l'id della sua porta.
+
+</Steps>
+
+Finché il collegamento porta qualcosa, vince lui. Finché non è collegato o non porta nulla, si usa il valore scritto nella finestra.
+
+## Quando il conto alla rovescia non parte
+
+- **La scelta che prende è chiusa in questa visita.** Se quella scelta è esaurita, o la sua condizione è falsa, il passaggio non ha conto alla rovescia e aspetta il lettore quanto vuole. Il pannello dei messaggi lo annota con `I.GE.18`.
+- **Non può partire affatto.** Un tempo che non è una durata, nessuna scelta indicata, o una scelta senza collegamenti è segnalato come `W.GE.17`.
+
+:::note
+Un salvataggio conserva dove si trova la storia, non quanto mancava al conto alla rovescia. Caricandolo, l'attesa e il conto alla rovescia ripartono dall'inizio.
+:::
+
+## Vedi anche
+
+- [Come limitare una scelta](/it/how-to/limit-a-choice/) per le scelte che si esauriscono e le condizioni.
+- [Diagnostica](/it/reference/diagnostics/) per `W.GE.17` e `I.GE.18`.
+- [Callback dell'host](/it/reference/host-callbacks/) per `countdown.started` e `countdown.expired`.

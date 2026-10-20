@@ -44,6 +44,8 @@ W.GE.05
 | [`E.GE.14`](#ege14) | Circle of cards with no way in |
 | [`W.GE.15`](#wge15) | Name Python cannot read |
 | [`W.GE.16`](#wge16) | Host callback watches something that is gone |
+| [`W.GE.17`](#wge17) | Countdown that can never run |
+| [`I.GE.18`](#ige18) | Countdown to a choice that may be closed |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -201,6 +203,20 @@ Fix: rename it, for example `your_roll`.
 A callback names a board, and optionally a node on it. If the board or card is deleted, the declaration is dropped from the compiled campaign or never fires, and whatever registered for that name is never told. It is the only message here that is not about a card: it names the callback, and carries the board when that board is still in the project.
 
 A callback aimed at a console variable or a component that has gone is reported when the campaign is built, because that check needs the project's variables and index. A missing node is checked nowhere else. See [Host callbacks](/reference/host-callbacks/).
+
+### `W.GE.17`
+
+**A passage's countdown can never run.**
+
+One of three things: the time typed is not a duration, no choice is picked for it to take, or the choice it takes has no wire leaving it — and a choice with none is never offered, so there is nothing to run out onto. A timeout or a choice taken from a wire is not checked, because what the wire carries is not known until the story plays. See [How to put a countdown on a choice](/how-to/time-a-choice/).
+
+Fix: type a duration such as `PT10S`, pick a choice, or wire the one it names.
+
+### `I.GE.18`
+
+**A passage counts down to a choice that may be closed when the reader arrives.**
+
+The choice has a *Times* limit or a condition. On a visit where it cannot be taken the passage has no countdown at all, and waits for the reader as long as they like, rather than running out onto a closed path. A record, because a story may mean exactly that.
 
 ## A playthrough
 

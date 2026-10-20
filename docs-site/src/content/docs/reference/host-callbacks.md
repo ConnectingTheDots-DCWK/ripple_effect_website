@@ -41,8 +41,10 @@ The **Forget it** button removes a declaration after a confirmation. A host list
 | `node.entered` | the flow arrives at a card | board, node | |
 | `node.exited` | a card's turn is over | board, node | |
 | `node.failed` | the story breaks at a card | board, node | |
+| `countdown.started` | a passage's countdown begins | board, node | |
+| `countdown.expired` | a passage's countdown runs out, and the story takes its choice | board, node | |
 
-The three `node.*` events came with bundle format 14 and the other fifteen with format 13. The event names are the words a host matches on. They are the same in every language and are written exactly as shown in the host's code.
+The two `countdown.*` events came with bundle format 16, the three `node.*` events with format 14 and the other fifteen with format 13. `countdown.expired` carries the index of the choice it took, and is followed by the `choice.taken` it caused. The event names are the words a host matches on. They are the same in every language and are written exactly as shown in the host's code.
 
 ### Node events
 

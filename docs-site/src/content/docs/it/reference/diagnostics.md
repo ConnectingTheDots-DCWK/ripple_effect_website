@@ -44,6 +44,8 @@ W.GE.05
 | [`E.GE.14`](#ege14) | Cerchio di schede senza un ingresso |
 | [`W.GE.15`](#wge15) | Nome che Python non può leggere |
 | [`W.GE.16`](#wge16) | Il callback dell'host osserva qualcosa che non c'è più |
+| [`W.GE.17`](#wge17) | Conto alla rovescia che non può partire |
+| [`I.GE.18`](#ige18) | Conto alla rovescia verso una scelta che può essere chiusa |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -201,6 +203,20 @@ Correzione: rinominalo, per esempio `your_roll`.
 Un callback nomina una lavagna e, facoltativamente, una scheda su di essa. Se la lavagna o la scheda vengono eliminate, la dichiarazione viene rimossa dalla campagna compilata o non scatta mai, e chiunque si fosse registrato con quel nome non viene mai avvisato. È l'unico messaggio qui che non riguarda una scheda: nomina il callback e porta con sé la lavagna quando questa è ancora nel progetto.
 
 Un callback rivolto a una variabile di console o a un componente che non esistono più viene segnalato quando la campagna viene costruita, perché quel controllo richiede le variabili e l'indice del progetto. Una scheda mancante non viene controllata altrove. Vedi [Callback dell'host](/it/reference/host-callbacks/).
+
+### `W.GE.17`
+
+**Il conto alla rovescia di un passaggio non può mai partire.**
+
+Una di tre cose: il tempo scritto non è una durata, non è indicata nessuna scelta da prendere, oppure la scelta che prende non ha collegamenti in uscita — e una scelta senza collegamenti non viene mai offerta, quindi non c'è niente su cui scadere. Una durata o una scelta che arrivano da un collegamento non vengono controllate, perché ciò che il collegamento porta si conosce solo quando la storia viene giocata. Vedi [Come mettere un conto alla rovescia su una scelta](/it/how-to/time-a-choice/).
+
+Correzione: scrivi una durata come `PT10S`, scegli una scelta, oppure collega quella indicata.
+
+### `I.GE.18`
+
+**Un passaggio ha un conto alla rovescia verso una scelta che può essere chiusa quando arriva il lettore.**
+
+La scelta ha un limite di *Volte* o una condizione. Nelle visite in cui non si può prendere, il passaggio non ha alcun conto alla rovescia e aspetta il lettore quanto vuole, invece di scadere su una strada chiusa. È una nota, perché una storia può volere proprio questo.
 
 ## Una sessione di gioco
 
