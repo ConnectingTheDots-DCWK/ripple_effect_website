@@ -88,7 +88,7 @@ Le frasi restano in inglese, come ogni frase dell'interprete. Ogni lettura che n
 
 L'orologio è consentito a meno che chi legge non dica altrimenti; per la posizione viene chiesto. Con la posizione consentita, quando la storia comincia l'editor chiede al servizio di localizzazione del computer dove si trova, con la precisione di una città circa, e aspetta qualche secondo una risposta prima di cominciare senza. **A una partita che un agente guida tramite MCP non viene mai detta la posizione vera**: riceve il sostituto o il rifiuto.
 
-Un altro programma che gioca una campagna esportata decide da sé come chiedere e che cosa consegnare. Vedi [Come giocare una campagna nel tuo programma](/it/how-to/play-a-campaign-in-your-program/).
+Un altro programma che gioca una campagna esportata decide da sé come chiedere e che cosa consegnare. Vedi [Come eseguire una campagna nel tuo programma](/it/how-to/play-a-campaign-in-your-program/).
 
 ## Versioni
 

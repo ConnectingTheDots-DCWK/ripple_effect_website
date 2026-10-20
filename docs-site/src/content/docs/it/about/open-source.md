@@ -1,9 +1,9 @@
 ---
 title: Open source
-description: "Ripple Effect è proprietario, ma diversi pacchetti su cui si appoggia sono open source, quattro dei quali sono nostri: questa pagina spiega quali, perché e di chi sono gli altri."
+description: "Ripple Effect è proprietario, ma diversi pacchetti su cui si appoggia sono open source, quattro dei quali sono nostri, e lo sono anche i binding del motore: questa pagina spiega quali, perché e di chi sono gli altri."
 ---
 
-Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente non è pubblicato. Diversi dei pacchetti su cui è costruito sono open source e quattro sono nostri: l'editor di nodi, il layout ad ancoraggio con cui è disegnato lo spazio di lavoro, la stima del tempo di lettura e il sistema di segnalazione dei crash. La distinzione va tenuta ben chiara, perché le due metà si confondono facilmente: **i pacchetti sono aperti, l'app no.** I quattro sono pubblicati a sé e accettano pull request. `fl_nodes_v2`, `fl_panel` e `fl_crashpad` sono pacchetti Flutter e richiedono Flutter; `dart_read_time` è Dart puro.
+Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente non è pubblicato. Diversi dei pacchetti su cui è costruito sono open source e quattro sono nostri: l'editor di nodi, il layout ad ancoraggio con cui è disegnato lo spazio di lavoro, la stima del tempo di lettura e il sistema di segnalazione dei crash. La distinzione va tenuta ben chiara, perché le due metà si confondono facilmente: **i pacchetti sono aperti, l'app no.** I quattro sono pubblicati a sé e accettano pull request. `fl_nodes_v2`, `fl_panel` e `fl_crashpad` sono pacchetti Flutter e richiedono Flutter; `dart_read_time` è Dart puro. Sono open source anche i binding che permettono ad altri programmi di eseguire una campagna, anche se il motore che contengono non lo è.
 
 ## fl_nodes_v2: l'editor di nodi
 
@@ -30,6 +30,17 @@ Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente n
 [github.com/ConnectingTheDots-DCWK/fl_crashpad](https://github.com/ConnectingTheDots-DCWK/fl_crashpad) · MIT
 
 È la segnalazione dei crash nativi per Flutter basata su Google Crashpad, su desktop, Android e iOS. Non sa nulla di alcuna app, logger o backend. In Ripple Effect intercetta un crash nativo; ogni segnalazione viene ripulita prima che possa essere letta o inviata. [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/) spiega cosa fa l'app con una segnalazione.
+
+## I binding del motore
+
+| Binding | Repository | Pubblicato come |
+| --- | --- | --- |
+| JavaScript e TypeScript | [ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration) | `@ripplefx/player` e `@ripplefx/soundscape` su npm |
+| C e C++ | [ripple_effect_c_cpp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration) | release su GitHub, da usare con CMake |
+| C# | [ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration) | `RippleFx.Engine` su NuGet |
+| Dart | [ripple_effect_dart_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration) | `ripplefx_engine` su pub.dev |
+
+Sono il modo in cui un gioco, un'app o una pagina web esegue una campagna esportata dall'editor. Ognuno è MIT. **Il motore che ognuno contiene o scarica non lo è**: è una build compilata del motore, sotto la [Runtime Licence](/it/about/licensing/#the-runtime-licence), che ti permette di distribuirlo, senza modificarne il funzionamento, come parte del tuo prodotto. `@ripplefx/soundscape` non contiene alcun motore ed è semplicemente MIT. [Incorporare il motore](/it/explanation/embedding-the-engine/) spiega che cosa hanno in comune, e [Come viene distribuito il motore](/it/explanation/how-the-engine-ships/) spiega che cosa mettono nella tua build.
 
 ## monty: Python, in una sandbox
 
