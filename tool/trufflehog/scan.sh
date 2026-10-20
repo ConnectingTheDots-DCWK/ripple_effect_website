@@ -12,4 +12,6 @@ if ! command -v trufflehog >/dev/null 2>&1; then
   exit 1
 fi
 # TRUFFLEHOG_PRE_COMMIT makes it scan the staged change and fail on a find.
-TRUFFLEHOG_PRE_COMMIT=1 exec trufflehog git file://.
+# --no-update because a scan otherwise replaces its own binary with the newest
+# release, in place, so the version CI pins drifts on the next commit.
+TRUFFLEHOG_PRE_COMMIT=1 exec trufflehog git file://. --no-update

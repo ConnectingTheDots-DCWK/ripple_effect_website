@@ -45,9 +45,11 @@ jobs:
       # The guard imports nothing but `node:` built-ins, so there is no
       # install step and nothing to cache. `astro check` would need one; it
       # runs on Vercel, where the dependencies are already there.
+      # The Node legal/package.json's engines names — the one Vercel builds
+      # the legal site with.
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: legal/package.json
 
       - name: Make origin/main available
         # On a pull request the checkout leaves a detached HEAD with no local
