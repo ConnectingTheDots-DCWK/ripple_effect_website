@@ -77,6 +77,19 @@ I due limiti si combinano: *tre volte, e solo finché porti la lanterna* è una 
 
 Una scheda appesa al lato della lavagna, fuori dal flusso che porta al passaggio, viene calcolata una sola volta prima che la storia inizi e dà sempre la stessa risposta. Il pannello Messaggi lo segnala e nomina la scelta ([Diagnostica](/it/reference/diagnostics/)). Un Comparator che legge un tiro di dado segue la stessa regola. Le schede stesse sono in [Nodi](/it/reference/nodes/); per costruire il limite, vedi [Come limitare una scelta](/it/how-to/limit-a-choice/).
 
+## Conto alla rovescia
+
+Un passaggio può prendere da solo una delle sue scelte se il lettore aspetta troppo. La riga del conto alla rovescia sotto le scelte lo apre.
+
+| Impostazione | Cosa | Da un collegamento |
+| --- | --- | --- |
+| Dura | Quanto dura, come durata ISO 8601 (`PT10S`). Vuota: nessun conto alla rovescia. | Un numero di secondi, o il testo di una durata. |
+| Inizia dopo | Quanto aspetta il passaggio prima che il conto alla rovescia parta. Vuota: subito. | Lo stesso. |
+| Poi prende | La scelta presa quando scade. Un piccolo orologio ne segna la riga sulla scheda. | La sua posizione tra le scelte offerte, da `0`, o l'id della sua porta. |
+| Mostra il conto alla rovescia al lettore | Se il lettore lo vede scorrere. Disattivata, scorre comunque. | Un `bool`. |
+
+Un conto alla rovescia la cui scelta è esaurita o chiusa in una visita non parte in quella visita. Per impostarne uno, vedi [Come mettere un conto alla rovescia su una scelta](/it/how-to/time-a-choice/).
+
 ## Lingue
 
 | Impostazione | Dove | Comportamento |
@@ -118,5 +131,6 @@ Il calcolo è fatto dal pacchetto separato [`dart_read_time`](https://github.com
 - [Passaggi e traduzioni](/it/explanation/passages-and-translations/)
 - [Come scrivere un passaggio](/it/how-to/write-a-passage/)
 - [Come limitare una scelta](/it/how-to/limit-a-choice/)
+- [Come mettere un conto alla rovescia su una scelta](/it/how-to/time-a-choice/)
 - [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/)
 - [Nodi](/it/reference/nodes/)

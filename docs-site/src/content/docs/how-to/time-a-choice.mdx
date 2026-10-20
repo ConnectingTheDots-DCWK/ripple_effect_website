@@ -1,0 +1,52 @@
+---
+title: How to put a countdown on a choice
+description: Make a passage take a choice by itself if the reader waits too long.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A countdown makes a passage impatient: after a while it starts counting, and when it runs out the story takes one of the passage's choices, as if the reader had picked it.
+
+## Set a countdown
+
+<Steps>
+
+1. Click the countdown row at the bottom of a Narration card, under its choices. It reads *No countdown — click to set one*.
+2. Type how long it runs in *Counts down for*, as a duration: `PT10S` is ten seconds, `PT1M30S` a minute and a half.
+3. Optionally, type how long the passage waits before the countdown starts in *Starts after*. Leave it blank to start at once.
+4. Pick the choice the story takes in *Then takes*. Only wired choices are offered.
+5. Turn off *Show the reader the countdown* if the reader should not see it. It still runs.
+
+</Steps>
+
+The card's row then says how long and which choice, and a small clock marks that choice's row.
+
+With no time typed there is no countdown. *Remove* takes it away entirely.
+
+## Take a setting from a wire
+
+Any of the four settings can come from somewhere else on the board, such as a variable or a dice roll.
+
+<Steps>
+
+1. In the countdown dialog, turn on *From a wire* beside the setting. The card grows an input for it.
+2. Wire a value into that input. A timeout or a delay takes a number of seconds or a duration's text; the choice takes its place among the choices offered, from `0`, or its port id.
+
+</Steps>
+
+While the wire carries something, it wins. While it is unwired or carries nothing, the value typed in the dialog is used.
+
+## When the countdown does not run
+
+- **The choice it takes is closed on this visit.** If that choice has run out, or its condition is false, the passage has no countdown and waits for the reader as long as they like. The messages panel notes it with `I.GE.18`.
+- **It cannot run at all.** A time that is not a duration, no choice picked, or a choice with nothing wired to it is reported as `W.GE.17`.
+
+:::note
+A saved game keeps where the story is, not how far the countdown had got. Loading it starts the wait and the countdown again from the beginning.
+:::
+
+## Related
+
+- [How to limit a choice](/how-to/limit-a-choice/) for running out and conditions.
+- [Diagnostics](/reference/diagnostics/) for `W.GE.17` and `I.GE.18`.
+- [Host callbacks](/reference/host-callbacks/) for `countdown.started` and `countdown.expired`.

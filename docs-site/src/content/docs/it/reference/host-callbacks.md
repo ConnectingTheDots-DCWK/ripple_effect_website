@@ -41,8 +41,10 @@ Il pulsante **Dimentica** rimuove una dichiarazione dopo una conferma. Un host i
 | `node.entered` | il flusso arriva a una scheda | lavagna, scheda | |
 | `node.exited` | il turno di una scheda è finito | lavagna, scheda | |
 | `node.failed` | la storia si interrompe su una scheda | lavagna, scheda | |
+| `countdown.started` | inizia il conto alla rovescia di un passaggio | lavagna, scheda | |
+| `countdown.expired` | il conto alla rovescia di un passaggio scade e la storia prende la sua scelta | lavagna, scheda | |
 
-I tre eventi `node.*` sono arrivati con il formato di bundle 14 e gli altri quindici con il formato 13. I nomi degli eventi sono le parole su cui l'host fa la corrispondenza. Sono uguali in ogni lingua e si scrivono esattamente come nel codice dell'host.
+I due eventi `countdown.*` sono arrivati con il formato di bundle 16, i tre eventi `node.*` con il formato 14 e gli altri quindici con il formato 13. `countdown.expired` porta l'indice della scelta presa ed è seguito dal `choice.taken` che ha causato. I nomi degli eventi sono le parole su cui l'host fa la corrispondenza. Sono uguali in ogni lingua e si scrivono esattamente come nel codice dell'host.
 
 ### Eventi delle schede
 

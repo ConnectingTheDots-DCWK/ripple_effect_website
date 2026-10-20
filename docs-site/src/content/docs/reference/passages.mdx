@@ -1,6 +1,6 @@
 ---
 title: Passages, choices, languages and reading time
-description: The passage file format, the Reads row, choice limits, project languages, translation staleness and the reading-time estimate.
+description: The passage file format, the Reads row, choice limits, countdowns, project languages, translation staleness and the reading-time estimate.
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
@@ -77,6 +77,19 @@ The two combine: *three times, and only while you carry the lantern* is one choi
 
 A card hanging off the side of the board, outside the flow that leads to the passage, is worked out once before the story starts and answers the same for ever. The Messages panel says so and names the choice ([Diagnostics](/reference/diagnostics/)). A Comparator reading a dice roll follows the same rule. The cards themselves are in [Nodes](/reference/nodes/); to build the limit, see [How to limit a choice](/how-to/limit-a-choice/).
 
+## Countdown
+
+A passage can take one of its choices by itself if the reader waits too long. The countdown row under the choices opens it.
+
+| Setting | What | From a wire |
+| --- | --- | --- |
+| Counts down for | How long it runs, as an ISO 8601 duration (`PT10S`). Blank is no countdown. | A number of seconds, or a duration's text. |
+| Starts after | How long the passage waits before the countdown begins. Blank is at once. | The same. |
+| Then takes | The choice taken when it runs out. A small clock marks its row on the card. | Its place among the choices offered, from `0`, or its port id. |
+| Show the reader the countdown | Whether the reader sees it count. Off, it still runs. | A `bool`. |
+
+A countdown whose choice is spent or closed on a visit does not run on that visit. To set one up, see [How to put a countdown on a choice](/how-to/time-a-choice/).
+
 ## Languages
 
 | Setting | Where | Behaviour |
@@ -118,5 +131,6 @@ The arithmetic is the separate package [`dart_read_time`](https://github.com/Con
 - [Passages and translations](/explanation/passages-and-translations/)
 - [How to write a passage](/how-to/write-a-passage/)
 - [How to limit a choice](/how-to/limit-a-choice/)
+- [How to put a countdown on a choice](/how-to/time-a-choice/)
 - [How to add, switch off or change a project's languages](/how-to/manage-languages/)
 - [Nodes](/reference/nodes/)

@@ -313,6 +313,7 @@ export default defineConfig({
 						{ label: 'Passages and languages', translations: { it: 'Passaggi e lingue' }, collapsed: false, items: [
 							{ slug: 'how-to/write-a-passage' },
 							{ slug: 'how-to/limit-a-choice' },
+							{ slug: 'how-to/time-a-choice' },
 							{ slug: 'how-to/manage-languages' },
 							{ slug: 'how-to/check-spelling-and-grammar' },
 							{ slug: 'how-to/write-a-style-rule' },

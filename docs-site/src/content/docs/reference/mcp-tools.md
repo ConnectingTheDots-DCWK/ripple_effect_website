@@ -285,6 +285,15 @@ as the field's declared type either way.
 | --- | --- | --- |
 | `values` | required | Field name to value, for the fields the last slide listed. |
 
+### `campaign_expire`
+
+Runs the current passage's countdown out, as though its time had passed, and
+answers the next passage. The story takes the choice the countdown names —
+`campaign_state` shows it as `countdown.default` — exactly as a reader taking
+it would. A playthrough an agent drives never runs a countdown out by itself,
+so this is the only way to see that road. Takes nothing. See
+[How to put a countdown on a choice](/how-to/time-a-choice/).
+
 ### `campaign_state`
 
 Where the playthrough is: the passage on screen, the choices it offers, the
@@ -450,6 +459,25 @@ may be taken, which a reader sees greyed out once it is spent.
 | `text` | | What a reader is offered, in one language. |
 | `locale` | | Which language the text is in. Defaults to the language the story is written in. |
 | `times` | | How many times this path may be taken in one playthrough. Counted for the whole campaign, so a jump back and a reloaded save find it as spent as it was. Leave it out to change nothing; send `0` to take the limit off. |
+
+### `board_set_countdown`
+
+A passage's countdown: after a while it starts, and when it runs out the story
+takes a choice by itself. Merges, so setting one part leaves the others;
+`clear: true` takes the countdown away. With no timeout there is no
+countdown. `wired` names the parameters that grow an input port on the card,
+each beating what is typed while a wire carries something.
+
+| Argument | | What |
+| --- | --- | --- |
+| `board` | required | The board. |
+| `node` | required | The Narration node. |
+| `timeout` | | How long it runs, as an ISO 8601 duration — `PT10S`, `PT1M30S`. An empty string is no countdown. |
+| `after` | | How long the passage waits before the countdown begins. An empty string is at once. |
+| `visible` | | Whether the reader is shown it count. |
+| `default` | | The choice it takes, by port id — `choice_0`, `choice_1` — which must be wired. |
+| `wired` | | Which of `timeout`, `after`, `visible` and `default` get an input port. Replaces the list; leave it out to keep it. |
+| `clear` | | Take the countdown away, its ports included. |
 
 ### `board_set_node`
 
