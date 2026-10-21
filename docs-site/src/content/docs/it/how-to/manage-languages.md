@@ -55,6 +55,15 @@ La scheda risponde nella lingua del lettore quando il flusso la raggiunge. Dove 
 
 Un valore resta nella lingua in cui è stato letto. Un lettore che cambia lingua a metà storia riceve la nuova lingua la volta successiva in cui il flusso raggiunge la scheda.
 
+### Scrivere un plurale in ogni lingua
+
+Le parole di una scheda Localized string possono eseguire Python, come quelle di un passaggio, quindi ogni lingua scrive il proprio plurale.
+
+1. Nella finestra di dialogo della scheda, fai clic su **Inputs** e aggiungi un nome, per esempio `coins`, di tipo `int`. La scheda acquista una porta `coins`; collegaci il numero.
+2. Scrivi ogni lingua con uno snippet inline: `You have {{ coins }} {{ "coin" if coins == 1 else "coins" }}` in inglese, `Hai {{ coins }} {{ "moneta" if coins == 1 else "monete" }}` in italiano.
+
+Uno snippet che fallisce lascia un avviso nelle parole e nella traccia, e la storia prosegue. Una campagna esportata per funzionare senza Python rifiuta la scheda ([`E.EX.03`](/it/reference/diagnostics/#eex03)). Da uno script, `locale_get()` risponde come la scheda Get locale.
+
 ## Vedi anche
 
 - [Passaggi e traduzioni](/it/explanation/passages-and-translations/)

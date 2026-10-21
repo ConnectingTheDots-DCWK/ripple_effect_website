@@ -25,6 +25,7 @@ Messages lists two codes. Any one of them stops the export.
 
 - [`E.EX.01`](/reference/diagnostics/#eex01), a Script node. Move what the script does onto cards that do not need Python, such as a console variable set and read by its own nodes, or a branch on a value. A Script node inside a macro is reported on the card that calls the macro when you export, and on the macro's own board while you edit.
 - [`E.EX.02`](/reference/diagnostics/#eex02), a passage that runs Python. Replace each `ripple` block or inline `{{ … }}` with the text it would have produced, or split the passage so that a choice or a branch picks between versions of it.
+- [`E.EX.03`](/reference/diagnostics/#eex03), a Localized string that runs Python. Replace each inline `{{ … }}` with the text it would have produced, or use one card per form and pick between them with a branch.
 
 If the player does have the interpreter, untick **Needs no Python** instead.
 
@@ -35,6 +36,6 @@ To have the app flag these cards as you write, instead of ticking the box on eve
 ## Related
 
 - [What an export is](/explanation/what-an-export-is/), for the two engine builds and why the export checks for scripts.
-- [Diagnostics](/reference/diagnostics/), for `E.EX.01` and `E.EX.02` in full.
+- [Diagnostics](/reference/diagnostics/), for `E.EX.01`, `E.EX.02` and `E.EX.03` in full.
 - [Export options and bundle contents](/reference/export-options/), for the manifest's `needs` field and the rest of the Campaign options.
 - [How to build a campaign with no Python](/how-to/turn-python-off/), for the project-level switch.

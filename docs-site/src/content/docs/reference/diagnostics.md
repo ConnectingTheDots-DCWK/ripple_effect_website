@@ -56,6 +56,7 @@ W.GE.05
 | [`I.RT.07`](#irt07) | Story was allowed something there was nothing of |
 | [`E.EX.01`](#eex01) | Script node in a no-Python campaign |
 | [`E.EX.02`](#eex02) | Passage that runs Python in a no-Python campaign |
+| [`E.EX.03`](#eex03) | Localized string that runs Python in a no-Python campaign |
 
 ## Where messages appear
 
@@ -280,6 +281,12 @@ Fix: move what the script does onto cards that need no Python, or export with th
 **A passage that runs Python, in a campaign that has to play without Python.** The passage has a `ripple` code block or an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would show a warning in its place. The message gives the count across every language.
 
 Fix: replace each with the text it would have produced, or split the passage so a choice or a branch picks between versions.
+
+### `E.EX.03`
+
+**A Localized string that runs Python, in a campaign that has to play without Python.** Its words have an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would answer a warning in its place. The message gives the count across every language.
+
+Fix: replace each with the text it would have produced, or use one Localized string per form and pick between them with a branch.
 
 ## Related
 

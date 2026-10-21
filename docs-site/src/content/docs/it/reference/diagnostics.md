@@ -56,6 +56,7 @@ W.GE.05
 | [`I.RT.07`](#irt07) | La storia poteva leggere qualcosa che non c'era |
 | [`E.EX.01`](#eex01) | Scheda Script in una campagna senza Python |
 | [`E.EX.02`](#eex02) | Passaggio che esegue Python in una campagna senza Python |
+| [`E.EX.03`](#eex03) | Localized string che esegue Python in una campagna senza Python |
 
 ## Dove compaiono i messaggi
 
@@ -281,6 +282,12 @@ Correzione: sposta ciò che fa lo script su schede che non richiedono Python, op
 
 Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure dividi il passaggio in modo che una scelta o un ramo scelga tra le versioni.
 
+
+### `E.EX.03`
+
+**Una scheda Localized string che esegue Python, in una campagna che deve funzionare senza Python.** Le sue parole contengono un `{{ … }}` inline in almeno una delle sue lingue, e un player senza interprete risponderebbe con un avviso al suo posto. Il messaggio indica il numero in tutte le lingue.
+
+Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure usa una scheda Localized string per ogni forma e scegli tra di esse con una diramazione.
 ## Vedi anche
 
 - [Come funziona una storia](/it/explanation/how-a-story-runs/)

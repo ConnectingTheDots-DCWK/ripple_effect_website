@@ -55,6 +55,15 @@ The card answers in the reader's language when the flow reaches it. Where nothin
 
 A value is in the language it was read in. A reader who switches language mid-story gets the new language the next time the flow reaches the card.
 
+### Write a plural in each language
+
+The words of a Localized string can run Python, as a passage's can, so each language writes its own plural.
+
+1. In the card's dialog, click **Inputs** and add a name, for example `coins`, typed `int`. The card grows a `coins` port; wire the number into it.
+2. Write each language with an inline snippet: `You have {{ coins }} {{ "coin" if coins == 1 else "coins" }}` in English, `Hai {{ coins }} {{ "moneta" if coins == 1 else "monete" }}` in Italian.
+
+A snippet that fails leaves a warning in the words and in the trace, and the story carries on. A campaign exported to play without Python refuses the card ([`E.EX.03`](/reference/diagnostics/#eex03)). From a script, `locale_get()` answers what the Get locale card does.
+
 ## Related
 
 - [Passages and translations](/explanation/passages-and-translations/)

@@ -1528,6 +1528,8 @@ A piece of text written once in each of the story's languages, answered in the r
 
 It shows nothing by itself. What comes out of `text` goes wherever text can: a passage's input, a variable, a Comparator, a Script. Double-click to write it, one language at a time; spaces at either end are kept, so a piece meant to be joined to another can end in one.
 
+The words may run Python, `{{ … }}` as a passage's prose does, over the inputs declared under *Inputs* in the dialog — one port each. Write the plural each language needs in that language's own words: `{{ "coin" if coins == 1 else "coins" }}`.
+
 A language with nothing written answers in the one the story was written in, as a choice does — an empty string in a sentence is a hole, where an untranslated one is only English. With nothing in that language either, the board says so.
 
 It answers in the reader's language when the flow passes, or in the one a wire or the card names. A reader who switches later gets the new language the next time the flow comes by, not in what was already handed on.
