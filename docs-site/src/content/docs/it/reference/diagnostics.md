@@ -46,6 +46,7 @@ W.GE.05
 | [`W.GE.16`](#wge16) | Il callback dell'host osserva qualcosa che non c'è più |
 | [`W.GE.17`](#wge17) | Conto alla rovescia che non può partire |
 | [`I.GE.18`](#ige18) | Conto alla rovescia verso una scelta che può essere chiusa |
+| [`W.GE.19`](#wge19) | Localized string senza parole nella lingua della storia |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -217,6 +218,14 @@ Correzione: scrivi una durata come `PT10S`, scegli una scelta, oppure collega qu
 **Un passaggio ha un conto alla rovescia verso una scelta che può essere chiusa quando arriva il lettore.**
 
 La scelta ha un limite di *Volte* o una condizione. Nelle visite in cui non si può prendere, il passaggio non ha alcun conto alla rovescia e aspetta il lettore quanto vuole, invece di scadere su una strada chiusa. È una nota, perché una storia può volere proprio questo.
+
+### `W.GE.19`
+
+**Una scheda Localized string non ha parole nella lingua in cui è scritta la storia.**
+
+È la lingua a cui ricadono tutte le altre, quindi un lettore in una lingua per cui nessuno ha scritto riceve una stringa vuota. Le altre lingue non vengono controllate: una ancora da tradurre è normale mentre si scrive una storia, e il ripiego la copre. Vedi [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
+
+Correzione: fai doppio clic sulla scheda e scrivi le parole nella lingua della storia.
 
 ## Una sessione di gioco
 

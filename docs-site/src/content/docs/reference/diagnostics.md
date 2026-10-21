@@ -46,6 +46,7 @@ W.GE.05
 | [`W.GE.16`](#wge16) | Host callback watches something that is gone |
 | [`W.GE.17`](#wge17) | Countdown that can never run |
 | [`I.GE.18`](#ige18) | Countdown to a choice that may be closed |
+| [`W.GE.19`](#wge19) | Localized string with nothing in the story's own language |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -217,6 +218,14 @@ Fix: type a duration such as `PT10S`, pick a choice, or wire the one it names.
 **A passage counts down to a choice that may be closed when the reader arrives.**
 
 The choice has a *Times* limit or a condition. On a visit where it cannot be taken the passage has no countdown at all, and waits for the reader as long as they like, rather than running out onto a closed path. A record, because a story may mean exactly that.
+
+### `W.GE.19`
+
+**A Localized string has no words in the language the story is written in.**
+
+That language is the one every other falls back to, so a reader in a language nobody wrote for gets an empty string. Its other languages are not checked: one still to be translated is ordinary while a story is written, and the fallback covers it. See [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+
+Fix: double-click the card and write the words in the story's own language.
 
 ## A playthrough
 

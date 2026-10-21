@@ -62,6 +62,8 @@ export const nodeTypes = {
   'location.near': 'Near',
   'clock.get': 'Get date & time',
   'clock.branch': 'Time branch',
+  'locale.get': 'Get locale',
+  'locale.text': 'Localized string',
   'random.dice': 'Dice roller',
   'random.check': 'Percentile check',
   'random.weighted': 'Weighted branch',
