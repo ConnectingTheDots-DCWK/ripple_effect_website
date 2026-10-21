@@ -61,6 +61,14 @@ Switching a translation language on puts an empty translation into every bundle.
 
 Project settings says what changing *Written in* will do. It does nothing to your prose. Every passage gets an empty file for the new language, and everything you have written stays where it is, as a translation. Until you carry it across, your passages play empty. There is no migration for that yet. The steps are in [How to add, switch off or change a project's languages](/how-to/manage-languages/).
 
+## Words that are not a passage
+
+Not every word a reader sees is in a passage. A sign the story assembles, a line built from a number, a name handed to a script: a **Localized string** card holds a piece of text per language, on the card as a choice's wording is, and answers it in the reader's language.
+
+It falls back the way a choice does rather than the way a passage does. An untranslated passage is prose somebody can read past; an empty string in the middle of a sentence is a hole. So where nothing is written in the reader's language, the card answers in the language the story is written in, and the board warns when that one is empty too.
+
+What it answers is the language it was read in. Changing language mid-story redraws the passage on screen, but the story does not run backwards: a piece of text already handed to a variable stays as it was, and the card answers in the new language the next time the flow reaches it. **Get locale** follows the same rule, and says which language that is, its region, how the region measures and which money it uses. It names the money and prices nothing. The steps are in [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+
 ## Why file times cannot be trusted
 
 The locale chips along the top of a bundle each stand for one language. A **dot** on a chip means that translation is older than its source, and the Messages panel lists every one that has fallen behind across the whole project.

@@ -61,6 +61,14 @@ Attivare una lingua di traduzione mette una traduzione vuota in ogni bundle. Dis
 
 Impostazioni progetto dice che cosa succede cambiando *Lingua del testo*. Non tocca la tua prosa. Ogni passaggio riceve un file vuoto per la nuova lingua, e tutto ciò che hai scritto resta dov'è, come traduzione. Finché non lo riporti nella nuova lingua, i tuoi passaggi vengono riprodotti vuoti. Per ora non esiste una migrazione. La procedura è in [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
 
+## Parole che non sono un passaggio
+
+Non tutte le parole che un lettore vede stanno in un passaggio. Un cartello che la storia compone, una riga costruita attorno a un numero, un nome passato a uno script: una scheda **Localized string** contiene un pezzo di testo per ogni lingua, sulla scheda come il testo di una scelta, e lo restituisce nella lingua del lettore.
+
+Ricade come una scelta, non come un passaggio. Un passaggio non tradotto è prosa che si può scorrere oltre; una stringa vuota in mezzo a una frase è un buco. Così, dove nella lingua del lettore non c'è nulla di scritto, la scheda risponde nella lingua in cui è scritta la storia, e la lavagna avvisa quando anche quella è vuota.
+
+Ciò che restituisce è nella lingua in cui è stato letto. Cambiare lingua a metà storia ridisegna il passaggio a schermo, ma la storia non torna indietro: un testo già passato a una variabile resta com'era, e la scheda risponde nella nuova lingua la volta successiva in cui il flusso la raggiunge. **Get locale** segue la stessa regola, e dice di quale lingua si tratta, la sua regione, il sistema di misura della regione e la moneta che usa. Nomina la moneta e non dà prezzi. La procedura è in [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
+
 ## Perché non ci si può fidare delle date dei file
 
 I chip delle lingue in cima a un bundle rappresentano ciascuno una lingua. Un **punto** su un chip significa che quella traduzione è più vecchia del suo originale, e il pannello Messaggi elenca tutte quelle rimaste indietro nell'intero progetto.

@@ -46,6 +46,8 @@ W.GE.05
 | [`W.GE.16`](#wge16) | Il callback dell'host osserva qualcosa che non c'è più |
 | [`W.GE.17`](#wge17) | Conto alla rovescia che non può partire |
 | [`I.GE.18`](#ige18) | Conto alla rovescia verso una scelta che può essere chiusa |
+| [`W.GE.19`](#wge19) | Localized string senza parole nella lingua della storia |
+| [`W.GE.20`](#wge20) | Convert tra unità che misurano cose diverse |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -55,6 +57,7 @@ W.GE.05
 | [`I.RT.07`](#irt07) | La storia poteva leggere qualcosa che non c'era |
 | [`E.EX.01`](#eex01) | Scheda Script in una campagna senza Python |
 | [`E.EX.02`](#eex02) | Passaggio che esegue Python in una campagna senza Python |
+| [`E.EX.03`](#eex03) | Localized string che esegue Python in una campagna senza Python |
 
 ## Dove compaiono i messaggi
 
@@ -218,6 +221,21 @@ Correzione: scrivi una durata come `PT10S`, scegli una scelta, oppure collega qu
 
 La scelta ha un limite di *Volte* o una condizione. Nelle visite in cui non si può prendere, il passaggio non ha alcun conto alla rovescia e aspetta il lettore quanto vuole, invece di scadere su una strada chiusa. È una nota, perché una storia può volere proprio questo.
 
+### `W.GE.19`
+
+**Una scheda Localized string non ha parole nella lingua in cui è scritta la storia.**
+
+È la lingua a cui ricadono tutte le altre, quindi un lettore in una lingua per cui nessuno ha scritto riceve una stringa vuota. Le altre lingue non vengono controllate: una ancora da tradurre è normale mentre si scrive una storia, e il ripiego la copre. Vedi [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
+
+Correzione: fai doppio clic sulla scheda e scrivi le parole nella lingua della storia.
+
+### `W.GE.20`
+
+**Una scheda Convert converte tra due unità che misurano cose diverse**, per esempio chilogrammi in miglia. Entrambe le unità sono scelte sulla scheda, quindi ogni conversione esce da `unavailable`. Un'unità che arriva da un collegamento, *Dal testo* e *Sistema di chi legge* non vengono controllati, perché ciò che contengono si conosce solo quando la storia viene giocata. Vedi [Unità di misura](/it/reference/units/).
+
+Correzione: scegli due unità dello stesso tipo, oppure collega quella che cambia.
+
+
 ## Una sessione di gioco
 
 Cose che il motore ha notato mentre la storia era in esecuzione.
@@ -272,6 +290,12 @@ Correzione: sposta ciò che fa lo script su schede che non richiedono Python, op
 
 Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure dividi il passaggio in modo che una scelta o un ramo scelga tra le versioni.
 
+
+### `E.EX.03`
+
+**Una scheda Localized string che esegue Python, in una campagna che deve funzionare senza Python.** Le sue parole contengono un `{{ … }}` inline in almeno una delle sue lingue, e un player senza interprete risponderebbe con un avviso al suo posto. Il messaggio indica il numero in tutte le lingue.
+
+Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure usa una scheda Localized string per ogni forma e scegli tra di esse con una diramazione.
 ## Vedi anche
 
 - [Come funziona una storia](/it/explanation/how-a-story-runs/)

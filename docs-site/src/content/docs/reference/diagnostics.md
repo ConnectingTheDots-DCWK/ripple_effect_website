@@ -46,6 +46,8 @@ W.GE.05
 | [`W.GE.16`](#wge16) | Host callback watches something that is gone |
 | [`W.GE.17`](#wge17) | Countdown that can never run |
 | [`I.GE.18`](#ige18) | Countdown to a choice that may be closed |
+| [`W.GE.19`](#wge19) | Localized string with nothing in the story's own language |
+| [`W.GE.20`](#wge20) | Convert between units that measure different things |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -55,6 +57,7 @@ W.GE.05
 | [`I.RT.07`](#irt07) | Story was allowed something there was nothing of |
 | [`E.EX.01`](#eex01) | Script node in a no-Python campaign |
 | [`E.EX.02`](#eex02) | Passage that runs Python in a no-Python campaign |
+| [`E.EX.03`](#eex03) | Localized string that runs Python in a no-Python campaign |
 
 ## Where messages appear
 
@@ -218,6 +221,21 @@ Fix: type a duration such as `PT10S`, pick a choice, or wire the one it names.
 
 The choice has a *Times* limit or a condition. On a visit where it cannot be taken the passage has no countdown at all, and waits for the reader as long as they like, rather than running out onto a closed path. A record, because a story may mean exactly that.
 
+### `W.GE.19`
+
+**A Localized string has no words in the language the story is written in.**
+
+That language is the one every other falls back to, so a reader in a language nobody wrote for gets an empty string. Its other languages are not checked: one still to be translated is ordinary while a story is written, and the fallback covers it. See [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+
+Fix: double-click the card and write the words in the story's own language.
+
+### `W.GE.20`
+
+**A Convert card converts between two units that measure different things**, such as kilograms into miles. Both units are picked on the card, so every conversion leaves by `unavailable`. A unit that comes from a wire, *From the text* and *Reader's system* are not checked, because what they hold is known only when the story plays. See [Units](/reference/units/).
+
+Fix: pick two units of the same kind, or wire the one that changes.
+
+
 ## A playthrough
 
 Things the engine noticed while the story was running.
@@ -271,6 +289,12 @@ Fix: move what the script does onto cards that need no Python, or export with th
 **A passage that runs Python, in a campaign that has to play without Python.** The passage has a `ripple` code block or an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would show a warning in its place. The message gives the count across every language.
 
 Fix: replace each with the text it would have produced, or split the passage so a choice or a branch picks between versions.
+
+### `E.EX.03`
+
+**A Localized string that runs Python, in a campaign that has to play without Python.** Its words have an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would answer a warning in its place. The message gives the count across every language.
+
+Fix: replace each with the text it would have produced, or use one Localized string per form and pick between them with a branch.
 
 ## Related
 

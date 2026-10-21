@@ -574,6 +574,42 @@ Both sides only take numbers. Dividing by zero gives an infinity rather than sto
 | `result` | `number` | The answer; dividing by zero gives an infinity. |
 
 
+### Convert
+
+<NodePreview type="unit.convert" />
+
+Converts a quantity from one unit to another: a length, an area, a volume, a mass, a temperature, a speed or a length of time.
+
+On the card, *From the text* reads the unit off what arrives on `value` — `12 km`, `72°F`, `3.5 kg` — and a unit picked instead reads `value` as a plain number. *Reader's system* answers in the unit the reader's region measures in: kilometres become miles for a reader in the United States, and miles kilometres for one in Italy; in the United Kingdom only distances and speeds are in miles. A wire into `from` or `to` beats the card, with a unit's id such as `kilometer`.
+
+**A dot is the only decimal point** in a typed quantity: `1,500 m` is not read, because it means two different numbers in two languages.
+
+`result` is the number in full, `text` the same written out with the decimals on the card and the unit's symbol, and `unit` the unit it answered in. A unit it does not know, a value it cannot read, or two units that measure different things leave by `unavailable`, or by `completed` with nothing on the outputs when that is not wired.
+
+**On the card:** **From**, default `text` — The unit the value is in, or *From the text* to read it off the value. A wire into `from` beats it; **To**, default `reader` — The unit to answer in, or *Reader's system*. A wire into `to` beats it; **Decimals**, default `2` — How many places after the point `text` is written with, 0 to 6. `result` is never rounded.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It converts when the flow arrives. |
+| `value` | `any` | The quantity: text such as `12 km` when the card reads it off the text, else a number in the card's unit. |
+| `from` | `string` | A unit id that beats the card's, or `text`. |
+| `to` | `string` | A unit id that beats the card's, or `reader`. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken once there is an answer. |
+| `result` | `number` | The converted number, in full. |
+| `text` | `string` | The number with its decimals and the unit's symbol: `7.46 mi`. |
+| `unit` | `string` | The unit it answered in, as an id: `mile`. |
+| `unavailable` | `flow` | Taken when there is no answer. Unwired, the story carries on by `completed` with nothing on the outputs. |
+
+**Read more:** [Units](/reference/units/)
+
+
 ## Logic
 
 ### Comparator
@@ -1475,6 +1511,82 @@ Without a reading the flow leaves by `unavailable`, or by `no` when that is not 
 | `unavailable` | `flow` | Taken when there was no reading: the reader did not allow it and gave no stand-in, or allowed it and there was nothing to give. Unwired, the story carries on the way it would have otherwise. |
 
 **Read more:** [The world outside the story](/reference/python/the-world/)
+
+
+## Language
+
+Words and facts in the reader's language. Both cards answer for the language the reader is reading in, or the one their `locale` picker or a wire names, and take the flow to do it: a value is in the language it was read in. Where nothing is written in the reader's language, a Localized string answers in the language the story is written in. See [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+
+### Get locale
+
+<NodePreview type="locale.get" />
+
+Says what the reader's language is, and what it says about where they are.
+
+The id is one of the project's languages, like `en-US`; `language` and `region` are its two halves, and `name` is what the language calls itself. `system` is how the region measures — `metric`, `us` or `uk`, the last being metric with miles — and `currency` is the code of the money it uses, like `EUR`, with no rate: it names the money, it does not price anything.
+
+Asked about another language — on the card, or on a wire — it answers for that one instead, any language the app knows and not only the project's. One it does not know leaves by `unavailable`, or by `completed` with nothing on the outputs when that is not wired.
+
+It reads the language when the flow passes. A reader who switches later is answered in the new one the next time the flow comes by.
+
+**On the card:** **Locale** — The language to answer for — the reader's, or one of the project's. A wire into `locale` beats it.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+| `locale` | `string` | Which language to answer in, as an id like `it-IT` or a bare `it`. Wired, it beats the card; blank, it is the reader's. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken when the language is one the app knows. |
+| `unavailable` | `flow` | Taken when it is not. Unwired, the story carries on by `completed` with nothing on the outputs. |
+| `id` | `string` | The language, as an id like `it-IT`. |
+| `language` | `string` | Its language alone, like `it`. |
+| `region` | `string` | Its region, like `IT` — nothing for a language with none. |
+| `name` | `string` | What it calls itself: `Italiano`. |
+| `englishName` | `string` | Its name in English: `Italian`. |
+| `system` | `string` | How the region measures: `metric`, `us` or `uk`. |
+| `currency` | `string` | The region's money, as a code like `EUR` — nothing for a language with no region. |
+| `isDefault` | `bool` | Whether it is the language the story was written in. |
+
+**Read more:** [Passages and translations](/explanation/passages-and-translations/)
+
+
+### Localized string
+
+<NodePreview type="locale.text" />
+
+A piece of text written once in each of the story's languages, answered in the reader's.
+
+It shows nothing by itself. What comes out of `text` goes wherever text can: a passage's input, a variable, a Comparator, a Script. Double-click to write it, one language at a time; spaces at either end are kept, so a piece meant to be joined to another can end in one.
+
+The words may run Python, `{{ … }}` as a passage's prose does, over the inputs declared under *Inputs* in the dialog — one port each. Write the plural each language needs in that language's own words: `{{ "coin" if coins == 1 else "coins" }}`.
+
+A language with nothing written answers in the one the story was written in, as a choice does — an empty string in a sentence is a hole, where an untranslated one is only English. With nothing in that language either, the board says so.
+
+It answers in the reader's language when the flow passes, or in the one a wire or the card names. A reader who switches later gets the new language the next time the flow comes by, not in what was already handed on.
+
+**On the card:** **Locale** — The language to answer in — the reader's, or one of the project's. A wire into `locale` beats it; **Text** — The words in each language, written in the dialog a double-click opens; the card shows the default language's.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It reads when the flow arrives. |
+| `locale` | `string` | Which language to answer in, as an id like `it-IT` or a bare `it`. Wired, it beats the card; blank, it is the reader's. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken once the words are on `text`. |
+| `text` | `string` | The words, in the language asked for. |
+
+**Read more:** [Passages and translations](/explanation/passages-and-translations/)
 
 
 ## Chance

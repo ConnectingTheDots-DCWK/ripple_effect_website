@@ -1,6 +1,6 @@
 ---
 title: Python reference
-description: The twenty host functions Python in a story may call, the five surfaces they run on, how arguments are checked and how a refusal reads.
+description: The twenty-one host functions Python in a story may call, the five surfaces they run on, how arguments are checked and how a refusal reads.
 ---
 
 Every function a script may call is a **host function**: bound under the name an author types, present without an `import`, and answered by the app or by the runtime playing a campaign. There is no `import ripple`, no class to instantiate and no object syntax. A component or an entity crosses as a dict, because the interpreter has no `class`.
@@ -60,6 +60,14 @@ Detail: [The world outside the story](/reference/python/the-world/). Read only w
 | `location_distance(latitude, longitude)` | How far the reader is from there, in metres, or `None` when the reading has no coordinates. |
 
 The clock is the standard library's own: `datetime.now()` and `date.today()`, read the same way.
+
+### The reader's language
+
+Nothing to allow: a story is played in a language by choosing it.
+
+| Function | Does |
+| --- | --- |
+| `locale_get(locale=None)` | The reader's language, or the one named — `it` or `it-IT` — as a dict of `id`, `language`, `region`, `name`, `englishName`, `system` (`metric`, `us` or `uk`), `currency` and `isDefault`, the same facts the [Get locale](/reference/nodes/#get-locale) card publishes. `None` for a language the app does not know, and in the design-time consoles, where nobody is reading. |
 
 ## Surfaces
 
@@ -152,7 +160,7 @@ A script that has not finished after two seconds is stopped. See [The sandbox an
 
 ## Versioning
 
-These names are a contract with every passage and script written against them from 1.3 onward (`play_sound` from 1.4, `location_get` and `location_distance` from 1.6), and are added to rather than repurposed. The shape `component_get` answers is shared with `component_read` over MCP.
+These names are a contract with every passage and script written against them from 1.3 onward (`play_sound` from 1.4, `location_get`, `location_distance` and `locale_get` from 1.6), and are added to rather than repurposed. The shape `component_get` answers is shared with `component_read` over MCP.
 
 ## Related
 

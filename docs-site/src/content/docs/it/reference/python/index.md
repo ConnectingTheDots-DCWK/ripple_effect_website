@@ -1,6 +1,6 @@
 ---
 title: Riferimento Python
-description: Le venti funzioni host che il Python di una storia può chiamare, le cinque superfici su cui girano, come vengono controllati gli argomenti e come si legge un rifiuto.
+description: Le ventuno funzioni host che il Python di una storia può chiamare, le cinque superfici su cui girano, come vengono controllati gli argomenti e come si legge un rifiuto.
 ---
 
 Ogni funzione che uno script può chiamare è una **funzione host**: è legata al nome che l'autore digita, è presente senza un `import` e riceve risposta dall'app o dal runtime che sta giocando una campagna. Non esiste `import ripple`, nessuna classe da istanziare e nessuna sintassi a oggetti. Un componente o un'entità attraversa il confine come dict, perché l'interprete non ha `class`.
@@ -60,6 +60,14 @@ Dettaglio: [Il mondo fuori dalla storia](/it/reference/python/the-world/). Si le
 | `location_distance(latitude, longitude)` | Quanto dista chi legge da quel punto, in metri, oppure `None` quando la lettura non ha coordinate. |
 
 L'orologio è quello della libreria standard: `datetime.now()` e `date.today()`, letti allo stesso modo.
+
+### La lingua di chi legge
+
+Niente da consentire: una storia si gioca in una lingua scegliendola.
+
+| Funzione | Cosa fa |
+| --- | --- |
+| `locale_get(locale=None)` | La lingua di chi legge, o quella indicata — `it` o `it-IT` — come dict di `id`, `language`, `region`, `name`, `englishName`, `system` (`metric`, `us` o `uk`), `currency` e `isDefault`, gli stessi dati che pubblica la scheda [Get locale](/it/reference/nodes/#get-locale). `None` per una lingua che l'app non conosce, e nelle console in fase di progettazione, dove nessuno sta leggendo. |
 
 ## Superfici
 
@@ -152,7 +160,7 @@ Uno script che non ha finito dopo due secondi viene interrotto. Vedi [La sandbox
 
 ## Versioni
 
-Questi nomi sono un contratto con ogni passaggio e ogni script scritto su di essi dalla 1.3 in poi (`play_sound` dalla 1.4, `location_get` e `location_distance` dalla 1.6), e vengono ampliati senza essere riutilizzati per altro. La forma che `component_get` restituisce è condivisa con `component_read` tramite MCP.
+Questi nomi sono un contratto con ogni passaggio e ogni script scritto su di essi dalla 1.3 in poi (`play_sound` dalla 1.4, `location_get`, `location_distance` e `locale_get` dalla 1.6), e vengono ampliati senza essere riutilizzati per altro. La forma che `component_get` restituisce è condivisa con `component_read` tramite MCP.
 
 ## Vedi anche
 

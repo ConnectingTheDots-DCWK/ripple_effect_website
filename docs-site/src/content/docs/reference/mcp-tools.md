@@ -1,6 +1,6 @@
 ---
 title: MCP tools
-description: The forty-four tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Let agents change files.
+description: The forty-seven tools an assistant is offered over MCP, grouped as the app groups them — what each answers, what it takes, and which need Let agents change files.
 sidebar:
   order: 2
 ---
@@ -459,6 +459,21 @@ may be taken, which a reader sees greyed out once it is spent.
 | `text` | | What a reader is offered, in one language. |
 | `locale` | | Which language the text is in. Defaults to the language the story is written in. |
 | `times` | | How many times this path may be taken in one playthrough. Counted for the whole campaign, so a jump back and a reloaded save find it as spent as it was. Leave it out to change nothing; send `0` to take the limit off. |
+
+### `board_set_localized_text`
+
+A Localized string node's words in one language. The node answers them in the
+reader's language, or in the story's own where nothing is written. Merges, so
+writing one language leaves the others; empty text takes that language off.
+Spaces at either end are kept, so a piece meant to be joined to another can
+end in one.
+
+| Argument | | What |
+| --- | --- | --- |
+| `board` | required | The board. |
+| `node` | required | The Localized string node. |
+| `text` | required | The words, in one language. Empty takes them off. |
+| `locale` | | Which language the text is in. Defaults to the language the story is written in. |
 
 ### `board_set_countdown`
 
