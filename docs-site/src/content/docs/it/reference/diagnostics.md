@@ -47,6 +47,7 @@ W.GE.05
 | [`W.GE.17`](#wge17) | Conto alla rovescia che non può partire |
 | [`I.GE.18`](#ige18) | Conto alla rovescia verso una scelta che può essere chiusa |
 | [`W.GE.19`](#wge19) | Localized string senza parole nella lingua della storia |
+| [`W.GE.20`](#wge20) | Convert tra unità che misurano cose diverse |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -227,6 +228,13 @@ La scelta ha un limite di *Volte* o una condizione. Nelle visite in cui non si p
 È la lingua a cui ricadono tutte le altre, quindi un lettore in una lingua per cui nessuno ha scritto riceve una stringa vuota. Le altre lingue non vengono controllate: una ancora da tradurre è normale mentre si scrive una storia, e il ripiego la copre. Vedi [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/).
 
 Correzione: fai doppio clic sulla scheda e scrivi le parole nella lingua della storia.
+
+### `W.GE.20`
+
+**Una scheda Convert converte tra due unità che misurano cose diverse**, per esempio chilogrammi in miglia. Entrambe le unità sono scelte sulla scheda, quindi ogni conversione esce da `unavailable`. Un'unità che arriva da un collegamento, *Dal testo* e *Sistema di chi legge* non vengono controllati, perché ciò che contengono si conosce solo quando la storia viene giocata. Vedi [Unità di misura](/it/reference/units/).
+
+Correzione: scegli due unità dello stesso tipo, oppure collega quella che cambia.
+
 
 ## Una sessione di gioco
 

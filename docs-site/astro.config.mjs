@@ -354,6 +354,7 @@ export default defineConfig({
 						{ label: 'Nodes', translations: { it: 'Nodi' }, collapsed: false, items: [
 							{ slug: 'reference/nodes' },
 							{ slug: 'reference/node-families' },
+							{ slug: 'reference/units' },
 							{ slug: 'reference/canvas-rules' },
 						] },
 						{ label: 'MCP tools', translations: { it: 'Strumenti MCP' }, collapsed: false, items: [

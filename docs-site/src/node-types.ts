@@ -30,6 +30,7 @@ export const nodeTypes = {
   'input': 'Input',
   'flow.sound': 'Play sound',
   'math.operator': 'Operator',
+  'unit.convert': 'Convert',
   'logic.comparator': 'Comparator',
   'list.insert': 'Insert',
   'list.at': 'At',

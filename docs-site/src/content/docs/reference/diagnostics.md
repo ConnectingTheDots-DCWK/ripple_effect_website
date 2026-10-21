@@ -47,6 +47,7 @@ W.GE.05
 | [`W.GE.17`](#wge17) | Countdown that can never run |
 | [`I.GE.18`](#ige18) | Countdown to a choice that may be closed |
 | [`W.GE.19`](#wge19) | Localized string with nothing in the story's own language |
+| [`W.GE.20`](#wge20) | Convert between units that measure different things |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -227,6 +228,13 @@ The choice has a *Times* limit or a condition. On a visit where it cannot be tak
 That language is the one every other falls back to, so a reader in a language nobody wrote for gets an empty string. Its other languages are not checked: one still to be translated is ordinary while a story is written, and the fallback covers it. See [How to add, switch off or change a project's languages](/how-to/manage-languages/).
 
 Fix: double-click the card and write the words in the story's own language.
+
+### `W.GE.20`
+
+**A Convert card converts between two units that measure different things**, such as kilograms into miles. Both units are picked on the card, so every conversion leaves by `unavailable`. A unit that comes from a wire, *From the text* and *Reader's system* are not checked, because what they hold is known only when the story plays. See [Units](/reference/units/).
+
+Fix: pick two units of the same kind, or wire the one that changes.
+
 
 ## A playthrough
 

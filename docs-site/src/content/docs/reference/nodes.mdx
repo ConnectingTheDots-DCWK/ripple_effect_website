@@ -574,6 +574,42 @@ Both sides only take numbers. Dividing by zero gives an infinity rather than sto
 | `result` | `number` | The answer; dividing by zero gives an infinity. |
 
 
+### Convert
+
+<NodePreview type="unit.convert" />
+
+Converts a quantity from one unit to another: a length, an area, a volume, a mass, a temperature, a speed or a length of time.
+
+On the card, *From the text* reads the unit off what arrives on `value` — `12 km`, `72°F`, `3.5 kg` — and a unit picked instead reads `value` as a plain number. *Reader's system* answers in the unit the reader's region measures in: kilometres become miles for a reader in the United States, and miles kilometres for one in Italy; in the United Kingdom only distances and speeds are in miles. A wire into `from` or `to` beats the card, with a unit's id such as `kilometer`.
+
+**A dot is the only decimal point** in a typed quantity: `1,500 m` is not read, because it means two different numbers in two languages.
+
+`result` is the number in full, `text` the same written out with the decimals on the card and the unit's symbol, and `unit` the unit it answered in. A unit it does not know, a value it cannot read, or two units that measure different things leave by `unavailable`, or by `completed` with nothing on the outputs when that is not wired.
+
+**On the card:** **From**, default `text` — The unit the value is in, or *From the text* to read it off the value. A wire into `from` beats it; **To**, default `reader` — The unit to answer in, or *Reader's system*. A wire into `to` beats it; **Decimals**, default `2` — How many places after the point `text` is written with, 0 to 6. `result` is never rounded.
+
+**Takes**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `exec` | `flow` | The way in. It converts when the flow arrives. |
+| `value` | `any` | The quantity: text such as `12 km` when the card reads it off the text, else a number in the card's unit. |
+| `from` | `string` | A unit id that beats the card's, or `text`. |
+| `to` | `string` | A unit id that beats the card's, or `reader`. |
+
+**Answers**
+
+| Port | Carries | Meaning |
+| --- | --- | --- |
+| `completed` | `flow` | Taken once there is an answer. |
+| `result` | `number` | The converted number, in full. |
+| `text` | `string` | The number with its decimals and the unit's symbol: `7.46 mi`. |
+| `unit` | `string` | The unit it answered in, as an id: `mile`. |
+| `unavailable` | `flow` | Taken when there is no answer. Unwired, the story carries on by `completed` with nothing on the outputs. |
+
+**Read more:** [Units](/reference/units/)
+
+
 ## Logic
 
 ### Comparator
