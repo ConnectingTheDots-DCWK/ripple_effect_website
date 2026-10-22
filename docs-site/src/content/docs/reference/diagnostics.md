@@ -191,13 +191,13 @@ There is no value to arrive at: each would be worked out when the next asks for 
 
 ### `W.GE.15`
 
-**A passage or a program is given a name its Python cannot read.**
+**A card declares a name Python cannot read.**
 
-A Narration node's *Reads* and a Script node's inputs and outputs become variables typed in the prose or the code. A name must be a letter or an underscore followed by letters, digits and underscores, and not a Python keyword such as `class` or `None`. `Your roll` is a valid label on an Output node's rows but nothing could write `{{ Your roll }}`, so the wire into that slot goes nowhere and the passage never sees it.
+A slot's name is how the board refers to it: its port and every wire on it are keyed by the name. A Narration node's *Reads* and a Script node's inputs and outputs are also variables typed in the prose or the code, so nothing could write `{{ Your roll }}` and the wire into that slot goes nowhere. The same rule holds on an Output node's rows, an Input node's fields and a macro's takes and answers: a letter or an underscore followed by letters, digits and underscores, and not a Python keyword such as `class` or `None`. What a reader sees on an Output or Input node is the slot's label, which can say anything.
 
-The editor does not let you type such a name, so it appears only on a board written by an older version or edited by hand.
+The editor does not let you type such a name, and a board from an earlier version has its Output, Input and macro names rewritten when it is opened, so this appears only on a board edited by hand.
 
-Fix: rename it, for example `your_roll`.
+Fix: rename it, for example `your_roll`, and put `Your roll` in the slot's *Label*.
 
 ### `W.GE.16`
 

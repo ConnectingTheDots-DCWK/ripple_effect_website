@@ -26,7 +26,7 @@ finché un percorso raggiunge un End.
 | --- | --- |
 | Dimensione | La finestra si ingrandisce per adattarsi allo schermo in cui si trova e si riduce per adattarsi a uno piccolo. |
 | Pulsante Schermo intero (intestazione) | Porta la finestra ai bordi dell'app e la riporta indietro. Anche Esc la riporta indietro. |
-| Lingua (intestazione) | Chi legge sceglie la lingua e può cambiarla a metà di un passaggio. Un passaggio senza testo nella lingua scelta lo dice; non ricade su un'altra lingua. |
+| Lingua (intestazione) | Chi legge sceglie la lingua e può cambiarla a metà di un passaggio. Un passaggio senza testo nella lingua scelta lo dice; non ricade su un'altra lingua. Le intestazioni delle righe di una scheda Output e le etichette di una scheda Input seguono il cambio. |
 | **Disattiva audio** (intestazione) | Viene ricordato tra una sessione e l'altra. Appartiene alla campagna: l'anteprima di un soundscape nella sua scheda non viene mai silenziata da questo comando. Il volume di un soundscape è quello del file e quello di ogni clip è relativo a esso; non c'è un secondo volume principale. |
 | Segnalibro (intestazione, accanto a Gioca) | Salva la sessione di gioco con un nome. Se ne può salvare un numero qualsiasi. Salvare non conclude la sessione di gioco. Vedi [Partite salvate](#partite-salvate). |
 | Ricomincia | Sempre disponibile, dal primo passaggio fino a un finale. *Rigioca* è offerto anche su un finale. Mentre una storia è in corso, il controllo Gioca dell'intestazione riporta **Ricomincia**. |
@@ -51,6 +51,8 @@ finché un percorso raggiunge un End.
 | Numero | Un campo numerico che non accetta lettere. |
 | Verità | Un interruttore. |
 | Elenco | Una riga di valori separati da virgole. |
+
+Ogni campo ha come titolo la sua etichetta nella lingua del lettore, o in quella della storia dove manca, e un campo vuoto mostra il suo segnaposto. Un campo parte riempito con il suo valore predefinito, se ne ha uno. Cambiare lingua mentre un modulo è a schermo ne riscrive etichette e segnaposto e conserva tutto ciò che è stato digitato.
 
 Una storia può essere messa in pausa, salvata e ripresa a una scheda Input; riprendendo, i valori vengono chiesti di nuovo.
 Il player da terminale chiede una riga per campo, e una partita senza supervisione lascia ogni

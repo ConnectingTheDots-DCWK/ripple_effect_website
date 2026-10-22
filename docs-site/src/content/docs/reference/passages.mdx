@@ -62,7 +62,7 @@ The **Reads** row sits at the bottom of the Narration card, beside the soundscap
 
 ### Name rule
 
-A name is a letter or an underscore, then letters, digits and underscores. A Python keyword such as `class` is refused, with the reason shown under the field. A board that carries a name Python cannot read reports [`W.GE.15`](/reference/diagnostics/). The same rule holds for a Script node's inputs and outputs. An Output node's rows and an Input node's fields are read by people, so `Your roll` is valid there.
+A name is a letter or an underscore, then letters, digits and underscores. A Python keyword such as `class` is refused, with the reason shown under the field. A board that carries a name Python cannot read reports [`W.GE.15`](/reference/diagnostics/). The same rule holds for a Script node's inputs and outputs and for every other card that declares names: an Output node's rows, an Input node's fields and a macro's takes and answers. What a reader sees on an Output or Input node is the slot's label, so `Your roll` is written there, per language, in the slot's *Label*.
 
 ## Choices
 
