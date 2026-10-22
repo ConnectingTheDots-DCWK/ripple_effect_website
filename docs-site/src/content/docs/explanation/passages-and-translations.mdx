@@ -67,7 +67,9 @@ Not every word a reader sees is in a passage. A sign the story assembles, a line
 
 It falls back the way a choice does rather than the way a passage does. An untranslated passage is prose somebody can read past; an empty string in the middle of a sentence is a hole. So where nothing is written in the reader's language, the card answers in the language the story is written in, and the board warns when that one is empty too.
 
-What it answers is the language it was read in. Changing language mid-story redraws the passage on screen, but the story does not run backwards: a piece of text already handed to a variable stays as it was, and the card answers in the new language the next time the flow reaches it. **Get locale** follows the same rule, and says which language that is, its region, how the region measures and which money it uses. It names the money and prices nothing. The steps are in [How to add, switch off or change a project's languages](/how-to/manage-languages/).
+An Output node's row headings and an Input node's field labels and placeholders are the same kind of words, kept on the node per language and written in its editor. They fall back the same way, to the language the story is written in and then to the slot's name, which is never empty. Unlike a Localized string, they belong to what is on screen rather than to a value the story carries, so changing language while a form or an Output is showing re-words it at once and keeps what the reader typed.
+
+What a Localized string answers is the language it was read in. Changing language mid-story redraws the passage on screen, but the story does not run backwards: a piece of text already handed to a variable stays as it was, and the card answers in the new language the next time the flow reaches it. **Get locale** follows the same rule, and says which language that is, its region, how the region measures and which money it uses. It names the money and prices nothing. The steps are in [How to add, switch off or change a project's languages](/how-to/manage-languages/).
 
 ## Why file times cannot be trusted
 

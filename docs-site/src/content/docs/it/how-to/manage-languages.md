@@ -22,7 +22,7 @@ Un file di traduzione vuoto viene aggiunto a ogni bundle di passaggi. La lingua 
 
 Togliere la spunta non elimina nulla. I file restano, l'editor continua a mostrarli contrassegnati come ritirati e ai lettori non viene più offerta quella lingua.
 
-Per rimuovere le parole, rispondi **Eliminale**. Così vengono eliminati dal disco il file della lingua in ogni bundle di passaggi e il testo di ogni scelta e di ogni scheda Localized string scritto in quella lingua sulle tue lavagne; l'unico modo per tornare indietro è il controllo di versione. **Mantienile** è il pulsante predefinito: se chiudi la finestra di dialogo senza scegliere, o la ignori, non elimina nulla.
+Per rimuovere le parole, rispondi **Eliminale**. Così vengono eliminati dal disco il file della lingua in ogni bundle di passaggi e il testo di ogni scelta e di ogni scheda Localized string e le etichette e i segnaposto di ogni scheda Output o Input scritti in quella lingua sulle tue lavagne; l'unico modo per tornare indietro è il controllo di versione. **Mantienile** è il pulsante predefinito: se chiudi la finestra di dialogo senza scegliere, o la ignori, non elimina nulla.
 
 ## Cambiare la lingua in cui è scritta una storia
 
@@ -38,7 +38,7 @@ Nulla viene spostato. Ogni passaggio riceve un file vuoto per la nuova lingua, e
 2. Cerca un **punto** su un chip: quella traduzione è più vecchia del suo originale. [Passaggi e traduzioni](/it/explanation/passages-and-translations/) spiega come lo si capisce.
 3. Per l'intero progetto, apri il pannello Messaggi (menu Visualizza, o il pulsante dei messaggi in fondo alla barra delle attività). Elenca ogni traduzione rimasta indietro, per esempio «3 traduzioni sono rimaste indietro».
 
-Modificare un passaggio e la sua traduzione insieme non lascia indietro la traduzione. Il controllo non può vedere il testo delle scelte né quello delle schede Localized string.
+Modificare un passaggio e la sua traduzione insieme non lascia indietro la traduzione. Il controllo non può vedere il testo delle scelte, quello delle schede Localized string né le etichette delle schede Output e Input.
 
 ## Tradurre parole che non sono un passaggio
 
@@ -63,6 +63,16 @@ Le parole di una scheda Localized string possono eseguire Python, come quelle di
 2. Scrivi ogni lingua con uno snippet inline: `You have {{ coins }} {{ "coin" if coins == 1 else "coins" }}` in inglese, `Hai {{ coins }} {{ "moneta" if coins == 1 else "monete" }}` in italiano.
 
 Uno snippet che fallisce lascia un avviso nelle parole e nella traccia, e la storia prosegue. Una campagna esportata per funzionare senza Python rifiuta la scheda ([`E.EX.03`](/it/reference/diagnostics/#eex03)). Da uno script, `locale_get()` risponde come la scheda Get locale.
+
+### Scrivere una scheda Output o Input in ogni lingua
+
+Anche le intestazioni delle righe di una scheda Output e le etichette e i segnaposto dei campi di una scheda Input si scrivono per ogni lingua.
+
+1. Fai doppio clic sulla scheda Output o Input.
+2. Sotto *Ciò che vede il lettore*, scegli una lingua dai chip. Ogni riga mostra un campo **Etichetta** e, su una scheda Input, un campo **Segnaposto** in quella lingua. Un campo vuoto mostra in grigio ciò che il lettore vedrà al suo posto.
+3. Scrivi le parole per ogni lingua che vuoi, poi fai clic su **Fatto**.
+
+Una riga senza etichetta nella lingua del lettore mostra quella della storia, e una che non ne ha nessuna mostra il suo nome. Un segnaposto è solo un suggerimento mostrato in un campo vuoto; ciò con cui il campo parte riempito è il suo *Predefinito*.
 
 ## Vedi anche
 

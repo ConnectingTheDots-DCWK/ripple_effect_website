@@ -469,6 +469,8 @@ Shows values the story worked out.
 
 Double-click to say what it shows — a name and a type per row — and it grows a port per name. Wire a Script node's outputs into them.
 
+A name is how the board refers to a row, so it is written as a Python name. What the reader sees as the row's heading is its *Label*, written per language with the chips above the rows. A row with no label in the reader's language shows the story's own, and one with none at all shows its name.
+
 It is a slide with one way on, so it reads as a passage rather than as a debugger.
 
 Plus one **input per name** in *Shows*, typed as the shape says.
@@ -497,6 +499,8 @@ Plus one **input per name** in *Shows*, typed as the shape says.
 Asks the reader for values.
 
 Double-click to say what to ask for — a name and a type per row — and it grows a port per name, carrying what was typed. A `bool` is a switch, a `number` a number field, a list a line of comma-separated values.
+
+A name is how the board refers to a field, so it is written as a Python name. What the reader sees is the field's *Label*, and while it is empty its *Placeholder*, both written per language with the chips above the rows. A field with no label in the reader's language shows the story's own. A default is what the field starts filled with; a placeholder is only a hint, and the story never reads it.
 
 It is a form with one way on. Say what you are asking, and why, in the passage before it.
 

@@ -22,7 +22,7 @@ An empty translation is put into every passage bundle. The app's own language is
 
 Unticking deletes nothing. The files stay, the editor keeps showing them marked retired, and readers stop being offered that language.
 
-To remove the words, answer **Delete them**. That deletes the language's file from every passage bundle, and the wording of any choice or Localized string card written in it on your boards, from disk; version control is the only way back. **Keep them** is the default button: clicking through the dialog or dismissing it deletes nothing.
+To remove the words, answer **Delete them**. That deletes the language's file from every passage bundle, and the wording of any choice or Localized string card and the labels and placeholders of any Output or Input node written in it on your boards, from disk; version control is the only way back. **Keep them** is the default button: clicking through the dialog or dismissing it deletes nothing.
 
 ## Change the language a story is written in
 
@@ -38,7 +38,7 @@ Nothing is moved. Every passage gets an empty file for the new language, and eve
 2. Look for a **dot** on a chip: that translation is older than its source. [Passages and translations](/explanation/passages-and-translations/) explains how that is told.
 3. For the whole project, open the Messages panel (View menu, or the messages button at the bottom of the activity bar). It lists every translation that has fallen behind, for example "3 translations have fallen behind".
 
-Editing a passage and its translation together does not leave the translation behind. The check cannot see the wording of a choice or of a Localized string card.
+Editing a passage and its translation together does not leave the translation behind. The check cannot see the wording of a choice, of a Localized string card, or of an Output or Input node's labels.
 
 ## Translate words that are not a passage
 
@@ -63,6 +63,16 @@ The words of a Localized string can run Python, as a passage's can, so each lang
 2. Write each language with an inline snippet: `You have {{ coins }} {{ "coin" if coins == 1 else "coins" }}` in English, `Hai {{ coins }} {{ "moneta" if coins == 1 else "monete" }}` in Italian.
 
 A snippet that fails leaves a warning in the words and in the trace, and the story carries on. A campaign exported to play without Python refuses the card ([`E.EX.03`](/reference/diagnostics/#eex03)). From a script, `locale_get()` answers what the Get locale card does.
+
+### Word an Output or an Input in each language
+
+An Output node's row headings and an Input node's field labels and placeholders are written per language too.
+
+1. Double-click the Output or Input node.
+2. Under *What the reader sees*, pick a language from the chips. Each row shows a **Label** field and, on an Input, a **Placeholder** field in that language. An empty field shows, greyed, what the reader will see instead.
+3. Write the words for each language you want, then click **Done**.
+
+A row with no label in the reader's language shows the story's own, and one with none at all shows its name. A placeholder is only a hint shown in an empty field; what the field starts filled with is its *Default*.
 
 ## Related
 

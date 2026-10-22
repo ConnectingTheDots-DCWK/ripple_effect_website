@@ -26,7 +26,7 @@ until a path reaches an End.
 | --- | --- |
 | Size | The window grows to fit the screen it is on and shrinks to fit a small one. |
 | Full-size button (header) | Takes the window to the app's edges and back. Escape also brings it back. |
-| Language (header) | The reader picks the language and can change it mid-passage. A passage with nothing in the chosen language says so; it does not fall back. |
+| Language (header) | The reader picks the language and can change it mid-passage. A passage with nothing in the chosen language says so; it does not fall back. An Output's row headings and an Input's labels follow the change. |
 | **Mute** (header) | Remembered between sessions. It belongs to the campaign: previewing a soundscape in its own tab is never silenced by it. A soundscape's volume is the file's and every clip's is relative to it; there is no second master. |
 | Bookmark (header, beside Play) | Saves the playthrough under a name. Any number may be saved. Saving does not end the playthrough. See [Saved games](#saved-games). |
 | Start over | Always available, from the first passage to an ending. *Play again* is also offered on an ending. While a story runs, the header's Play control reads **Start over**. |
@@ -51,6 +51,8 @@ until a path reaches an End.
 | Number | A number field that does not accept letters. |
 | Truth | A switch. |
 | List | A line of comma-separated values. |
+
+Each field is headed by its label in the reader's language, or the story's own where it has none, and an empty field shows its placeholder. A field starts filled with its default, if it has one. Changing language while a form is showing re-words its labels and placeholders and keeps everything typed.
 
 A story can be paused, saved and resumed at an Input node; resuming asks again.
 The terminal player asks one line per field, and an unattended walk leaves every

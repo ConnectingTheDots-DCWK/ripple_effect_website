@@ -191,13 +191,13 @@ Non c'è alcun valore a cui arrivare: ciascuna verrebbe calcolata quando la succ
 
 ### `W.GE.15`
 
-**A un passaggio o a un programma viene dato un nome che il suo Python non può leggere.**
+**Una scheda dichiara un nome che Python non può leggere.**
 
-I *Reads* di una scheda Narration e gli ingressi e le uscite di una scheda Script diventano variabili digitate nella prosa o nel codice. Un nome deve essere una lettera o un trattino basso seguito da lettere, cifre e trattini bassi, e non una parola chiave di Python come `class` o `None`. `Your roll` è un'etichetta valida sulle righe di una scheda Output, ma nessuno potrebbe scrivere `{{ Your roll }}`, quindi il collegamento verso quello slot non porta da nessuna parte e il passaggio non lo vede mai.
+Il nome di uno slot è il modo in cui la lavagna si riferisce a esso: la sua porta e ogni collegamento su di essa usano quel nome. I *Reads* di una scheda Narration e gli ingressi e le uscite di una scheda Script sono anche variabili digitate nella prosa o nel codice, quindi nessuno potrebbe scrivere `{{ Your roll }}` e il collegamento verso quello slot non porta da nessuna parte. La stessa regola vale per le righe di una scheda Output, i campi di una scheda Input e ciò che una macro riceve e restituisce: una lettera o un trattino basso seguito da lettere, cifre e trattini bassi, e non una parola chiave di Python come `class` o `None`. Ciò che il lettore vede su una scheda Output o Input è l'etichetta dello slot, che può dire qualsiasi cosa.
 
-L'editor non ti lascia digitare un nome simile, quindi compare solo su una lavagna scritta da una versione precedente o modificata a mano.
+L'editor non ti lascia digitare un nome simile, e a una lavagna di una versione precedente vengono riscritti i nomi di Output, Input e macro quando la apri, quindi compare solo su una lavagna modificata a mano.
 
-Correzione: rinominalo, per esempio `your_roll`.
+Correzione: rinominalo, per esempio `your_roll`, e scrivi `Your roll` nell'*Etichetta* dello slot.
 
 ### `W.GE.16`
 
