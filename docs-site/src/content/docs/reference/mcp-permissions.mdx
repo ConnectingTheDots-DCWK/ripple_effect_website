@@ -71,7 +71,7 @@ The runner is the one the Play button uses, with the same Python and the same co
 | Start, choose, read state | Starts a campaign, makes choices and reads the state. | `campaign_start`, `campaign_choose`, `campaign_state`, `campaign_end` |
 | Autoplay | Walks every branch and reports which endings are reachable, which passages nothing leads to, where a path runs out of wire and which jumps are broken. | `campaign_autoplay` |
 | `campaign_trace` | Reads the trace the play window shows: what the playthrough has done so far, line by line, with the board and the node each came from. It continues from where it last read. | `campaign_trace` |
-| Input node | Reaches the assistant as a slide listing the fields it asks for; the assistant fills the form in with a value per name. An unattended walk goes through one with every field blank. | `campaign_answer` |
+| Input node | Reaches the assistant as a slide listing the fields it asks for; the assistant fills the form in with a value per name. An unattended walk goes through one with every field left out: a required one reads as its type's blank, an optional one as nothing. | `campaign_answer` |
 
 ### What the assistant can write
 

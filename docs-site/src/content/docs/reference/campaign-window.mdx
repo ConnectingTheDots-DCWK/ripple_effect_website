@@ -50,13 +50,23 @@ until a path reaches an End.
 | Text | A text field. |
 | Number | A number field that does not accept letters. |
 | Truth | A switch. |
+| Truth, optional | Three buttons: *Yes*, *No* and *—*, which is no answer. It starts on *—* unless the field has a default. |
 | List | A line of comma-separated values. |
 
 Each field is headed by its label in the reader's language, or the story's own where it has none, and an empty field shows its placeholder. A field starts filled with its default, if it has one. Changing language while a form is showing re-words its labels and placeholders and keeps everything typed.
 
+| Field | Left empty |
+| --- | --- |
+| Required (every field not marked optional) | **Continue** keeps the form and shows *Needs an answer* under the field. A list of nothing but commas is empty. |
+| Optional, its label ending in *(optional)* | Answers nothing. A script reads it as `None`, an Output shows *—*, and an If set to *Was answered* leaves by `false`. Blank text and an empty list are empty too; `0` and *No* are answers. |
+
+A field is marked optional with the *Optional* chip on its row in the Input card's dialog, and the card shows *optional* after its label.
+
 A story can be paused, saved and resumed at an Input node; resuming asks again.
-The terminal player asks one line per field, and an unattended walk leaves every
-field blank.
+The terminal player asks one line per field, and asks a required field again
+until something is typed; an empty line on an optional one answers nothing. An
+unattended walk leaves every field out: a required one reads as its type's
+blank, an optional one as nothing.
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
 

@@ -50,13 +50,23 @@ finché un percorso raggiunge un End.
 | Testo | Un campo di testo. |
 | Numero | Un campo numerico che non accetta lettere. |
 | Verità | Un interruttore. |
+| Verità, facoltativa | Tre pulsanti: *Sì*, *No* e *—*, che è nessuna risposta. Parte da *—* a meno che il campo non abbia un valore predefinito. |
 | Elenco | Una riga di valori separati da virgole. |
 
 Ogni campo ha come titolo la sua etichetta nella lingua del lettore, o in quella della storia dove manca, e un campo vuoto mostra il suo segnaposto. Un campo parte riempito con il suo valore predefinito, se ne ha uno. Cambiare lingua mentre un modulo è a schermo ne riscrive etichette e segnaposto e conserva tutto ciò che è stato digitato.
 
+| Campo | Lasciato vuoto |
+| --- | --- |
+| Obbligatorio (ogni campo non segnato come facoltativo) | **Continua** tiene il modulo e mostra *Serve una risposta* sotto il campo. Un elenco di sole virgole è vuoto. |
+| Facoltativo, con l'etichetta che termina in *(facoltativo)* | Non risponde nulla. Uno script lo legge come `None`, una scheda Output mostra *—* e un If impostato su *Was answered* esce da `false`. Anche un testo vuoto e un elenco vuoto sono vuoti; `0` e *No* sono risposte. |
+
+Un campo si segna come facoltativo con il chip *Facoltativo* sulla sua riga nella finestra della scheda Input, e la scheda mostra *facoltativo* dopo la sua etichetta.
+
 Una storia può essere messa in pausa, salvata e ripresa a una scheda Input; riprendendo, i valori vengono chiesti di nuovo.
-Il player da terminale chiede una riga per campo, e una partita senza supervisione lascia ogni
-campo vuoto.
+Il player da terminale chiede una riga per campo, e chiede di nuovo un campo obbligatorio
+finché non viene scritto qualcosa; una riga vuota su un campo facoltativo non risponde nulla.
+Una partita senza supervisione lascia fuori ogni campo: uno obbligatorio si legge come il vuoto
+del suo tipo, uno facoltativo come nulla.
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
 

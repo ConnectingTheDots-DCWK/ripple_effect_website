@@ -48,6 +48,7 @@ W.GE.05
 | [`I.GE.18`](#ige18) | Countdown to a choice that may be closed |
 | [`W.GE.19`](#wge19) | Localized string with nothing in the story's own language |
 | [`W.GE.20`](#wge20) | Convert between units that measure different things |
+| [`W.GE.21`](#wge21) | Optional field wired straight into an input that needs a value |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -55,6 +56,7 @@ W.GE.05
 | [`I.RT.05`](#irt05) | Story was given your stand-in |
 | [`W.RT.06`](#wrt06) | Story was refused something it read |
 | [`I.RT.07`](#irt07) | Story was allowed something there was nothing of |
+| [`W.RT.08`](#wrt08) | Wire carried nothing where a card needed a value |
 | [`E.EX.01`](#eex01) | Script node in a no-Python campaign |
 | [`E.EX.02`](#eex02) | Passage that runs Python in a no-Python campaign |
 | [`E.EX.03`](#eex03) | Localized string that runs Python in a no-Python campaign |
@@ -235,6 +237,12 @@ Fix: double-click the card and write the words in the story's own language.
 
 Fix: pick two units of the same kind, or wire the one that changes.
 
+### `W.GE.21`
+
+**An optional Input field is wired straight into an input that needs a value**, such as a Set variable's `value`, a Dice roller's `notation` or a Check's `chance`. Left empty, the field answers nothing, and the card then reads nothing there rather than the value typed on it: a variable keeps what it held, a chance is `0`, a countdown does not run. A value that passes through another card first is that card's to shape, and is not asked about.
+
+Fix: make the field required, by clearing *Optional* in the Input card's dialog, or put an If set to *Was answered* between the two.
+
 
 ## A playthrough
 
@@ -271,6 +279,10 @@ Fix: allow it under *Settings › Permissions*, give a stand-in there, or write 
 ### `I.RT.07`
 
 **The story was allowed something there was nothing of.** It may read the location, but this computer's location service gave no position in time — it may be off, or have none to give — so `location_get()` gave `None` and a World node left by `unavailable`. Give a stand-in under *Settings › Permissions* to tell stories a place when that happens.
+
+### `W.RT.08`
+
+**A wire into a card carried nothing where the card needed a value**, so the value typed on the card was not used. Usually an optional Input field the reader left empty; sometimes a card whose value was never worked out. The card read nothing there and the story went on. The row names the input. `W.GE.21` warns of the plainest case before the story plays.
 
 ## An export
 

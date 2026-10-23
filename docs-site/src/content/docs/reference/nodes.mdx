@@ -228,19 +228,21 @@ Sends the flow one of two ways, on a yes or no wired into it.
 
 It asks nothing itself: `condition` takes a true-or-false from somewhere else, usually a Comparator. That is what makes it the piece a While or a For has been waiting for — wire `true` back into `continue` and `false` into `break`.
 
+Set to *Was answered*, it asks whether anything arrived at all rather than whether it is true: `true` for any value, `0`, `""` and `false` included, and `false` for nothing — an optional Input field the reader left empty, or a wire nothing has written to yet.
+
 **Takes**
 
 | Port | Carries | Meaning |
 | --- | --- | --- |
 | `exec` | `flow` | The way in. |
-| `condition` | `bool` | True or false, usually from a Comparator. |
+| `condition` | `bool` | True or false, usually from a Comparator — or, under *Was answered*, any value at all. |
 
 **Answers**
 
 | Port | Carries | Meaning |
 | --- | --- | --- |
-| `trueBranch` | `flow` | Taken when the condition is true. |
-| `falseBranch` | `flow` | Taken when it is false. |
+| `trueBranch` | `flow` | Taken when the condition is true, or was answered. |
+| `falseBranch` | `flow` | Taken when it is false, or nothing arrived. |
 
 
 ### Do all
