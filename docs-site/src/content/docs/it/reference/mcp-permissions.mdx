@@ -71,7 +71,7 @@ Il runner è lo stesso che usa il pulsante Gioca, con lo stesso Python e gli ste
 | Avviare, scegliere, leggere lo stato | Avvia una campagna, compie scelte e legge lo stato. | `campaign_start`, `campaign_choose`, `campaign_state`, `campaign_end` |
 | Autoplay | Percorre ogni ramo e segnala quali finali sono raggiungibili, quali passaggi non hanno nulla che porti a loro, dove un percorso resta senza collegamento e quali Jump sono rotti. | `campaign_autoplay` |
 | `campaign_trace` | Legge la traccia che mostra la finestra di gioco: cosa ha fatto finora la sessione di gioco, riga per riga, con la lavagna e la scheda da cui proviene ciascuna. Riprende da dove aveva letto l'ultima volta. | `campaign_trace` |
-| Scheda Input | Arriva all'assistente come una slide che elenca i campi richiesti; l'assistente compila il modulo con un valore per ogni nome. Un percorso non presidiato ne attraversa una lasciando fuori ogni campo: uno obbligatorio si legge come il vuoto del suo tipo, uno facoltativo come nulla. | `campaign_answer` |
+| Scheda Input | Arriva all'assistente come una slide che elenca i campi richiesti; l'assistente compila il modulo con un valore per ogni nome, e un campo con opzioni con l'ID dell'opzione scelta. Un percorso non presidiato ne attraversa una lasciando fuori ogni campo: uno obbligatorio si legge come il vuoto del suo tipo, o con opzioni come il suo valore predefinito e altrimenti la prima opzione; uno facoltativo come nulla. | `campaign_answer` |
 
 ### Cosa può scrivere l'assistente
 

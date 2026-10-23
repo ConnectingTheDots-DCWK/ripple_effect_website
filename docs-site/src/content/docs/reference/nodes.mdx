@@ -504,6 +504,8 @@ Double-click to say what to ask for — a name and a type per row — and it gro
 
 A name is how the board refers to a field, so it is written as a Python name. What the reader sees is the field's *Label*, and while it is empty its *Placeholder*, both written per language with the chips above the rows. A field with no label in the reader's language shows the story's own. A default is what the field starts filled with; a placeholder is only a hint, and the story never reads it.
 
+A number or a text field may offer the reader fixed answers instead: its *Options*, each an ID, the value the story is handed and its words per language. One field is then a dropdown, and a list a set of picks; the story reads the value, never the words, so it does not change with the reader's language. Mark a field *Optional* and the reader may leave it empty, which it answers as nothing.
+
 It is a form with one way on. Say what you are asking, and why, in the passage before it.
 
 Plus one **output per name** in *Asks*, typed as the shape says, carrying what the reader typed.

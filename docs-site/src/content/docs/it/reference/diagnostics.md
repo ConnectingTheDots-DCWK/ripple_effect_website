@@ -49,6 +49,10 @@ W.GE.05
 | [`W.GE.19`](#wge19) | Localized string senza parole nella lingua della storia |
 | [`W.GE.20`](#wge20) | Convert tra unità che misurano cose diverse |
 | [`W.GE.21`](#wge21) | Campo facoltativo collegato direttamente a un ingresso che richiede un valore |
+| [`W.GE.22`](#wge22) | Opzioni su un campo il cui tipo non può offrirle |
+| [`W.GE.23`](#wge23) | Opzione che ripete l'ID o il valore di una precedente |
+| [`W.GE.24`](#wge24) | Opzione il cui valore non è del tipo del suo campo |
+| [`W.GE.25`](#wge25) | Valore predefinito che non è nessuna delle opzioni di un campo |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -242,6 +246,30 @@ Correzione: scegli due unità dello stesso tipo, oppure collega quella che cambi
 **Un campo facoltativo di una scheda Input è collegato direttamente a un ingresso che richiede un valore**, come il `value` di una Set variable, la `notation` di un Dice roller o la `chance` di una Check. Lasciato vuoto, il campo non risponde nulla, e la scheda legge nulla lì invece del valore scritto su di essa: una variabile tiene ciò che aveva, una probabilità vale `0`, un conto alla rovescia non parte. Un valore che passa prima per un'altra scheda è affare di quella scheda, e non viene controllato.
 
 Correzione: rendi il campo obbligatorio, togliendo *Facoltativo* nella finestra della scheda Input, oppure metti tra le due un If impostato su *Was answered*.
+
+### `W.GE.22`
+
+**Un campo di una scheda Input offre opzioni, ma il suo tipo non può averne.** Solo un campo numerico o di testo, o un elenco dell'uno o dell'altro, offre opzioni al lettore; una verità, una mappa o un JSON no. Le opzioni restano fuori dalla storia e il lettore scrive invece nel campo. Di solito è un campo il cui tipo è stato cambiato sotto le sue opzioni.
+
+Correzione: riporta il tipo del campo com'era, oppure togli le opzioni.
+
+### `W.GE.23`
+
+**Un'opzione ripete l'ID o il valore di un'opzione precedente nello stesso campo.** Ogni opzione ha bisogno di un ID e di un valore suoi: la scelta del lettore si riconosce dall'uno e si passa come l'altro. I valori si confrontano come numeri, quindi `2` e `2.0` sono lo stesso valore. La ripetizione resta fuori dalla storia. Una riga per ogni ripetizione.
+
+Correzione: cambia la ripetizione, oppure toglila.
+
+### `W.GE.24`
+
+**Il valore di un'opzione non è del tipo del suo campo**, come una parola offerta per un numero intero. Il valore è ciò che la storia riceve quando il lettore sceglie l'opzione, quindi la storia riceve invece il vuoto di quel tipo.
+
+Correzione: correggi il valore tra le *Opzioni* del campo.
+
+### `W.GE.25`
+
+**Un campo con opzioni ha un valore predefinito che non è nessuno dei loro valori**, o su un elenco ne contiene uno che non lo è. Il modulo parte dall'opzione indicata dal valore predefinito, quindi questo parte senza nulla di scelto, e un campo obbligatorio chiede allora una scelta.
+
+Correzione: scegli un valore predefinito tra le opzioni nella finestra della scheda Input, oppure cancellalo.
 
 
 ## Una sessione di gioco

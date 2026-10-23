@@ -98,6 +98,7 @@ Output, Input, Script, Macro In and Macro Out. Double-click the card; a Script n
 - A slot gets the type it asked for. A script input declared `int` and wired `3.7` reads `3`.
 - A value that cannot be read as the type becomes that type's blank. It does not stop the story.
 - An optional Input field the reader left empty answers nothing, not a blank. A script reads it as `None`.
+- An Input field with options answers the value of the option picked, of the field's type. A required one with no pick answers its default, or else its first option.
 - What a script writes to an output is left as it is.
 
 ### Defaults
@@ -111,7 +112,7 @@ A slot can carry a default, used when nothing fills it.
 | Script output | Only where the program never set that name. |
 | Output node slot | When nothing fills it. |
 | Macro Out answer | When nothing fills it. |
-| Input node field | Prefilled for the reader to accept or type over. |
+| Input node field | Prefilled for the reader to accept or type over. On a field with options, the option the form starts on; it has to be one of their values. |
 
 Where a wire and the card's own literal both answer a port, the wire wins, and the field on the card disappears while the wire is attached. Where neither is there, the declared default stands in, and then the type's own blank.
 
@@ -229,7 +230,7 @@ The node is made by dropping a state machine file on a board, or by adding the n
 | --- | --- |
 | Script node | References a `.py` file in the project, so one script can serve many nodes. Declares inputs and outputs as rows, a name and a type each, and has a port per name. The *Inputs* and *Outputs* boxes in its editor are buttons that open the ports dialog every other node uses. Values cross as native Python types. Whatever the script assigns to an output name is published on that port. |
 | Output node | Shows its inputs to the reader as a slide with one way on. Slots are typed as a Script node's are and may carry a default. |
-| Input node | Asks the reader for values and hands what was typed on as ports. Its default is filled in for the reader to accept or type over. Every field must be filled in unless its row in the card's dialog is marked *Optional*; an optional field left empty answers nothing. |
+| Input node | Asks the reader for values and hands what was typed on as ports. Its default is filled in for the reader to accept or type over. Every field must be filled in unless its row in the card's dialog is marked *Optional*; an optional field left empty answers nothing. A number or a text field may offer *Options* instead, and the reader picks one, or several for a list. |
 | Passage | An inline `{{ … }}` span and a fenced ```` ```ripple ```` block. Both are replaced by what they evaluate to when the passage is presented. |
 
 Output and Input are described by double-clicking the card: a name and a type per row.
