@@ -52,6 +52,8 @@ until a path reaches an End.
 | Truth | A switch. |
 | Truth, optional | Three buttons: *Yes*, *No* and *—*, which is no answer. It starts on *—* unless the field has a default. |
 | List | A line of comma-separated values. |
+| One pick from options | A dropdown of the options' words. An optional one has *—* first, which is no answer. |
+| A list picked from options | A chip per option, in the options' order; any number may be picked. |
 
 Each field is headed by its label in the reader's language, or the story's own where it has none, and an empty field shows its placeholder. A field starts filled with its default, if it has one. Changing language while a form is showing re-words its labels and placeholders and keeps everything typed.
 
@@ -62,11 +64,19 @@ Each field is headed by its label in the reader's language, or the story's own w
 
 A field is marked optional with the *Optional* chip on its row in the Input card's dialog, and the card shows *optional* after its label.
 
+A number or a text field, one or a list, can offer options instead of a box to type in: the options button on its row in the Input card's dialog, drawn as a list with ticks. Each option is the words the reader sees, written per language, an ID, and the value the story is handed. The card shows *▾* after the field's label.
+
+- The story is handed the picked option's value, never its words, so a pick does not depend on the reader's language. A list is handed its values in the options' order, whatever order they were picked in.
+- The form starts on the option the field's default names; with no default, nothing is picked. Changing language re-words the options and keeps the picks.
+- A required pick left empty shows *Needs an answer*, like any required field.
+
 A story can be paused, saved and resumed at an Input node; resuming asks again.
 The terminal player asks one line per field, and asks a required field again
-until something is typed; an empty line on an optional one answers nothing. An
-unattended walk leaves every field out: a required one reads as its type's
-blank, an optional one as nothing.
+until something is typed; an empty line on an optional one answers nothing. A
+field with options is a numbered menu of their words, answered by number, or by
+numbers separated by commas for a list. An unattended walk leaves every field
+out: a required one reads as its type's blank, or with options as its default
+and else its first option; an optional one as nothing.
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
 

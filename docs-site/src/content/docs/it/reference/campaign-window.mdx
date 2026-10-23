@@ -52,6 +52,8 @@ finché un percorso raggiunge un End.
 | Verità | Un interruttore. |
 | Verità, facoltativa | Tre pulsanti: *Sì*, *No* e *—*, che è nessuna risposta. Parte da *—* a meno che il campo non abbia un valore predefinito. |
 | Elenco | Una riga di valori separati da virgole. |
+| Una scelta tra opzioni | Un menu a tendina con le parole delle opzioni. Uno facoltativo ha per prima *—*, che è nessuna risposta. |
+| Un elenco scelto tra opzioni | Un chip per opzione, nell'ordine delle opzioni; se ne possono scegliere quante si vuole. |
 
 Ogni campo ha come titolo la sua etichetta nella lingua del lettore, o in quella della storia dove manca, e un campo vuoto mostra il suo segnaposto. Un campo parte riempito con il suo valore predefinito, se ne ha uno. Cambiare lingua mentre un modulo è a schermo ne riscrive etichette e segnaposto e conserva tutto ciò che è stato digitato.
 
@@ -62,11 +64,19 @@ Ogni campo ha come titolo la sua etichetta nella lingua del lettore, o in quella
 
 Un campo si segna come facoltativo con il chip *Facoltativo* sulla sua riga nella finestra della scheda Input, e la scheda mostra *facoltativo* dopo la sua etichetta.
 
+Un campo numerico o di testo, singolo o elenco, può offrire opzioni invece di un campo in cui scrivere: il pulsante delle opzioni sulla sua riga nella finestra della scheda Input, disegnato come un elenco con delle spunte. Ogni opzione è fatta delle parole che vede il lettore, scritte per lingua, di un ID e del valore che riceve la storia. La scheda mostra *▾* dopo l'etichetta del campo.
+
+- La storia riceve il valore dell'opzione scelta, mai le sue parole, quindi una scelta non dipende dalla lingua del lettore. Un elenco riceve i suoi valori nell'ordine delle opzioni, in qualunque ordine siano state scelte.
+- Il modulo parte dall'opzione indicata dal valore predefinito del campo; senza un valore predefinito, non c'è nulla di scelto. Cambiare lingua riscrive le opzioni e conserva le scelte.
+- Una scelta obbligatoria lasciata vuota mostra *Serve una risposta*, come ogni campo obbligatorio.
+
 Una storia può essere messa in pausa, salvata e ripresa a una scheda Input; riprendendo, i valori vengono chiesti di nuovo.
 Il player da terminale chiede una riga per campo, e chiede di nuovo un campo obbligatorio
 finché non viene scritto qualcosa; una riga vuota su un campo facoltativo non risponde nulla.
-Una partita senza supervisione lascia fuori ogni campo: uno obbligatorio si legge come il vuoto
-del suo tipo, uno facoltativo come nulla.
+Un campo con opzioni è un menu numerato delle loro parole, a cui si risponde con un numero, o con
+numeri separati da virgole per un elenco. Una partita senza supervisione lascia fuori ogni campo:
+uno obbligatorio si legge come il vuoto del suo tipo, o con opzioni come il suo valore predefinito
+e altrimenti la prima opzione; uno facoltativo come nulla.
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
 

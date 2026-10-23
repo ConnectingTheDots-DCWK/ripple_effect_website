@@ -98,6 +98,7 @@ Output, Input, Script, Macro In e Macro Out. Fai doppio clic sulla scheda; gli *
 - Uno slot riceve il tipo che ha richiesto. Un ingresso di script dichiarato `int` e collegato a `3.7` legge `3`.
 - Un valore che non può essere letto come quel tipo diventa il vuoto di quel tipo. Non ferma la storia.
 - Un campo facoltativo di una scheda Input lasciato vuoto dal lettore non risponde nulla, non un vuoto. Uno script lo legge come `None`.
+- Un campo di una scheda Input con opzioni risponde il valore dell'opzione scelta, del tipo del campo. Uno obbligatorio senza una scelta risponde il suo valore predefinito, o altrimenti la prima opzione.
 - Ciò che uno script scrive in un'uscita resta com'è.
 
 ### Valori predefiniti
@@ -111,7 +112,7 @@ Uno slot può avere un valore predefinito, usato quando nulla lo riempie.
 | Uscita di uno script | Solo dove il programma non ha mai impostato quel nome. |
 | Slot di una scheda Output | Quando nulla lo riempie. |
 | Risposta di Macro Out | Quando nulla la riempie. |
-| Campo di una scheda Input | Precompilato, perché il lettore lo accetti o ci scriva sopra. |
+| Campo di una scheda Input | Precompilato, perché il lettore lo accetti o ci scriva sopra. Su un campo con opzioni, l'opzione da cui parte il modulo; deve essere uno dei loro valori. |
 
 Dove un collegamento e il valore scritto sulla scheda rispondono entrambi a una porta, vince il collegamento, e il campo sulla scheda scompare finché il collegamento è attaccato. Dove non c'è nessuno dei due, subentra il valore predefinito dichiarato, e poi il vuoto del tipo.
 
@@ -229,7 +230,7 @@ La scheda si crea trascinando un file di macchina a stati su una lavagna, oppure
 | --- | --- |
 | Scheda Script | Fa riferimento a un file `.py` del progetto, così uno script può servire molte schede. Dichiara ingressi e uscite come righe, ciascuna con un nome e un tipo, e ha una porta per nome. Le caselle *Ingressi* e *Uscite* nel suo editor sono pulsanti che aprono la finestra delle porte usata da ogni altra scheda. I valori attraversano il confine come tipi Python nativi. Qualunque cosa lo script assegni a un nome di uscita viene pubblicata su quella porta. |
 | Scheda Output | Mostra i suoi ingressi al lettore come una diapositiva con un solo modo per proseguire. Gli slot sono tipizzati come quelli di una scheda Script e possono avere un valore predefinito. |
-| Scheda Input | Chiede valori al lettore e passa ciò che è stato digitato come porte. Il suo valore predefinito è compilato perché il lettore lo accetti o ci scriva sopra. Ogni campo va compilato, a meno che la sua riga nella finestra della scheda non sia segnata *Facoltativo*; un campo facoltativo lasciato vuoto non risponde nulla. |
+| Scheda Input | Chiede valori al lettore e passa ciò che è stato digitato come porte. Il suo valore predefinito è compilato perché il lettore lo accetti o ci scriva sopra. Ogni campo va compilato, a meno che la sua riga nella finestra della scheda non sia segnata *Facoltativo*; un campo facoltativo lasciato vuoto non risponde nulla. Un campo numerico o di testo può invece offrire delle *Opzioni*, e il lettore ne sceglie una, o più d'una per un elenco. |
 | Passaggio | Un intervallo inline `{{ … }}` e un blocco delimitato ```` ```ripple ````. Entrambi vengono sostituiti da ciò che valutano quando il passaggio viene presentato. |
 
 Output e Input si descrivono con un doppio clic sulla scheda: un nome e un tipo per riga.

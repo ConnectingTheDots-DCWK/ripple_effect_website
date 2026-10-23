@@ -49,6 +49,10 @@ W.GE.05
 | [`W.GE.19`](#wge19) | Localized string with nothing in the story's own language |
 | [`W.GE.20`](#wge20) | Convert between units that measure different things |
 | [`W.GE.21`](#wge21) | Optional field wired straight into an input that needs a value |
+| [`W.GE.22`](#wge22) | Options on a field whose type cannot offer them |
+| [`W.GE.23`](#wge23) | Option repeating the ID or the value of one before it |
+| [`W.GE.24`](#wge24) | Option whose value is not of its field's type |
+| [`W.GE.25`](#wge25) | Default that is none of a field's options |
 | [`I.RT.01`](#irt01) | Card ran more than once |
 | [`W.RT.02`](#wrt02) | Something read a card that had not run |
 | [`I.RT.03`](#irt03) | Several wires arrived at one input |
@@ -242,6 +246,30 @@ Fix: pick two units of the same kind, or wire the one that changes.
 **An optional Input field is wired straight into an input that needs a value**, such as a Set variable's `value`, a Dice roller's `notation` or a Check's `chance`. Left empty, the field answers nothing, and the card then reads nothing there rather than the value typed on it: a variable keeps what it held, a chance is `0`, a countdown does not run. A value that passes through another card first is that card's to shape, and is not asked about.
 
 Fix: make the field required, by clearing *Optional* in the Input card's dialog, or put an If set to *Was answered* between the two.
+
+### `W.GE.22`
+
+**An Input field offers options, but its type cannot have them.** Only a number or a text field, or a list of either, offers the reader options; a truth, a map or JSON does not. The options are left out of the story and the reader types into the field instead. Usually a field whose type was changed under its options.
+
+Fix: change the field's type back, or remove its options.
+
+### `W.GE.23`
+
+**An option repeats the ID or the value of an option before it in the same field.** Each option needs an ID and a value of its own: the reader's pick is told apart by the one and handed on as the other. Values are compared as numbers, so `2` and `2.0` are the same value. The repeat is left out of the story. One row per repeat.
+
+Fix: change the repeat, or remove it.
+
+### `W.GE.24`
+
+**An option's value is not of its field's type**, such as a word offered for a whole number. The value is what the story is handed when the reader picks the option, so the story is handed that type's blank instead.
+
+Fix: correct the value in the field's *Options*.
+
+### `W.GE.25`
+
+**A field with options has a default that is none of their values**, or on a list holds one that is not. The form starts on the option a default names, so this one starts with nothing picked, and a required field then wants a pick.
+
+Fix: pick a default among the options in the Input card's dialog, or clear it.
 
 
 ## A playthrough

@@ -22,7 +22,7 @@ Un file di traduzione vuoto viene aggiunto a ogni bundle di passaggi. La lingua 
 
 Togliere la spunta non elimina nulla. I file restano, l'editor continua a mostrarli contrassegnati come ritirati e ai lettori non viene più offerta quella lingua.
 
-Per rimuovere le parole, rispondi **Eliminale**. Così vengono eliminati dal disco il file della lingua in ogni bundle di passaggi e il testo di ogni scelta e di ogni scheda Localized string e le etichette e i segnaposto di ogni scheda Output o Input scritti in quella lingua sulle tue lavagne; l'unico modo per tornare indietro è il controllo di versione. **Mantienile** è il pulsante predefinito: se chiudi la finestra di dialogo senza scegliere, o la ignori, non elimina nulla.
+Per rimuovere le parole, rispondi **Eliminale**. Così vengono eliminati dal disco il file della lingua in ogni bundle di passaggi e il testo di ogni scelta e di ogni scheda Localized string e le etichette, i segnaposto e le parole delle opzioni di ogni scheda Output o Input scritti in quella lingua sulle tue lavagne; l'unico modo per tornare indietro è il controllo di versione. **Mantienile** è il pulsante predefinito: se chiudi la finestra di dialogo senza scegliere, o la ignori, non elimina nulla.
 
 ## Cambiare la lingua in cui è scritta una storia
 
@@ -38,7 +38,7 @@ Nulla viene spostato. Ogni passaggio riceve un file vuoto per la nuova lingua, e
 2. Cerca un **punto** su un chip: quella traduzione è più vecchia del suo originale. [Passaggi e traduzioni](/it/explanation/passages-and-translations/) spiega come lo si capisce.
 3. Per l'intero progetto, apri il pannello Messaggi (menu Visualizza, o il pulsante dei messaggi in fondo alla barra delle attività). Elenca ogni traduzione rimasta indietro, per esempio «3 traduzioni sono rimaste indietro».
 
-Modificare un passaggio e la sua traduzione insieme non lascia indietro la traduzione. Il controllo non può vedere il testo delle scelte, quello delle schede Localized string né le etichette delle schede Output e Input.
+Modificare un passaggio e la sua traduzione insieme non lascia indietro la traduzione. Il controllo non può vedere il testo delle scelte, quello delle schede Localized string né le etichette e le opzioni delle schede Output e Input.
 
 ## Tradurre parole che non sono un passaggio
 
@@ -71,6 +71,8 @@ Anche le intestazioni delle righe di una scheda Output e le etichette e i segnap
 1. Fai doppio clic sulla scheda Output o Input.
 2. Sotto *Ciò che vede il lettore*, scegli una lingua dai chip. Ogni riga mostra un campo **Etichetta** e, su una scheda Input, un campo **Segnaposto** in quella lingua. Un campo vuoto mostra in grigio ciò che il lettore vedrà al suo posto.
 3. Scrivi le parole per ogni lingua che vuoi, poi fai clic su **Fatto**.
+
+Le opzioni di un campo di una scheda Input si scrivono allo stesso modo: fai clic sul pulsante delle opzioni sulla sua riga, disegnato come un elenco con delle spunte, scegli una lingua dai chip e scrivi le **Parole** di ogni opzione in quella lingua. L'ID e il valore restano gli stessi in ogni lingua.
 
 Una riga senza etichetta nella lingua del lettore mostra quella della storia, e una che non ne ha nessuna mostra il suo nome. Un segnaposto è solo un suggerimento mostrato in un campo vuoto; ciò con cui il campo parte riempito è il suo *Predefinito*.
 

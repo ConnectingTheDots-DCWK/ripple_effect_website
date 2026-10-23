@@ -279,9 +279,11 @@ Fills in the form the story is waiting at — an Input node, which
 answers the next slide. A value per field name. A field marked optional may
 be left out or sent as null, which answers nothing; a required one left out
 is read as its type's blank, which the reader's own form would not have
-allowed. Send a number as a number or as its text, a truth as `true` or
-`"true"`, a list as an array or a comma-separated line: the story reads each
-as the field's declared type either way.
+allowed. A field with options is answered with the id of the option picked,
+or a list of ids for a list type, never its words. Send a number as a number
+or as its text, a truth as `true` or `"true"`, a list as an array or a
+comma-separated line: the story reads each as the field's declared type
+either way.
 
 | Argument | | What |
 | --- | --- | --- |
