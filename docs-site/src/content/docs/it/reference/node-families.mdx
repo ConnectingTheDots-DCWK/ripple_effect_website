@@ -97,6 +97,7 @@ Output, Input, Script, Macro In e Macro Out. Fai doppio clic sulla scheda; gli *
 
 - Uno slot riceve il tipo che ha richiesto. Un ingresso di script dichiarato `int` e collegato a `3.7` legge `3`.
 - Un valore che non può essere letto come quel tipo diventa il vuoto di quel tipo. Non ferma la storia.
+- Un campo facoltativo di una scheda Input lasciato vuoto dal lettore non risponde nulla, non un vuoto. Uno script lo legge come `None`.
 - Ciò che uno script scrive in un'uscita resta com'è.
 
 ### Valori predefiniti
@@ -113,6 +114,8 @@ Uno slot può avere un valore predefinito, usato quando nulla lo riempie.
 | Campo di una scheda Input | Precompilato, perché il lettore lo accetti o ci scriva sopra. |
 
 Dove un collegamento e il valore scritto sulla scheda rispondono entrambi a una porta, vince il collegamento, e il campo sulla scheda scompare finché il collegamento è attaccato. Dove non c'è nessuno dei due, subentra il valore predefinito dichiarato, e poi il vuoto del tipo.
+
+Un collegamento che non porta nulla resta un collegamento. Una scheda che richiede un valore, come una Set variable, un Dice roller o il conto alla rovescia di un passaggio, legge allora nulla lì, non il valore scritto su di essa, e il pannello Messaggi lo segnala ([`W.RT.08`](/it/reference/diagnostics/#wrt08)). Un campo facoltativo di una scheda Input collegato direttamente a una di esse viene segnalato prima che la storia venga giocata ([`W.GE.21`](/it/reference/diagnostics/#wge21)).
 
 Un valore predefinito su uno slot `json` o `map<...>` non può viaggiare, e l'app lo segnala quando compili.
 
@@ -131,7 +134,7 @@ Un nome letto da uno script deve essere un nome che Python sa leggere.
 | Dove | Regola |
 | --- | --- |
 | Ingressi e uscite delle schede Script; gli ingressi di un passaggio | Una lettera o un trattino basso, seguiti da lettere, cifre e trattini bassi. Le parole riservate di Python, come `class`, vengono rifiutate, con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non sa leggere lo segnala. |
-| Slot delle schede Output e Input | Letti da persone; `Your roll` è un nome valido. |
+| Slot delle schede Output e Input, e ciò che una macro riceve e restituisce | La stessa regola: un nome è il modo in cui la lavagna si riferisce a uno slot, alla sua porta e a ogni collegamento su di essa. Ciò che il lettore vede su una scheda Output o Input è l'etichetta dello slot, che può dire qualsiasi cosa, come `Your roll`. |
 
 ## Macro
 
@@ -226,7 +229,7 @@ La scheda si crea trascinando un file di macchina a stati su una lavagna, oppure
 | --- | --- |
 | Scheda Script | Fa riferimento a un file `.py` del progetto, così uno script può servire molte schede. Dichiara ingressi e uscite come righe, ciascuna con un nome e un tipo, e ha una porta per nome. Le caselle *Ingressi* e *Uscite* nel suo editor sono pulsanti che aprono la finestra delle porte usata da ogni altra scheda. I valori attraversano il confine come tipi Python nativi. Qualunque cosa lo script assegni a un nome di uscita viene pubblicata su quella porta. |
 | Scheda Output | Mostra i suoi ingressi al lettore come una diapositiva con un solo modo per proseguire. Gli slot sono tipizzati come quelli di una scheda Script e possono avere un valore predefinito. |
-| Scheda Input | Chiede valori al lettore e passa ciò che è stato digitato come porte. Il suo valore predefinito è compilato perché il lettore lo accetti o ci scriva sopra. |
+| Scheda Input | Chiede valori al lettore e passa ciò che è stato digitato come porte. Il suo valore predefinito è compilato perché il lettore lo accetti o ci scriva sopra. Ogni campo va compilato, a meno che la sua riga nella finestra della scheda non sia segnata *Facoltativo*; un campo facoltativo lasciato vuoto non risponde nulla. |
 | Passaggio | Un intervallo inline `{{ … }}` e un blocco delimitato ```` ```ripple ````. Entrambi vengono sostituiti da ciò che valutano quando il passaggio viene presentato. |
 
 Output e Input si descrivono con un doppio clic sulla scheda: un nome e un tipo per riga.

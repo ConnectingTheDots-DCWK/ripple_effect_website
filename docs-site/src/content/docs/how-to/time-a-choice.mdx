@@ -29,7 +29,7 @@ Any of the four settings can come from somewhere else on the board, such as a va
 
 Wire a value into the input. A timeout or a delay takes a number of seconds or a duration's text; the choice takes its place among the choices offered, from `0`, or its port id.
 
-While the wire carries something, it wins over the dialog, and a wired timeout counts down even when no time is typed. While the input is unwired or the wire carries nothing, the value typed in the dialog is used. The dialog says which settings a wire answers.
+While the wire carries something, it wins over the dialog, and a wired timeout counts down even when no time is typed. While the input is unwired, or the wire carries what cannot be read as that setting, the value typed in the dialog is used. A wire that carries nothing, such as an optional Input field the reader left empty, gives the setting no value at all rather than the dialog's: a timeout that arrives as nothing does not count down. The dialog says which settings a wire answers.
 
 ## When the countdown does not run
 

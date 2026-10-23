@@ -48,6 +48,7 @@ W.GE.05
 | [`I.GE.18`](#ige18) | Conto alla rovescia verso una scelta che può essere chiusa |
 | [`W.GE.19`](#wge19) | Localized string senza parole nella lingua della storia |
 | [`W.GE.20`](#wge20) | Convert tra unità che misurano cose diverse |
+| [`W.GE.21`](#wge21) | Campo facoltativo collegato direttamente a un ingresso che richiede un valore |
 | [`I.RT.01`](#irt01) | La scheda è stata eseguita più di una volta |
 | [`W.RT.02`](#wrt02) | Qualcosa ha letto una scheda che non era stata eseguita |
 | [`I.RT.03`](#irt03) | Più collegamenti sono arrivati a un solo ingresso |
@@ -55,6 +56,7 @@ W.GE.05
 | [`I.RT.05`](#irt05) | Alla storia è stato dato il tuo sostituto |
 | [`W.RT.06`](#wrt06) | Alla storia è stato negato qualcosa che ha letto |
 | [`I.RT.07`](#irt07) | La storia poteva leggere qualcosa che non c'era |
+| [`W.RT.08`](#wrt08) | Un collegamento non ha portato nulla dove una scheda richiedeva un valore |
 | [`E.EX.01`](#eex01) | Scheda Script in una campagna senza Python |
 | [`E.EX.02`](#eex02) | Passaggio che esegue Python in una campagna senza Python |
 | [`E.EX.03`](#eex03) | Localized string che esegue Python in una campagna senza Python |
@@ -235,6 +237,12 @@ Correzione: fai doppio clic sulla scheda e scrivi le parole nella lingua della s
 
 Correzione: scegli due unità dello stesso tipo, oppure collega quella che cambia.
 
+### `W.GE.21`
+
+**Un campo facoltativo di una scheda Input è collegato direttamente a un ingresso che richiede un valore**, come il `value` di una Set variable, la `notation` di un Dice roller o la `chance` di una Check. Lasciato vuoto, il campo non risponde nulla, e la scheda legge nulla lì invece del valore scritto su di essa: una variabile tiene ciò che aveva, una probabilità vale `0`, un conto alla rovescia non parte. Un valore che passa prima per un'altra scheda è affare di quella scheda, e non viene controllato.
+
+Correzione: rendi il campo obbligatorio, togliendo *Facoltativo* nella finestra della scheda Input, oppure metti tra le due un If impostato su *Was answered*.
+
 
 ## Una sessione di gioco
 
@@ -271,6 +279,10 @@ Correzione: permettilo in *Impostazioni › Autorizzazioni*, dai lì un sostitut
 ### `I.RT.07`
 
 **La storia poteva leggere qualcosa che non c'era.** Può leggere la posizione, ma il servizio di localizzazione di questo computer non ha dato una posizione in tempo — può essere spento o non averne una — quindi `location_get()` ha restituito `None` e un nodo World è uscito da `unavailable`. Dai un sostituto in *Impostazioni › Autorizzazioni* per dire alle storie un luogo quando succede.
+
+### `W.RT.08`
+
+**Un collegamento verso una scheda non ha portato nulla dove la scheda richiedeva un valore**, quindi il valore scritto sulla scheda non è stato usato. Di solito è un campo facoltativo di una scheda Input che il lettore ha lasciato vuoto; a volte una scheda il cui valore non è mai stato calcolato. La scheda ha letto nulla lì e la storia è andata avanti. La riga nomina l'ingresso. `W.GE.21` avverte del caso più semplice prima che la storia venga giocata.
 
 ## Un'esportazione
 

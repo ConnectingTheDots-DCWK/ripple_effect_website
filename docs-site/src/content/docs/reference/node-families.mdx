@@ -97,6 +97,7 @@ Output, Input, Script, Macro In and Macro Out. Double-click the card; a Script n
 
 - A slot gets the type it asked for. A script input declared `int` and wired `3.7` reads `3`.
 - A value that cannot be read as the type becomes that type's blank. It does not stop the story.
+- An optional Input field the reader left empty answers nothing, not a blank. A script reads it as `None`.
 - What a script writes to an output is left as it is.
 
 ### Defaults
@@ -113,6 +114,8 @@ A slot can carry a default, used when nothing fills it.
 | Input node field | Prefilled for the reader to accept or type over. |
 
 Where a wire and the card's own literal both answer a port, the wire wins, and the field on the card disappears while the wire is attached. Where neither is there, the declared default stands in, and then the type's own blank.
+
+A wire that carries nothing is still a wire. A card that needs a value, such as a Set variable, a Dice roller or a passage's countdown, then reads nothing there, not the value typed on it, and Messages notes it ([`W.RT.08`](/reference/diagnostics/#wrt08)). An optional Input field wired straight into one is warned of before the story plays ([`W.GE.21`](/reference/diagnostics/#wge21)).
 
 A default on a `json` or a `map<...>` slot cannot travel, and the app says so when you compile.
 
@@ -131,7 +134,7 @@ A name read by a script must be a name Python can read.
 | Where | Rule |
 | --- | --- |
 | Script node inputs and outputs; a passage's inputs | A letter or an underscore, followed by letters, digits and underscores. Python's own words, such as `class`, are refused, with the reason shown under the field. A board that carries a name Python cannot read reports it. |
-| Output and Input node slots | Read by people; `Your roll` is a valid name. |
+| Output and Input node slots, and a macro's takes and answers | The same rule: a name is how the board refers to a slot, its port and every wire on it. What the reader sees on an Output or Input node is the slot's label, which can say anything, such as `Your roll`. |
 
 ## Macros
 
@@ -226,7 +229,7 @@ The node is made by dropping a state machine file on a board, or by adding the n
 | --- | --- |
 | Script node | References a `.py` file in the project, so one script can serve many nodes. Declares inputs and outputs as rows, a name and a type each, and has a port per name. The *Inputs* and *Outputs* boxes in its editor are buttons that open the ports dialog every other node uses. Values cross as native Python types. Whatever the script assigns to an output name is published on that port. |
 | Output node | Shows its inputs to the reader as a slide with one way on. Slots are typed as a Script node's are and may carry a default. |
-| Input node | Asks the reader for values and hands what was typed on as ports. Its default is filled in for the reader to accept or type over. |
+| Input node | Asks the reader for values and hands what was typed on as ports. Its default is filled in for the reader to accept or type over. Every field must be filled in unless its row in the card's dialog is marked *Optional*; an optional field left empty answers nothing. |
 | Passage | An inline `{{ … }}` span and a fenced ```` ```ripple ```` block. Both are replaced by what they evaluate to when the passage is presented. |
 
 Output and Input are described by double-clicking the card: a name and a type per row.
