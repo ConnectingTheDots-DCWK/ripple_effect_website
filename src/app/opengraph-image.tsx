@@ -50,8 +50,8 @@ export default function OpengraphImage() {
           height: "100%",
           display: "flex",
           position: "relative",
-          background: "#0d0f13",
-          color: "#e8eaef",
+          background: "#1c1915",
+          color: "#f0e8df",
           fontFamily: "sans-serif",
           overflow: "hidden",
         }}
@@ -74,7 +74,7 @@ export default function OpengraphImage() {
               left: 610,
               top: 150,
               borderRadius: 16,
-              border: "1px solid #262a32",
+              border: "1px solid #36322e",
             }}
           />
         )}
@@ -82,7 +82,7 @@ export default function OpengraphImage() {
         {/* A wash under the text, so a busy corner of the board can never sit
             behind a word.
 
-            Nearly opaque rather than opaque: at a flat #0d0f13 it also erased
+            Nearly opaque rather than opaque: at a flat #1c1915 it also erased
             the grid across the left half, which is the half where the grid is
             the only texture there is. At 0.9 the words keep a contrast ratio
             far past anything that matters and the backdrop survives under
@@ -93,7 +93,7 @@ export default function OpengraphImage() {
             inset: 0,
             display: "flex",
             backgroundImage:
-              "linear-gradient(90deg, rgba(13,15,19,0.9) 0%, rgba(13,15,19,0.9) 42%, rgba(13,15,19,0) 64%)",
+              "linear-gradient(90deg, rgba(28,25,21,0.9) 0%, rgba(28,25,21,0.9) 42%, rgba(28,25,21,0) 64%)",
           }}
         />
 
@@ -108,7 +108,7 @@ export default function OpengraphImage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <OgMark size={44} color="#e8eaef" />
+            <OgMark size={44} color="#ee8f63" />
             <span style={{ fontSize: 30, fontWeight: 600, display: "flex" }}>
               {siteConfig.name}
             </span>
@@ -129,7 +129,7 @@ export default function OpengraphImage() {
             <div
               style={{
                 fontSize: 26,
-                color: "#99a0ae",
+                color: "#b6b2ad",
                 lineHeight: 1.35,
                 display: "flex",
               }}
@@ -145,15 +145,15 @@ export default function OpengraphImage() {
               alignItems: "center",
               gap: 14,
               fontSize: 22,
-              color: "#99a0ae",
+              color: "#b6b2ad",
             }}
           >
             <span>Linux</span>
-            <span style={{ color: "#545b69" }}>•</span>
+            <span style={{ color: "#85817c" }}>•</span>
             <span>Windows</span>
-            <span style={{ color: "#545b69" }}>•</span>
+            <span style={{ color: "#85817c" }}>•</span>
             <span>macOS</span>
-            <span style={{ color: "#545b69" }}>•</span>
+            <span style={{ color: "#85817c" }}>•</span>
             <span>Free</span>
           </div>
         </div>

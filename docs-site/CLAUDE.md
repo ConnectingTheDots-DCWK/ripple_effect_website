@@ -101,8 +101,11 @@ correct in both.
 
 Asides are keyed by hue rather than by meaning — note is blue, tip is purple,
 caution is orange, danger is red — so the app's own `AppStatus` colours land on
-them by name. A caution here is the same yellow as a caution in the app's
-messages panel.
+them by name. A caution here is the same amber as a caution in the app's
+messages panel. **Blue and purple are the ink, `--foreground`, not the
+accent.** They pointed at `--primary` and `--brand` while those were the ink;
+since Lamplight made the accent ember, an ember note would spend the chrome's
+one hue on a tinted box, and the accent is a pointer rather than a paint.
 
 **The file is deliberately unlayered.** Starlight's props live in
 `@layer starlight.base`, and unlayered CSS beats layered CSS regardless of
