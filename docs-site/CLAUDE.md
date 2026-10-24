@@ -427,8 +427,8 @@ cropped out of the canvas, at a third of the page's width. No manifest entry
 per card: the brief is the same sentence forty times. **These are not
 captured by hand.** `melos run editor:docs:node-shots` in the app repository
 (`apps/editor/test/tool/generate_node_shots_test.dart`) renders every card the two
-palettes offer through the real `GraphViewer`, in both themes, with the
-machine's fonts loaded, and writes the eighty files here — two per type, and
+palettes offer through the real `GraphViewer`, in both themes, in the
+house faces the app bundles, and writes the files here — two per type, and
 it names any file left over from a type that has gone; rerun it when a card
 changes or one is added, and commit the result on this side. It is on the
 app's release checklist, since a release is when cards have changed.
