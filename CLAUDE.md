@@ -758,6 +758,13 @@ Vercel points at this repository directly rather than at the app repository
 that carries it as a submodule at `website/`, which sidesteps private-submodule
 cloning entirely.
 
+**Nothing deploys on a push.** Every one of the four projects — this one,
+`docs-site`, `legal` and `demo` — carries `"git": { "deploymentEnabled": false }`
+in its own `vercel.json`, because a project reads only the file in its Root
+Directory: no branch, pull request or commit makes a preview or a production
+build. A deploy is `vercel --prod`, run by hand from a checkout linked to the
+project that should go out.
+
 ## The release banner
 
 A bar under the header saying a version is out, for the **three days** after it

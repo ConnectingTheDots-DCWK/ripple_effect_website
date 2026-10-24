@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": false
+  },
   "redirects": [
     {
       "source": "/:path((?!it/|it$|_astro/|pagefind/|overviews/|setup/)(?!.*\\.[A-Za-z0-9]+$).*)",
