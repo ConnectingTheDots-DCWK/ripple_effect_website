@@ -8,6 +8,9 @@ const groups = [
     title: "Product",
     links: [
       { text: "Features", href: "/#features" },
+      { text: "For game developers", href: "/developers" },
+      { text: "For writers", href: "/writers" },
+      { text: "For tabletop", href: "/tabletop" },
       { text: "Download", href: "/download" },
       { text: "Docs", href: siteConfig.links.docs },
       { text: "Pricing", href: "/pricing" },
@@ -119,8 +122,9 @@ export function SiteFooter() {
           </nav>
         ))}
       </div>
-      {/* The notice alone. The Privacy Notice is under Legal, one row up. */}
-      <p className="mx-auto mt-12 max-w-6xl border-t border-border px-4 pt-6 text-center text-xs text-muted-foreground lg:px-8">
+      {/* The notice alone. The Privacy Notice is under Legal, one row up. No
+          rule above it: the footer's own top border is the one line it needs. */}
+      <p className="mx-auto mt-14 max-w-6xl px-4 text-center text-xs text-muted-foreground lg:px-8">
         {siteConfig.copyright}
       </p>
     </footer>

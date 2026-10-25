@@ -5,7 +5,17 @@ import { allArticles } from "@/lib/news";
 import { siteConfig } from "@/lib/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ["", "/download", "/pricing", "/privacy", "/blog", "/news"].map(
+  const pages = [
+    "",
+    "/developers",
+    "/writers",
+    "/tabletop",
+    "/download",
+    "/pricing",
+    "/privacy",
+    "/blog",
+    "/news",
+  ].map(
     (path) => ({
       url: `${siteConfig.url}${path}`,
       changeFrequency: "weekly" as const,

@@ -3,10 +3,9 @@ import { ArrowRightIcon, TriangleAlertIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { HeroDownload } from "@/components/hero-download";
-import { Cover } from "@/components/cover";
+import { Lamp } from "@/components/lamp";
 import { BlurFade } from "@/components/velora/blur-fade";
 import { FlipWords } from "@/components/velora/flip-words";
-import { GridPattern } from "@/components/velora/grid-pattern";
 import { fetchLatestRelease } from "@/lib/releases";
 import { siteConfig } from "@/lib/site-config";
 
@@ -17,25 +16,15 @@ export async function Hero() {
   const latest = await fetchLatestRelease();
 
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 lg:pt-40">
-      {/* Order is the layering: painting, then grid over it, then the content
-          in a `relative` wrapper over both. */}
-      <Cover
-        eager
-        className="inset-x-0 top-0 h-[36rem] [mask-image:linear-gradient(to_bottom,black_0%,black_28%,transparent_94%)] lg:h-[42rem]"
-      />
+    <section className="relative overflow-hidden pt-32 pb-28 lg:pt-40 lg:pb-32">
+      <Lamp />
       {/*
-        * The grid reaches further than it used to — 90% x 80% where it was
-        * 70% x 60%. It has a second job now: the painting is a photograph and
-        * the grid is the thing that says the page is a tool, so the pattern
-        * has to still be legible across the whole of it rather than fading
-        * out a third of the way down and leaving bare picture underneath.
+        * No background, for now. The painting under the hero was tinted to
+        * `--brand`, and under the ember it read as a burning landscape; the
+        * launch video takes this place when it is ready. Until then the
+        * headline sits on the page's own surface, and the page is one surface
+        * from top to bottom.
         */}
-      <GridPattern
-        width={48}
-        height={48}
-        className="fill-transparent stroke-border [mask-image:radial-gradient(ellipse_90%_80%_at_50%_0%,black,transparent)]"
-      />
       <div className="relative mx-auto max-w-6xl px-4 lg:px-8">
         <BlurFade direction="down">
           {/*

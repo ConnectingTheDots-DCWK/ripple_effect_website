@@ -210,7 +210,9 @@ Stated because the template actively invites all four:
 1. **It is not open source.** Ripple Effect is `LicenseRef-Proprietary` and its
    source is not published. `fl_nodes_v2`, the node editor underneath it, *is*
    public and does take pull requests — that is a separate, true, and
-   mentionable fact, and the FAQ makes exactly that distinction.
+   mentionable fact. The FAQ that drew that distinction is gone; the
+   developers page keeps the nearest one, that the bindings are MIT and the
+   engine they carry is not.
 2. **Be exact about signing, which is not the same on every platform.**
    Nothing is signed by an authority a machine already trusts: Windows shows
    SmartScreen once and macOS Gatekeeper blocks the `.dmg` on first launch,
@@ -242,7 +244,7 @@ Stated because the template actively invites all four:
 4. **No invented numbers.** No download counts, no user counts, no stars.
 
 **And one position rather than a prohibition: telemetry.** It ships in **1.5**
-and it is **opt-in**. Everywhere the site speaks of it — the FAQ, the privacy
+and it is **opt-in**. Everywhere the site speaks of it — the privacy
 page, both pricing cards, and the documentation site's *Updates, logs and
 support* and *What the app sends* pages — says the same thing in the same
 tense: anonymous, opt-in, off until switched on, asked once with the complete
@@ -460,10 +462,10 @@ when the post has one, because that is the line a result shows, and
 **Two things are deliberately missing and should stay missing.**
 `aggregateRating` and `review`, because there are none — the same rule as the
 rest of the site's numbers, and inventing them is what got rich results
-restricted in the first place. And `FAQPage`, which `/`'s FAQ section is a
-perfect fit for and which would earn nothing: Google narrowed FAQ rich results
-to well-known government and health sites, so the markup is now weight with no
-result behind it.
+restricted in the first place. And `FAQPage`: the home page had an FAQ it fitted, and the markup would have
+earned nothing — Google narrowed FAQ rich results to well-known government and
+health sites. The FAQ itself is gone since 2026-10-25; everything it answered
+is in the documentation.
 
 ### The blog is linked in both directions, and that is a rule
 
@@ -472,11 +474,12 @@ nothing in it linked back out. Both halves cost something, and the second is
 the one that is easy to forget — a reader who arrives on a post from a search
 has no route to the product unless the post gives them one.
 
-So: `FromTheBlog` puts the two newest posts on the home page, between the FAQ
-and the call to action; the FAQ's open-source answer links to the post that
-expands it; and each post links to `/` and to its sibling. **A new post should
-link outward at least once**, in prose, where it is genuinely useful — not as
-a footer nobody reads.
+**The home page no longer lists the newest posts** (the user's call,
+2026-10-25: the page was carrying too much). The way in from here is the
+navbar's and the footer's *Blog*, which every page carries; the way out is the
+posts' own links, to `/` and to each other. **A new post should link outward at
+least once**, in prose, where it is genuinely useful — not as a footer nobody
+reads.
 
 Links inside a post render as plain `<a>` rather than `next/link`, because
 they come out of Markdown. That is a full navigation rather than a client
@@ -827,74 +830,77 @@ the app's table does, since nothing here reads it. The documentation site's
 `reference/mcp-tools.md` is the third copy, and the one with the arguments
 on it.
 
-## The painting
+## The hero has no background, for now
 
-`public/cover.jpg` is the only photographic thing on the site, and it appears
-twice on the home page: under the hero, fading out before the board
-screenshot, and behind the closing call to action at the bottom. Both go
-through `components/cover.tsx`.
+The painting that sat under the hero and behind the closing call to action is
+retired: it was tinted to `--brand` through a luminosity blend, and once
+`--brand` became Lamplight's ember it read as a burning landscape. Both places
+now sit on the page's own surface. **The launch video is meant to take the
+hero when it is ready**; until then nothing goes there, and the section's
+comment says so. The painting's files — `public/cover.webp`,
+`cover-source.jpg` and `tool/optimize-cover.mjs` (`pnpm images`) — are kept,
+unused, until that is decided; the section below still describes how they were
+made.
 
-**The component owns the tint and the caller owns the placement**, which is
-the same split the app makes between a mechanism and the policy for using it.
-Everything below — the blend, the token it tints to, the isolation, the two
-opacities — is one decision in one file. Where the picture sits, how tall it
-is and how it fades are passed in as `className`, because they are genuinely
-per-section: the hero is anchored to the top of the viewport and has one seam
-to fade across, and a band in the middle of the document has two.
+**What the page has instead is texture and a lamp.** The body carries a static
+paper grain (`--grain` in `globals.css`, a generated 240px tile, walnut specks
+in light and paper specks in dark, a few percent strong) — the page is paper,
+and a card paints its own smoother sheet over it. And the heroes and the
+closing call to action carry `Lamp` (`components/lamp.tsx`): a soft pool of
+warm light that follows the pointer, with the canvas grid showing only inside
+it. It draws nothing on a touch screen or for a reader who asked for less
+motion. The ember in it is at 9%, far under anything that wears the accent:
+it is the lamp, not the pointer the accent rule is about.
 
-**The call to action has no grid over it, deliberately.** In the hero the
-pattern has a second job — the cover is a photograph and the grid is what says
-the page is a tool — and by the time somebody has read the whole page that has
-been said. What is left at the bottom is one picture behind two buttons.
+## The home page, and a page per audience
 
-**Its mask is linear where the grid's are radial, and that was measured.** A
-`radial-gradient(ellipse 85% 75% at 50% 50%)` still has about a third of its
-alpha left where the band ends, because the vertical radius is 75% of the
-height and the edge is only 50% away — so the painting stopped in a hard line
-above the footer. Reaching zero at both seams is the whole requirement there,
-and one axis of a linear gradient says it exactly.
+**The home page says what the app is and what sets it apart; the features are
+on three pages written for the people it is for** (2026-10-25). In order: the
+hero, three cards leading to `/developers`, `/writers` and `/tabletop` — the
+blog card's shape at its old home-page size — a section telling a newcomer what
+kind of tool this is (`sections/purpose.tsx`), the three differentiators
+(`sections/differentiators.tsx`: local, native and fast; scripting and game
+systems; fitting existing pipelines), then the agents, the roadmap and the call
+to action. The FAQ, the newest posts, the version-control section, the use
+cases and the screenshot features are gone. **No section paints a band of its
+own colour**: the page is one surface, and a band read as a layer above or
+below its neighbours.
 
-`loading="eager"` is the hero's and not the other's: one is above the fold and
-one is the last thing on the page. Neither takes `priority`, because that also
-emits a preload and the one image here that deserves the slot is the board
-screenshot.
+The audience pages share `AudienceHero` and `FeatureBlock`
+(`components/feature-block.tsx`; `wide` puts a picture that is only legible
+large under the words). **Each claim on them is lifted from the app's own
+prose**, as everywhere on this site, and each block ends on, or links, the
+documentation page that says the rest.
 
-**The tint is a blend, not a filter.** `mix-blend-mode: luminosity` takes the
-lightness of the image and the hue and saturation of whatever is beneath it,
-so a flat `bg-brand` under it leaves the painting with all of its values and
-exactly one colour. There is no `grayscale()` in front — the blend already
-discards the source's colour, and a filter would cost a raster pass to change
-nothing. The alternative was an SVG `feColorMatrix` duotone, which is more
-precise and would have meant a hand-written matrix per theme, recomputed by
-hand every time the token moved. This one follows the token — which is why,
-when `--brand` became the ink in 1.5, the painting became greyscale with no
-change here, and why it is lamp-lit ember since Lamplight, again with no
-change here.
+**Pictures of the app are mock-ups, not screenshots**, in `components/mock/`:
+`NodeCard` and the rest transcribe `NarrativeNodeCard` and `CardMetrics` from
+the app — the 268px card, the 36px header tinted at 14% of its family's
+colour (`--node-*`, from `NodeAccents`), ports as triangles and dots on the
+edge — set in the app's three faces, loaded by `mock/fonts.ts` for the mock-ups
+only. `Board` measures each `data-port` after layout and draws the wires
+between them, so nothing repeats the card arithmetic. `components/screenshot.tsx`
+is unused since; the captures stay for the social card and the documentation.
 
-It tints to **`--brand`, not `--primary`**. The two are the same ember today,
-but they are different promises: `--primary` is what text and controls are
-drawn in, and `--brand` is the identity, which is what a picture of the
-product's world is tinted to.
+**Code is highlighted by `mock/code.tsx`, not Shiki**, for the one
+`dangerouslySetInnerHTML` rule: a generic tokeniser, coloured with the app's
+own Python editor palette as `--syntax-*`. A diff is the exception and stays
+plain, since its colour is its own.
 
-**`isolate` on the wrapper is load-bearing.** A blend mode composites against
-everything beneath it in its stacking context, which without isolation is the
-page. The wrapper's own `opacity` would establish one anyway, so it is belt
-and braces — but it is what records the intent.
+**The language and package-manager marks are svglogos.dev's** (CC0), copied
+into `public/logos/` beside the agents' and drawn in their own colours through
+`LanguageLogo`; a monochrome mark (Markdown, JSON) is inverted in dark rather
+than left as a hole.
 
-**Two opacities, and light mode's is the lower one**, which is the opposite of
-the first guess. The painting is high key: most of its area is bright sky. On
-the dark ground that reads as a glow and takes `0.18`. On the near-white light
-ground the *dark* parts are what show, against almost nothing, so the same
-value turns the top of the page grey; light gets `0.10`.
-
-The fade is a `mask-image`, not a gradient overlay. An overlay would have to
-be painted in `--background`, and would then be a rectangle of the wrong
-colour the moment anything were ever put behind it.
-
-**The grid was extended to `90% x 80%` from `70% x 60%` at the same time**, and
-that is part of the same change rather than a tidy-up. The grid is the thing
-that says this page belongs to a tool; leave it fading out a third of the way
-down and the rest of the hero is bare picture.
+**Motion is GSAP** (`lib/gsap.ts`, ScrollTrigger and `@gsap/react`), and
+classical: things rise and fade in as they arrive (`Reveal`), wires draw, a
+board zooms out on scroll. **Every animation runs under
+`gsap.matchMedia()` with `motionOK`**, so a reader who asked for less motion
+gets the finished picture. Two traps paid for: a browser that is not painting
+the page — a background tab, a hidden preview pane — stops GSAP's ticker, so an
+animation that looks frozen there is not broken; and a grid holding a mock-up
+needs `grid-cols-1` (a `minmax(0, 1fr)` column), or a wide child — a marquee, a
+long line of code — sizes the column and spills over its neighbour, which is
+the section below's trap in another form.
 
 ## Images: what was measured, and what not to do
 

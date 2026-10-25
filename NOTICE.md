@@ -39,3 +39,12 @@ SOFTWARE.
 Everything else in this repository is © 2026 William Karol Di Cioccio, all
 rights reserved, and is not open source. It is the marketing site for a
 proprietary application.
+
+## SVG Logos
+
+The language and package-manager marks under `public/logos/` — TypeScript, C,
+C++, C#, Dart, Flutter, npm, NuGet, WebAssembly, Python, JSON, Markdown and
+Git — are from [SVG Logos](https://svglogos.dev), released under CC0 1.0. CC0
+asks for nothing; this notice says where they came from. The marks themselves
+remain their owners' trademarks, and are shown only to name the language or
+tool beside them.
