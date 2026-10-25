@@ -61,6 +61,37 @@
   --color-premium: var(--premium);
   --color-premium-foreground: var(--premium-foreground);
 
+  /* The mock-ups of the editor. `NodeAccents` is the five node families, a
+     vocabulary rather than a palette: a card's header is tinted in its
+     family and nothing else on the page wears these. */
+  --color-node-entry: var(--node-entry);
+  --color-node-terminal: var(--node-terminal);
+  --color-node-flow: var(--node-flow);
+  --color-node-prose: var(--node-prose);
+  --color-node-data: var(--node-data);
+  --color-outline: var(--outline);
+  --color-board: var(--board);
+
+  /* Code on the page, in the colours the app's Python editor uses
+     (`PythonPalette`): a keyword, a type or call, a string, a number, a
+     decorator. A comment is the muted ink, as it is there. */
+  --color-syntax-keyword: var(--syntax-keyword);
+  --color-syntax-type: var(--syntax-type);
+  --color-syntax-string: var(--syntax-string);
+  --color-syntax-number: var(--syntax-number);
+  --color-syntax-decorator: var(--syntax-decorator);
+
+  /* `ProseMarks`: the squiggle under a spelling, grammar or style finding. */
+  --color-mark-spelling: var(--mark-spelling);
+  --color-mark-grammar: var(--mark-grammar);
+  --color-mark-style: var(--mark-style);
+
+  /* The app's own faces, loaded by `components/mock/fonts.ts` for the
+     mock-ups only: `font-ui`, `font-prose`, `font-code`. */
+  --font-ui: var(--font-mock-ui);
+  --font-prose: var(--font-mock-prose);
+  --font-code: var(--font-mock-mono);
+
   /* Named by `Marquee` and `OrbitingCircles`; the keyframes are at the foot of
      this file. */
   --animate-marquee: marquee var(--duration, 40s) linear infinite;
@@ -137,6 +168,32 @@
      6.66:1 — so it can fill a button. */
   --premium: #2a6378;
   --premium-foreground: #ffffff;
+
+  /* NodeAccents.light, and the two canvas roles the mock-ups draw with:
+     `outline` is a wire and a port (CanvasTheme), and `--board` is the
+     canvas, a step off the page — halfway from `surface` to `container`. */
+  --node-entry: #357339;
+  --node-terminal: #a13158;
+  --node-flow: #7a3e87;
+  --node-prose: #9d6a0e;
+  --node-data: #2b6c83;
+  --outline: #7c7873;
+  --board: #f1ece7;
+  --syntax-keyword: #71367e;
+  --syntax-type: #255691;
+  --syntax-string: #26652b;
+  --syntax-number: #933d08;
+  --syntax-decorator: #785300;
+  --mark-spelling: #c92e3b;
+  --mark-grammar: #b86b00;
+  --mark-style: #226bc0;
+
+  /* Paper grain: walnut specks, a few percent, on the page and nowhere
+     else. Generated rather than drawn, so it tiles without a seam. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.14 0 0 0 0 0.11 0 0 0 0 0.09 0.32 0 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  /* The ink at the package's own grid strengths. */
+  --grid-line: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --grid-line-major: color-mix(in srgb, var(--foreground) 12%, transparent);
 }
 
 .dark {
@@ -182,6 +239,28 @@
      brand foreground — a pale fill takes dark text. */
   --premium: #82c3d6;
   --premium-foreground: #16130f;
+
+  /* NodeAccents.dark. */
+  --node-entry: #85cc87;
+  --node-terminal: #ee86a3;
+  --node-flow: #d09add;
+  --node-prose: #eec066;
+  --node-data: #77bcd8;
+  --outline: #85817c;
+  --board: #211e1a;
+  --syntax-keyword: #dba9e6;
+  --syntax-type: #97c1f7;
+  --syntax-string: #a4dd98;
+  --syntax-number: #f7a97c;
+  --syntax-decorator: #f2cc7a;
+  --mark-spelling: #f66c6d;
+  --mark-grammar: #f3bd5c;
+  --mark-style: #6fa7ee;
+
+  /* The same grain in paper-coloured specks, for the dark page. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.88 0.16 0 0 0 -0.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grid-line: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --grid-line-major: color-mix(in srgb, var(--foreground) 14%, transparent);
 }
 
 @layer base {
@@ -190,6 +269,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /*
+     * The page is paper, so it has a grain: static, a 240px tile, a few
+     * percent of the ink — felt more than seen. It is the page's own
+     * background, so a card or a panel, which paints its own surface, sits
+     * on the grain as a smoother sheet would.
+     */
+    background-image: var(--grain);
+    background-size: 240px 240px;
   }
   html {
     @apply font-sans scroll-smooth;
@@ -332,4 +419,34 @@
   .animate-orbit {
     animation: none;
   }
+}
+
+/*
+ * The canvas grid: `fl_nodes_v2`'s, a line every 24px and a major one every
+ * fifth, in the ink at the strengths `CanvasTheme` gives them. A background
+ * rather than an SVG pattern so a section of any height carries it for free.
+ */
+@utility canvas-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+}
+
+/*
+ * A path's steps past its first, before JavaScript has read the address:
+ * closed, unless the address names the path. `components/campaign/paths.tsx`
+ * takes over once it has, and renders a closed path's steps not at all.
+ */
+.path-rest {
+  display: none;
+}
+.path:target .path-rest {
+  display: block;
 }
