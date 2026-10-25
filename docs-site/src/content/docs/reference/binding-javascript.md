@@ -3,7 +3,7 @@ title: JavaScript and TypeScript binding
 description: "The JavaScript and TypeScript binding of the Ripple Effect engine: @ripplefx/player and @ripplefx/soundscape on npm, every class, member, option, effect and error."
 ---
 
-The engine's binding for JavaScript and TypeScript is two packages on npm, for a browser page or for Node. [`@ripplefx/player`](https://www.npmjs.com/package/@ripplefx/player) carries the engine as a WebAssembly component, in both variants, and the TypeScript API over it. [`@ripplefx/soundscape`](https://www.npmjs.com/package/@ripplefx/soundscape) is the Web Audio speaker for a campaign's soundscapes, and is optional. Version 1.5.x of each binds Ripple Effect contract 1.5: a package's `MAJOR.MINOR` is the contract, and its `PATCH` is the package's own. The source is public at [ConnectingTheDots-DCWK/ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration).
+The engine's binding for JavaScript and TypeScript is two packages on npm, for a browser page or for Node. [`@ripplefx/player`](https://www.npmjs.com/package/@ripplefx/player) carries the engine as a WebAssembly component, in both variants, and the TypeScript API over it. [`@ripplefx/soundscape`](https://www.npmjs.com/package/@ripplefx/soundscape) is the Web Audio speaker for a campaign's soundscapes, and is optional. Version 1.6.x of each binds Ripple Effect contract 1.6, *Grammar Lich*, and carries the engine's world `ripple:engine@1.6.0`: a package's `MAJOR.MINOR` is the contract, and its `PATCH` is the package's own. The source is public at [ConnectingTheDots-DCWK/ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration).
 
 `@ripplefx/player`'s code is MIT. The engine inside it is under the [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/): free to ship, unmodified in function, as part of your own product. Reproduce the package's `ENGINE-NOTICE` wherever your product lists the third-party software it uses. `@ripplefx/soundscape` carries no engine and is plain MIT.
 
@@ -17,7 +17,7 @@ npm install @ripplefx/player @ripplefx/soundscape   # and the Web Audio speaker
 | Package | Exports | Runs in | Needs |
 | --- | --- | --- | --- |
 | `@ripplefx/player` | `Campaign`, `Session`, `Player`, `SoundscapeDriver`, the effects, the values, the errors | browsers, Node 22.18 or later | nothing else |
-| `@ripplefx/soundscape` | `WebAudioSpeaker`, `amplitude` | browsers (Web Audio) | `@ripplefx/player` |
+| `@ripplefx/soundscape` | `WebAudioSpeaker`, `amplitude` | browsers (Web Audio) | `@ripplefx/player` 1.6, which it peers on |
 
 Both are ES modules. The player ships `dist/`, both engine variants under `generated/`, `LICENSE` and `ENGINE-NOTICE`.
 
@@ -74,7 +74,7 @@ In an engine without Python a Script node reports and a snippet renders a warnin
 | WebKit | Tested, as Chromium, in WebKitGTK. Safari on macOS and iOS is not yet confirmed for the speaker's tracks. |
 | Node 22.18 or later | Tested: every conformance fixture, through `Session` and through `Player`, in both variants. No speaker. |
 
-The fixtures are 24 with Python and 21 without.
+The fixtures are 33 with Python and 27 without.
 
 The engine runs **on the calling thread**. There is no Worker transport: every verb is synchronous, and a Worker would make every verb a promise. A page whose campaign runs heavy scripts can run the binding in a Worker of its own and post the effects across.
 
@@ -157,6 +157,7 @@ static fromFiles(files: BundleFiles, options?: CampaignOptions): Promise<Campaig
 | `boards`, `passages`, `components`, `scripts`, `media`, `machines`, `soundscapes` | `readonly BundleEntry[]` | The bundle's tables. A `BundleEntry` is `{ id, name, path }`, all strings. |
 | `cvars` | `readonly { name: string; type: string; default: RippleValue }[]` | The console variables the campaign declares. |
 | `needs` | `readonly string[]` | What the campaign needs of an engine: `python` when it runs scripts. |
+| `permissions` | `readonly string[]` | What the story reads of the world outside it, `dateTime` and `location`, listed by the compiler. A session asks about each before it begins, unless the host has answered already. Strings rather than `PermissionKind`, because the list is open for appending. |
 
 ## Session
 
@@ -204,11 +205,14 @@ Each defaults to the engine's own.
 
 | Verb | Answers | Notes |
 | --- | --- | --- |
-| `start()` | `Effect[]` | Begins the story, or a resumed one. |
+| `start()` | `Effect[]` | Begins the story, or a resumed one. While a kind in `manifest.permissions` has no answer, the answer is one `permit` effect and nothing else: no page and no callback, until `permit` has answered them all. |
 | `choose(index?: number)` | `Effect[]` | Takes the choice at `index` among those offered. With none, the reader leaves: the passage flows nowhere and the story ends there. |
-| `answer(values?: Answers)` | `Effect[]` | Answers the prompt showing. Values go to the engine exactly as given. With none, the reader leaves, as with `choose()`. |
+| `answer(values?: Answers)` | `Effect[]` | Answers the prompt showing. Values go to the engine exactly as given, keyed by each field's `name`. An optional field left empty is left out or `null`; a required one is not submitted empty, which is the host's rule to keep. A field with `options` is answered with the picked IDs: a string, or a list of them for a `…List`. With none, the reader leaves, as with `choose()`. |
 | `elapsed()` | `Effect[]` | Says the wait a `hold` asked for is over. A `Player` calls it for you. |
-| `setLocale(locale: string)` | `Effect[]` | Reads on in another language; the passage showing is shown again in it. |
+| `beginCountdown()` | `Effect[]` | Says the showing passage's countdown begins: its `timer.afterMs` has passed on your clock. Nothing moves; the answer is only the `countdown.started` callback, if an author declared one. A second call answers nothing. A passage with no timer is refused with `no-countdown`. A `Player` calls it for you. |
+| `expire()` | `Effect[]` | Says the countdown ran out: the passage's default is taken, as `choose(timer.default)` would, after a `countdown.expired` callback. Before `beginCountdown` it is refused with `countdown-not-begun`. A `Player` calls it for you. |
+| `permit(kind: PermissionKind, granted: boolean)` | `Effect[]` | The reader's answer about one kind, at any time, before `start` included, and then nobody is asked. On a `permit` turn the answer to the last kind unanswered begins the story, and this answers everything up to its first real turn. Not part of a save: answer a resumed session again. |
+| `setLocale(locale: string)` | `Effect[]` | Reads on in another language. The passage or the prompt showing is shown again in it, a prompt's labels, placeholders and options reworded and its field names and option IDs kept, and a countdown keeps running: it is the same visit. |
 | `restart()` | `Effect[]` | Starts over, forgetting every entity and keeping the language. |
 | `stop()` | `Effect[]` | Ends the session for good. |
 | `pause()` | `Paused` | Puts the story down and ends the session, answering a save. Only on a passage or a prompt: anywhere else nothing stops, and there is no save and no effect. |
@@ -218,6 +222,24 @@ Each defaults to the engine's own.
 | `resetAllCvars()` | `Effect[]` | Puts every console variable back. |
 | `removeEntity(key)` | `{ removed: boolean; effects: Effect[] }` | Forgets the entity under `key`. |
 | `consoleFeed(code: string)` | `{ result: PythonResult; effects: Effect[] }` | One line of Python against the live story: its entities, its variables, its sounds. |
+
+### Reading the world
+
+What the story may read of the clock and the reader's position is handed in; the engine reads no clock and touches no sensor of its own. None of these steps the story, and none answers effects.
+
+| Member | Signature | Does |
+| --- | --- | --- |
+| `setNow` | `(now?: Moment) => void` | What time it is, before every verb that can step, from a host the reader allowed `dateTime`. `undefined` is no clock. Within one verb time does not move. A `Player` calls it for you. |
+| `setPosition` | `(fix?: Position) => void` | The host's last position fix, or `undefined` for none. Refused with `not-permitted` once the reader has said no to `location`. A fix given before the answer is kept and read only if the answer is yes, so a host that fetches one on a yes hands it over before the `permit` that says so. |
+| `setStandIn` | `(kind: PermissionKind, typed?: string, localOffsetMinutes?: number) => void` | What the reader would rather the story believed, as they typed it: an ISO 8601 time for `dateTime`, `"lat, lon"` or a place's name for `location`. It answers whenever the real value is missing. `undefined` takes it away. A time typed without an offset is read at `localOffsetMinutes`, this machine's own on that date unless given. One that does not read is refused with `stand-in`, and the one before stays. |
+
+| Export | Kind | What it is |
+| --- | --- | --- |
+| `PermissionKind` | type | `'dateTime' \| 'location'`: the host API's spelling, not the WebAssembly world's `date-time`. |
+| `Moment` | interface | `{ utcMs: number; offsetMinutes: number }`: milliseconds since the epoch, and the offset in minutes the reader's wall clock is at, east positive, so Rome in October is `120`. |
+| `momentOf` | `(date?: Date) => Moment` | `date` with this machine's offset at that instant; now when no date is given. |
+| `Position` | interface | A fix shaped after the web's `GeolocationPosition`, every part optional: `label?: string`, `latitude?: number`, `longitude?: number`, `accuracy?: number` (metres), `when?: Moment`. A place's name with no coordinates is a fix too. |
+| `localOffsetFor` | `(typed: string) => number` | The offset this machine's clock is at on the date a reader typed, which is what a stand-in written without one is read at. The offset now, for text that names no date. |
 
 A refused verb throws `HostError` and nothing moves. `Paused` is `{ save?: string; effects: Effect[] }`. `Answers` is a `Map` or a plain object of field name to value; a nested plain object is taken as a map.
 
@@ -278,6 +300,8 @@ An `Effect` is a plain object tagged on `kind`, so a `switch` over `effect.kind`
 | `ended` | `title?: string`, `ranOut: boolean` | The story is over as the author wrote it, or ran out of road (`ranOut`). A turn. |
 | `failed` | `message: string`, `node?: string` | The story stopped on an error. `message` is English, for showing and never for parsing. A turn. |
 | `stopped` | none | The session ended, after `stop()` or `pause()`. A turn. |
+| `permit` | `kinds: readonly PermissionKind[]` | The story has not begun: it reads these of the world outside it, and nobody has answered. Answer each with `permit`; the answer to the last begins the story. A turn. |
+| `notice` | `notice: Notice` | A read of the clock or the position did not get the real value. Said once per kind and outcome in a playthrough, before the turn of the read. |
 | `jumped` | `board: number`, `node?: string` | The story moved to another board. `board` indexes `manifest.boards`; it is not the catalog id. |
 | `ambience` | `ambience: Ambience \| null` | The soundscape in force changed. `null` is silence. |
 | `audio` | `command: AudioCommand` | What a speaker is told. See [Sound](#sound). |
@@ -285,7 +309,7 @@ An `Effect` is a plain object tagged on `kind`, so a `switch` over `effect.kind`
 | `callback` | `event: CallbackEvent` | A named callback the author declared. See [Named callbacks](#named-callbacks). |
 | `trace` | `event: RunEvent` | Only with `trace` on. The engine's own `{ tag, val }` shape, kebab-case tags and all, unmapped. |
 
-The six turns (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) are the type `Turn`; one is always the last effect of a batch. `isTurn(effect: Effect): effect is Turn` tells them apart.
+The seven turns (`show`, `ask`, `permit`, `hold`, `ended`, `failed`, `stopped`) are the type `Turn`; one is always the last effect of a batch. `isTurn(effect: Effect): effect is Turn` tells them apart.
 
 ### Records
 
@@ -303,6 +327,18 @@ The six turns (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) are the type
 | `untranslated` | `string`, optional | The language the passage has no text in, when that is why it is empty. |
 | `soundscape` | `Soundscape`, optional | The soundscape the passage plays. |
 | `silence` | `boolean` | The passage asks for silence. |
+| `timer` | `ChoiceTimer`, optional | The passage's countdown; absent for one that waits for ever. |
+
+#### `ChoiceTimer`
+
+A passage's countdown. The engine keeps no time for it: a host waits `afterMs`, calls `beginCountdown`, waits `timeoutMs` and calls `expire`. A `Player` does all of that itself.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `afterMs` | `number` | How long before the countdown begins, in milliseconds; zero is at once. |
+| `timeoutMs` | `number` | How long it runs once begun, in milliseconds; never zero. |
+| `visible` | `boolean` | Whether the author meant the reader to see it count. |
+| `default` | `number` | The index into `choices` taken when it runs out. |
 
 #### `Choice`
 
@@ -319,9 +355,27 @@ The six turns (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) are the type
 | `Prompt.node` | `string` | |
 | `Prompt.title` | `string` | |
 | `Prompt.fields` | `readonly PromptField[]` | |
-| `PromptField.name` | `string` | The key to answer it under. |
+| `PromptField.name` | `string` | The key to answer it under: an ID, the same in every language. |
 | `PromptField.type` | `string` | The field's type. |
-| `PromptField.default` | `RippleValue` | |
+| `PromptField.default` | `RippleValue` | What the control is filled in with, and the answer if nobody edits it. Not a placeholder. |
+| `PromptField.label` | `string` | What the reader is shown, in the language being read: `name` where the author wrote nothing. |
+| `PromptField.placeholder` | `string` | The hint drawn while the field is empty; empty for none. Never the answer. |
+| `PromptField.optional` | `boolean` | Whether the reader may leave it empty, which answers `null`. A field that is not optional is required: do not submit it empty. |
+| `PromptField.options` | `readonly PromptOption[]` | The fixed answers to pick from, in order: one pick for a scalar type, any number for a `…List`. Empty for a field the reader types into. Answered with the picked options' `id`s, never their labels or values. |
+| `PromptOption.id` | `string` | What a host answers with; the same in every language. |
+| `PromptOption.label` | `string` | What the reader is shown, in the language being read. |
+| `PromptOption.value` | `RippleValue` | What the story is handed, of the field's type. |
+
+#### `Notice`
+
+A read of the clock or the position that did not get the real value.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `code` | `string` | The playthrough code, its letter the severity: `I.RT.05` a stand-in answered, `W.RT.06` the read was refused, `I.RT.07` the host had nothing to give. |
+| `kind` | `PermissionKind` | |
+| `node` | `string`, optional | The node whose read it was. |
+| `message` | `string` | The engine's English sentence, for showing and never for parsing. |
 
 #### `Ambience`
 
@@ -382,7 +436,7 @@ Every time is in milliseconds.
 | `from`, `to` | `RippleValue`, optional | |
 | `index` | `number`, optional | |
 
-`CallbackEventName` is one of `story.started`, `board.entered`, `soundscape.changed`, `passage.shown`, `choice.taken`, `delay.started`, `delay.elapsed`, `story.ended`, `story.failed`, `cvar.changed`, `entity.spawned`, `entity.removed`, `entity.renamed`, `entity.field.changed`, `machine.state.entered`, `node.entered`, `node.exited`, `node.failed`. `CallbackKind` is the same set as the engine's WebAssembly interface spells it, with dashes (`cvar-changed`).
+`CallbackEventName` is one of `story.started`, `board.entered`, `soundscape.changed`, `passage.shown`, `choice.taken`, `delay.started`, `delay.elapsed`, `story.ended`, `story.failed`, `cvar.changed`, `entity.spawned`, `entity.removed`, `entity.renamed`, `entity.field.changed`, `machine.state.entered`, `node.entered`, `node.exited`, `node.failed`, `countdown.started`, `countdown.expired`. `CallbackKind` is the same set as the engine's WebAssembly interface spells it, with dashes (`cvar-changed`).
 
 #### `AudioCommand`
 
@@ -433,7 +487,7 @@ Int and Float are different types and stay different: `7n` is an Int and `7` a F
 
 ## Player
 
-The loop over a session: it delivers every effect in order, keeps the turn the last one named, waits out a `hold`, applies the story's sound and dispatches named callbacks.
+The loop over a session: it delivers every effect in order, keeps the turn the last one named, waits out a `hold`, runs a passage's countdown, hands the story the time once the reader has allowed it, applies the story's sound and dispatches named callbacks.
 
 ```ts
 new Player(session: Session, handlers: PlayerHandlers)
@@ -444,8 +498,13 @@ new Player(session: Session, handlers: PlayerHandlers)
 | Handler | Type | Meaning |
 | --- | --- | --- |
 | `onEffect` | `(effect: Effect) => void` | Required. Every effect, in the order the engine produced it. |
-| `onError` | `(error: unknown) => void` | An error from a verb the player made by itself (the `elapsed()` after a hold), or thrown by a handler while a batch was being delivered. **Without it, a failure after a hold is an uncaught exception** thrown from a timer, and a handler's error goes to `reportError`, or `console.error` where there is none. |
+| `onError` | `(error: unknown) => void` | An error from a verb the player made by itself (the `elapsed()` after a hold, a countdown's `beginCountdown()` and `expire()`), or thrown by a handler while a batch was being delivered. **Without it, a failure after a hold is an uncaught exception** thrown from a timer, and a handler's error goes to `reportError`, or `console.error` where there is none. |
 | `audio` | `SoundscapeDriver` | Where the story's sound goes. Every `audio` effect is applied to it as well as handed to `onEffect`. Without one, nothing is heard. |
+| `now` | `() => Moment \| undefined` | What time it is, for the story: read before every verb once the reader has allowed `dateTime` through `permit`, and never before. `momentOf` unless given; a test passes a fixed instant, and `undefined` is no clock. |
+| `countdowns` | `boolean` | Whether the player runs a passage's countdown by itself. On unless `false`. **Off for a host whose clock does not wait**, a test or an agent walking every branch, where a countdown would only ever take the default; off is also how a host honours a reader who asked for no time limits (WCAG 2.2.1). The host then calls `beginCountdown` and `expire` where it means them. |
+| `onCountdown` | `(countdown: Countdown \| undefined) => void` | Where the showing passage's countdown stands, for drawing: waiting out its `afterMs`, then begun, and `undefined` once there is none, because the reader chose, it ran out or the story moved. A change of language says nothing: it is the same visit and the same countdown. |
+
+`Countdown` is `{ timer: ChoiceTimer; begun: boolean }`: `begun` is `false` while it waits out `timer.afterMs` and `true` once it runs, for `timer.timeoutMs`.
 
 ### Members
 
@@ -453,17 +512,23 @@ new Player(session: Session, handlers: PlayerHandlers)
 | --- | --- | --- |
 | `session` | `Session` | The session underneath, for what the player does not wrap: the state readers, `checkpoint`, cvars, entities. **A verb called on it goes round the player**: a pending hold is not cancelled and may wake a later turn, and nothing it answers reaches `onEffect` or the sound. |
 | `handlers` | `PlayerHandlers` | As given. |
-| `turn` | `Turn \| undefined` | The last passage, prompt, wait or ending delivered. |
+| `turn` | `Turn \| undefined` | The last passage, prompt, question, wait or ending delivered; once `permit` has answered some of a `permit` turn's kinds, that turn less them, so a host drawing from it asks only what is left. |
+| `countdown` | `Countdown \| undefined` | Where the showing passage's countdown stands, or `undefined` for none running. |
 | `start()` | `void` | `session.start()`, delivered. |
 | `choose(index?)` | `void` | `session.choose(index)`, delivered. |
 | `answer(values?)` | `void` | `session.answer(values)`, delivered. |
-| `setLocale(locale)` | `void` | `session.setLocale(locale)`, delivered. |
+| `setLocale(locale)` | `void` | `session.setLocale(locale)`, delivered. A pending wait or countdown runs on: it is the same visit. |
+| `permit(kind, granted)` | `void` | `session.permit(kind, granted)`, delivered, after noting whether `dateTime` may be read. A pending wait or countdown runs on: an answer moves nothing. |
+| `setStandIn(kind, typed?, localOffsetMinutes?)` | `void` | `session.setStandIn`. One that does not read throws `HostError`, and the one before stays. |
+| `setPosition(fix?)` | `void` | `session.setPosition`. Throws `HostError` once the reader has said no to `location`. |
+| `beginCountdown()` | `void` | `session.beginCountdown()`, delivered, for a host that runs countdowns itself (`countdowns: false`). With `countdowns` on, the player calls it when the time comes; calling it takes the countdown over. |
+| `expire()` | `void` | `session.expire()`, delivered: the countdown ran out, and its default is taken. |
 | `restart()` | `void` | `session.restart()`, delivered. |
 | `stop()` | `void` | `session.stop()`, delivered. |
 | `pause()` | `string \| undefined` | `session.pause()`: delivers its effects and answers the save, or `undefined` and nothing stopped unless the story is on a passage or a prompt. Still answers after `dispose()`, so a page can save on its way out. Not `SoundscapeDriver.pause`. |
 | `consoleFeed(code)` | `PythonResult` | `session.consoleFeed(code)`; what it led to is delivered like any verb's effects. |
 | `onCallback`, `onAnyCallback`, `clearCallbacks()`, `callbackMisses` | | See [Named callbacks](#named-callbacks). |
-| `dispose()` | `void` | Stops waiting on any hold and delivers nothing more. After it, `start`, `choose`, `answer`, `setLocale`, `restart` and `stop` do nothing at all, and `pause` still answers a save. |
+| `dispose()` | `void` | Stops waiting on any hold or countdown and delivers nothing more. After it, every verb does nothing at all, and `pause` still answers a save. |
 
 A verb on the player throws whatever the session's verb throws (`HostError`, `EngineTrap`), to you.
 
@@ -479,7 +544,15 @@ A handler that throws is reported, and the rest of the batch still arrives. A ha
 
 ### Holds
 
-When the last effect of a batch is a `hold`, the player sets a timer for `ms` and then calls `session.elapsed()` and delivers what it answers. Any verb called while the hold is pending cancels the timer first, so a restart during a pause in the story does not wake the story a moment later. An error from that `elapsed()` goes to `onError`.
+When the last effect of a batch is a `hold`, the player sets a timer for `ms` and then calls `session.elapsed()` and delivers what it answers. A verb the session answered while the hold is pending cancels the timer, so a restart during a pause in the story does not wake the story a moment later. A verb the session refused moved nothing and cancels nothing, and `setLocale` and `permit` never cancel a wait, nor does a `pause` anywhere but a passage or a prompt, where nothing stopped. An error from that `elapsed()` goes to `onError`.
+
+### Countdowns
+
+When the last effect of a batch is a passage with a `timer`, and `countdowns` is not `false`, the player waits `afterMs`, calls `session.beginCountdown()`, waits `timeoutMs`, calls `session.expire()`, and delivers what each answers, telling `onCountdown` where it stands at each step. It drops both waits the moment the story moves, under the same rule as a hold: not for a verb the session refused, and not for a change of language, which re-shows the same visit. An error from either verb goes to `onError`.
+
+### The clock
+
+Once the reader has allowed `dateTime` through `player.permit`, every verb the player makes is preceded by `session.setNow(now())`, with the `now` handler or `momentOf`; never before. On a bare `Session`, call `setNow(momentOf())` before each verb yourself.
 
 ## Named callbacks
 
@@ -630,7 +703,7 @@ Every error the package throws is a `RippleError`, and each is a class you tell 
 | `BundleError` | `Campaign.load`, `Campaign.fromFiles`, `campaign.soundscape`, `Session.create` | `failure: BundleFailure` | yes: a bundle that will not open, or one from a newer engine |
 | `NeedsPython` | `Campaign.load`, `Campaign.fromFiles` with `python: false` | none | yes, by your choice |
 | `ResumeError` | `Session.resume` | `failure: ResumeFailure` | yes: a save that no longer fits the campaign |
-| `HostError` | any session verb | `failure: HostFailure` | two kinds only (below) |
+| `HostError` | any session verb, `setPosition`, `setStandIn` | `failure: HostFailure` | three kinds only (below) |
 | `ReentrantVerb` | a `Player` verb called while it delivers a batch | none | no: a bug |
 | `EngineTrap` | any call into the engine after it panicked | `cause` | yes, and rare |
 
@@ -657,10 +730,14 @@ A refused verb leaves the story where it was.
 | --- | --- | --- | --- |
 | `choice-spent` | `port` | A choice drawn as unavailable was taken. | yes: handle it |
 | `unknown-locale` | `locale` | A language the campaign was not written in. | yes: handle it |
-| `wrong-turn` | `asked`, `answered` | A verb that does not fit the turn. `asked` is `present`, `ask`, `wait`, `ended`, `failed` or `stopped`; `answered` is `choose`, `answer` or `elapsed`. | no: a bug |
+| `stand-in` | `permission`, `reason` | A stand-in that does not read as a time or a place, and the engine's English why. | yes: handle it |
+| `wrong-turn` | `asked`, `answered` | A verb that does not fit the turn. `asked` is `present`, `ask`, `wait`, `ended`, `failed`, `stopped` or `permit`; `answered` is `choose`, `answer`, `elapsed`, `begin-countdown` or `expire`. | no: a bug |
 | `no-such-choice` | `offered`, `chosen` | An index past the choices offered. | no: a bug |
 | `stopped` | none | The session is stopped. | no: a bug |
 | `nothing-asked` | none | The story is not waiting for anything. | no: a bug |
+| `not-permitted` | `permission` | A position handed in for a kind the reader has said no to. | no: a bug |
+| `no-countdown` | none | `beginCountdown` or `expire` on a passage with no countdown. | no: a bug |
+| `countdown-not-begun` | none | `expire` before `beginCountdown`. | no: a bug |
 
 ### `EngineTrap`
 
@@ -671,11 +748,11 @@ The engine panicked. The campaign's instance is poisoned: every later call on th
 - **Every verb is synchronous** and runs on the calling thread. Nothing in `Session` returns a promise; only `Campaign.load`, `Campaign.fromFiles`, `Speaker.voice`, `WebAudioSpeaker.unlock` and `WebAudioSpeaker.close` do.
 - **A passage costs microseconds.** A Script node runs under its deadline (`scriptLimits.deadlineMs`), and the page does not paint while it runs.
 - **One queue, in call order.** Calls on a session are made one after another; a `Player` is that queue, and refuses a verb from inside its own delivery with `ReentrantVerb`.
-- **The timers** are the `Player`'s, for a hold, and the `SoundscapeDriver`'s, ticking every `tickMs` while anything sounds and stopping when it is idle or paused.
+- **The timers** are the `Player`'s, for a hold and a countdown, and the `SoundscapeDriver`'s, ticking every `tickMs` while anything sounds and stopping when it is idle or paused.
 
 | Object | Lets go with |
 | --- | --- |
-| `Player` | `dispose()`: no more holds, no more deliveries. |
+| `Player` | `dispose()`: no more holds or countdowns, no more deliveries. |
 | `SoundscapeDriver` | `dispose()`: cuts the sound and stops every voice. |
 | `WebAudioSpeaker` | `close()`: closes its `AudioContext`. |
 | `Session` | `stop()` ends it. It has no `dispose`. |
@@ -683,7 +760,7 @@ The engine panicked. The campaign's instance is poisoned: every later call on th
 
 ## A complete host
 
-A page with a `#stage` element, a `#begin` button and a `#locale` select, rendering Markdown with `marked` and sanitising with `DOMPurify`. The callback names (`chapterTwo`, `goldChanged`, `skipAhead`) are the author's, agreed with you.
+A page with a `#stage` element, a `#begin` button and a `#locale` select, rendering Markdown with `marked` and sanitising with `DOMPurify`. It asks before a story reads the clock or the place, and leaves the countdowns to the player. The callback names (`chapterTwo`, `goldChanged`, `skipAhead`) are the author's, agreed with you.
 
 ```ts
 import {
@@ -693,9 +770,12 @@ import {
   HostError,
   LoadError,
   NeedsPython,
+  momentOf,
   type Passage,
+  type PermissionKind,
   Player,
   type Prompt,
+  type PromptField,
   type RippleValue,
   ResumeError,
   resolveLink,
@@ -773,34 +853,67 @@ function showPassage(passage: Passage): void {
   });
 }
 
+// One field's control, and how to read it: undefined is left empty.
+function control(field: PromptField): [HTMLElement, () => RippleValue | undefined] {
+  if (field.options.length > 0) {
+    // A pick, answered with the options' ids and never their words.
+    const select = el('select');
+    select.multiple = field.type.endsWith('List');
+    if (field.optional && !select.multiple) select.append(new Option('—', ''));
+    for (const option of field.options) select.append(new Option(option.label, option.id));
+    select.required = !field.optional;
+    return [
+      select,
+      () => {
+        const picked = [...select.selectedOptions].map((option) => option.value).filter(Boolean);
+        if (picked.length === 0) return undefined;
+        return select.multiple ? picked : picked[0];
+      },
+    ];
+  }
+  const input = el('input');
+  input.placeholder = field.placeholder; // a hint, never the answer
+  if (field.type === 'bool') {
+    input.type = 'checkbox';
+    input.checked = field.default === true;
+    return [input, () => input.checked];
+  }
+  if (field.type === 'number') {
+    input.type = 'number';
+    input.step = 'any';
+  }
+  if (field.default !== null && typeof field.default !== 'object') {
+    input.value = String(field.default); // the answer if nobody edits it
+  }
+  input.required = !field.optional; // a required field is not submitted empty
+  return [
+    input,
+    () =>
+      input.value.trim() === ''
+        ? undefined
+        : field.type === 'number'
+          ? Number(input.value)
+          : input.value,
+  ];
+}
+
 function showPrompt(prompt: Prompt): void {
   const form = el('form');
-  for (const field of prompt.fields) {
-    const input = el('input');
-    input.name = field.name;
-    if (field.type === 'bool') input.type = 'checkbox';
-    else if (field.type === 'int' || field.type === 'float') input.type = 'number';
-    if (field.default !== null && typeof field.default !== 'object') {
-      input.value = String(field.default);
-    }
-    const label = el('label', field.name);
+  const reads = prompt.fields.map((field) => {
+    // The reader's words for the field; its name is the key the answer goes under.
+    const label = el('label', field.optional ? `${field.label} (optional)` : field.label);
+    const [input, read] = control(field);
     label.append(input);
     form.append(label);
-  }
+    return [field, read] as const;
+  });
   form.append(el('button', 'Continue'));
   form.onsubmit = (event) => {
     event.preventDefault();
     const values: Record<string, RippleValue> = {};
-    for (const field of prompt.fields) {
-      const input = form.elements.namedItem(field.name) as HTMLInputElement;
-      values[field.name] =
-        field.type === 'bool'
-          ? input.checked
-          : field.type === 'int'
-            ? BigInt(Math.trunc(Number(input.value || 0))) // an Int is a bigint
-            : field.type === 'float'
-              ? Number(input.value || 0)
-              : input.value;
+    for (const [field, read] of reads) {
+      const value = read();
+      if (value !== undefined) values[field.name] = value; // an optional field left out is skipped
     }
     try {
       player?.answer(values);
@@ -809,6 +922,60 @@ function showPrompt(prompt: Prompt): void {
     }
   };
   stage.replaceChildren(el('h2', prompt.title), form);
+}
+
+const QUESTIONS: Record<PermissionKind, string> = {
+  dateTime: 'This story would like to know the date and time.',
+  location: 'This story would like to know where you are.',
+};
+
+// Before the story begins, a kind at a time. A reader who says no may give
+// a stand-in: what the story should believe instead.
+function showPermit(kinds: readonly PermissionKind[]): void {
+  stage.replaceChildren(el('h2', 'Before the story begins'));
+  for (const kind of kinds) {
+    const row = el('div');
+    const standIn = el('input');
+    standIn.placeholder = kind === 'dateTime' ? '2026-10-31 23:00' : 'Rome, or 41.9, 12.5';
+    const answered = (granted: boolean) => {
+      row.remove();
+      player?.permit(kind, granted); // the answer to the last kind begins the story
+    };
+    const allow = el('button', 'Allow');
+    allow.onclick = () => {
+      if (kind !== 'location' || !navigator.geolocation) return answered(true);
+      // Hand the fix over before the yes that begins the story, or its first page reads nothing.
+      navigator.geolocation.getCurrentPosition(
+        (fix) => {
+          player?.setPosition({
+            latitude: fix.coords.latitude,
+            longitude: fix.coords.longitude,
+            accuracy: fix.coords.accuracy,
+            when: momentOf(new Date(fix.timestamp)),
+          });
+          answered(true);
+        },
+        () => answered(true),
+      );
+    };
+    const refuse = el('button', "Don't allow");
+    refuse.onclick = () => {
+      try {
+        player?.setStandIn(kind, standIn.value.trim() || undefined);
+      } catch (error) {
+        // A stand-in that does not read is refused, and the one before stays.
+        if (error instanceof HostError && error.failure.kind === 'stand-in') {
+          standIn.setCustomValidity(error.failure.reason);
+          standIn.reportValidity();
+          return;
+        }
+        throw error;
+      }
+      answered(false);
+    };
+    row.append(el('p', QUESTIONS[kind]), allow, refuse, standIn);
+    stage.append(row);
+  }
 }
 
 function showHold(ms: number): void {
@@ -881,6 +1048,12 @@ function onEffect(effect: Effect): void {
     case 'ask':
       showPrompt(effect.prompt);
       queueMicrotask(checkpoint);
+      break;
+    case 'permit':
+      showPermit(effect.kinds); // nothing else happens until each kind is answered
+      break;
+    case 'notice':
+      console.info(effect.notice.message); // a read that got a stand-in, a refusal or nothing
       break;
     case 'hold':
       showHold(effect.ms);

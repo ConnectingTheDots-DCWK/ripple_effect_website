@@ -53,6 +53,8 @@ La scheda risponde nella lingua del lettore quando il flusso la raggiunge. Dove 
 
 **Get locale**, nello stesso gruppo, dice in quale lingua sta leggendo il lettore: il suo id, la lingua e la regione, il nome, il sistema di misura della regione e la moneta che usa. Fai una ramificazione su di essa per dire a un lettore negli Stati Uniti qualcosa di diverso da un lettore in Italia.
 
+Per dare una quantità nelle unità di misura della regione di chi legge, usa una scheda **Convert**, sotto Math: scrivi la quantità, come `12 km`, e scegli *Sistema di chi legge* come unità di arrivo. Chi legge negli Stati Uniti vede miglia, chi legge in Italia chilometri. Quale regione misura in che modo è in [Unità di misura](/it/reference/units/).
+
 Un valore resta nella lingua in cui è stato letto. Un lettore che cambia lingua a metà storia riceve la nuova lingua la volta successiva in cui il flusso raggiunge la scheda.
 
 ### Scrivere un plurale in ogni lingua
@@ -81,4 +83,5 @@ Una riga senza etichetta nella lingua del lettore mostra quella della storia, e 
 - [Passaggi e traduzioni](/it/explanation/passages-and-translations/)
 - [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/)
 - [File del progetto e cartella .ripple](/it/reference/project-files/)
+- [Unità di misura](/it/reference/units/)
 - [Come scrivere un passaggio](/it/how-to/write-a-passage/)

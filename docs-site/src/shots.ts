@@ -164,6 +164,13 @@ export const shots = {
     alt: 'The reading-time row under a passage, showing the word count, the pace and the estimate',
     themes: 'both',
   },
+  dictation: {
+    slug: 'dictation',
+    brief:
+      'A passage open in its editor with dictation on and the English model downloaded: the microphone button red and glowing in the text pane while a sentence is being spoken, the words already typed at the cursor, and the microphone glyph on the app bar.',
+    alt: 'A passage being dictated: the red microphone glows in the editor and the words appear at the cursor',
+    themes: 'both',
+  },
 
   // --- Components -----------------------------------------------------------
   entitiesPanel: {

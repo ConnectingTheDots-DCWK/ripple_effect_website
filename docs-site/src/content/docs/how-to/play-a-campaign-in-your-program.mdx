@@ -1,6 +1,6 @@
 ---
 title: How to play a campaign in your own program
-description: Export a campaign, add the engine's binding for your language, and play the story with its choices, forms, waits, callbacks, sound and saves.
+description: Export a campaign, add the engine's binding for your language, and play the story with its choices, forms, waits, countdowns, permissions, callbacks, sound and saves.
 ---
 
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
@@ -26,7 +26,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    FetchContent_Declare(
        ripple_effect
        GIT_REPOSITORY https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration
-       GIT_TAG v1.5.2)
+       GIT_TAG v1.6.0)
    FetchContent_MakeAvailable(ripple_effect)
    target_link_libraries(my_game PRIVATE Ripple::cpp)
    ```
@@ -74,7 +74,7 @@ These steps take a story from the editor into a program of yours: a game, an app
 
    The engine without Python refuses a campaign that needs it when the campaign is opened.
 
-4. **Open the campaign, make a session, and wrap it in a player.** Choose the seed yourself: the same seed and the same answers play the same story.
+4. **Open the campaign, make a session, and wrap it in a player.** Choose the seed yourself: the same seed and the same answers play the same story. Give the player your clock too, for a story that reads the time: it hands the story the time only once the reader has allowed it.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -85,7 +85,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    const player = new Player(campaign.session({ seed: BigInt(Date.now()) }), {
      onEffect: draw,                       // step 5
      onError: (error) => console.error(error),
-   });
+   });                                     // the Player reads this machine's clock by itself
    ```
    </TabItem>
    <TabItem label="C++">
@@ -100,6 +100,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    ripple::PlayerHandlers handlers;
    handlers.on_effect = [&](const ripple::Effect& effect) { draw(effect); };   // step 5
    handlers.on_error = [](const ripple::Failure& failure) { log(failure.message); };
+   handlers.moment = [] { return std::optional<ripple::Moment>(ripple::local_moment()); };
    ripple::Player player(ripple::Session::create(campaign, config), handlers);
    ```
    </TabItem>
@@ -113,6 +114,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    {
        OnEffect = Draw,                                     // step 5
        OnError = error => Log(error.Message),
+       Now = Moment.Now,                                    // the time, for a story that may read it
    });
    ```
    </TabItem>
@@ -128,6 +130,7 @@ These steps take a story from the editor into a program of yours: a game, an app
      ),
      onEffect: draw,                                      // step 5
      onError: (error, stack) => log('$error'),
+     wallClock: Moment.now,                               // the time, for a story that may read it
    );
    ```
    </TabItem>
@@ -135,7 +138,7 @@ These steps take a story from the editor into a program of yours: a game, an app
 
    A program that packs its assets its own way opens the campaign from its files in memory instead: `Campaign.fromFiles`, `Campaign::open_files`, `Campaign.OpenFiles` or `Campaign.openFiles`.
 
-5. **Draw the turn.** Every effect reaches your handler in order. The ones that need drawing are a passage (`show`), a form (`ask`) and an ending (`ended`, `failed`, `stopped`). Draw a choice that is not available greyed, and do not let it be pressed.
+5. **Draw the turn.** Every effect reaches your handler in order. The ones that need drawing are a passage (`show`), a form (`ask`), the question a story asks before it reads the clock or the reader's position (`permit`, step 6) and an ending (`ended`, `failed`, `stopped`). Draw a choice that is not available greyed, and do not let it be pressed.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -144,6 +147,7 @@ These steps take a story from the editor into a program of yours: a game, an app
      switch (effect.kind) {
        case 'show':  showPassage(effect.passage); break;   // passage.text, passage.choices[i].available
        case 'ask':   showForm(effect.prompt); break;
+       case 'permit': askPermission(effect.kinds); break;   // step 6
        case 'ended': showEnding(effect.title); break;
        case 'failed': showProblem(effect.message); break;
      }
@@ -155,6 +159,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    void draw(const ripple::Effect& effect) {
        if (const auto* shown = std::get_if<ripple::Show>(&effect)) show_passage(shown->passage);
        else if (const auto* asked = std::get_if<ripple::Ask>(&effect)) show_form(asked->prompt);
+       else if (const auto* permit = std::get_if<ripple::Permit>(&effect)) ask_permission(permit->kinds);
        else if (const auto* ended = std::get_if<ripple::Ended>(&effect)) show_ending(ended->title);
        else if (const auto* failed = std::get_if<ripple::Failed>(&effect)) show_problem(failed->message);
    }
@@ -168,6 +173,7 @@ These steps take a story from the editor into a program of yours: a game, an app
        {
            case Effect.Show s:   ShowPassage(s.Passage); break;   // Passage.Choices[i].Available
            case Effect.Ask a:    ShowForm(a.Prompt); break;
+           case Effect.Permit p: AskPermission(p.Kinds); break;   // step 6
            case Effect.Ended e:  ShowEnding(e.Title); break;
            case Effect.Failed f: ShowProblem(f.Message); break;
        }
@@ -180,6 +186,7 @@ These steps take a story from the editor into a program of yours: a game, an app
      switch (effect) {
        case Show(:final passage): showPassage(passage);   // passage.choices[i].available
        case Ask(:final prompt): showForm(prompt);
+       case Permit(:final kinds): askPermission(kinds);   // step 6
        case Ended(:final title): showEnding(title);
        case Failed(:final message): showProblem(message);
        default:
@@ -191,7 +198,48 @@ These steps take a story from the editor into a program of yours: a game, an app
 
    A passage's text is Markdown, or HTML when the campaign was exported that way, as the manifest's text format says. Render it with a library of your choice.
 
-6. **Start the story, answer the reader, and give the player your clock.** Call the verb for what the reader did. Outside JavaScript, call the player's `update` from your frame or event loop: it answers a wait once its time has come.
+   Draw each field of a form by its `label`, in the reader's language, with its `placeholder` as the hint, and answer it under its `name`. Mark a field that is not `optional` as required, and do not submit it empty. Draw a field with `options` as a menu: one pick for a single value, any number for a list.
+
+6. **Answer the question before the story begins.** A story that reads the clock or the reader's position asks first: its first turn is `permit`, naming the kinds still unanswered, and nothing else happens until each is answered. Answer each kind with the player's `permit`; the last answer begins the story. On a yes to the location, fetch a position and hand it in **before** the `permit` that says yes, or the first page reads nothing. On a no, the reader may give a stand-in, a time or a place the story believes instead.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   player.setPosition({ latitude, longitude, accuracy });   // on a yes, before the permit
+   player.permit('location', true);
+   player.setStandIn('dateTime', '2026-10-31 23:00');        // on a no, if the reader typed one
+   player.permit('dateTime', false);                          // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   player.session().set_position(fix);       // on a yes, before the permit
+   player.permit(ripple::PermissionKind::location, true);
+   player.session().set_stand_in(ripple::PermissionKind::date_time, typed, offset);   // on a no
+   player.permit(ripple::PermissionKind::date_time, false);   // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   player.Session.SetPosition(fix);          // on a yes, before the permit
+   player.Permit(PermissionKind.Location, true);
+   player.Session.SetStandIn(PermissionKind.DateTime, typed, offset);   // on a no
+   player.Permit(PermissionKind.DateTime, false);   // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   player.session.setPosition(fix);          // on a yes, before the permit
+   player.permit(PermissionKind.location, granted: true);
+   player.session.setStandIn(PermissionKind.dateTime, typed);   // on a no
+   player.permit(PermissionKind.dateTime, granted: false);   // the last answer begins the story
+   ```
+   </TabItem>
+   </Tabs>
+
+   If your program remembers the reader's answers, give them before `start`, and the question is never shown. A save carries no answers, so answer a resumed session again.
+
+7. **Start the story, answer the reader, and give the player your clock.** Call the verb for what the reader did. Outside JavaScript, call the player's `update` from your frame or event loop: it answers a wait once its time has come, and runs a passage's countdown, beginning it and letting it run out. In JavaScript the player does both by itself.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -199,7 +247,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    player.start();
    choiceButton.onclick = () => player.choose(index);
    leaveButton.onclick = () => player.choose();           // the reader leaves the passage
-   form.onsubmit = () => player.answer({ name: 'Ada', age: 31n });   // an Int is a bigint
+   form.onsubmit = () => player.answer({ name: 'Ada', calling: 'wizard' });   // an option by its id
    // The player waits out a hold by itself.
    ```
    </TabItem>
@@ -232,9 +280,11 @@ These steps take a story from the editor into a program of yours: a game, an app
    </TabItem>
    </Tabs>
 
-   A verb the story was not asking for is refused and nothing moves. Catch the refusal for a spent choice and for an unknown language, which are the two met in ordinary use.
+   A verb the story was not asking for is refused and nothing moves. Catch the refusal for a spent choice, for an unknown language and for a stand-in the reader typed that does not read, which are the ones met in ordinary use.
 
-7. **Register the author's callbacks.** Agree the names with the author. A handler must not call a verb, so queue one for after it returns.
+   To offer a reader no time limits, make the player with `countdowns: false` (`countdowns = false` in C++, `Countdowns = false` in C#): no countdown runs, and the story waits for the reader. Draw a countdown the author made visible from the player's countdown state. How an author puts one on a choice is [How to put a countdown on a choice](/how-to/time-a-choice/).
+
+8. **Register the author's callbacks.** Agree the names with the author. A handler must not call a verb, so queue one for after it returns.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -263,7 +313,7 @@ These steps take a story from the editor into a program of yours: a game, an app
    </TabItem>
    </Tabs>
 
-8. **Give the story a speaker.** Make a soundscape driver over the campaign and a speaker, pass the driver to the player as its audio, and tick it with the player. In a browser, `@ripplefx/soundscape` is the speaker; elsewhere you implement the binding's speaker interface over your own audio API, as its reference describes.
+9. **Give the story a speaker.** Make a soundscape driver over the campaign and a speaker, pass the driver to the player as its audio, and tick it with the player. In a browser, `@ripplefx/soundscape` is the speaker; elsewhere you implement the binding's speaker interface over your own audio API, as its reference describes.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -301,38 +351,38 @@ These steps take a story from the editor into a program of yours: a game, an app
    </TabItem>
    </Tabs>
 
-9. **Save, and resume.** Checkpoint while the story is on a passage or a form, and keep the save with the seed. To resume, open a session from the save over the same campaign and start it: it shows the saved turn again.
+10. **Save, and resume.** Checkpoint while the story is on a passage or a form, and keep the save with the seed. To resume, open a session from the save over the same campaign and start it: it shows the saved turn again, after the question of step 6 if the story reads the world, and a timed passage waits afresh.
 
-   <Tabs syncKey="language">
-   <TabItem label="JavaScript">
-   ```ts
-   const save = player.session.checkpoint();            // undefined except on a passage or a form
-   const resumed = Session.resume(campaign, save, { seed });
-   ```
-   </TabItem>
-   <TabItem label="C++">
-   ```cpp
-   std::optional<std::string> save = player.session().checkpoint();
-   ripple::Session resumed = ripple::Session::resume(campaign, *save, seed, options);
-   ```
-   </TabItem>
-   <TabItem label="C#">
-   ```csharp
-   string? save = player.Session.Checkpoint();
-   var resumed = Session.Resume(campaign, save, seed, options);
-   ```
-   </TabItem>
-   <TabItem label="Dart">
-   ```dart
-   final save = player.session.checkpoint();
-   final resumed = Session.resume(campaign, save!, seed: seed);
-   ```
-   </TabItem>
-   </Tabs>
+    <Tabs syncKey="language">
+    <TabItem label="JavaScript">
+    ```ts
+    const save = player.session.checkpoint();            // undefined except on a passage or a form
+    const resumed = Session.resume(campaign, save, { seed });
+    ```
+    </TabItem>
+    <TabItem label="C++">
+    ```cpp
+    std::optional<std::string> save = player.session().checkpoint();
+    ripple::Session resumed = ripple::Session::resume(campaign, *save, seed, options);
+    ```
+    </TabItem>
+    <TabItem label="C#">
+    ```csharp
+    string? save = player.Session.Checkpoint();
+    var resumed = Session.Resume(campaign, save, seed, options);
+    ```
+    </TabItem>
+    <TabItem label="Dart">
+    ```dart
+    final save = player.session.checkpoint();
+    final resumed = Session.resume(campaign, save!, seed: seed);
+    ```
+    </TabItem>
+    </Tabs>
 
-   A save from a campaign that has since changed too much is refused when it is resumed. Tell the player the save is from an older build of the story. If the engine reports a **trap**, the campaign is unusable from then on: dispose of it, open it again, and resume from the last checkpoint.
+    A save from a campaign that has since changed too much is refused when it is resumed. Tell the player the save is from an older build of the story. If the engine reports a **trap**, the campaign is unusable from then on: dispose of it, open it again, and resume from the last checkpoint.
 
-10. **Ship the engine's notice.** Reproduce the engine's `NOTICE` wherever your product lists its third-party software. Each binding names the file: `ENGINE-NOTICE` in the npm package, `share/ripple_effect/ENGINE-NOTICE` in a CMake install, `ENGINE-NOTICE.txt` in the C# engine packages, and the archive's `NOTICE` for Dart.
+11. **Ship the engine's notice.** Reproduce the engine's `NOTICE` wherever your product lists its third-party software. Each binding names the file: `ENGINE-NOTICE` in the npm package, `share/ripple_effect/ENGINE-NOTICE` in a CMake install, `ENGINE-NOTICE.txt` in the C# engine packages, and the archive's `NOTICE` for Dart.
 
 </Steps>
 

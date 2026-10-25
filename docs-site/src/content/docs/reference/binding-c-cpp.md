@@ -3,13 +3,14 @@ title: C and C++ binding
 description: "The C and C++ binding of the Ripple Effect engine: the CMake project, its options and targets, the C++17 layer's every type and member, and the C ABI's conventions and functions."
 ---
 
-The C and C++ binding is a CMake project that fetches the pinned engine release for the target you are building, refuses it unless its SHA-256 is the pinned one, and adds `ripple/ripple.hpp`, a header-only C++17 layer over the engine's C ABI. A C host uses the C header, `include/ripple/ripple.h` inside the engine archive, directly. Version 1.5.x binds Ripple Effect contract 1.5; the `PATCH` is the binding's own. The source is public at [ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration). The binding is MIT. The engine library and `ripple.h` are under the [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), whose one condition is that the engine archive's `NOTICE` is reproduced wherever your product lists the third-party software it contains.
+The C and C++ binding is a CMake project that fetches the pinned engine release for the target you are building, refuses it unless its SHA-256 is the pinned one, and adds `ripple/ripple.hpp`, a header-only C++17 layer over the engine's C ABI. A C host uses the C header, `include/ripple/ripple.h` inside the engine archive, directly. Version 1.6.x binds Ripple Effect contract 1.6; the `PATCH` is the binding's own. The source is public at [ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration). The binding is MIT. The engine library and `ripple.h` are under the [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), whose one condition is that the engine archive's `NOTICE` is reproduced wherever your product lists the third-party software it contains.
 
 | Release | Engine pinned | Added |
 | --- | --- | --- |
 | 1.5.0 | 1.5.2 | The C ABI, the C++17 layer, `Player`, `SoundscapeDriver`, CMake that fetches the engine. |
 | 1.5.1 | 1.5.3 | The web, through Emscripten. |
 | 1.5.2 | 1.5.3 | iOS, device and simulator. |
+| 1.6.0 | 1.6.0 | Contract 1.6, *Grammar Lich*: a story that asks before it reads the clock or the location, a passage's countdown, and a form in the reader's language with optional fields and fixed answers. |
 
 ## Packages and installing
 
@@ -22,7 +23,7 @@ include(FetchContent)
 FetchContent_Declare(
     ripple_effect
     GIT_REPOSITORY https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration
-    GIT_TAG v1.5.2)
+    GIT_TAG v1.6.0)
 FetchContent_MakeAvailable(ripple_effect)
 target_link_libraries(my_game PRIVATE Ripple::cpp)
 ```
@@ -32,7 +33,7 @@ Or the release's source tarball, pinned by the digest in that release's `SHA256S
 ```cmake
 FetchContent_Declare(
     ripple_effect
-    URL https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration/releases/download/v1.5.2/ripple_effect_c_cpp_integration-1.5.2.tar.gz
+    URL https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration/releases/download/v1.6.0/ripple_effect_c_cpp_integration-1.6.0.tar.gz
     URL_HASH SHA256=<from SHA256SUMS>)
 ```
 
@@ -40,7 +41,7 @@ FetchContent_Declare(
 
 ```sh
 git submodule add https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration third_party/ripple_effect
-git -C third_party/ripple_effect checkout v1.5.2
+git -C third_party/ripple_effect checkout v1.6.0
 ```
 
 ```cmake
@@ -59,11 +60,11 @@ cmake --install out/build/linux-clang --prefix /opt/ripple_effect
 ```
 
 ```cmake
-find_package(RippleEffect 1.5 REQUIRED)   # CMAKE_PREFIX_PATH=/opt/ripple_effect
+find_package(RippleEffect 1.6 REQUIRED)   # CMAKE_PREFIX_PATH=/opt/ripple_effect
 target_link_libraries(my_game PRIVATE Ripple::cpp)
 ```
 
-The package version is **SameMinorVersion**: a request for 1.5 takes any 1.5.x and nothing else. The installed tree:
+The package version is **SameMinorVersion**: a request for 1.6 takes any 1.6.x and nothing else. The installed tree:
 
 | Path | Holds |
 | --- | --- |
@@ -164,11 +165,11 @@ The full matrix of what each engine release ships is in [Engine targets](/refere
 | C++ | C | Answers |
 | --- | --- | --- |
 | `ripple::engine_version()` | `ripple_engine_version()` | The loaded library's version, not the one built against. |
-| `ripple::engine_contract()` | `ripple_engine_contract()` | The contract the loaded library binds, `1.5`. |
+| `ripple::engine_contract()` | `ripple_engine_contract()` | The contract the loaded library binds, `1.6`. |
 | `ripple::engine_has_python()` | `ripple_engine_has_python()` | False for the `no-python` library. |
 | | `ripple_bundle_format()` | The bundle format the engine writes, and reads up to. |
 | | `ripple_save_format()` | The save format the engine writes. |
-| `ripple::contract_major`, `ripple::contract_minor` | `RIPPLE_CONTRACT_MAJOR`, `RIPPLE_CONTRACT_MINOR` | The contract the header binds, `1` and `5`, at compile time. |
+| `ripple::contract_major`, `ripple::contract_minor` | `RIPPLE_CONTRACT_MAJOR`, `RIPPLE_CONTRACT_MINOR` | The contract the header binds, `1` and `6`, at compile time. |
 
 The C++ functions return `std::string_view` over strings the library owns; the C ones return NUL-terminated `const char *`. An engine of the same `MAJOR.MINOR` keeps every function, struct and constant of the header. `ripple.hpp` fails to compile with `#error` against a `ripple.h` of another contract.
 
@@ -212,6 +213,7 @@ The C++ functions return `std::string_view` over strings the library owns; the C
 | `boards`, `passages`, `components`, `scripts`, `media`, `machines`, `soundscapes` | `std::vector<Entry>` | One row each: `id`, `name`, and `path`, the document's path inside the bundle (for a medium, the file's). |
 | `cvars` | `std::vector<Cvar>` | The console variables declared: `name`, `type`, `default_value`. |
 | `needs` | `std::vector<std::string>` | What a host must have to play it: `python`, when it runs scripts. |
+| `permissions` | `std::vector<std::string>` | What the story reads of the world outside it, by wire name: `dateTime`, `location`. A session asks about each before it begins. |
 
 ### Board, Node, Port
 
@@ -290,7 +292,10 @@ A soundscape is a timeline of clips a passage plays. Times are milliseconds.
 | `choose(index)` | `Effects` | Answers a `Show`: the choice by index into its `choices`, or `ripple::leave` for the reader leaving the passage. An index past the offered ones is `no_such_choice`; a choice whose `available` is false is `choice_spent`. |
 | `answer(values)` | `Effects` | Answers an `Ask`: a `Value::Map` of the form's fields by name, or `std::nullopt` for the reader leaving it. |
 | `elapsed()` | `Effects` | Answers a `Hold`, once the host's clock says it is over. |
-| `set_locale(locale)` | `Effects` | The turn the story is on, answered again in the new language. A language the campaign is not readable in is `unknown_locale`. |
+| `begin_countdown()` | `Effects` | The host's clock says the shown passage's countdown begins, after its timer's `after_ms`. Moves nothing: the effects are only the callbacks an author aimed at it, and empty when there are none or it already began. On a passage with no timer it is `no_countdown`. |
+| `expire()` | `Effects` | The host's clock says the countdown ran out: the passage's default is taken as `choose` would take it. Before `begin_countdown` it is `countdown_not_begun`; on a passage with none, `no_countdown`. |
+| `permit(kind, granted)` | `Effects` | The host's answer for one `PermissionKind`, at any time, before `start` included, which is how a host that already knows its reader's answers never has them asked. On a `Permit` turn, the last kind answered begins the story. |
+| `set_locale(locale)` | `Effects` | The turn the story is on, answered again in the new language: a passage re-rendered with its countdown kept, a form re-worded with its field names unchanged. A language the campaign is not readable in is `unknown_locale`. |
 | `restart()` | `Effects` | The story over from its first turn, the same seed rolling again. |
 | `stop()` | `Effects` | Stops the story for good; a verb after it is `stopped`. |
 | `pause()` | `Paused` | `save`, the save as JSON text (none when there was nothing to save), and `effects`, what pausing did. Pausing stops the story; resuming is a new session from the save. |
@@ -300,6 +305,14 @@ A soundscape is a timeline of clips a passage plays. Times are milliseconds.
 | `reset_cvar(name)` | `CvarChange` | Puts a console variable back to its default. |
 | `reset_all_cvars()` | `Effects` | Puts every console variable back to its default. |
 | `remove_entity(key)` | `EntityRemoval` | `removed`, and `effects`. |
+
+The readings a host hands in. None of them moves the story or answers effects:
+
+| Member | Answers | Notes |
+| --- | --- | --- |
+| `set_now(now)` | `void` | What time it is, a `std::optional<Moment>`; none for no clock. Before every verb that can step, by a host that granted `date_time`; within one verb time does not move. |
+| `set_position(fix)` | `void` | The host's last fix, a `std::optional<Position>`; none for none. Refused with `not_permitted` once `location` is denied; a fix given before the answer is kept, and read only if it is yes. |
+| `set_stand_in(kind, typed, local_offset_minutes = 0)` | `void` | The reader's stand-in for one kind, as they typed it, a `std::optional<std::string_view>`; none takes it away. ISO 8601 for the clock, read at `local_offset_minutes` when it carries no offset; `"lat, lon"` or a place's name for a position. Answered whenever the real value is missing. Refused with `stand_in`, saying why, for one that does not read. |
 
 The answers that carry effects beside a result:
 
@@ -337,9 +350,19 @@ A save carries no generator state and no soundscape position: the same seed give
 | `generator()` | `Generator`, two `std::uint32_t`: `lo` and `hi`. |
 | `set_generator(state)` | `void` |
 
+### The world outside the story
+
+| Type | What it is |
+| --- | --- |
+| `PermissionKind` | `enum class` over `std::uint32_t`: `date_time`, `location`, numbered as `ripple.h`'s `RipplePermissionKind` (`RIPPLE_PERMISSION_KIND_DATE_TIME` 0, `_LOCATION` 1). Open for appending; the microphone is not one. |
+| `permission_kind_name(kind)` | A kind's wire name, `dateTime` or `location`, as the manifest and a notice spell it; empty for a number the header does not know. |
+| `Moment` | An instant from the host: `utc_ms` (`std::int64_t`, milliseconds since the epoch) and `offset_minutes` (`std::int32_t`, the offset the reader's wall clock is at). |
+| `local_moment()` | This machine's time at its own offset: what a host that granted `date_time` hands `set_now`, or a `Player` asks for through `PlayerHandlers::moment`. |
+| `Position` | A fix, any field of which may be absent, shaped after the web's `GeolocationPosition`: `label` (`std::optional<std::string>`), `latitude`, `longitude`, `accuracy` (`std::optional<double>`, degrees and metres), and `when` (`std::optional<Moment>`), when it was taken. |
+
 ## Effects
 
-`ripple::Effect` is a `std::variant` of twelve alternatives, in the engine's order; `ripple::Effects` is a `std::vector<Effect>`. Apply a batch in order. The last effect of a batch is its Turn. Each effect owns its strings: the C batch is copied and freed before the verb returns.
+`ripple::Effect` is a `std::variant` of fourteen alternatives, in the engine's order; `ripple::Effects` is a `std::vector<Effect>`. Apply a batch in order. The last effect of a batch is its Turn. Each effect owns its strings: the C batch is copied and freed before the verb returns.
 
 | Alternative | Turn | Fields | Meaning |
 | --- | --- | --- | --- |
@@ -355,6 +378,10 @@ A save carries no generator state and no soundscape position: the same seed give
 | `Ended` | yes | `title` (`std::optional<std::string>`), `ran_out` (`bool`) | The story is over. `ran_out` is true when it ran out of road rather than reaching an End. |
 | `Failed` | yes | `message`, `node` (`std::optional<std::string>`) | The story could not go on. |
 | `Stopped` | yes | none | The session stopped. |
+| `Permit` | yes | `kinds` (`std::vector<PermissionKind>`) | The story has not begun, and reads these kinds that nobody has answered. Answer each with `permit`; the last answer begins the story. |
+| `Notice` | | `code`, `kind` (`PermissionKind`), `node` (`std::optional<std::string>`), `message` | A read of the world outside the story that did not get the real value, once per kind and outcome in a playthrough, before the Turn it was read for. `code` is `I.RT.05` a stand-in, `W.RT.06` a refusal, `I.RT.07` nothing; the letter is the severity. `node` is the node whose Python read it; `message` is the engine's English sentence. |
+
+`Permit` and `Notice` were appended in 1.6, so a `std::visit` with no arm for them does not compile.
 
 | Function | Answers |
 | --- | --- |
@@ -376,8 +403,30 @@ A save carries no generator state and no soundscape position: the same seed give
 | `untranslated` | `std::optional<std::string>` | The language the text is missing in, when it is. |
 | `soundscape` | `std::optional<Soundscape>` | The soundscape the passage names. |
 | `silence` | `bool` | True when the passage asks for silence. |
+| `timer` | `std::optional<ChoiceTimer>` | The passage's countdown; none when the passage waits for the reader as long as they like. |
 
-**`Prompt`**, a form the story asks the reader to fill: `node`, `title`, and `fields`, each a `PromptField` with `name`, `type` and `default_value` (`Value`).
+**`ChoiceTimer`**, a passage's countdown. The host's clock waits `after_ms`, calls `begin_countdown`, waits `timeout_ms` and calls `expire`; the engine measures none of it. A `Player` does all three.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `after_ms` | `std::uint64_t` | How long before the countdown begins; zero is at once. |
+| `timeout_ms` | `std::uint64_t` | How long it runs once begun; never zero. |
+| `visible` | `bool` | Whether the author meant the reader to see it count. |
+| `default_choice` | `std::uint32_t` | The index into the passage's choices taken when it runs out. |
+
+**`Prompt`**, a form the story asks the reader to fill: `node`, `title`, and `fields`, each a `PromptField`:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `name` | `std::string` | What an answer is keyed by: the field's ID, never shown. |
+| `type` | `std::string` | The field's type. |
+| `default_value` | `Value` | What the control is filled in with; a default nobody edits is the answer. |
+| `label` | `std::string` | What the reader is shown, in the reader's language: `name` where the author wrote nothing. |
+| `placeholder` | `std::string` | The hint drawn while the field is empty; empty for none. |
+| `optional` | `bool` | Whether the reader may leave it empty, which answers null. A required field is not submitted empty. |
+| `options` | `std::vector<PromptOption>` | The fixed answers to pick from, in order: one for a scalar type, any number for a `…List`. Empty for a field the reader types into. Answered with the picked options' ids. |
+
+A **`PromptOption`** is `id`, what a host answers with, the same in every language; `label`, what the reader is shown, in the reader's language; and `value` (`Value`), what the story is handed when it is picked, of the field's type.
 
 **`Ambience`**, the soundscape in force: `soundscape`, `board` (`std::uint32_t`), and `node`, the node that set it.
 
@@ -427,7 +476,7 @@ A save carries no generator state and no soundscape position: the same seed give
 | `outputs` | node finished | `std::vector<TraceValue>`. |
 | `flowed` | node finished | The control ports the flow left by. |
 | `error` | node finished, run finished | |
-| `diagnostic` | diagnostic | `RunDiagnostic`: `issue` (a `RippleRunIssue`: `AMBIGUOUS_FLOW`, `MULTIPLE_INPUTS`, `PRODUCER_NOT_RUN`, `REENTERED`), `message`, `node`, `port`, `wires`. |
+| `diagnostic` | diagnostic | `RunDiagnostic`: `issue` (a `RippleRunIssue`: `AMBIGUOUS_FLOW`, `MULTIPLE_INPUTS`, `PRODUCER_NOT_RUN`, `REENTERED`, `NOTHING_ON_WIRE`, the run remark `W.RT.08`), `message`, `node`, `port`, `wires`. |
 | `level` | log | A `RippleLogLevel`: `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
 | `message` | log | |
 | `data` | log | `std::optional<Value>`; none when the node logged no data. |
@@ -464,7 +513,7 @@ A C value is a `RippleValue`: `nodes`, a flat array of `RippleValueNode`, and `c
 
 ## Player
 
-`ripple::Player` is the loop over a session, written once. It delivers every effect in order, keeps the last Turn, answers a `Hold` from its clock when `update()` finds it due, applies `Audio` effects to a `SoundscapeDriver`, and dispatches the author's named callbacks.
+`ripple::Player` is the loop over a session, written once. It delivers every effect in order, keeps the last Turn, answers a `Hold` from its clock when `update()` finds it due, runs a passage's countdown the same way, tells the session the time before every verb, applies `Audio` effects to a `SoundscapeDriver`, and dispatches the author's named callbacks. What it does not wrap is on `session()`: `set_position` and `set_stand_in` move no story and answer no effects.
 
 ```cpp
 Player(Session session, PlayerHandlers handlers, Clock now = {});
@@ -479,14 +528,20 @@ The player owns the session. With no clock it reads `ripple::steady_clock()`.
 | `on_effect` | `std::function<void(const Effect&)>` | Every effect, in the order the engine produced it. |
 | `on_error` | `std::function<void(const Failure&)>` | A failure of a verb the player made by itself, the `elapsed` after a hold, or a handler's exception. Delivery goes on either way. A handler's exception that is not a `ripple::Error` arrives as `Code::invalid_argument` with its `what()`. |
 | `audio` | `SoundscapeDriver*` | Where the story's sound goes; without one, nothing is heard. |
+| `moment` | `std::function<std::optional<Moment>()>` | What time it is for the story, `local_moment` for this machine's: asked before every verb that can step and handed to `set_now`. Empty for a host that hands in no clock, or has not been granted it. |
+| `countdowns` | `bool`, default `true` | Whether the player runs a passage's countdown on its own clock, from `update()`. Off for a host that keeps time some other way, a test, a walk of every branch, a reader who asked for no time limits (WCAG 2.2.1), which calls `begin_countdown` and `expire` itself, or never. |
 
 | Member | Answers | Notes |
 | --- | --- | --- |
 | `start()`, `choose(index)`, `answer(values)`, `set_locale(locale)`, `restart()`, `stop()` | `void` | The session's verbs, their effects delivered through the handlers. Each clears a pending hold. |
-| `pause()` | `std::optional<std::string>` | Puts the story down and answers its save: none, and nothing stopped, unless the story is on a passage or a form. |
-| `update()` | `void` | Call from your loop. Answers a hold whose time has come. With exceptions and no `on_error`, a failure of that `elapsed` is thrown. |
+| `permit(kind, granted)` | `void` | The reader's answer for one kind; on a `Permit` turn, the last one begins the story. Keeps a countdown. |
+| `begin_countdown()` | `void` | The countdown begins now, whatever its `after_ms` said, for a host that runs countdowns itself. With `countdowns` on, `update()` says it. |
+| `expire()` | `void` | The countdown ran out now: the passage's default is taken. |
+| `pause()` | `std::optional<std::string>` | Puts the story down and answers its save: none, and nothing stopped, unless the story is on a passage or a form. A save carries no time: a story resumed on a timed passage waits afresh. |
+| `update()` | `void` | Call from your loop. Answers a hold whose time has come, and begins or runs out a countdown whose time has. With exceptions and no `on_error`, a failure of that verb is thrown. |
 | `turn()` | `const std::optional<Effect>&` | The last Turn delivered. |
 | `hold_due()` | `std::optional<std::uint64_t>` | When the pending hold is due, by the player's clock. |
+| `countdown()` | `const std::optional<Countdown>&` | The shown passage's countdown, for a host that draws one; none when the passage has none. Kept across a `set_locale`, which is the same visit; dropped once the reader chooses or anything else is shown. |
 | `session()` | `Session&` | The session, for what the player does not wrap. A verb called on it goes round the player. |
 | `on_callback(name, handler)` | `void` | Calls `handler` whenever the callback named `name` fires, replacing any handler under that name. |
 | `remove_callback(name)` | `void` | |
@@ -496,6 +551,8 @@ The player owns the session. With no clock it reads `ripple::steady_clock()`.
 | `dispose()` | `void` | Delivers nothing more. A verb after it does nothing. |
 
 For each effect of a batch, in order, the player records it if it is a Turn, applies it to `audio` if it is `Audio`, dispatches it if it is `Callback`, then calls `on_effect`. A verb called on the player from inside a handler is refused with `Code::reentrant` (`ripple::ReentrantVerb`), because the rest of the batch would arrive after the new one: queue it and call it once the handler returns.
+
+A **`Countdown`** is `timer` (`ChoiceTimer`), `begun` (whether `begin_countdown` was said) and `due` (`std::uint64_t`), when the next of the two is due by the player's clock: the beginning, or once begun the end. A countdown begun late is timed from when it was due rather than from when `update()` noticed, so a slow loop does not lengthen the reader's time.
 
 `Clock` is `std::function<std::uint64_t()>`, milliseconds, monotonic. `ripple::steady_clock()` answers one over `std::chrono::steady_clock`, starting at zero.
 
@@ -531,6 +588,8 @@ The author declares a callback's name and event; the engine emits a `Callback` e
 | `RIPPLE_CALLBACK_KIND_NODE_ENTERED` | 15 | `node.entered` |
 | `RIPPLE_CALLBACK_KIND_NODE_EXITED` | 16 | `node.exited` |
 | `RIPPLE_CALLBACK_KIND_NODE_FAILED` | 17 | `node.failed` |
+| `RIPPLE_CALLBACK_KIND_COUNTDOWN_STARTED` | 18 | `countdown.started` |
+| `RIPPLE_CALLBACK_KIND_COUNTDOWN_EXPIRED` | 19 | `countdown.expired` |
 
 What each event fires on and what it may be aimed at is in [Host callbacks](/reference/host-callbacks/).
 
@@ -686,6 +745,10 @@ With exceptions, every call that can fail throws a class derived from `ripple::E
 | `RIPPLE_ERROR_STOPPED` | 13 | `stopped` | `HostError` | A host bug: the session has stopped. |
 | `RIPPLE_ERROR_NOTHING_ASKED` | 14 | `nothing_asked` | `HostError` | A host bug: `start` was not called. |
 | `RIPPLE_ERROR_UNKNOWN_LOCALE` | 15 | `unknown_locale` | `HostError` | A language the campaign is not readable in. |
+| `RIPPLE_ERROR_NOT_PERMITTED` | 16 | `not_permitted` | `HostError` | A host bug: a reading handed in for a kind the reader has not granted. |
+| `RIPPLE_ERROR_STAND_IN` | 17 | `stand_in` | `HostError` | In use: a reader's stand-in that does not read as one; the message says why. |
+| `RIPPLE_ERROR_NO_COUNTDOWN` | 18 | `no_countdown` | `HostError` | A host bug: `begin_countdown` or `expire` on a passage with no countdown. |
+| `RIPPLE_ERROR_COUNTDOWN_NOT_BEGUN` | 19 | `countdown_not_begun` | `HostError` | A host bug: `expire` before `begin_countdown`. |
 | `RIPPLE_ERROR_BOARD_GONE` | 20 | `board_gone` | `ResumeError` | In use: a save names a board the campaign no longer has. |
 | `RIPPLE_ERROR_NODE_GONE` | 21 | `node_gone` | `ResumeError` | In use: a save names a node the board no longer has. |
 | `RIPPLE_ERROR_INVALID_ARGUMENT` | -1 | `invalid_argument` | `InvalidArgument` | A host bug: a NULL handle or pointer, a string that is not UTF-8, a value out of range. Nothing was done. |
@@ -699,9 +762,9 @@ With exceptions, every call that can fail throws a class derived from `ripple::E
 | `code`, `message` | Always. `message` is the engine's sentence, for a log or a developer. |
 | `location` | `bundle_format`: where in the document, when known. |
 | `found`, `supported`, `oldest` | `bundle_version`: the version the document carries, the newest this engine reads, and the oldest when there is a floor. |
-| `asked`, `answered` | `wrong_turn`: the turn the story is on (a `RippleTurnKind`: `PRESENT`, `ASK`, `WAIT`, `ENDED`, `FAILED`, `STOPPED`) and the verb called (a `RippleVerb`: `CHOOSE`, `ANSWER`, `ELAPSED`). |
+| `asked`, `answered` | `wrong_turn`: the turn the story is on (a `RippleTurnKind`: `PRESENT`, `ASK`, `WAIT`, `ENDED`, `FAILED`, `STOPPED`, `PERMIT`) and the verb called (a `RippleVerb`: `CHOOSE`, `ANSWER`, `ELAPSED`, `BEGIN_COUNTDOWN`, `EXPIRE`). |
 | `offered`, `chosen` | `no_such_choice`: how many choices were offered, and the index taken. |
-| `subject` | `choice_spent` (the port), `unknown_locale` (the locale), `board_gone` and `node_gone` (the board). |
+| `subject` | `choice_spent` (the port), `unknown_locale` (the locale), `board_gone` and `node_gone` (the board), `not_permitted` and `stand_in` (the kind's name). |
 | `node` | `node_gone`. |
 
 `Result<T>`: `ok()` and `explicit operator bool`, `value()`, `operator->`, `operator*`, and `failure()`. `Result<void>` has `ok()`, `operator bool` and `failure()`, whose code is `success` when nothing failed.
@@ -711,7 +774,7 @@ With exceptions, every call that can fail throws a class derived from `ripple::E
 ## Threading and lifetime
 
 - **One caller at a time per handle.** A `Campaign`, `Session` or `Mixer` may move between threads; to run the engine off your main thread, move the handle there.
-- **The engine starts no thread, never sleeps and never reads a clock.** A `Hold` is answered by your clock, through `elapsed()` or `Player::update()`.
+- **The engine starts no thread, never sleeps and never reads a clock.** A `Hold` and a countdown are answered by your clock, through `elapsed()`, `begin_countdown()` and `expire()` or `Player::update()`, and the time a story reads is the one you hand `set_now`.
 - **`Player` and `SoundscapeDriver` own no clock and no thread.** They read their `Clock` when you call `update()`; your loop is the timer. Their calls come from one thread; `VoiceEvents` may be called from any.
 - **RAII.** `Campaign`, `Session` and `Mixer` are move-only and destroy their C handle with them. A campaign may be destroyed before its sessions. A `Player` owns its `Session`. A `SoundscapeDriver` holds references to its `Campaign` and `Speaker`, so both must outlive it.
 - **Nothing in C++ points into the engine.** Every answer is copied out of the C result, which is freed before the call returns; the cost is a copy per verb.
@@ -725,7 +788,7 @@ With exceptions, every call that can fail throws a class derived from `ripple::E
 - **Out-pointers.** Everything written through an out-pointer is the engine's and goes back through `ripple_free`. NULL, a pointer the engine never gave and one already freed are all ignored.
 - **A leak check.** `ripple_outstanding()` answers how many objects the engine has handed out and not had back: zero once everything has been freed.
 - **Handles.** `RippleCampaign`, `RippleSession` and `RippleMixer` are opaque and go back through their own `ripple_*_destroy`, which ignores NULL.
-- **Tagged unions.** A `uint32_t kind` and a `union data` read by it: an effect, a value node, a voice command.
+- **Tagged unions.** A `uint32_t kind` and a `union data` read by it: an effect, a value node, a voice command. A `Permit` effect is `RIPPLE_EFFECT_KIND_PERMIT` (12) with `data.permit`, a `RipplePermit` of `kinds` and `kind_count`; a `Notice` is `RIPPLE_EFFECT_KIND_NOTICE` (13) with `data.notice`, a `RippleNotice` of `code`, `kind`, `node` and `message`. A passage's `timer` is a `RippleChoiceTimer` pointer, NULL for none, and a `RipplePromptField` carries `label`, `placeholder`, `optional` and `options`, `option_count` of `RipplePromptOption` (`id`, `label`, `value`).
 - **Strings.** A `RippleStr` is `{ptr, len}`, UTF-8. `ptr` is NULL for an absent optional string; a present empty one has a non-NULL `ptr` and `len` 0. From the engine it is NUL-terminated past `len`; from a host it need not be.
 - **Optionals.** `RippleOptionalU32`, `RippleOptionalU64` and `RippleOptionalI64` are `{present, value}`.
 - **Lists.** A pointer and a count, either as a struct (`RippleEffects`, `RippleStrList`, `RippleEntityList`…) or as a field pair (`choices`, `choice_count`).
@@ -781,6 +844,12 @@ With exceptions, every call that can fail throws a class derived from `ripple::E
 | `ripple_session_choose` | Answers a passage; `RIPPLE_CHOICE_NONE` for leaving. |
 | `ripple_session_answer` | Answers a form with `RippleFields`; NULL for leaving. |
 | `ripple_session_elapsed` | Answers a wait. |
+| `ripple_session_begin_countdown` | The shown passage's countdown begins; moves nothing. |
+| `ripple_session_expire` | The countdown ran out; the passage's default is taken. |
+| `ripple_session_permit` | The host's answer for one `RipplePermissionKind`, at any time, before `ripple_session_start` included. |
+| `ripple_session_set_now` | What time it is, a `RippleMoment` (`utc_ms`, `offset_minutes`); NULL for no clock. |
+| `ripple_session_set_position` | The host's last fix, a `RipplePosition` (`label`, then `latitude`, `longitude` and `accuracy` as `RippleOptionalF64`, and `when`, a `RippleMoment` pointer); NULL for none. |
+| `ripple_session_set_stand_in` | The reader's stand-in for one kind, as typed, read at `local_offset_minutes` when it carries no offset; a NULL string takes it away. |
 | `ripple_session_set_locale` | Changes the language; the turn is answered again. |
 | `ripple_session_restart` | Starts over from the first turn. |
 | `ripple_session_pause` | The save and what pausing did, as a `RipplePaused`. |
@@ -915,6 +984,16 @@ int play(const char *folder, uint64_t seed)
             code = ripple_session_elapsed(session, &next, &error);
         } else if (turn->kind == RIPPLE_EFFECT_KIND_ASK) {
             code = ripple_session_answer(session, NULL, &next, &error);   /* the reader leaves */
+        } else if (turn->kind == RIPPLE_EFFECT_KIND_PERMIT) {
+            /* Before it begins: each answer but the last answers nothing, and the
+               last begins the story. Here every kind is refused. */
+            size_t k;
+            for (k = 0; k < turn->data.permit->kind_count && code == RIPPLE_SUCCESS; k++) {
+                ripple_free(next);
+                next = NULL;
+                code = ripple_session_permit(session, turn->data.permit->kinds[k], false,
+                                             &next, &error);
+            }
         }
         ripple_free(batch);   /* every pointer into the batch dies here */
         batch = next;         /* NULL after ended, failed or stopped */
@@ -927,7 +1006,7 @@ int play(const char *folder, uint64_t seed)
 
 ## A complete host
 
-A terminal host in C++17: a speaker that writes down what it would play, the driver and the player, a choice that skips spent options, a form filled from its defaults, holds answered from `update()`, named callbacks with a verb queued from a handler, a checkpoint at every passage, and a trap recovered by reopening and resuming.
+A terminal host in C++17: a speaker that writes down what it would play, the driver and the player, a choice that skips spent options, the question a story asks before it reads the clock or the location, a form drawn by its labels with its fixed answers picked by id, holds and countdowns answered from `update()`, the story told this machine's time, named callbacks with a verb queued from a handler, a checkpoint at every passage, and a trap recovered by reopening and resuming.
 
 ```cpp
 #include <ripple/ripple.hpp>
@@ -941,6 +1020,7 @@ A terminal host in C++17: a speaker that writes down what it would play, the dri
 #include <optional>
 #include <string>
 #include <thread>
+#include <vector>
 
 namespace {
 
@@ -990,17 +1070,42 @@ std::optional<std::uint32_t> pick(const ripple::Passage& passage) {
     return ripple::leave;
 }
 
+bool yes(const std::string& question) {
+    std::string line;
+    std::cout << question << " [y/N] " << std::flush;
+    return std::getline(std::cin, line) && !line.empty() && (line[0] == 'y' || line[0] == 'Y');
+}
+
+bool is_list(const ripple::PromptField& field) {
+    return field.type.size() > 4 && field.type.compare(field.type.size() - 4, 4, "List") == 0;
+}
+
 std::optional<ripple::Value::Map> fill(const ripple::Prompt& prompt) {
     std::cout << "\n(" << prompt.title << ")\n";
     ripple::Value::Map answers;
     for (const ripple::PromptField& field : prompt.fields) {
-        if (field.default_value.is_text()) {
-            std::string line;
-            std::cout << field.name << "> ";
-            std::getline(std::cin, line);
-            answers.emplace_back(field.name, ripple::Value(line));
-        } else {
-            answers.emplace_back(field.name, field.default_value);
+        if (field.options.empty() && field.type != "string") {
+            answers.emplace_back(field.name, field.default_value);   // the rest keep their defaults
+            continue;
+        }
+        // Shown by its label, in the reader's language; answered under its name.
+        std::cout << field.label << (field.optional ? " (optional)" : "") << "\n";
+        for (std::size_t i = 0; i < field.options.size(); ++i)
+            std::cout << "  " << i + 1 << ". " << field.options[i].label << "\n";
+        for (std::string line; std::cout << "> " && std::getline(std::cin, line);) {
+            if (line.empty() && field.optional) break;   // left out: the story reads nothing
+            if (field.options.empty()) {
+                if (line.empty()) continue;   // a required field is not submitted empty
+                answers.emplace_back(field.name, ripple::Value(line));
+                break;
+            }
+            // A pick is answered with the option's id, never its words.
+            const std::size_t n = std::strtoul(line.c_str(), nullptr, 10);
+            if (n < 1 || n > field.options.size()) continue;
+            const ripple::Value id(field.options[n - 1].id);
+            answers.emplace_back(field.name,
+                                 is_list(field) ? ripple::Value(ripple::Value::List{id}) : id);
+            break;
         }
     }
     return answers;   // std::nullopt would leave the form instead
@@ -1039,6 +1144,13 @@ void play(const std::string& folder, std::optional<Saved>& last) {
     std::optional<ripple::Failure> broke;
     ripple::PlayerHandlers handlers;
     handlers.audio = audio.get();
+    // Asked before every verb; the story reads it only once the reader has said it may.
+    handlers.moment = [] { return std::optional<ripple::Moment>(ripple::local_moment()); };
+    handlers.on_effect = [](const ripple::Effect& effect) {
+        // A read of the clock or the place that got a stand-in, a refusal or nothing.
+        if (const auto* notice = std::get_if<ripple::Notice>(&effect))
+            std::cout << "  [" << notice->code << "] " << notice->message << "\n";
+    };
     handlers.on_error = [&](const ripple::Failure& failure) {
         std::cerr << "ripple: " << failure.message << "\n";
         if (failure.code == ripple::Code::trap) broke = failure;
@@ -1060,7 +1172,7 @@ void play(const std::string& folder, std::optional<Saved>& last) {
     player.start();   // on a resumed session, the saved passage again
     for (;;) {
         audio->update();
-        player.update();   // answers a Hold once its time has come
+        player.update();   // answers a Hold, and runs a countdown, once its time has come
         if (broke) throw ripple::EngineTrap(*broke);
         while (!later.empty()) {
             auto run = std::move(later.front());
@@ -1076,6 +1188,14 @@ void play(const std::string& folder, std::optional<Saved>& last) {
             player.choose(pick(shown->passage));
         } else if (const auto* asked = std::get_if<ripple::Ask>(&*turn)) {
             player.answer(fill(asked->prompt));
+        } else if (const auto* permit = std::get_if<ripple::Permit>(&*turn)) {
+            // A copy: the answer to the last kind begins the story, and its first
+            // turn replaces this one.
+            const std::vector<ripple::PermissionKind> kinds = permit->kinds;
+            for (const ripple::PermissionKind kind : kinds)
+                player.permit(kind, yes(kind == ripple::PermissionKind::location
+                                            ? "May this story read where you are?"
+                                            : "May this story read the date and time?"));
         } else {
             std::this_thread::sleep_for(std::chrono::milliseconds(25));   // a Hold
         }

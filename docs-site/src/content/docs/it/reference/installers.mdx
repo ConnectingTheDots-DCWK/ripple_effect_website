@@ -14,11 +14,12 @@ Ripple Effect si scarica una volta per piattaforma dalla [pagina di download](ht
 | Linux, Debian e Ubuntu | `.deb` | glibc 2.38 o successiva: Ubuntu 24.04+, Debian 13+ | `/opt/ripple_effect` |
 | Linux, Fedora e RHEL | `.rpm` | glibc 2.38 o successiva: Fedora 39+ | `/usr/share/ripple-effect` |
 | Windows | Setup `.exe` | Windows 10 o 11 | `%LOCALAPPDATA%\Programs\Ripple Effect` |
-| macOS | `.dmg` | macOS 12 Monterey o successivo | Applicazioni, trascinandovi l'app |
+| macOS | `.dmg` | macOS 12 Monterey o successivo, su Apple silicon | Applicazioni, trascinandovi l'app |
 
-- **Linux.** Entrambi i pacchetti mettono `ripple_effect` nel `PATH`. Il requisito sulla glibc esiste perché il controllo di versione include una libgit2 che la richiede, e un pacchetto che dichiarasse meno si installerebbe per poi non riuscire ad aprire un repository; un pacchetto rifiutato con un errore su `libc6` o `GLIBC_2.38` dipende da questo requisito. Il `.deb` dichiara tre librerie di runtime per l'audio: ALSA, PulseAudio e PipeWire.
+- **Linux.** Entrambi i pacchetti mettono `ripple_effect` nel `PATH`. Il requisito sulla glibc esiste perché il controllo di versione include una libgit2 che la richiede, e un pacchetto che dichiarasse meno si installerebbe per poi non riuscire ad aprire un repository; un pacchetto rifiutato con un errore su `libc6` o `GLIBC_2.38` dipende da questo requisito. Per l'audio serve solo ALSA, che il `.deb` dichiara; PulseAudio e PipeWire vengono usati se sono installati, ma non sono richiesti. Entrambi i pacchetti installano anche `pulseaudio-utils`, perché la dettatura registra tramite il suo `parecord`.
 - **Windows.** Si installa solo per l'account corrente e non chiede mai i privilegi di amministratore. Eseguire un programma di installazione più recente sopra un'installazione esistente la aggiorna sul posto.
-- **macOS.** Una sola build universale, per Apple silicon e Intel.
+- **macOS.** Solo Apple silicon: la build è arm64, perché lo è la libgit2 inclusa per il controllo di versione.
+- **Tutte le piattaforme.** L'app disegna con Impeller su Windows, macOS e Linux, quindi il testo può apparire leggermente diverso rispetto alle versioni precedenti. Se qualcosa viene disegnato male o lentamente, segnalalo da Impostazioni › Assistenza.
 
 Comandi di installazione per Linux:
 
@@ -35,9 +36,10 @@ Il primo avvio mostra alcune pagine prima della home, in quest'ordine.
 | --- | --- | --- |
 | Pagine dell'accordo | No | Gli accordi che l'app ti chiede di accettare; vedi [Licenze](/it/about/licensing/). |
 | Rendila tua | Sì | Tema, contrasto, visione dei colori e come vengono disegnati i collegamenti, accanto a una piccola anteprima dell'app che cambia mentre scegli. |
+| Write the way you like | Sì | *Is most of your writing in English?* (se scrivi soprattutto in inglese), senza nessuna risposta preselezionata. Un sì offre due caselle, entrambe spuntate: il controllo di ortografia e grammatica, e la dettatura con il download del modello inglese. Il download parte a configurazione iniziale finita, e il suo avanzamento è in Impostazioni. La pagina non è ancora tradotta e l'app la mostra in inglese. |
 | Aiuta a migliorare Ripple Effect | Sì | Se inviare le statistiche di utilizzo, senza nessuna risposta preselezionata e con l'elenco completo di ciò che verrebbe inviato. Indica anche come vengono richiesti i rapporti sugli arresti anomali e include il caffè. |
 
-Tutto ciò che si trova nelle due pagine che si possono saltare è poi disponibile in Impostazioni. Un aggiornamento dalla 1.4 mostra le pagine una volta, come una nuova installazione, e non reimposta nulla di ciò che è già stato impostato.
+Tutto ciò che si trova nelle pagine che si possono saltare è poi disponibile in Impostazioni. Un aggiornamento dalla 1.4 mostra le pagine una volta, come una nuova installazione, e non reimposta nulla di ciò che è già stato impostato. *Write the way you like* è stata aggiunta nella 1.6 e la vede solo una nuova installazione.
 
 ## Firma del codice
 

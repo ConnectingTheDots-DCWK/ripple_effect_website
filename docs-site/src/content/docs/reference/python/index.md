@@ -7,7 +7,7 @@ Every function a script may call is a **host function**: bound under the name an
 
 ## Functions
 
-Twenty names, bound on every surface, in four groups. Signatures are the ones the app registers; the page for each group lists what every function answers and refuses.
+Twenty-one names, bound on every surface, in five groups. Signatures are the ones the app registers; the page for each group lists what every function answers and refuses.
 
 ### Components and entities
 
@@ -76,12 +76,12 @@ Who is asking decides what may happen. Every function is bound on every surface;
 | Surface | Where | Reads | Writes |
 | --- | --- | --- | --- |
 | `script` | A Script node on a board | Yes | Yes |
-| `passage` | `{{ … }}` and ```` ```ripple ```` in prose | Yes | Refused |
+| `passage` | `{{ … }}` and ```` ```ripple ```` in prose, and in a Localized string's words | Yes | Refused |
 | `console` | The editor's Python console, at design time | Definitions and defaults | Refused |
 | `agent` | `python_eval` over MCP | Definitions and defaults | Refused |
 | `playthrough` | The campaign window's console, during play | Yes | Yes |
 
-- A passage refuses writes because of where the call runs: a state change belongs in a node you can point at on the canvas.
+- A passage, and a Localized string's words, refuse writes because of where the call runs: a state change belongs in a node you can point at on the canvas.
 - A passage refuses a sound because its snippets run again on every redraw.
 - The console and an agent refuse writes because nothing is running at design time: a project with no playthrough has no entities, and a console variable holds its default.
 - Reads work at design time. `component_get` and `component_names` answer from the files. `entity_names()` is `[]` and `entity_get(name)` is `None`. These are answers, not failures.
@@ -91,7 +91,7 @@ The reasons are in [Python in a story](/explanation/python-in-a-story/).
 
 ## Calling
 
-Required arguments are positional. The optional `of` is keyword-only. `play_sound` is the exception: `volume` and `speed` may be given by position or by name. No keyword other than those listed is accepted.
+Required arguments are positional. The optional `of` is keyword-only. `play_sound` and `locale_get` are the exceptions: `play_sound`'s `volume` and `speed`, and `locale_get`'s `locale`, may be given by position or by name. No keyword other than those listed is accepted.
 
 ```python
 entity_names(of="Goblin")                 # right
@@ -104,6 +104,7 @@ entity_create("Goblin-7", frm="Goblin")   # raises: unknown keyword, names the o
 | `entity_names` | 0 | `of` |
 | `entity_create` | 1 | `of` |
 | `play_sound` | 1 to 3 | `volume`, `speed` |
+| `locale_get` | 0 to 1 | `locale` |
 
 Other functions take exactly the positional arguments in their signature and no keywords. A wrong call raises rather than answering. `component`, `components` and `set_attribute` are exempt: what they do with a mistake is as frozen as their names.
 
@@ -148,7 +149,7 @@ The sentences a surface refuses with are fixed, because a script may already hav
 | A passage, `play_sound` | `a passage cannot play a sound — its snippets run again every time it is redrawn, so put this on a Play sound node or in a Script node` |
 | Console or agent, `play_sound` | `no campaign is running, so there is nothing to play this through — press play, or put this on a Play sound node` |
 
-A read of the world the reader did not allow is the one refusal that is not a `RuntimeError`: it is Python's own `PermissionError`, so `except PermissionError:` catches it and nothing else. See [The world outside the story](/reference/python/the-world/#when-a-read-is-refused).
+Two refusals are not a `RuntimeError`. A read of the world the reader did not allow is Python's own `PermissionError`, so `except PermissionError:` catches it and nothing else. A clock read that was allowed, when the host has no time to give, is an `OSError`: `this host has not said what time it is`. See [The world outside the story](/reference/python/the-world/#when-a-read-is-refused).
 
 A refusal inside a passage does not end the run. It renders in place as a `⚠ RuntimeError: …` chip and the story carries on, which is why every message is one line. A name quoted in a refusal is cut to about forty characters.
 

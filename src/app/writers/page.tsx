@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LanguagesIcon, PlayIcon, RouteIcon } from "lucide-react";
+import { LanguagesIcon, MicIcon, PlayIcon, RouteIcon } from "lucide-react";
 
 import { AudienceHero } from "@/components/audience-hero";
 import { FeatureBlock, SectionIntro } from "@/components/feature-block";
@@ -20,6 +20,11 @@ export const metadata: Metadata = {
 const docs = (path: string) => `${siteConfig.links.docs}/${path}/`;
 
 const ALSO = [
+  {
+    icon: MicIcon,
+    title: "Say it, and it is typed",
+    body: "Press the microphone over a passage or a note and speak: your words are typed at the cursor, heard on your own computer by a model you download once.",
+  },
   {
     icon: LanguagesIcon,
     title: "Every language in one passage",
@@ -129,7 +134,7 @@ export default function WritersPage() {
 
         <div className="pt-4">
           <SectionIntro title="And the rest of the writing desk" />
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
+          <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {ALSO.map((item) => (
               <div key={item.title} data-reveal>
                 <item.icon className="size-5 text-brand" />

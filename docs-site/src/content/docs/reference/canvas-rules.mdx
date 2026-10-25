@@ -68,6 +68,27 @@ The exception is a Jump's node picker, which keeps a board's reading order.
 
 Cards stay at the size they were drawn at whatever the desktop's text size is. Zoom changes a board's size. The rest of the app grows with the setting, up to double.
 
+### Zoomed out
+
+| Zoom | Cards |
+| --- | --- |
+| A quarter of full size or more | Drawn in full. |
+| Below a quarter | Drawn as sketches: the card's header with its icon and title, its rows with their labels on the side of their ports, its controls as the shapes they are, and a passage's prose as lines. A card a diagnostic marks keeps its halo. |
+| Zooming back in | Sketches dither back into full cards. |
+
+- A card you are dragging or typing in stays a full card.
+- The [merged view](#merged-view) of a trace across boards is drawn the same way.
+- This replaces the performance mode of earlier versions, which 1.6 removed: a passage's preview is always on.
+
+### Trackpad
+
+| Gesture | Effect |
+| --- | --- |
+| Swipe | Pans the board as far as the fingers move. |
+| Pinch | Zooms about the fingers, on every platform. |
+
+Neither gesture drags what is under the pointer.
+
 ## Narration nodes
 
 A Narration node holds a passage and grows one output port per choice. Wiring the last output makes a new spare appear beneath it.

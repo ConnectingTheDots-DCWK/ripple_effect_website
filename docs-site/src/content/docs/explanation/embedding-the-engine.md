@@ -5,7 +5,7 @@ description: Why every binding of the engine is the same small API (a campaign, 
 
 A campaign exported from the editor is played by the **engine**: the same one the editor's Play button runs, published on its own so that other programs can run it too. A game, an app, a page or a tool reaches it through a **binding**, a library in that program's language. There are four today: JavaScript and TypeScript, C and C++, C#, and Dart. Each spells things the way its language does, but underneath they are one API. Learn it once and all four make sense.
 
-The whole design fits in one sentence. **The host never decides anything about the story or the sound: it renders what it is told, tells the engine what the player did, and gives the engine a clock.** The rest of this page follows from that.
+The whole design fits in one sentence. **The host never decides anything about the story or the sound: it renders what it is told, tells the engine what the player did, and hands the engine whatever it needs from the world outside, the clock first.** The rest of this page follows from that.
 
 ## The host drives the story
 
@@ -13,10 +13,11 @@ The engine never blocks, never sleeps, never reads a clock, never picks its own 
 
 That is the shape every mature narrative runtime a game engine already hosts has, and it was picked for the same reasons. It needs no event loop on either side of a language boundary. It fits a game's frame loop, a UI framework's event handlers and a terminal's read loop equally well. It also compiles for a browser, where there is one thread and nothing may block.
 
-Two things follow that matter in practice:
+Three things follow that matter in practice:
 
-- **Time is yours.** A Delay node does not wait. It asks your program to wait, and the story stays where it is until you say the time is up. Use game time if your world can pause.
+- **Time is yours.** A Delay node does not wait. It asks your program to wait, and the story stays where it is until you say the time is up. A passage's countdown is the same: two waits on your clock, and a verb at the end of each. Use game time if your world can pause.
 - **Chance is yours.** Every session starts from a seed you choose. The same seed and the same answers play the same story, which is what makes a bug report reproducible and a test deterministic.
+- **The world is yours.** A story may read the time of day or where the reader is, and the engine still reads no clock and touches no sensor. Data is pushed, never pulled: your program hands in the instant and the position, and the story reads what it was handed.
 
 ## Three things: a campaign, a session, and effects
 
@@ -32,6 +33,7 @@ Every verb returns an **ordered list of effects**: everything the story did betw
 
 | Turn | What your program does |
 | --- | --- |
+| permit | Ask the reader whether the story may read the clock or their position, before it begins. |
 | show | Draw a passage and its choices. |
 | ask | Show a form and collect typed answers. |
 | hold | Start a timer, and tell the engine when it fires. |
@@ -39,7 +41,7 @@ Every verb returns an **ordered list of effects**: everything the story did betw
 | failed | The story stopped on an error, naming the node if it can. |
 | stopped | The session was stopped or paused. |
 
-Before the turn come the facts along the way. The story changed board. The soundscape in force changed. A sound command for your speaker. A console variable, an entity or the story's memory moved. A named callback the author published fired. With tracing on, there is also one step of the trace per node the story ran through.
+Before the turn come the facts along the way. The story changed board. The soundscape in force changed. A sound command for your speaker. A console variable, an entity or the story's memory moved. A named callback the author published fired. A read of the world did not get the real value, and the story got the reader's stand-in, a refusal or nothing: that is a **notice**, said once per kind and outcome in a playthrough, because a passage's snippets run again on every redraw and a notice per redraw would bury the one that mattered. With tracing on, there is also one step of the trace per node the story ran through.
 
 **The answer is a value, not a set of callbacks**, and that was the decision the rest rests on. A list of plain records crosses every language boundary the same way: a C struct, a WebAssembly record or a JavaScript object. A callback has to be invented again for every language, and with it questions about which thread it runs on and what happens if it throws. So a binding is a dispatch over a list, and your program handles one case per kind of effect and nothing else for the story. Every effect is a copy, so nothing in it points back into the engine.
 
@@ -47,14 +49,28 @@ Before the turn come the facts along the way. The story changed board. The sound
 
 ## Answering the turn
 
-There are four ways to answer a turn: choose a choice, leave the passage without choosing, answer the form, or report that the wait is over. Restart, stop, pause and a change of language are also verbs.
+There are five ways to answer a turn: give the reader's answer to a permission, choose a choice, leave the passage without choosing, answer the form, or report that the wait is over. A passage with a countdown adds two more, begin the countdown and let it run out, and running out takes the author's default choice as a reader would. Restart, stop, pause and a change of language are also verbs.
 
-**A wrong verb is refused, and nothing moves.** Choosing while a form is showing, or choosing an index that does not exist, is an error your program can catch, and the story is exactly where it was. Most of these are bugs in the host. Two are met in ordinary use and are worth handling:
+**A form is answered by name, and never by its words.** Each field arrives with a label and a placeholder in the reader's language, for your program to draw, while its name stays the key the answer goes under. A field the author marked optional may be left empty, and the story then reads nothing rather than its type's blank, so it can tell *skipped* from *answered 0*. A field that offers fixed answers is answered with the IDs of the options the reader picked, never their words, so a story does not branch on the reader's language.
+
+**A wrong verb is refused, and nothing moves.** Choosing while a form is showing, or choosing an index that does not exist, is an error your program can catch, and the story is exactly where it was. Most of these are bugs in the host. A few are met in ordinary use and are worth handling:
 
 - **A choice that is not open now.** Every wired choice is offered, but one the author limited may be spent or behind a guard that is false. It comes marked unavailable, so draw it greyed and do not offer the press. Pressing it anyway is refused.
-- **A language the campaign does not have.** Changing the language re-shows the current passage in the new one; an unknown language is refused and nothing changes.
+- **A language the campaign does not have.** Changing the language re-shows the current passage in the new one, re-words a form that is waiting and announces it again, and keeps a countdown where it was; an unknown language is refused and nothing changes.
+- **A stand-in that does not read.** What the reader typed as their time or their place is refused, with the reason, when it is not a time or a place the engine can read.
+- **A position for a kind the reader refused.** Once the reader has said no to their location, a fix your program hands in is refused, so a bug on your side cannot hand a story what the reader withheld.
 
-**A wait is a request, not a sleep.** If the reader pauses, restarts or stops in the middle of a wait, the report that the time is up is harmless when it finally arrives.
+**A wait is a request, not a sleep.** If the reader pauses, restarts or stops in the middle of a wait, the report that the time is up is harmless when it finally arrives. The countdown verbs are stricter, because two timers in sequence are the commonest place for a host to fire the second without the first: letting a countdown run out before it began is refused rather than taken as a default the reader never saw coming, and either verb on a passage that has no countdown is refused too.
+
+**A time limit is an accessibility question, and your program is where it is answered.** WCAG 2.2.1 asks that a reader can turn a time limit off or extend it. The host owns the clock, so it can do either, running no countdowns or running them slower, without the story's help, and a host for a general audience should offer it. A host whose clock does not wait, such as a test or a walk over every branch, runs no countdown by itself, because one answered at once would take the default every time.
+
+## A story asks before it reads the world
+
+A story that reads the clock or the reader's position says so in its manifest: the compiler lists every kind it reads, and the author never keeps the list. Every kind starts unanswered, the clock included, and while one is, the session's first turn is **permit**, naming the kinds still to answer, and nothing else: no first page, and no `story.started`. The answer that settles the last kind begins the story.
+
+You can answer at any time, before the story starts included. A host that remembers its reader's answers gives them before the first verb, and the reader is never shown the question.
+
+What follows a yes is up to your program. Before every verb that can move the story, hand in the time, and hand in a position whenever you have a new fix. A fix handed in before the answer is kept, and read only if the answer is yes, so you can fetch one the moment the reader agrees and give it before the answer that begins the story. A reader who would rather not share either can give a **stand-in**: a time or a place they would rather the story believed. A read takes the real value when the kind is allowed and you have one, otherwise the stand-in, otherwise it is refused, and a story cannot tell a stand-in from the real thing, which is the point of giving one. Every read that did not get the real value is the notice above.
 
 ## The player is the loop, written once
 
@@ -82,6 +98,8 @@ Each binding maps this onto its language's own types. In a language whose number
 ## Saving is a string
 
 A **checkpoint** is the turn the story is on, written as JSON, without stopping it. A **pause** writes the same save and then ends the session, stopping the sound on the way. Either one exists only while the story is on a passage or a form, because a story mid-wait has no stable place to resume to. Store the save with the seed and the language, and resume a new session from it over the same campaign.
+
+Two things are deliberately left out of a save. **The reader's permission answers** are not in it: a resumed session asks again, and a host that remembers them answers again without showing the question. A restart keeps them, because the reader's machine did not change when the story began again. **A countdown's progress** is not in it either: the half that had passed was your clock and never the engine's, so a story resumed on a timed passage begins its wait afresh.
 
 A save names the story it came from. Resuming a save whose board or node the campaign no longer has is refused by name. That is the moment to tell the player the save is from an older build of the story. A save carries neither the dice's position nor the soundscape's: the same seed gives the same future rolls, and a music bed starts from the top. A host that needs the dice's exact continuation reads the generator's state off the old session and sets it on the new one.
 
@@ -118,7 +136,7 @@ A campaign or session is used by one caller at a time, and may move between thre
 
 ## How a host proves it is right
 
-Every engine release carries the **conformance fixtures**: small campaigns, each with the inputs to replay and the trace and callbacks a correct host produces. Every binding plays every fixture through its own API, both through the session and through the player, so a binding that passes is the engine as far as a story can tell. A host built on a binding inherits that and only has to test its own interface. For a quick check against your own campaign, the terminal player in every desktop engine archive, `ripple <bundle> --auto --seed N`, tells the story a host should tell for that seed.
+Every engine release carries the **conformance fixtures**: small campaigns, each with the inputs to replay and the trace and callbacks a correct host produces. Every binding plays every fixture through its own API, both through the session and through the player, so a binding that passes is the engine as far as a story can tell. A host built on a binding inherits that and only has to test its own interface. For a quick check against your own campaign, the terminal player in every desktop engine archive, `ripple <bundle> --auto --seed N`, tells the story a host should tell for that seed. With `--auto` it says no to every permission and never runs a countdown, so a seeded walk is the same walk tomorrow; `--allow <kind>` and `--stand-in <kind>=<text>`, with `dateTime` or `location` for the kind, answer a permission ahead. Without `--auto` it asks on its input, once per kind, and runs countdowns on a reading thread.
 
 ## What comes next
 

@@ -5,7 +5,7 @@ description: Perché ogni binding del motore è la stessa piccola API (una campa
 
 Una campagna esportata dall'editor viene eseguita dal **motore**: lo stesso che fa girare il pulsante Gioca dell'editor, pubblicato a parte perché anche altri programmi possano usarlo. Un gioco, un'app, una pagina o uno strumento lo raggiungono tramite un **binding**, una libreria scritta nel linguaggio di quel programma. Oggi sono quattro: JavaScript e TypeScript, C e C++, C# e Dart. Ognuno si esprime come fa il proprio linguaggio, ma sotto sono tutti la stessa API: impara quella una volta e li capisci tutti e quattro.
 
-L'intero progetto sta in una frase. **L'host non decide nulla della storia né del suono: mostra ciò che gli viene detto, riferisce al motore che cosa ha fatto il giocatore e gli fornisce un orologio.** Tutto il resto di questa pagina ne discende.
+L'intero progetto sta in una frase. **L'host non decide nulla della storia né del suono: mostra ciò che gli viene detto, riferisce al motore che cosa ha fatto il giocatore e gli consegna ciò che gli serve del mondo esterno, a cominciare dall'orologio.** Tutto il resto di questa pagina ne discende.
 
 ## È l'host a guidare la storia
 
@@ -13,10 +13,11 @@ Il motore non si blocca mai, non dorme mai, non legge mai un orologio, non scegl
 
 È la forma che ha ogni runtime narrativo maturo già ospitato da un motore di gioco, ed è stata scelta per le stesse ragioni. Non richiede un event loop né da una parte né dall'altra di un confine tra linguaggi. Si adatta altrettanto bene al ciclo dei fotogrammi di un gioco, ai gestori di eventi di un framework di interfaccia e al ciclo di lettura di un terminale. E si compila anche per il browser, dove c'è un solo thread e niente può bloccarsi.
 
-Ne derivano due conseguenze che contano nella pratica:
+Ne derivano tre conseguenze che contano nella pratica:
 
-- **Il tempo è tuo.** Una scheda Delay non attende: chiede al tuo programma di attendere, e la storia resta dov'è finché non dici che il tempo è scaduto. Usa il tempo di gioco se il tuo mondo può andare in pausa.
+- **Il tempo è tuo.** Una scheda Delay non attende: chiede al tuo programma di attendere, e la storia resta dov'è finché non dici che il tempo è scaduto. Il conto alla rovescia di un passaggio funziona allo stesso modo: due attese sul tuo orologio, e un verbo alla fine di ciascuna. Usa il tempo di gioco se il tuo mondo può andare in pausa.
 - **Il caso è tuo.** Ogni sessione parte da un seme che scegli tu. Lo stesso seme e le stesse risposte riproducono la stessa storia, ed è ciò che rende riproducibile una segnalazione di bug e deterministico un test.
+- **Il mondo è tuo.** Una storia può leggere l'ora del giorno o dove si trova il lettore, e il motore continua a non leggere nessun orologio e a non toccare nessun sensore. I dati vengono spinti, mai tirati: il tuo programma consegna l'istante e la posizione, e la storia legge ciò che le è stato consegnato.
 
 ## Tre cose: una campagna, una sessione e gli effetti
 
@@ -32,6 +33,7 @@ Ogni verbo restituisce un **elenco ordinato di effetti**: tutto ciò che la stor
 
 | Turno | Che cosa fa il tuo programma |
 | --- | --- |
+| permit | Chiede al lettore se la storia può leggere l'orologio o la sua posizione, prima che cominci. |
 | show | Disegna un passaggio e le sue scelte. |
 | ask | Mostra un modulo e raccoglie le risposte digitate. |
 | hold | Avvia un timer e dice al motore quando scatta. |
@@ -39,7 +41,7 @@ Ogni verbo restituisce un **elenco ordinato di effetti**: tutto ciò che la stor
 | failed | La storia si è fermata per un errore, indicando la scheda se può. |
 | stopped | La sessione è stata fermata o messa in pausa. |
 
-Prima del turno arrivano i fatti lungo la strada. La storia ha cambiato lavagna. È cambiato il soundscape in vigore. Un comando sonoro per il tuo speaker. Si è mossa una variabile di console, un'entità o la memoria della storia. È scattata una callback con nome pubblicata dall'autore. Con la traccia attiva c'è anche un passo di traccia per ogni scheda che la storia ha attraversato.
+Prima del turno arrivano i fatti lungo la strada. La storia ha cambiato lavagna. È cambiato il soundscape in vigore. Un comando sonoro per il tuo speaker. Si è mossa una variabile di console, un'entità o la memoria della storia. È scattata una callback con nome pubblicata dall'autore. Una lettura del mondo non ha avuto il valore vero, e la storia ha ricevuto il sostituto del lettore, un rifiuto oppure niente: è un **avviso** (notice), detto una volta per tipo ed esito in una partita, perché gli snippet di un passaggio girano di nuovo a ogni ridisegno e un avviso per ridisegno seppellirebbe quello che contava. Con la traccia attiva c'è anche un passo di traccia per ogni scheda che la storia ha attraversato.
 
 **La risposta è un valore, non un insieme di callback**, ed è la decisione su cui poggia tutto il resto. Un elenco di semplici record attraversa ogni confine tra linguaggi allo stesso modo: una struct C, un record WebAssembly o un oggetto JavaScript. Una callback va reinventata per ogni linguaggio, e con lei le domande su quale thread la esegue e su che cosa succede se lancia un'eccezione. Un binding è quindi uno smistamento su un elenco, e il tuo programma gestisce un caso per ogni tipo di effetto e nient'altro riguardo alla storia. Ogni effetto è una copia, quindi nulla al suo interno rimanda al motore.
 
@@ -47,14 +49,28 @@ Prima del turno arrivano i fatti lungo la strada. La storia ha cambiato lavagna.
 
 ## Rispondere al turno
 
-Ci sono quattro modi di rispondere a un turno: selezionare una scelta, lasciare il passaggio senza scegliere, rispondere al modulo, oppure segnalare che l'attesa è finita. Anche riavviare, fermare, mettere in pausa e cambiare lingua sono verbi.
+Ci sono cinque modi di rispondere a un turno: dare la risposta del lettore a un permesso, selezionare una scelta, lasciare il passaggio senza scegliere, rispondere al modulo, oppure segnalare che l'attesa è finita. Un passaggio con un conto alla rovescia ne aggiunge altri due, far partire il conto alla rovescia e lasciarlo scadere, e la scadenza prende la scelta predefinita dell'autore come la prenderebbe un lettore. Anche riavviare, fermare, mettere in pausa e cambiare lingua sono verbi.
 
-**Un verbo sbagliato viene rifiutato e nulla si muove.** Scegliere mentre è visibile un modulo, o scegliere un indice che non esiste, è un errore che il tuo programma può intercettare, e la storia resta esattamente dov'era. Nella maggior parte dei casi sono bug dell'host. Due si incontrano nell'uso normale e vale la pena gestirli:
+**A un modulo si risponde per nome, mai con le sue parole.** Ogni campo arriva con un'etichetta e un segnaposto nella lingua del lettore, che il tuo programma disegna, mentre il suo nome resta la chiave sotto cui va la risposta. Un campo che l'autore ha segnato come facoltativo può restare vuoto, e allora la storia non legge niente invece del valore vuoto del suo tipo, così può distinguere *saltato* da *risposto 0*. A un campo che offre risposte fisse si risponde con gli ID delle opzioni scelte dal lettore, mai con le loro parole, così una storia non si dirama sulla lingua del lettore.
+
+**Un verbo sbagliato viene rifiutato e nulla si muove.** Scegliere mentre è visibile un modulo, o scegliere un indice che non esiste, è un errore che il tuo programma può intercettare, e la storia resta esattamente dov'era. Nella maggior parte dei casi sono bug dell'host. Alcuni si incontrano nell'uso normale e vale la pena gestirli:
 
 - **Una scelta che ora non è aperta.** Ogni scelta collegata viene offerta, ma una che l'autore ha limitato può essere esaurita o dietro una condizione falsa. Arriva contrassegnata come non disponibile: disegnala in grigio e non renderla selezionabile: selezionarla comunque viene rifiutato.
-- **Una lingua che la campagna non ha.** Cambiare lingua mostra di nuovo il passaggio corrente nella nuova; una lingua sconosciuta viene rifiutata e nulla cambia.
+- **Una lingua che la campagna non ha.** Cambiare lingua mostra di nuovo il passaggio corrente nella nuova, riformula un modulo in attesa e lo annuncia di nuovo, e lascia un conto alla rovescia dov'era; una lingua sconosciuta viene rifiutata e nulla cambia.
+- **Un sostituto che non si legge.** Ciò che il lettore ha scritto come sua ora o suo luogo viene rifiutato, con il motivo, quando non è un'ora o un luogo che il motore sa leggere.
+- **Una posizione per un tipo che il lettore ha rifiutato.** Una volta che il lettore ha detto no alla sua posizione, una rilevazione che il tuo programma consegna viene rifiutata, così un bug dalla tua parte non può dare a una storia ciò che il lettore ha negato.
 
-**Un'attesa è una richiesta, non un sonno.** Se il lettore mette in pausa, riavvia o ferma nel mezzo di un'attesa, la segnalazione che il tempo è scaduto è innocua quando alla fine arriva.
+**Un'attesa è una richiesta, non un sonno.** Se il lettore mette in pausa, riavvia o ferma nel mezzo di un'attesa, la segnalazione che il tempo è scaduto è innocua quando alla fine arriva. I verbi del conto alla rovescia sono più severi, perché due timer in sequenza sono il punto più comune in cui un host fa scattare il secondo senza il primo: lasciar scadere un conto alla rovescia prima che sia partito viene rifiutato, invece di diventare una scelta predefinita che il lettore non si è visto arrivare, e anche l'uno o l'altro verbo su un passaggio che non ha un conto alla rovescia viene rifiutato.
+
+**Un limite di tempo è una questione di accessibilità, e la risposta sta nel tuo programma.** Le WCAG 2.2.1 chiedono che un lettore possa disattivare o prolungare un limite di tempo. L'orologio è dell'host, quindi può fare l'una o l'altra cosa, non facendo partire nessun conto alla rovescia o facendolo scorrere più lento, senza l'aiuto della storia, e un host per un pubblico generale dovrebbe offrirlo. Un host il cui orologio non attende, come un test o un giro su ogni ramo, non fa partire nessun conto alla rovescia da solo, perché uno risposto subito prenderebbe ogni volta la scelta predefinita.
+
+## Una storia chiede prima di leggere il mondo
+
+Una storia che legge l'orologio o la posizione del lettore lo dichiara nel manifest: il compilatore elenca ogni tipo che legge, e l'autore non tiene mai l'elenco. Ogni tipo parte senza risposta, l'orologio compreso, e finché ne resta uno, il primo turno della sessione è **permit**, che nomina i tipi ancora da rispondere, e nient'altro: nessuna prima pagina e nessuno `story.started`. La risposta che sistema l'ultimo tipo fa cominciare la storia.
+
+Puoi rispondere in qualsiasi momento, anche prima che la storia cominci. Un host che ricorda le risposte del suo lettore le dà prima del primo verbo, e al lettore la domanda non viene mai mostrata.
+
+Ciò che segue un sì spetta al tuo programma. Prima di ogni verbo che può muovere la storia, consegna l'ora, e consegna una posizione ogni volta che ne hai una nuova rilevazione. Una rilevazione consegnata prima della risposta viene tenuta, e letta solo se la risposta è sì, così puoi procurartene una nel momento in cui il lettore acconsente e darla prima della risposta che fa cominciare la storia. Un lettore che preferisce non condividere né l'una né l'altra può dare un **sostituto**: un'ora o un luogo che preferirebbe la storia credesse. Una lettura prende il valore vero quando il tipo è consentito e tu ne hai uno, altrimenti il sostituto, altrimenti viene rifiutata, e una storia non sa distinguere un sostituto dal valore vero, che è proprio lo scopo di darne uno. Ogni lettura che non ha avuto il valore vero è l'avviso di cui sopra.
 
 ## Il player è il ciclo, scritto una volta sola
 
@@ -82,6 +98,8 @@ Ogni binding traduce questo nei tipi propri del suo linguaggio. In un linguaggio
 ## Salvare è una stringa
 
 Un **checkpoint** è il turno su cui si trova la storia, scritto come JSON, senza fermarla. Una **pausa** scrive lo stesso salvataggio e poi termina la sessione, fermando il suono nel frattempo. Entrambi esistono solo mentre la storia è su un passaggio o su un modulo, perché una storia nel mezzo di un'attesa non ha un punto stabile da cui riprendere. Conserva il salvataggio insieme al seme e alla lingua, e riprendi con una nuova sessione sulla stessa campagna.
+
+Due cose restano fuori da un salvataggio di proposito. **Le risposte del lettore ai permessi** non ci sono: una sessione ripresa chiede di nuovo, e un host che le ricorda risponde di nuovo senza mostrare la domanda. Un riavvio le mantiene, perché il computer del lettore non è cambiato quando la storia è ricominciata. **L'avanzamento di un conto alla rovescia** non c'è nemmeno lui: la metà già passata era il tuo orologio e mai quello del motore, quindi una storia ripresa su un passaggio a tempo ricomincia la sua attesa da capo.
 
 Un salvataggio nomina la storia da cui proviene. Riprendere un salvataggio la cui lavagna o scheda la campagna non ha più viene rifiutato per nome. È il momento di dire al giocatore che il salvataggio viene da una versione più vecchia della storia. Un salvataggio non porta con sé né la posizione dei dadi né quella del soundscape: lo stesso seme dà gli stessi lanci futuri, e un sottofondo musicale riparte dall'inizio. Un host che ha bisogno dell'esatta continuazione dei dadi legge lo stato del generatore dalla vecchia sessione e lo imposta sulla nuova.
 
@@ -118,7 +136,7 @@ Una campagna o una sessione è usata da un chiamante alla volta e può passare d
 
 ## Come un host dimostra di essere corretto
 
-Ogni release del motore porta con sé le **fixture di conformità**: piccole campagne, ciascuna con gli input da riprodurre e la traccia e le callback che un host corretto produce. Ogni binding esegue ogni fixture attraverso la propria API, sia con la sessione sia con il player, quindi un binding che le supera è il motore per quanto una storia riesca a distinguere. Un host costruito su un binding lo eredita e deve solo testare la propria interfaccia. Per una verifica rapida sulla tua campagna, il player da terminale presente in ogni archivio desktop del motore, `ripple <bundle> --auto --seed N`, racconta la storia che un host dovrebbe raccontare per quel seme.
+Ogni release del motore porta con sé le **fixture di conformità**: piccole campagne, ciascuna con gli input da riprodurre e la traccia e le callback che un host corretto produce. Ogni binding esegue ogni fixture attraverso la propria API, sia con la sessione sia con il player, quindi un binding che le supera è il motore per quanto una storia riesca a distinguere. Un host costruito su un binding lo eredita e deve solo testare la propria interfaccia. Per una verifica rapida sulla tua campagna, il player da terminale presente in ogni archivio desktop del motore, `ripple <bundle> --auto --seed N`, racconta la storia che un host dovrebbe raccontare per quel seme. Con `--auto` dice no a ogni permesso e non fa mai partire un conto alla rovescia, così un giro con un seme è lo stesso giro domani; `--allow <tipo>` e `--stand-in <tipo>=<testo>`, con `dateTime` o `location` come tipo, rispondono a un permesso in anticipo. Senza `--auto` chiede sul suo input, una volta per tipo, e fa scorrere i conti alla rovescia su un thread di lettura.
 
 ## Che cosa viene dopo
 

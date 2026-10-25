@@ -7,7 +7,7 @@ sidebar:
 
 import Shot from '../../../components/Shot.astro';
 
-A story can hold Python in three places: a Script node runs a file of it, a sentence in a passage can hold a snippet of it, and a console beside every script is a place to try a line. The branching, the dice, the variables and the state machines are nodes. This page is about the shape that decision gave the feature: why it is a sandbox, why it is not all of Python, why a passage may look but not touch, and why the same campaign can ship with the interpreter or without it.
+A story can hold Python in four places: a Script node runs a file of it, a sentence in a passage can hold a snippet of it, so can the words of a Localized string, and a console beside every script is a place to try a line. The branching, the dice, the variables and the state machines are nodes. This page is about the shape that decision gave the feature: why it is a sandbox, why it is not all of Python, why a passage may look but not touch, and why the same campaign can ship with the interpreter or without it.
 
 <Shot name="python" />
 
@@ -19,6 +19,10 @@ The cost is that it is Python, and not all of Python. There is no `class`, no `i
 
 Missing `random` is a deliberate gap with a story-shaped answer. The Dice roller, Random number and Weighted branch nodes are how a story rolls, so a roll is a node and not a call buried in a file.
 
+### Why the world is asked for
+
+The sandbox has no clock and no sensor of its own, and a story may still read what time it is and where the reader is: `datetime.now()` and `date.today()` for the clock, `location_get()` and `location_distance(latitude, longitude)` for the position. The engine never reaches for either. It answers only what the host hands over, and only when the reader allows it: a story that reads either is asked about it before it begins. A read the reader did not allow raises Python's `PermissionError`, which a script catches to write what the story says instead. A reader may also give a stand-in, which is answered as if it were real. [The world outside the story](/reference/python/the-world/) has what each read answers and when it is refused.
+
 ### Why the API passes dicts
 
 No `class` has two consequences that shape the whole API. A component or an entity crosses into Python as a **dict**, so it is `component_get("Goblin")["HP"]` and never `goblin.hp`. And there is no object syntax to build a nicer one: there is no `import ripple` and nothing to instantiate. Everything a script may call is a **host function**, bound under the name an author types and present without an `import`, answered by the app or by the runtime playing the campaign.
@@ -29,7 +33,7 @@ A value crosses from the app to Python through JSON, so what `entity_get`, `comp
 
 ### Why a call is strict
 
-Every optional argument is keyword-only, and a wrong call raises instead of answering. The check exists because the interpreter hands an unknown keyword straight through with no error. Without it, a typo in `of=` would behave as though the argument had been left out, and the call would behave as though the argument had been left out. A loud failure at the call is cheaper than a plausible wrong answer. The three functions that predate the rule, `component()`, `components()` and `set_attribute()`, are exempt for the opposite reason: every passage already written calls them, so what they do with a mistake is as frozen as their names. The names are a contract with every script written against them, and they are added to rather than repurposed.
+The optional `of` is keyword-only, and a wrong call raises instead of answering. The check exists because the interpreter hands an unknown keyword straight through with no error. Without it, a typo in `of=` would be ignored, and the call would behave as though the argument had been left out. A loud failure at the call is cheaper than a plausible wrong answer. The three functions that predate the rule, `component()`, `components()` and `set_attribute()`, are exempt for the opposite reason: every passage already written calls them, so what they do with a mistake is as frozen as their names. The names are a contract with every script written against them, and they are added to rather than repurposed.
 
 The same reasoning makes `entity_create` refuse a name that is already taken instead of returning the existing entity. A script asking for a name it can already see wants to be told, rather than have the mistake surface passages later. The Component and Spawn nodes are get-or-create, because that is what lets a node be re-entered and a paused campaign survive being resumed.
 
@@ -39,7 +43,7 @@ Host functions also cannot be called inside `map()`, `filter()` or `sorted(key=�
 
 Python appears in five places, which the API calls surfaces: a Script node, a passage, the design-time console, an agent over MCP, and the console during a playthrough. Every function is bound on every surface. What differs is what a call does, and the differences follow one idea: **who is asking decides what may happen**.
 
-A Script node reads and writes, because it is a node on the board. A **passage** only reads. Making, changing or deleting an entity, or writing a console variable, is refused from inside prose, because a state change should be something you can point at on the canvas, and a goblin deleted by a sentence has nothing on the board to point at. The refusal renders in place as a `⚠` chip and the story carries on, so a mistake in prose degrades one sentence instead of ending the run. Every refusal is a single line, a `RuntimeError` a script can catch, and the sentences are fixed because scripts already branch on them.
+A Script node reads and writes, because it is a node on the board. A **passage** only reads. Making, changing or deleting an entity, or writing a console variable, is refused from inside prose, because a state change should be something you can point at on the canvas, and a goblin deleted by a sentence has nothing on the board to point at. The words of a Localized string are held to the same rule: their snippets run on the passage surface, over the inputs the card declares. The refusal renders in place as a `⚠` chip and the story carries on, so a mistake in prose degrades one sentence instead of ending the run. Every refusal is a single line, a `RuntimeError` a script can catch, and the sentences are fixed because scripts already branch on them.
 
 Playing a sound is refused from a passage for a different reason, and the difference is the instructive part. A sound changes no state. What it does is happen, and a passage's snippets run again on every redraw and every change of language, so a bell rung from prose would ring twice for a reader who switched to Italian, with no node on the board to explain why. The rule there is about repetition, not about state. A stinger belongs on a Play sound node before the passage, or in a Script node. The design-time sentence for the console and an agent is different again, so that nobody who hits one goes looking for the rule of the other.
 
@@ -63,7 +67,7 @@ The console beside every `.py` file and the console during a playthrough are the
 
 ## Turning it off
 
-A project written for a game, or for a player built without the interpreter, can say so: turn **Python** off under *Capabilities* in the project's settings. The reason this is a switch on the project rather than something found at export is timing. Every Script node, and every passage with a `{{ … }}` or a `ripple` block, is marked as an error on its card and listed in Messages as you write ([`E.EX.01`](/reference/diagnostics/#eex01) and [`E.EX.02`](/reference/diagnostics/#eex02)), and the campaign will not play or export until there are none. Turning it back on changes nothing about the project, so the switch costs nothing to try.
+A project written for a game, or for a player built without the interpreter, can say so: turn **Python** off under *Capabilities* in the project's settings. The reason this is a switch on the project rather than something found at export is timing. Every Script node, every passage with a `{{ … }}` or a `ripple` block, and every Localized string whose words run Python, is marked as an error on its card and listed in Messages as you write ([`E.EX.01`](/reference/diagnostics/#eex01), [`E.EX.02`](/reference/diagnostics/#eex02) and [`E.EX.03`](/reference/diagnostics/#eex03)), and the campaign will not play or export until there are none. Turning it back on changes nothing about the project, so the switch costs nothing to try.
 
 Behind it is the fact that the engine ships in two builds, one with the interpreter and a much smaller one without. Every exported campaign records whether it needs Python. The export dialog's *Needs no Python* option is the check made at the point of export. See [What an export is](/explanation/what-an-export-is/) for how a campaign is built and [How to build a campaign with no Python](/how-to/turn-python-off/) for the steps.
 
@@ -89,6 +93,7 @@ A compiled campaign carries the declarations (name, type and default), and a run
 
 - [How to run Python in a story](/how-to/script-a-passage/): writing a Script node and a snippet.
 - [How to build a campaign with no Python](/how-to/turn-python-off/): the project switch and the export check.
-- [Python reference](/reference/python/): the eighteen functions, the surfaces and the refusal sentences.
+- [Python reference](/reference/python/): the twenty-one functions, the surfaces and the refusal sentences.
+- [The world outside the story](/reference/python/the-world/): the clock and the reader's position, and what a refused read raises.
 - [The sandbox and its limits](/reference/python/sandbox/): what the report says and the numbers behind the limits.
 - [How a story runs](/explanation/how-a-story-runs/): where a Script node sits in the flow.

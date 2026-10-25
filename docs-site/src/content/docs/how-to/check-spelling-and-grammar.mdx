@@ -5,7 +5,7 @@ description: Read the underlines in a passage or a note, take a suggestion, teac
 
 import { Steps } from '@astrojs/starlight/components';
 
-Passages in an English language and Markdown notes are checked as you type, by [Harper](https://writewithharper.com/). A passage in another language is not checked, and neither is the Python in a passage. The checking happens on your machine: nothing you write is sent anywhere to be checked.
+Passages and Markdown notes in English are checked as you type, by [Harper](https://writewithharper.com/). A passage is checked in its own language, and a note in the project's default language, so a note is checked only when that language is an English one. Text in another language is not checked, and neither is the Python in a passage. The checking happens on your machine: nothing you write is sent anywhere to be checked.
 
 The colour of an underline says what it found: red for spelling, amber for grammar, blue for style.
 
@@ -18,7 +18,7 @@ The colour of an underline says what it found: red for spelling, amber for gramm
 
 </Steps>
 
-The line at the top of the menu is the checker's explanation, in English as the checker wrote it. **Ignore** stops underlining that one until the project is closed.
+The suggestions sit over the app's right-click menu for text, the one the Markdown, Python and reference fields share, with **Cut**, **Copy**, **Paste** and **Select all** and the shortcut beside each. The line at the top of the menu is the checker's explanation, in English as the checker wrote it. **Ignore** stops underlining that one until the project is closed.
 
 ## Teach the project a word
 

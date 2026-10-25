@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Everything the app does today, as eight areas rather than a line per
+ * Everything the app does today, as nine areas rather than a line per
  * feature: the card is a comparison, and a comparison reads at the level of
  * what a tier *has*, not what each part of it is called. Nothing here is held
  * back for a paid tier.
@@ -29,7 +29,7 @@ const included = [
   "Internationalisation tools",
   "MCP integration",
   "Git integration",
-  "Spelling, grammar and style checking",
+  "Spelling, grammar and style checking, and dictation",
 ];
 
 /**
@@ -42,7 +42,7 @@ const included = [
  * roadmap is an invention.
  */
 const planned: { text: string; version?: string }[] = [
-  { text: "Real-time collaboration on a project, Figma-style", version: "1.8" },
+  { text: "Real-time collaboration on a project", version: "1.8" },
   { text: "Team workspaces, and managing who is in them" },
   { text: "Cost-effective storage for large media, through git LFS" },
   {

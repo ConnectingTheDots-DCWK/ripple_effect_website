@@ -7,16 +7,17 @@ The gear in the app bar, on every screen, opens the Settings dialog. Settings be
 
 Every option is a choice among a few named things, drawn as a segmented control with the current choice lit, and a line under the control says what that choice means. A choice takes effect when pressed; there is no Apply. The exception to the segmented control is *Language*, a drop-down.
 
-The app bar keeps only what has news: an available update, and the agents mark while an assistant is connected or could not reach the app. The home page's bar also has the News button, with a count while something is unread; see [News](#news).
+The app bar keeps only what has news: an available update, the agents mark while an assistant is connected or could not reach the app, and the permissions indicator while something is using the microphone, the location or the date and time, one glyph per kind in use. Hovering the indicator, or reaching it with the keyboard, says what is using each kind; pressing it opens the [Permissions](#permissions) page. The home page's bar also has the News button, with a count while something is unread; see [News](#news).
 
 ## Pages
 
-The dialog has six pages down a rail on its left. Every page has the same height, and both columns scroll.
+The dialog has seven pages down a rail on its left. Every page has the same height, and both columns scroll.
 
 | Page | Rail description | Holds |
 | --- | --- | --- |
 | *General* | Appearance, accessibility, language | How the app looks, reads and plays |
 | *Data control* | What leaves this machine | *Usage statistics* |
+| *Permissions* | What this app may use here | *Microphone*, *Location*, *Date and time*, and a stand-in for the last two; see [Permissions](#permissions) |
 | *Updates* | Channel, release notes, engine fixes, news | *Release channel*, *Release notes* and its filters, *Engine updates*, *Use the bundled engine*, *News* |
 | *Agents* | Assistants that reach the app | The assistant connection; see [MCP tools](/reference/mcp-tools/) |
 | *Support* | Questions, bugs, ideas | [The Support page](#support-page) |
@@ -40,6 +41,7 @@ Rows in page order.
 | *Playing* | *128*, *512*, *2,048*, *8,192*, *None* | The loop ceiling |
 | *Countdowns* | *As written*, *Ten times longer*, *Off* | How long you are given when a passage counts down to a choice |
 | *Writing* | *Check spelling and grammar*, *Off* | Whether English passages and notes are checked as you type; see [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) |
+| *Dictation* | *Off*, *On* | Whether a microphone floats over the passage and note editors; see [Dictation](#dictation) |
 
 ### Language
 
@@ -54,7 +56,9 @@ Rows in page order.
 
 *System* follows whatever the OS is set to. *Light* and *Dark* are always that theme. Appearance is independent of Contrast and Colour vision, so dark and *More* contrast can be on together.
 
-The default look is quiet and monochrome: the main button in each view is filled with the text colour, and selection, focus and the active tab are drawn in it too, in light and dark alike. Colour is kept for what it tells you: node families, traced routes, version-control marks and warnings. Links in Markdown are underlined, and the app icon is a dark plate with the mark in white.
+The default look is warm: a paper-toned light mode, a lamp-lit charcoal dark mode, and one ember accent for focus, selection and the main action on each screen. Node families, traced routes, version-control marks and tags take earthier colours to match. Links in Markdown are underlined, and the app icon is ember, matching the mark in the app bar.
+
+The app ships three typefaces of its own, so it looks the same on every machine: Instrument Sans for menus, panels and buttons, Literata for passages and notes (as you write them, on a board and while a campaign plays), and JetBrains Mono for code. Passages are larger and more open in the editor, and larger again while a campaign plays, in a column narrow enough to read comfortably however wide the window is.
 
 ### Links
 
@@ -79,6 +83,27 @@ The default look is quiet and monochrome: the main button in each view is filled
 | *As written* | Countdowns run for the time the author set |
 | *Ten times longer* | Every countdown, and the wait before it, lasts ten times as long |
 | *Off* | No countdown runs; the story waits for you to choose |
+
+### Dictation
+
+A section under *Writing*. Dictation is *Off* until you switch it on.
+
+| Row | Choices | Meaning |
+| --- | --- | --- |
+| *Dictation* | *Off*, *On* | *Off*: no microphone in the editors. *On*: a microphone floats over the passage and note editors; press it, speak, and your words are typed at the cursor. Everything is heard on this computer; nothing you say leaves it. |
+| *Listens with* | *English*, *Multilingual* | *English* is the most accurate for English, and English only. *Multilingual* hears 32 languages, and is told the language of the passage you are writing in; a note is in the project's default language. |
+
+Under them is a row per model, *English* and *Multilingual*:
+
+| Part | Shows |
+| --- | --- |
+| Status | *Not downloaded*, *Part-way* with how much has arrived, *Downloading* while it comes, or *Downloaded*, each with the model's size |
+| *Licence* | The licence NVIDIA publishes the model under, linked: the NVIDIA Open Model License for *English*, the OpenMDW License 1.1 for *Multilingual* |
+| **Download** / **Resume** | Fetches the model once: about 2.3 GB (English) or 2.4 GB (Multilingual). **Resume** carries on a download that was interrupted or stopped. |
+| Progress bar and **Stop** | While the model downloads |
+| Bin, *Delete from this computer* | Removes a downloaded or part-way model and gives the space back |
+
+Downloading the model that is not chosen, while the chosen one is not on disk, makes it the chosen one. A download that fails says why under the row: not enough free space, the download could not be reached or was refused, a file arrived damaged and was thrown away, or the model could not be written to disk. Switching dictation off frees the model loaded in memory; the files stay on disk. The request a download makes is in [What the app sends](/about/what-the-app-sends/#requests-you-cause), and using the model is [How to dictate a passage or a note](/how-to/dictate-a-passage/).
 
 ## Contrast
 
@@ -133,6 +158,46 @@ Text size is not a setting of the app.
 | *Usage statistics* | *Off*, *On* | *Off* until pressed to *On*. The full list of what is sent is shown under the control, and the identifier is shown while on. Nothing is sent until it has been on for an hour. |
 
 Switching off destroys the identifier. To have what was sent deleted, write to the address shown on the page with the identifier before switching off. Switching on again starts a new installation. What is sent is listed in [What the app sends](/about/what-the-app-sends/).
+
+## Permissions
+
+What the app may use on this computer. The page opens by saying that each of these is used only while something you started needs it, and that nothing it reads leaves this machine. It is not *Data control*, which is what leaves the machine: nothing on this page is sent.
+
+Rows in page order. Each is *Ask*, *Allow* or *Deny* with your answer lit, and a line under it says what the lit answer means. A choice takes effect when pressed.
+
+| Row | Used for | Default |
+| --- | --- | --- |
+| *Microphone* | Dictating in the editor | *Ask* |
+| *Location* | Stories you play that change with where you are | *Ask* |
+| *Date and time* | Stories you play that change with the time of day | *Allow* |
+
+| Answer | Meaning |
+| --- | --- |
+| *Ask* | You are asked the first time something needs it. A story asks before it begins; see [The campaign window](/reference/campaign-window/#a-story-that-reads-the-time-or-the-location). |
+| *Allow* | Used while something you started needs it, and never otherwise. |
+| *Deny* | Never used, and nothing asks. |
+
+The operating system has a say too, and is asked when the page opens or something needs the answer, and again whenever you come back to the app after that:
+
+- Before the system has been asked, the row says so, and choosing *Allow* asks it once.
+- When the system is why an *Allow* does not take, a line under the row says which: the system does not let the app use it, a policy on this computer does not, or there is nothing on the computer for the app to use.
+- **Open system settings** appears on the row when the system has refused and has a setting to change it in. On macOS a change made there applies once the app restarts, and the page says so.
+
+### Stand-ins
+
+*Location* and *Date and time* each have a *Stand-in* field: what a story is told whenever it cannot have the real value, because you did not allow it or because this computer has nothing to give. A story cannot tell a stand-in from the real thing. The microphone has none; a story never reads it.
+
+| Field | Accepts | Example |
+| --- | --- | --- |
+| *Date and time* | A date as year-month-day and a time on the 24-hour clock, with or without an offset from UTC. Without one, it is this computer's local time for that date. | `2026-10-19 18:30`, `2026-10-19T18:30+02:00` |
+| *Location* | A place, by name or as a latitude and a longitude | `Rome, Italy`, `41.9028, 12.4964` |
+
+- The field is checked as you type and kept as soon as it reads; there is no Apply. What does not read is said under the field and not kept.
+- A line under the field says what stories will see: the moment with its offset, the place, or the latitude and longitude. The time is shown as typed, never converted to this computer's zone.
+- Emptying the field removes the stand-in. With no stand-in for the date and time, a story that cannot have the real one is refused it.
+- Allowed the location, a story is told where this computer is, to about the nearest town. The stand-in is used when you do not allow it, or when this computer cannot say.
+
+How a script sees each answer is in [The world outside the story](/reference/python/the-world/#when-a-read-is-refused).
 
 ## Updates
 
@@ -237,12 +302,13 @@ The rest of what you might attach, and the tips, are in the Help menu rather tha
 
 ## First launch
 
-After the agreement pages, a first launch shows two pages. Both can be skipped, and everything on them is in Settings afterwards.
+After the agreement pages, a first launch shows three pages. All three can be skipped, and everything on them is in Settings afterwards.
 
 | Page | Contents |
 | --- | --- |
 | First | Appearance, *Contrast*, *Colour vision* and how wires are drawn, beside a small preview of the app that changes as you choose |
-| Second | The *Usage statistics* question with neither answer chosen and the full list of what would be sent, how crash reports are asked, and a mention of donations |
+| Second | *Write the way you like*: *Is most of your writing in English?*, with neither answer chosen. *Yes* offers two boxes, both ticked: *Check spelling and grammar*, and *Turn on dictation and download the English model*, which downloads once the first-launch pages are done, with the progress in Settings. *No* changes nothing. Added in 1.6, and shown only to a new installation. |
+| Third | The *Usage statistics* question with neither answer chosen and the full list of what would be sent, how crash reports are asked, and a mention of donations |
 
 ## Related
 

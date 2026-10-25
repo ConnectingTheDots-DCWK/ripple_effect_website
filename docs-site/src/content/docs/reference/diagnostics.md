@@ -332,7 +332,7 @@ Fix: replace each with the text it would have produced, or split the passage so 
 
 ### `E.EX.03`
 
-**A Localized string that runs Python, in a campaign that has to play without Python.** Its words have an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would answer a warning in its place. The message gives the count across every language.
+**A Localized string that runs Python, in a campaign that has to play without Python.** Its words have a `ripple` code block or an inline `{{ … }}` in at least one of its languages, and a player without the interpreter would answer a warning in its place. The message gives the count across every language.
 
 Fix: replace each with the text it would have produced, or use one Localized string per form and pick between them with a branch.
 

@@ -61,7 +61,7 @@ Il motore viene rilasciato come `engine-v<version>` in [ripple_engine_releases](
 | Percorso | Che cos'è |
 | --- | --- |
 | `lib/ripple_engine.wasm` | Il componente. |
-| `wit/` | L'interfaccia che esporta, `ripple:engine@1.5.0`. |
+| `wit/` | L'interfaccia che esporta, `ripple:engine@1.6.0`. |
 | `NOTICE` | Come sopra. |
 
 **L'archivio desktop**, `ripple-engine-<version>[-no-python]-<target>.tar.gz`, contiene anche due strumenti a riga di comando: `bin/ripple`, il player da terminale, che esegue un bundle (`ripple <bundle> --auto --seed N` per un'esecuzione senza intervento), e `bin/compile`, che compila un progetto in un bundle.
@@ -80,6 +80,7 @@ Il motore viene rilasciato come `engine-v<version>` in [ripple_engine_releases](
 | Contratto | Nome in codice | Legge campagne di | Release del motore |
 | --- | --- | --- | --- |
 | 1.5 | Multiclassing | 1.3, 1.4 e 1.5 | da 1.5.0 a 1.5.4 |
+| 1.6 | Grammar Lich | 1.3, 1.4, 1.5 e 1.6 | 1.6.0 |
 
 La versione di un binding è il `MAJOR.MINOR` del contratto più la sua patch. La release del motore che ogni binding fissa si trova nel file `engine.json` del suo repository.
 

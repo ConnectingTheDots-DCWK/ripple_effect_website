@@ -316,6 +316,7 @@ export default defineConfig({
 							{ slug: 'how-to/time-a-choice' },
 							{ slug: 'how-to/manage-languages' },
 							{ slug: 'how-to/check-spelling-and-grammar' },
+							{ slug: 'how-to/dictate-a-passage' },
 							{ slug: 'how-to/write-a-style-rule' },
 						] },
 						{ label: 'Data and state', translations: { it: 'Dati e stato' }, collapsed: false, items: [

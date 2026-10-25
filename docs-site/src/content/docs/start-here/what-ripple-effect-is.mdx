@@ -25,11 +25,17 @@ A story also needs things to remember, and the app gives three different homes f
 
 Computation can sit in a node on the board, or inside a sentence. [Python in a story](/explanation/python-in-a-story/) covers why both exist. A passage names a soundscape, which is music and sound on a timeline in a file of its own, and it stays in force until another replaces it, while a node or a script plays a sound once and the story carries on. See [Soundscapes and one-shot sounds](/explanation/soundscapes-and-sounds/).
 
+A story can also read the world outside it. It can read the date and time and, if you allow it, roughly where the computer is, from Python or from the cards in the **World** group of the Create menu, and a stand-in under Settings → Permissions answers when it cannot have the real one; [The world outside the story](/reference/python/the-world/) lists what it can ask. Words outside a passage can be in the reader's language as well: a *Localized string* card holds a piece of text per language, *Get locale* says which language and region the reader has, and *Convert* turns `12 km` into the units the reader's region measures in; see [How to add, switch off or change a project's languages](/how-to/manage-languages/). An Input card asks the reader for something, and a field on it can be optional or offer fixed answers to pick from.
+
 ## Playing and shipping use the same engine
 
-The play button runs the story from any node, with a trace beside it saying what the story did. It uses the same engine that an exported campaign runs, which is why a playthrough in the editor is evidence about the shipped story rather than an approximation of it; [Why the preview is the shipped story](/explanation/the-preview-is-the-shipped-story/) gives the argument.
+The play button runs the story from any node, with a trace beside it saying what the story did. A passage can put a countdown on its choices and take one by itself if the reader waits too long; see [How to put a countdown on a choice](/how-to/time-a-choice/). It uses the same engine that an exported campaign runs, which is why a playthrough in the editor is evidence about the shipped story rather than an approximation of it; [Why the preview is the shipped story](/explanation/the-preview-is-the-shipped-story/) gives the argument.
 
 Export then compiles the project into a campaign that a runtime plays with no editor near it, or copies the project for a translator. These are different things with different purposes, set out in [What an export is](/explanation/what-an-export-is/). A game that embeds the story can be told what happens in it through named host callbacks, described in [Host callbacks](/explanation/host-callbacks/).
+
+## Help with the writing
+
+Passages in English and Markdown notes are checked for spelling, grammar and style as you write, on your own machine, with a dictionary per project that is shared with everyone who opens it and style rules of your own written in Weir. See [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) and [How to write a style rule](/how-to/write-a-style-rule/). Dictation types what you say at the cursor, heard on your computer by a model you download once; see [How to dictate a passage or a note](/how-to/dictate-a-passage/).
 
 ## Finding your way around a large story
 

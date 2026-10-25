@@ -83,7 +83,7 @@ Without prior written permission you may not:
 
 ### Third-party components
 
-Ripple Effect is built on software written by other people, each under its own licence. Those licences govern those components and are unaffected by the EULA. The complete list is in the application, under **About → Third-party licences**.
+Ripple Effect is built on software written by other people, each under its own licence. Those licences govern those components and are unaffected by the EULA. The complete list is in the application, under **About → Third-party licences**. Since 1.6 it also covers the native code inside the app's packages, the icon fonts and the app's three typefaces, and the two speech models dictation downloads. Those models are downloaded rather than shipped, and are under NVIDIA's licences, not the EULA.
 
 ### No warranty
 

@@ -343,7 +343,7 @@ once at the top — so it is re-read against `wire.dart` whenever a tool is
 added or an argument reworded, and the count in its frontmatter and on the
 connect how-to moves with it. The diagnostics page has a heading per code,
 which the messages panel links. The nodes page is generated, below.
-*About* is the licence, the open-source packages, including the one that is
+*About* is the licence, the open-source packages, including the ones that are
 not ours, and what the app sends.
 
 Two claims deliberately not made anywhere: that nothing leaves the machine
