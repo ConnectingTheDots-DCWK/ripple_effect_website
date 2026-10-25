@@ -30,7 +30,7 @@ export function AudienceHero({
     href.startsWith("http") ? <a href={href}>{label}</a> : <Link href={href}>{label}</Link>;
 
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 lg:pt-40">
+    <section className="relative overflow-hidden pt-32 pb-28 lg:pt-40 lg:pb-32">
       <Lamp />
       <Reveal className="relative mx-auto max-w-4xl px-4 text-center lg:px-8">
         <p data-reveal className="text-sm font-medium text-brand">

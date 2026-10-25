@@ -16,7 +16,7 @@ export async function Hero() {
   const latest = await fetchLatestRelease();
 
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 lg:pt-40">
+    <section className="relative overflow-hidden pt-32 pb-28 lg:pt-40 lg:pb-32">
       <Lamp />
       {/*
         * No background, for now. The painting under the hero was tinted to

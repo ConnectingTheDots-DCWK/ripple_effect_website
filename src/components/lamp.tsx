@@ -10,7 +10,10 @@ import { gsap, useGSAP } from "@/lib/gsap";
  * were the board, and only the part under the lamp showed it.
  *
  * Put it first inside a `relative` section; it listens to that section and
- * fills it. It follows the pointer with a little lag (`quickTo`), fades in
+ * fills it. **It fades out over the section's last 96px and first 48px**, so
+ * the light never stops in a line against whatever comes next — the section
+ * still wants room below its content for the pool to fall into, which the
+ * heroes give it. It follows the pointer with a little lag (`quickTo`), fades in
  * when the pointer arrives and out when it leaves.
  *
  * **Only for a pointer that hovers, and only with motion allowed.** On a
@@ -18,6 +21,9 @@ import { gsap, useGSAP } from "@/lib/gsap";
  * for less motion a light chasing the pointer is exactly what they asked
  * not to have — in both, nothing is drawn at all.
  */
+/** Faded at both ends of its section, so the light has no edge. */
+const EDGES = "linear-gradient(to bottom, transparent 0, black 48px, black calc(100% - 96px), transparent 100%)";
+
 export function Lamp() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,7 +84,14 @@ export function Lamp() {
       ref={ref}
       aria-hidden
       className="pointer-events-none absolute inset-0 opacity-0"
-      style={{ "--lx": "50%", "--ly": "50%" } as React.CSSProperties}
+      style={
+        {
+          "--lx": "50%",
+          "--ly": "50%",
+          maskImage: EDGES,
+          WebkitMaskImage: EDGES,
+        } as React.CSSProperties
+      }
     >
       {/* The light: the faintest warmth of the ember, far softer than any
           control that wears it — it is the lamp, not the accent. */}
