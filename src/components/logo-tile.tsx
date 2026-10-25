@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  * giving three of seven a disc and four of seven none is the kind of
  * inconsistency that reads as a bug.
  *
- * White rather than `--card`, because `--card` is `#14171c` in dark and the
+ * White rather than `--card`, because `--card` is `#221f1b` in dark and the
  * black marks would be no better off. This is the one place on the site with a
  * fixed colour that does not follow the theme, and it is fixed for the same
  * reason a photograph does not follow the theme.

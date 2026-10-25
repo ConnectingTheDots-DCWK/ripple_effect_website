@@ -101,8 +101,11 @@ correct in both.
 
 Asides are keyed by hue rather than by meaning — note is blue, tip is purple,
 caution is orange, danger is red — so the app's own `AppStatus` colours land on
-them by name. A caution here is the same yellow as a caution in the app's
-messages panel.
+them by name. A caution here is the same amber as a caution in the app's
+messages panel. **Blue and purple are the ink, `--foreground`, not the
+accent.** They pointed at `--primary` and `--brand` while those were the ink;
+since Lamplight made the accent ember, an ember note would spend the chrome's
+one hue on a tinted box, and the accent is a pointer rather than a paint.
 
 **The file is deliberately unlayered.** Starlight's props live in
 `@layer starlight.base`, and unlayered CSS beats layered CSS regardless of
@@ -424,8 +427,8 @@ cropped out of the canvas, at a third of the page's width. No manifest entry
 per card: the brief is the same sentence forty times. **These are not
 captured by hand.** `melos run editor:docs:node-shots` in the app repository
 (`apps/editor/test/tool/generate_node_shots_test.dart`) renders every card the two
-palettes offer through the real `GraphViewer`, in both themes, with the
-machine's fonts loaded, and writes the eighty files here — two per type, and
+palettes offer through the real `GraphViewer`, in both themes, in the
+house faces the app bundles, and writes the files here — two per type, and
 it names any file left over from a type that has gone; rerun it when a card
 changes or one is added, and commit the result on this side. It is on the
 app's release checklist, since a release is when cards have changed.

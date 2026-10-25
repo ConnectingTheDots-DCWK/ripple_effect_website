@@ -77,31 +77,32 @@
 	:root,
 	::backdrop {
 		/* AppNeutrals.dark */
-		--background: #0d0f13; /* surface          */
-		--foreground: #e8eaef; /* onSurface        */
-		--card: #14171c; /* containerLow     */
-		--popover: #1a1d23; /* container        */
-		--muted: #1a1d23;
-		--muted-foreground: #99a0ae; /* onSurfaceVariant */
-		--border: #262a32; /* outlineVariant   */
+		--background: #1c1915; /* surface          */
+		--foreground: #f0e8df; /* onSurface        */
+		--card: #221f1b; /* containerLow     */
+		--popover: #26231f; /* container        */
+		--muted: #26231f;
+		--muted-foreground: #b6b2ad; /* onSurfaceVariant */
+		--border: #36322e; /* outlineVariant   */
 
-		/* The accent is the ink, as in the app since 1.5: a pale fill takes a
-		   dark label. `--brand` is the mark's colour, a token of its own;
-		   `--primary` is what links and controls use. Both are the ink. */
-		--brand: #e8eaef;
-		--primary: #e8eaef;
-		--primary-foreground: #0d0f13;
-		--ring: #e8eaef;
+		/* The accent is ember, the one hue in the app's chrome since
+		   Lamplight, and in dark it takes a dark label. `--brand` is the
+		   mark's colour, a token of its own; `--primary` is what links and
+		   controls use. Both are the ember. */
+		--brand: #ee8f63;
+		--primary: #ee8f63;
+		--primary-foreground: #16130f;
+		--ring: #ee8f63;
 
 		/* The glint's sweep. White in both modes, because a highlight is
 		   lighter than the thing it crosses; only how hard it has to be pushed
-		   changes. #e8eaef is nearly white already, so 0.85 here against 0.4
-		   on the light theme's ink is what registers at all. */
+		   changes. #ee8f63 is light already, so 0.85 here against 0.4 on the
+		   light theme's deep ember is what registers at all. */
 		--glint: rgb(255 255 255 / 0.85);
 
-		--destructive: #cf4538; /* AppStatus.stop.dark    */
-		--go: #398358; /* AppStatus.go.dark      */
-		--caution: #fbbf24; /* AppStatus.caution.dark */
+		--destructive: #e26272; /* AppStatus.stop.dark    */
+		--go: #6fc082; /* AppStatus.go.dark      */
+		--caution: #f0be67; /* AppStatus.caution.dark */
 
 		--radius: 0.75rem;
 		--motion-fast: 120ms;
@@ -113,24 +114,24 @@
 	:root[data-theme='light'],
 	[data-theme='light'] ::backdrop {
 		/* AppNeutrals.light */
-		--background: #f3f5f9; /* surface          */
-		--foreground: #15171c; /* onSurface        */
-		--card: #ffffff; /* containerLowest  */
-		--popover: #ffffff;
-		--muted: #edeff4;
-		--muted-foreground: #5a6070; /* onSurfaceVariant */
-		--border: #dfe3eb; /* outlineVariant   */
+		--background: #f5f0eb; /* surface          */
+		--foreground: #231d17; /* onSurface        */
+		--card: #fffdf7; /* containerLowest  */
+		--popover: #fffdf7;
+		--muted: #ede9e3;
+		--muted-foreground: #605b57; /* onSurfaceVariant */
+		--border: #e0dbd6; /* outlineVariant   */
 
-		/* The ink. White on it is 18:1. */
-		--brand: #15171c;
-		--primary: #15171c;
+		/* The deep ember. White on it is 6.66:1. */
+		--brand: #9f3d15;
+		--primary: #9f3d15;
 		--primary-foreground: #ffffff;
-		--ring: #15171c;
+		--ring: #9f3d15;
 		--glint: rgb(255 255 255 / 0.4);
 
-		--destructive: #c0392b; /* AppStatus.stop.light    */
-		--go: #2f7a4f; /* AppStatus.go.light      */
-		--caution: #a04a08; /* AppStatus.caution.light */
+		--destructive: #a11738; /* AppStatus.stop.light    */
+		--go: #307041; /* AppStatus.go.light      */
+		--caution: #8d4f0c; /* AppStatus.caution.light */
 	}
 
 	/* ------------------------------------------------------------------
@@ -196,7 +197,13 @@
 		 * Asides are keyed by hue rather than by meaning — note is blue, tip is
 		 * purple, caution is orange, danger is red — so the app's own status
 		 * colours land on them by name. A caution in the docs is then the same
-		 * yellow as a caution in the app's messages panel.
+		 * amber as a caution in the app's messages panel.
+		 *
+		 * **Blue and purple are the ink, not the ember.** They pointed at
+		 * `--primary` and `--brand` while those were the ink; an aside is a
+		 * tinted block, and the accent is a pointer rather than a paint, so
+		 * a note or a tip in ember would be the chrome's one hue spent on a
+		 * box. Pointing them at `--foreground` keeps what they looked like.
 		 *
 		 * Each hue needs a `-low` (a tint to sit behind text) and a `-high`
 		 * (the readable variant). Both are mixed from the mid rather than
@@ -204,8 +211,8 @@
 		 * text, and since those two swap places between light and dark, one
 		 * formula is correct in both.
 		 */
-		--sl-color-blue: var(--primary);
-		--sl-color-purple: var(--brand);
+		--sl-color-blue: var(--foreground);
+		--sl-color-purple: var(--foreground);
 		--sl-color-green: var(--go);
 		--sl-color-orange: var(--caution);
 		--sl-color-red: var(--destructive);

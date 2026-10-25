@@ -53,8 +53,8 @@ export default async function PostOgImage({
           justifyContent: "space-between",
           position: "relative",
           padding: 72,
-          background: "#0d0f13",
-          color: "#e8eaef",
+          background: "#1c1915",
+          color: "#f0e8df",
           fontFamily: "sans-serif",
         }}
       >
@@ -68,7 +68,7 @@ export default async function PostOgImage({
             position: "absolute",
             inset: 0,
             display: "flex",
-            background: "rgba(13,15,19,0.86)",
+            background: "rgba(28,25,21,0.86)",
           }}
         />
 
@@ -80,7 +80,7 @@ export default async function PostOgImage({
             gap: 16,
           }}
         >
-          <OgMark size={40} color="#e8eaef" />
+          <OgMark size={40} color="#ee8f63" />
           <span style={{ fontSize: 28, fontWeight: 600, display: "flex" }}>
             {siteConfig.name}
           </span>
@@ -101,12 +101,12 @@ export default async function PostOgImage({
                 alignItems: "center",
                 gap: 14,
                 fontSize: 22,
-                color: "#99a0ae",
+                color: "#b6b2ad",
               }}
             >
               <span
                 style={{
-                  border: "1px solid #262a32",
+                  border: "1px solid #36322e",
                   borderRadius: 999,
                   padding: "4px 14px",
                   display: "flex",
@@ -115,7 +115,7 @@ export default async function PostOgImage({
                 {post.category}
               </span>
               <span>{formatDate(post.date)}</span>
-              <span style={{ color: "#545b69" }}>•</span>
+              <span style={{ color: "#85817c" }}>•</span>
               <span>{post.minutes} min read</span>
             </div>
           )}
@@ -142,7 +142,7 @@ export default async function PostOgImage({
             position: "relative",
             display: "flex",
             fontSize: 22,
-            color: "#99a0ae",
+            color: "#b6b2ad",
           }}
         >
           The Ripple Effect blog

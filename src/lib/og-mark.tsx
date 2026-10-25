@@ -47,7 +47,7 @@ export function OgMark({ size, color }: { size: number; color: string }) {
   );
 }
 
-/** The generated app icon: the mark in white on the gradient plate. */
+/** The generated app icon: the mark in Lamplight's paper on the ember plate. */
 export function OgPlate({ size }: { size: number }) {
   return (
     <div
@@ -61,7 +61,7 @@ export function OgPlate({ size }: { size: number }) {
         backgroundImage: `linear-gradient(135deg, ${iconPlate.gradientFrom}, ${iconPlate.gradientTo})`,
       }}
     >
-      <OgMark size={size * (1 - iconPlate.markInset * 2)} color="#ffffff" />
+      <OgMark size={size * (1 - iconPlate.markInset * 2)} color="#fffdf7" />
     </div>
   );
 }

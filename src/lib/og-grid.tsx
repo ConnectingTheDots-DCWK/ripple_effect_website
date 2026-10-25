@@ -13,7 +13,7 @@ export function OgGrid({
   width,
   height,
   step = 48,
-  color = "#242932",
+  color = "#35312d",
 }: {
   width: number;
   height: number;

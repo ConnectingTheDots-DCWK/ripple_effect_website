@@ -303,20 +303,20 @@ rounding error.
 
 Two things carry over that are easy to lose:
 
-- The neutral ramp is not grey. It sits at roughly 225°, at a saturation low
-  enough to read as grey. *"A cool grey looks chosen; a pure grey looks
-  defaulted."*
+- The neutral ramp is not grey. Since Lamplight it sits at about 70° in
+  OKLCH with a chroma under 0.01 — paper, linen and oak rather than screen
+  glass, and too faint to name (the app's ADR *the-chrome-has-one-hue*).
 - **The page is the grey one and a card sits lighter on it, in both modes.**
   Material's light ramp runs the other way, which puts a card underneath the
   page it is on and makes a panel read as a dent.
 
 `--go` and `--caution` are `AppStatus`'s own two, carried over so that a
 caveat on this site and a caveat in the app's messages panel are the same
-yellow. The hero's early-development disclaimer is `text-caution` and nothing
+amber. The hero's early-development disclaimer is `text-caution` and nothing
 else: **a foreground on the page, not a filled banner.** Accent is a pointer
 rather than a paint, and a tinted strip under the hero would shout louder than
 the thing it is warning about. Measured against both grounds before it was
-used — 4.60:1 light, 11.49:1 dark — because a status colour is normally tuned
+used — 5.70:1 light, 10.23:1 dark — because a status colour is normally tuned
 to sit *behind* text, and this one is being asked to *be* text.
 
 **Its wording is "Early days — you may still meet the odd rough edge", and
@@ -332,25 +332,34 @@ the two would disagree the day 1.1 ships.
 
 **`--premium` is the paid tier's accent, and it is the one token here that is
 not the app's.** The app has no paid surface yet, so there is nothing to
-transcribe; the colour was chosen for the site — as the complement of the
-indigo the brand was until 1.5, and kept when the rest went monochrome, so it
-is now the one hue on the site that is not a status — olive-gold rather than
-amber so nobody reads it as
-`--caution`, which sits two doors down the hue circle — and measured the way
-the others were: `#8a6512` light is 4.87:1 on the page and carries white at
-5.32:1, `#e3c06a` dark is 10.97:1 and carries ink, the brand foreground's own
-arrangement. **It goes on paid-tier surfaces and nowhere else**: the pricing
+transcribe; the colour was chosen for the site. **It is a slate-teal since
+Lamplight**, `#2a6378` light and `#82c3d6` dark — ember's complement, as the
+olive-gold before it was the complement of the indigo the brand was until
+1.5. The gold had to go: Lamplight's dark caution, `#f0be67`, landed about 7
+apart from it in CIE76, so a paid-tier chip and a warning would have been one
+colour. The teal is more than 40 from every status and from the ember in both
+modes, and was measured the way the others were: light is 5.88:1 on the page
+and carries white at 6.66:1, dark is 8.94:1 and carries `#16130f` at 9.46:1,
+the brand foreground's own arrangement. **It goes on paid-tier surfaces and nowhere else**: the pricing
 card's border and chip and ticks, the `premium` button variant the waitlist
 wears, the roadmap chip of a paywalled release. A gold thing on this site
-means "this is about the paid tier", and the meaning only holds while nothing
-else borrows it for emphasis.
+means "this is about the paid tier" — the teal does now — and the meaning
+only holds while nothing else borrows it for emphasis.
 
-**The accent is the ink, as in the app since 1.5.** `--primary` and `--ring`
-are `#15171c` light and `#e8eaef` dark — the app's `onSurface`, which is what
-its `primary` now is — and `--brand`, the **mark's** colour, is the same ink.
-It stays a token of its own so the mark can move without moving every
-control. Until 1.5 it was the periwinkle seed `#6C7BF5`, with `--primary` a
-legible indigo derived from it.
+**The accent is ember, as in the app since Lamplight.** `--primary` and
+`--ring` are `#9f3d15` light and `#ee8f63` dark — the app's `primary`, one
+ember per theme doing both of its jobs, text and fill — and `--brand`, the
+**mark's** colour, is the same ember, as the app bar's mark is. It stays a
+token of its own so the mark can move without moving every control. It is
+spent where the ink was: a link, a filled action, the focus ring, the mark —
+a pointer, never a paint. In 1.5 the accent was the ink (`#15171c` /
+`#e8eaef`); before that, the periwinkle seed `#6C7BF5`.
+
+**The favicon is the app icon's ember plate.** `src/lib/brand.ts` carries the
+icon generator's numbers — the seed `#9f3d15` at HSL lightness +0.06 and
+-0.14, the mark in Lamplight's paper `#fffdf7` — and the docs site's
+`public/favicon.svg` is the same numbers by hand. The social cards are dark
+and spell the dark ramp's hexes inline, because satori reads no stylesheet.
 
 The radius scale is `AppRadius` — 8 / 12 / 16 / 24 — overriding the template's
 multipliers off `0.625rem`, which landed on none of them.
@@ -859,9 +868,10 @@ nothing. The alternative was an SVG `feColorMatrix` duotone, which is more
 precise and would have meant a hand-written matrix per theme, recomputed by
 hand every time the token moved. This one follows the token — which is why,
 when `--brand` became the ink in 1.5, the painting became greyscale with no
+change here, and why it is lamp-lit ember since Lamplight, again with no
 change here.
 
-It tints to **`--brand`, not `--primary`**. The two are the same ink today,
+It tints to **`--brand`, not `--primary`**. The two are the same ember today,
 but they are different promises: `--primary` is what text and controls are
 drawn in, and `--brand` is the identity, which is what a picture of the
 product's world is tinted to.

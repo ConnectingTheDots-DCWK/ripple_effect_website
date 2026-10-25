@@ -14,9 +14,9 @@
  *
  * Two things carry over that are easy to lose:
  *
- * - The neutral ramp is not grey. It sits at roughly 225 degrees, at a
- *   saturation low enough to read as grey — "a cool grey looks chosen; a pure
- *   grey looks defaulted".
+ * - The neutral ramp is not grey. Since Lamplight it sits at about 70 degrees
+ *   in OKLCH with a chroma under 0.01 — paper, linen and oak rather than
+ *   screen glass, and too faint to name.
  * - **The page is the grey one and a card sits lighter on it, in both modes.**
  *   Material's light ramp runs the other way, which puts a card underneath the
  *   page it is on and makes a panel read as a dent.
@@ -84,102 +84,104 @@
   --radius: 0.75rem;
 
   /* AppNeutrals.light */
-  --background: #f3f5f9; /* surface           */
-  --foreground: #15171c; /* onSurface         */
-  --card: #ffffff; /* containerLowest   */
-  --card-foreground: #15171c;
-  --popover: #ffffff;
-  --popover-foreground: #15171c;
-  --secondary: #edeff4; /* container         */
-  --secondary-foreground: #15171c;
-  --muted: #edeff4;
-  --muted-foreground: #5a6070; /* onSurfaceVariant  */
-  --accent: #e4e8ef; /* containerHigh     */
-  --accent-foreground: #15171c;
-  --border: #dfe3eb; /* outlineVariant    */
-  --input: #dfe3eb;
+  --background: #f5f0eb; /* surface           */
+  --foreground: #231d17; /* onSurface         */
+  --card: #fffdf7; /* containerLowest   */
+  --card-foreground: #231d17;
+  --popover: #fffdf7;
+  --popover-foreground: #231d17;
+  --secondary: #ede9e3; /* container         */
+  --secondary-foreground: #231d17;
+  --muted: #ede9e3;
+  --muted-foreground: #605b57; /* onSurfaceVariant  */
+  --accent: #e6e1dc; /* containerHigh     */
+  --accent-foreground: #231d17;
+  --border: #e0dbd6; /* outlineVariant    */
+  --input: #e0dbd6;
 
-  /* The accent is the ink. Since 1.5 the app has no hue in its chrome —
-     `primary` is `onSurface` — and neither does the site: filled controls,
-     links, the focus ring and the mark are all #15171c here and #e8eaef in
-     dark. White on it is 18:1. `--brand` is the mark's colour and stays a
-     token of its own, so the mark can move without moving every control. */
-  --brand: #15171c;
-  --primary: #15171c;
+  /* The accent is ember, the one hue in the app's chrome since Lamplight
+     (`AppTheme._ember`; ADR the-chrome-has-one-hue). Filled controls, links,
+     the focus ring and the mark are #9f3d15 here and #ee8f63 in dark — a
+     pointer, never a paint. 5.88:1 as text on the page, 6.55:1 on a card,
+     white on it 6.66:1. `--brand` is the mark's colour and stays a token of
+     its own, so the mark can move without moving every control. */
+  --brand: #9f3d15;
+  --primary: #9f3d15;
   --primary-foreground: #ffffff;
-  --ring: #15171c;
+  --ring: #9f3d15;
 
   /* The travelling border light's stops. It is the one gradient on the site
      and the one place the house rule is deliberately set aside — see
-     CLAUDE.md. A grey ramp off the ink, so it reads as a highlight moving
-     over the edge rather than as a colour arriving. */
-  --brand-from: #15171c;
-  --brand-via: #3a3f4a;
-  --brand-to: #5a6070;
+     CLAUDE.md. A ramp of the one ember, so it reads as a highlight moving
+     over the edge rather than as a second colour arriving. */
+  --brand-from: #9f3d15;
+  --brand-via: #aa4820;
+  --brand-to: #b4532a;
 
   /* The glint's sweep. White, because a highlight is lighter than the thing it
      crosses; see the `glint` utility at the foot of this file for why it is a
-     token per mode. On #15171c this lands at #737476, so 0.4 is plenty. */
+     token per mode. */
   --glint: rgb(255 255 255 / 0.4);
 
-  /* What reads on the brand gradient. The ramp follows the mode now, so the
-     foreground does too: white here is 18:1 at the darkest stop and 6.3:1 at
-     the lightest. */
+  /* What reads on the brand gradient: white is 6.66:1 at the darkest stop and
+     4.99:1 at the lightest. */
   --brand-foreground: #ffffff;
 
-  --destructive: #c0392b; /* AppStatus.stop.light    */
-  --go: #2f7a4f; /* AppStatus.go.light      */
-  --caution: #a04a08; /* AppStatus.caution.light */
+  --destructive: #a11738; /* AppStatus.stop.light    */
+  --go: #307041; /* AppStatus.go.light      */
+  --caution: #8d4f0c; /* AppStatus.caution.light */
   /* Not a token of the app's: the paid tier has no surface there yet. The one
-     hue the site keeps outside the statuses, and kept olive rather than amber
-     so it is not mistaken for `--caution`. 4.87:1 on the page, 5.32:1 on a card, and
-     white on it 5.32:1 — so it can fill a button. */
-  --premium: #8a6512;
+     hue the site keeps outside the statuses and the ember — a slate-teal,
+     ember's complement, after the olive-gold it was landed on Lamplight's
+     dark caution. 5.88:1 on the page, 6.54:1 on a card, and white on it
+     6.66:1 — so it can fill a button. */
+  --premium: #2a6378;
   --premium-foreground: #ffffff;
 }
 
 .dark {
   /* AppNeutrals.dark */
-  --background: #0d0f13; /* surface           */
-  --foreground: #e8eaef; /* onSurface         */
-  --card: #14171c; /* containerLow      */
-  --card-foreground: #e8eaef;
-  --popover: #1a1d23; /* container         */
-  --popover-foreground: #e8eaef;
-  --secondary: #1a1d23;
-  --secondary-foreground: #e8eaef;
-  --muted: #1a1d23;
-  --muted-foreground: #99a0ae; /* onSurfaceVariant  */
-  --accent: #21242b; /* containerHigh     */
-  --accent-foreground: #e8eaef;
-  --border: #262a32; /* outlineVariant    */
-  --input: #262a32;
+  --background: #1c1915; /* surface           */
+  --foreground: #f0e8df; /* onSurface         */
+  --card: #221f1b; /* containerLow      */
+  --card-foreground: #f0e8df;
+  --popover: #26231f; /* container         */
+  --popover-foreground: #f0e8df;
+  --secondary: #26231f;
+  --secondary-foreground: #f0e8df;
+  --muted: #26231f;
+  --muted-foreground: #b6b2ad; /* onSurfaceVariant  */
+  --accent: #2d2925; /* containerHigh     */
+  --accent-foreground: #f0e8df;
+  --border: #36322e; /* outlineVariant    */
+  --input: #36322e;
 
-  /* The ink again, the other way up: a pale fill takes a dark label. */
-  --brand: #e8eaef;
-  --primary: #e8eaef;
-  --primary-foreground: #0d0f13;
-  --ring: #e8eaef;
+  /* The ember for dark, under a dark label, as `onPrimary` is in the app:
+     7.29:1 as text on the page, and #16130f on it 7.71:1. */
+  --brand: #ee8f63;
+  --primary: #ee8f63;
+  --primary-foreground: #16130f;
+  --ring: #ee8f63;
 
-  --brand-from: #e8eaef;
-  --brand-via: #c4c8d1;
-  --brand-to: #99a0ae;
+  --brand-from: #ee8f63;
+  --brand-via: #e3845a;
+  --brand-to: #d87a4e;
 
-  /* Same white, nearly all of it. #e8eaef leaves little room above it, so
-     the sweep has to be close to opaque to register — see the note on the
-     `glint` utility for why it is not turned into a shadow instead. */
+  /* Same white, nearly all of it. #ee8f63 is light already, so the sweep has
+     to be close to opaque to register — see the note on the `glint` utility
+     for why it is not turned into a shadow instead. */
   --glint: rgb(255 255 255 / 0.85);
 
-  /* #0d0f13 on the ramp: 15.9:1 at the lightest stop, 7.3:1 at the darkest. */
-  --brand-foreground: #0d0f13;
+  /* #16130f on the ramp: 7.71:1 at the lightest stop, 6.01:1 at the darkest. */
+  --brand-foreground: #16130f;
 
-  --destructive: #cf4538; /* AppStatus.stop.dark    */
-  --go: #398358; /* AppStatus.go.dark      */
-  --caution: #fbbf24; /* AppStatus.caution.dark */
-  /* 10.97:1 on the page; ink on it 10.28:1, the same arrangement as the
+  --destructive: #e26272; /* AppStatus.stop.dark    */
+  --go: #6fc082; /* AppStatus.go.dark      */
+  --caution: #f0be67; /* AppStatus.caution.dark */
+  /* 8.94:1 on the page; #16130f on it 9.46:1, the same arrangement as the
      brand foreground — a pale fill takes dark text. */
-  --premium: #e3c06a;
-  --premium-foreground: #14171c;
+  --premium: #82c3d6;
+  --premium-foreground: #16130f;
 }
 
 @layer base {
@@ -235,10 +237,10 @@
  *
  * **The sweep is white in both modes; the alpha is what is corrected.**
  * velora's original hardcodes `rgba(255,255,255,0.35)`, tuned for one dark
- * button. Light mode's `--primary` is the ink, #15171c, and 0.4 white takes it
- * to #737476, a large step. Dark mode's is #e8eaef, nearly white already, so
- * there is very little room above it and only 0.85 registers at all. That is
- * the correction.
+ * button. Light mode's `--primary` is the deep ember, #9f3d15, and 0.4 white
+ * is a large step on it. Dark mode's is #ee8f63, light already, so there is
+ * little room above it and only 0.85 registers at all. That is the
+ * correction.
  *
  * **Darkening the dark-mode button instead was tried and is wrong.** It was
  * tried on the old pale lavender, which had no more headroom than this, and
