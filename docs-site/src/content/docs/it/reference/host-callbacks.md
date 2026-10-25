@@ -1,6 +1,6 @@
 ---
 title: Callback dell'host
-description: "Le regole per il nome di una callback, i diciotto eventi, i bersagli che ne puntano una, cosa succede a un bersaglio che non c'è più e il file callbacks.json."
+description: "Le regole per il nome di una callback, i venti eventi, i bersagli che ne puntano una, cosa succede a un bersaglio che non c'è più e il file callbacks.json."
 ---
 
 Una callback dell'host è un **nome** e un **evento**, eventualmente puntato su una sola cosa a cui l'evento accade. Si dichiara nella pagina **Callback dell'host**, che si apre dal pulsante della barra delle attività o dalla Paletta dei comandi, e si salva in `.ripple/callbacks.json`. Una callback non contiene codice e non può cambiare la storia.
@@ -10,7 +10,7 @@ Una callback dell'host è un **nome** e un **evento**, eventualmente puntato su 
 | Campo | Regola |
 | --- | --- |
 | Nome | Una parola in forma di identificatore, come `chapterTwoBegan`. Univoco nel progetto. Privo di spazi iniziali e finali, non vuoto e senza caratteri di controllo, quindi non può contenere un'interruzione di riga. |
-| Evento | Uno dei diciotto eventi qui sotto. L'insieme è chiuso. |
+| Evento | Uno dei venti eventi qui sotto. L'insieme è chiuso. |
 | Bersaglio | Facoltativo. Se manca, vale per ogni occorrenza dell'evento. Vengono offerti solo i campi che l'evento scelto può usare. |
 
 Rinominare una callback rompe il codice dell'host registrato con il vecchio nome.
@@ -112,7 +112,7 @@ La finestra della campagna ha un pannello laterale **Callback dell'host**. Elenc
 | `callbacks` | Array. Se manca, vale come nessuna. |
 | `id` | Stringa obbligatoria. L'identificativo interno dell'editor, usato per distinguere una rinomina da un'eliminazione e una creazione. Non arriva mai alla campagna compilata. |
 | `name` | Obbligatorio. Le regole sono in [Dichiarazione](#dichiarazione). Un nome ripetuto viene rifiutato. |
-| `event` | Obbligatorio. Uno dei diciotto eventi. Qualsiasi altro valore viene rifiutato. |
+| `event` | Obbligatorio. Uno dei venti eventi. Qualsiasi altro valore viene rifiutato. |
 | `target` | Oggetto. Se manca, se è null o se è `{}` significa ogni occorrenza. L'evento decide quali chiavi sono ammesse; una chiave che l'evento non può usare viene rifiutata. `node` senza `board` viene rifiutato. |
 
 Il file è separato da `project.json`, quindi un rifiuto non tocca il titolo o le lingue del progetto. Non è catalogato e non si apre come documento.

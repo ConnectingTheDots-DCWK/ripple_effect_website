@@ -1,6 +1,6 @@
 ---
 title: Host callbacks
-description: The rules for a callback's name, the eighteen events, the targets that aim one, what happens to a target that is gone, and the callbacks.json file.
+description: The rules for a callback's name, the twenty events, the targets that aim one, what happens to a target that is gone, and the callbacks.json file.
 ---
 
 A host callback is a **name** and an **event**, optionally aimed at one thing the event happens to. It is declared on the **Host callbacks** page, opened from the activity bar button or the command palette, and stored in `.ripple/callbacks.json`. A callback carries no code and cannot change the story.
@@ -10,7 +10,7 @@ A host callback is a **name** and an **event**, optionally aimed at one thing th
 | Field | Rule |
 | --- | --- |
 | Name | An identifier-shaped word, such as `chapterTwoBegan`. Unique in the project. Trimmed, non-empty, and free of control characters, so it cannot hold a line break. |
-| Event | One of the eighteen events below. The set is closed. |
+| Event | One of the twenty events below. The set is closed. |
 | Target | Optional. Absent means every occurrence of the event. Only the fields the chosen event can use are offered. |
 
 Renaming a callback breaks any host code registered under the old name.
@@ -112,7 +112,7 @@ The campaign window has a **Host callbacks** side panel. It lists every fire wit
 | `callbacks` | Array. Absent reads as none. |
 | `id` | Required string. The editor's own handle, used to tell a rename from a delete and a create. It never reaches the compiled campaign. |
 | `name` | Required. The rules under [Declaration](#declaration). A repeated name is refused. |
-| `event` | Required. One of the eighteen events. Anything else is refused. |
+| `event` | Required. One of the twenty events. Anything else is refused. |
 | `target` | Object. Absent, null and `{}` all mean every occurrence. The event decides which keys are legal; a key the event cannot use is refused. `node` without `board` is refused. |
 
 The file is separate from `project.json`, so a refusal does not affect the project's title or languages. It is not catalogued and does not open as a document.
