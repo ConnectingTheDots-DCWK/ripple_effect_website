@@ -69,7 +69,7 @@
       "slug": "privacy",
       "title": "Privacy Notice",
       "summary": "What personal data is processed, on what basis, and for how long.",
-      "current": "2.0",
+      "current": "3.0",
       "languages": ["en"],
       "versions": [
         {
@@ -89,6 +89,15 @@
           "sha256": "af8ea8d8df8326c869c79b4e3f8c92c9b23a9b1b034491db01e25b098a803eb2",
           "path": "v/privacy-2.0",
           "source": "en/privacy/2.0.md"
+        },
+        {
+          "version": "3.0",
+          "effectiveOn": "processing",
+          "effectiveFrom": null,
+          "frozen": false,
+          "sha256": null,
+          "path": "v/privacy-3.0",
+          "source": "en/privacy/3.0.md"
         }
       ]
     },
