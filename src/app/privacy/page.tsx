@@ -194,7 +194,12 @@ export default function PrivacyPage() {
             also asks this site once per launch for the news it shows on its
             home screen, and loads the pictures that go with it from this site
             and nowhere else; which items you have read stays on your machine.
-            The rest reach this
+            From version 1.6, dictation listens with a speech-recognition model
+            that runs on your computer, and the app downloads it from Hugging
+            Face only when you ask for it — one file at a time, carrying nothing
+            about you. What you say is turned into text on your computer and
+            sent nowhere, and the same goes for the location and the time a
+            story may read if you allow it. The rest reach this
             site the way any other request does, so an address and a
             browser-style identifier appear in a server log; nothing
             distinguishes one installation from another, because nothing in
