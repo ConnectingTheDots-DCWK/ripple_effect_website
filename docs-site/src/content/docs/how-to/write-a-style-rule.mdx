@@ -36,7 +36,7 @@ allows "The spellwright knocked at the gate."
 - `expr main` is what to look for. Words in a row go in `( )`, alternatives in `[ ]` separated by commas. Inside `[ ]`, put a hyphenated word in brackets of its own: `(magic-user)`.
 - `message` is what the menu says over the underline.
 - `description` says what the rule is for.
-- `becomes` is the suggestion.
+- `becomes` is the suggestion. Its words count as spelled correctly everywhere in the project while the rule compiles, so taking the suggestion never leaves a spelling underline behind.
 - `kind` sets the colour of the underline: `Style`, or no `kind` at all, is blue; `Grammar`, `Usage` or `WordChoice` is amber; `Spelling` is red.
 - `test "before" "after"` checks the rule turns the first sentence into the second. `allows "sentence"` checks it leaves one alone.
 

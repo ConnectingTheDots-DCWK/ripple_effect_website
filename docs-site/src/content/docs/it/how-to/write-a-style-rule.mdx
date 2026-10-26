@@ -38,7 +38,7 @@ La regola è in inglese perché controlla l'inglese.
 - `expr main` è cosa cercare. Le parole in fila vanno tra `( )`, le alternative tra `[ ]` separate da virgole. Dentro `[ ]`, una parola con il trattino va tra parentesi a sé: `(magic-user)`.
 - `message` è ciò che il menu dice sopra la sottolineatura.
 - `description` dice a cosa serve la regola.
-- `becomes` è il suggerimento.
+- `becomes` è il suggerimento. Finché la regola compila, le sue parole valgono come scritte correttamente in tutto il progetto, così accettare il suggerimento non lascia mai una sottolineatura di ortografia.
 - `kind` sceglie il colore della sottolineatura: `Style`, o nessun `kind`, è blu; `Grammar`, `Usage` o `WordChoice` è ambra; `Spelling` è rosso.
 - `test "prima" "dopo"` verifica che la regola trasformi la prima frase nella seconda. `allows "frase"` verifica che ne lasci stare una.
 
