@@ -5,6 +5,8 @@ sidebar:
   order: 5
 ---
 
+import Shot from '../../../../components/Shot.astro';
+
 Scripts, passage snippets, the console and `python_eval` run in a restricted Python interpreter, not CPython. This page lists what is absent, where the app's own functions may be called from, and the limits a script is held to.
 
 ## The report is the authority
@@ -13,7 +15,7 @@ The interpreter's limits change between its releases, so the app probes them rat
 
 Where this page and the report disagree, the report is right.
 
-{/* TODO(shots): <Shot name="sandbox" /> */}
+<Shot name="sandbox" />
 
 | Probed group | Asks | Rows |
 | --- | --- | --- |

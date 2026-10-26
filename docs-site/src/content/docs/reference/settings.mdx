@@ -3,6 +3,8 @@ title: Settings, accessibility and updates controls
 description: Every page and option of the Settings dialog, what Contrast and Colour vision change, the release notes and engine update controls and the Support page.
 ---
 
+import Shot from '../../../components/Shot.astro';
+
 The gear in the app bar, on every screen, opens the Settings dialog. Settings belong to the app, not to a project, so they follow you from project to project.
 
 Every option is a choice among a few named things, drawn as a segmented control with the current choice lit, and a line under the control says what that choice means. A choice takes effect when pressed; there is no Apply. The exception to the segmented control is *Language*, a drop-down.
@@ -268,7 +270,7 @@ The news needs version 2.0 of the licence agreement. A copy that accepted 1.0 fe
 
 ## Support page
 
-{/* TODO(shots): <Shot name="support" /> */}
+<Shot name="support" />
 
 Opened by *Settings ▸ Support* or *Support and feedback* in the Help menu. Bugs, questions and ideas go to the public support repository, `ripple_effect_support`, on GitHub.
 

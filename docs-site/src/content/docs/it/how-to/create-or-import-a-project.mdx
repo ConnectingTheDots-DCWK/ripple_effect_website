@@ -4,6 +4,7 @@ description: Crea un nuovo progetto, copia un progetto di esempio o apri dalla s
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
 
 La schermata iniziale è una griglia dei progetti che l'app conosce. Ha due pulsanti: **Nuovo progetto** e **Importa una cartella**.
 
@@ -22,7 +23,7 @@ La schermata iniziale è una griglia dei progetti che l'app conosce. Ha due puls
 
 L'app crea la cartella e un solo file al suo interno, `.ripple/project.json`, e nient'altro.
 
-{/* TODO(shots): <Shot name="newProject" /> */}
+<Shot name="newProject" />
 
 Se nel percorso che hai scelto esiste già una cartella con quel nome, la finestra di dialogo rifiuta e ti dice di usare **Importa una cartella**.
 
@@ -39,7 +40,7 @@ Se nel percorso che hai scelto esiste già una cartella con quel nome, la finest
 
 La copia è tua e puoi modificarla; più tardi ne puoi creare un'altra.
 
-{/* TODO(shots): <Shot name="templates" /> */}
+<Shot name="templates" />
 
 ## Importare una cartella che hai già
 

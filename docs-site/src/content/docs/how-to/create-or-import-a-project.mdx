@@ -4,6 +4,7 @@ description: Make a new project, copy an example project, or open a folder you a
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
 
 The home screen is a grid of the projects the app knows about. It has two buttons: **New project** and **Import a folder**.
 
@@ -22,7 +23,7 @@ The home screen is a grid of the projects the app knows about. It has two button
 
 The app creates the folder and one file in it, `.ripple/project.json`, and nothing else.
 
-{/* TODO(shots): <Shot name="newProject" /> */}
+<Shot name="newProject" />
 
 If a folder with that name already exists at the location you chose, the dialog refuses and tells you to use **Import a folder** instead.
 
@@ -39,7 +40,7 @@ If a folder with that name already exists at the location you chose, the dialog 
 
 The copy is yours to change, and you can make another later.
 
-{/* TODO(shots): <Shot name="templates" /> */}
+<Shot name="templates" />
 
 ## Import a folder you already have
 

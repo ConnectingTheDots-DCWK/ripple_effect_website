@@ -3,9 +3,11 @@ title: Che cos'è un'esportazione
 description: Perché una campagna viene compilata anziché copiata, perché i media sono un interruttore, perché esistono due versioni del motore e perché l'HTML è modellato da un profilo nel progetto.
 ---
 
+import Shot from '../../../../components/Shot.astro';
+
 L'esportazione produce una di due cose, e la finestra di dialogo chiede quale. Dall'esterno si assomigliano, perché entrambe scrivono una cartella, ma rispondono a domande diverse. Una copia del progetto risponde a «come consegno questa storia a qualcuno che continuerà a modificarla?». Una campagna risponde a «come consegno questa storia a qualcosa che si limiterà a giocarla?».
 
-{/* TODO(shots): <Shot name="exportDialog" /> */}
+<Shot name="exportDialog" />
 
 ## Una copia del progetto è il progetto, risolto
 
@@ -46,7 +48,7 @@ Inoltre, ogni campagna registra nel proprio manifest se ha bisogno di Python, so
 
 Una campagna può avere ogni passaggio scritto come frammento HTML per lingua, pronto da inserire in una pagina. L'editor e la vista di gioco restano Markdown; l'HTML è per qualunque cosa legga la campagna dopo. La finestra di esportazione è divisa per dirlo: i controlli sopra la linea decidono cosa *viaggia*, quelli sotto decidono in cosa *diventa* la prosa.
 
-{/* TODO(shots): <Shot name="exportProfile" /> */}
+<Shot name="exportProfile" />
 
 La difficoltà è che l'HTML ha senso solo dentro una pagina, e la pagina ha già un foglio di stile. L'esportazione non può conoscere i nomi delle tue classi, e indovinarne un insieme ti costringerebbe a riscrivere il tuo CSS attorno allo strumento. Così un **profilo di esportazione** nomina la classe che ottiene ogni tipo di elemento: un paragrafo, un titolo, un'enfasi, un collegamento, una cella di tabella, uno snippet Python possono ciascuno avere una classe a tua scelta. Se non assegni nulla non c'è alcun attributo, e i frammenti non portano quindi alcuna opinione di stile propria.
 

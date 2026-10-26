@@ -3,9 +3,11 @@ title: Version control in the app
 description: The Changes section of the side bar, its terms, what starting a history writes, the backup bar, the conflict view and the list of undone changes.
 ---
 
+import Shot from '../../../components/Shot.astro';
+
 Version control is built into the app and is reached through the **Changes** section of the side bar, the second icon on the activity bar beside Files. The history underneath is an ordinary git repository, and anything that reads one reads this. The engine is libgit2, compiled into the app; no installation of git is needed.
 
-{/* TODO(shots): <Shot name="changesTab" /> */}
+<Shot name="changesTab" />
 
 ## Terms
 
@@ -210,7 +212,7 @@ The **More** menu holds **Check without taking anything**, **Change where it is 
 
 ## Conflicts
 
-{/* TODO(shots): <Shot name="conflict" /> */}
+<Shot name="conflict" />
 
 A conflict arises when changes got from the backup touch the same places as local changes. Detection is done in memory: the working files, the staging area and the current save point are untouched until each disagreement has an answer. No conflict markers are written into files.
 

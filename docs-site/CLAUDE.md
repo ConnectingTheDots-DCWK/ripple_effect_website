@@ -390,11 +390,16 @@ file's dimensions off the import. And `h-auto` on the `<img>` is load-bearing:
 this site skips Tailwind's preflight, so nothing resets the `height`
 attribute Astro emits, and `w-full` alone stretched every shot to it.
 
-**Thirty-three slots are commented out for the first deploy** — every
-`<Shot>` whose capture does not exist yet, wrapped as `{/* TODO(shots): … */}`
-so the site goes online without a page of dashed frames. Uncomment each as
-its file lands under `src/assets/screenshots/`; `grep -rn "TODO(shots)"` is
-the list. The eight the landing page already had render as normal.
+**Every slot renders but `dictation`**, which is still wrapped as
+`{/* TODO(shots): … */}` because no capture of it exists — a slot whose file
+has not landed would draw its brief in a dashed frame, and a page of those
+is not something to deploy. Uncomment it when its file lands under
+`src/assets/screenshots/`; `grep -rn "TODO(shots)"` is the list.
+
+**The captures are taken by a script, not by hand** — `melos run
+editor:docs:shots` in the application repository
+(`tool/screenshots/`), which reads both shot lists and keeps a recipe per
+slug. A new slot is a brief here and a recipe there.
 
 **A misspelt `name` fails the build, not `astro check`.** The component's
 props are typed, but an MDX page's use of them is not checked, so the guard

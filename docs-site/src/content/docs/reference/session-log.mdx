@@ -3,6 +3,8 @@ title: The session log and reports
 description: What a session folder holds, what is redacted and recorded, what the crash-report dialog lists, what usage statistics carry, and where the files live.
 ---
 
+import Shot from '../../../components/Shot.astro';
+
 Each run of the app writes a **session**: a folder of log files and two small records. No setting uploads the session log. The one thing that sends session files is the crash report, which asks first; usage statistics send a separate small record and no log, and are off until switched on. What each carries is listed below, and in [What the app sends](/about/what-the-app-sends/).
 
 ## Where the files live
@@ -176,7 +178,7 @@ Nothing is sent until the switch has been on for an hour. Nothing you write, no 
 | Copy the package details, copy the device details, open this session's folder | **Help ▸ Troubleshooting** |
 | *Show every tip again* | The Help menu itself |
 
-{/* TODO(shots): <Shot name="support" /> */}
+<Shot name="support" />
 
 The support page opens the matching form, filled in with the version, your operating system and which installer this copy came from, in the public repository [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), which is also where questions and feature requests go. The steps are in [How to report a bug](/how-to/report-a-bug/).
 

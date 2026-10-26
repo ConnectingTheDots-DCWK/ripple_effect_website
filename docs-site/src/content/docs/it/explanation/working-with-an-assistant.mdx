@@ -7,7 +7,7 @@ import Shot from '../../../../components/Shot.astro';
 
 Ripple Effect è un **server MCP**, quindi Claude Code, Claude Desktop, Cursor e qualsiasi altro strumento che parli il protocollo possono lavorare nella cartella insieme a te, invece di ricevere testo incollato. Il progetto poggia su quattro decisioni: il canale è privato, gli strumenti sono quelli dell'app e non del bridge, una scrittura è lo stesso atto chiunque la compia, e il log registra che qualcosa è accaduto senza registrare cosa.
 
-{/* TODO(shots): <Shot name="agentsPanel" /> */}
+<Shot name="agentsPanel" />
 
 ## Perché un server
 
@@ -47,7 +47,7 @@ Con il secondo interruttore attivo, un assistente può scrivere: passaggi e rela
 
 La proprietà importante è che nessuna di queste è un percorso separato verso il disco. Ogni scrittura passa dalle sessioni dell'app, le stesse da cui passa la tua digitazione. Ne derivano tre conseguenze che altrimenti dovresti costruire a parte. Aggiungere un passaggio è un singolo annullamento. Il salvataggio automatico lo vede, quindi non va perso né sovrascritto. Il controllo di versione lo elenca, quindi compare nelle modifiche come qualsiasi altra cosa. Una seconda via che scrivesse direttamente i file avrebbe bisogno di una risposta propria a ciascuna di queste, e l'app avrebbe due modi di sbagliare. Tutto ciò che è cambiato in questa sessione è elencato nella pagina Agenti, e ogni modifica viene pubblicata in Messaggi mentre avviene.
 
-{/* TODO(shots): <Shot name="agentConnected" /> */}
+<Shot name="agentConnected" />
 
 ### Cosa viene rifiutato in scrittura
 

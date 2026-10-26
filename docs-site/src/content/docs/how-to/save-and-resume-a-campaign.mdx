@@ -4,6 +4,7 @@ description: Save a playthrough under a name, pause and resume it, and open a sa
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../components/Shot.astro';
 
 ## Save a playthrough under a name
 
@@ -34,7 +35,7 @@ Pausing and resuming in the same sitting hands you back the board you just edite
 
 </Steps>
 
-{/* TODO(shots): <Shot name="savedGames" /> */}
+<Shot name="savedGames" />
 
 A save records your place and everything the story has made. [The campaign window and saved games](/reference/campaign-window/) lists what it holds, and [How a story runs](/explanation/how-a-story-runs/) explains how choice counts and macros behave.
 
