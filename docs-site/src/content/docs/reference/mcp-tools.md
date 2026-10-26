@@ -394,7 +394,7 @@ back with one Ctrl+Z.
 Adds any node that is not a passage — a Jump to hand the story to another
 board, an End, a Script, and every value and control node besides;
 `node_types` is the list of what this build offers. Wires it to where it
-follows from, in one undo step. Passages have their own tool,
+follows from and fills its card in, in one undo step. Passages have their own tool,
 `board_add_passage`, because it makes the passage file too.
 
 | Argument | | What |
@@ -417,6 +417,7 @@ follows from, in one undo step. Passages have their own tool,
 | `cvar` | | For a Get, Set or Variable branch node (types `cvar.get`, `cvar.set`, `cvar.branch`): the console variable it names, by name or id. `project_info` lists them, with the boards each is scoped to; prefer one scoped to this board or to none, as the editor offers. |
 | `value` | | For a Set variable or Variable branch node: the literal, in the variable's type — a number, a boolean, a string, a list or an object. Refused when it does not fit. |
 | `comparison` | | For a Variable branch node: `equal`, `notEqual`, `greater`, `greaterEqual`, `less` or `lessEqual`. |
+| `fields` | | What the card holds as it is typed, by field name: a Dice roller's `notation` and `count`, a Near card's `place` and `radius`, a Time branch's `from`, `to` and `weekdays`. `node_types(type: …)` lists the fields a node holds, with their defaults. Each value has to be the same kind as its default, and readable by the card: a notation that rolls, a place as coordinates, a time like `18:00`. A field another argument writes, such as the title, a script or a variable, is set through that argument, which turns a name into the id the card stores. |
 | `metadata` | | The node's own metadata: names to values, yours to use for anything, which nothing on the board reads. Any node has it. Replaces what the node had — `{}` clears it. A value may be a number, a boolean, a string, a list of one of those, or any JSON under a name; the editor draws the flat ones as typed rows and the rest as JSON. |
 
 ### `board_connect`
@@ -500,9 +501,10 @@ what is set here, a timeout included.
 
 ### `board_set_node`
 
-Retitles a node, or changes what it points at — a Jump's board, a Script
+Retitles a node, changes what it points at — a Jump's board, a Script
 node's file, a Component node's component, a Narration node's passage or
-soundscape — or replaces its metadata. This is how a revision is made rather
+soundscape — sets what its card holds, such as a Dice roller's notation, or
+replaces its metadata. This is how a revision is made rather
 than an addition. Every argument `board_add_node` takes for a node's kind is
 taken here with the same meaning, and what you leave out is left as it is.
 
@@ -513,7 +515,7 @@ taken here with the same meaning, and what you leave out is left as it is.
 | `title` | | What the card says. |
 | `passage` | | For a Narration node: the passage it shows. Its own prose, if it still had any, is cleared. |
 | `targetNode` | | For a Jump: a node on the target board to resume at. Named apart from `node`, which is the node being changed. |
-| `target`, `script`, `component`, `machine`, `soundscape`, `audio`, `event`, `instance`, `cvar`, `value`, `comparison`, `metadata` | | As on `board_add_node`. |
+| `target`, `script`, `component`, `machine`, `soundscape`, `audio`, `event`, `instance`, `cvar`, `value`, `comparison`, `fields`, `metadata` | | As on `board_add_node`. Only the fields named in `fields` change. |
 
 ### `board_remove_node`
 
