@@ -6,19 +6,11 @@ category: Engineering
 seoTitle: "A Flutter docking layout with splits, tab groups, drag and drop and persistence"
 ---
 
-*Editorial note, 2026-10-12: this post was written on 2026-09-20, before
-fl_panel 0.1.0 was tagged. Since then the package has released 1.0.0 and
-1.1.0, and its main branch (unreleased) lets tabs drag between hosts. The
-app's workspace has moved onto it in the 1.5 work, so where the text below
-says the app does not use it yet, that was true on the day. For the workspace
-as it is now, see [the workspace
-page](https://docs.ripplefx.app/reference/workspace-window/).*
-
-Open [Ripple Effect](/) today and the workspace is fixed: a file tree on the
-left, a viewer on the right, a handle between them, and under the tree a
-second handle above the footer. You can drag the two handles. You cannot move
-the tree to the right, put the messages panel beside a board, or tear the
-viewer out into a group of its own. Every serious editor lets you do those
+When this package was started, [Ripple Effect](/)'s workspace was fixed: a
+file tree on the left, a viewer on the right, a handle between them, and under
+the tree a second handle above the footer. You could drag the two handles. You
+could not put two boards side by side, put the messages panel beside a board,
+or tear the viewer out into a group of its own. Every serious editor lets you do those
 things — Blender's areas, Visual Studio's tool windows, VS Code's editor
 groups — and the reason they all feel the same is that they are all the same
 object underneath.
@@ -79,7 +71,7 @@ identity. The model holds several windows and can move a tab between them;
 a second OS window is a second engine with a controller of its own, and
 wiring that to the first is the application's job. And the application
 stays the owner of what a tab *is*: in Ripple Effect a tab is a view onto a
-document session, and it will stay one.
+document session.
 
 ## State survives a move
 
@@ -139,17 +131,21 @@ hit-test looks for.
 
 ## Where it is, and where it is not yet
 
-[fl_panel](https://github.com/ConnectingTheDots-DCWK/fl_panel) is MIT, it is a
+[fl_panel](https://github.com/ConnectingTheDots-DCWK/fl_panel) is at 1.1.0 and
+its API is stable. It is MIT, it is a
 Flutter package with a headless half — the tree, the solver and the file
 format import nothing from Flutter, and a test keeps it that way — and it
 takes pull requests, like [the packages beside
 it](https://docs.ripplefx.app/about/open-source/).
 
-It is not in Ripple Effect yet. The workspace still draws its two fixed
-splits, and moving it onto this is the next step. What the package does not do
-yet, per its README, is floating panels, a maximise kept in the layout,
-pinning, and hosting across engines. The package went public
-first because that is the order that keeps it honest: a layout engine built
+Since 1.5 it is what Ripple Effect's editor area is drawn with: documents
+open as tabs, split and dock where the author drags them, and the tree is
+saved with the project, so a project opens tomorrow the way it was left. The
+[workspace page](https://docs.ripplefx.app/reference/workspace-window/) has
+the app's side of it. What the package does not do yet, per its README, is
+floating panels, a maximise kept in the layout, pinning, and hosting across
+engines. The package went public before the app used it because that is the
+order that keeps it honest: a layout engine built
 inside one application quietly learns that application's shape, and one built
 in the open, with a demo that is not Ripple Effect, has to earn every
 assumption it makes.

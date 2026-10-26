@@ -55,6 +55,11 @@ one: two closures that do exactly the same thing are never equal. So a closure
 rebuilt per frame makes every node look different from the node it was a frame
 ago, and hands the entire optimisation back without a single error.
 
+The numbers in this post were taken with the package's own benchmarks as they
+stood at 0.1.0, under `flutter test`: the Dart VM in JIT mode, the UI thread
+only, nothing rasterised. They compare one approach with another in the same
+run; they are not frame times on anybody's machine.
+
 Measured on thirty-six drawn nodes, node bodies built per frame:
 
 | | before | after |
@@ -159,14 +164,10 @@ Nothing here is free, and the package's own notes keep a list rather than a
 sales pitch. The graph is immutable and edited copy-on-write, so an edit copies
 the node map — about 390 µs a frame while dragging at five thousand nodes.
 Removing that means trading the immutable snapshot for in-place mutation, and
-the model's guarantees along with it, which has not looked worth it yet. There
-were no resize handles when this was written: comments size themselves to
-their text and group frames size themselves to their members. Groups do not
-nest, and a node belongs to at most one.
-
-*Update, fl_nodes_v2 0.3.0 (September 2026): a node whose definition sets
-`resizable` has a corner grip and can be resized by hand. Comments and groups
-still size themselves.*
+the model's guarantees along with it, which has not looked worth it yet. A
+node whose definition sets `resizable` has a corner grip and is resized by
+hand, but comments size themselves to their text and group frames to their
+members. Groups do not nest, and a node belongs to at most one.
 
 ## Where it is
 
