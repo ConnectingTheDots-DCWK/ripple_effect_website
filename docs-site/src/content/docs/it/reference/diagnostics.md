@@ -207,11 +207,11 @@ Correzione: rinominalo, per esempio `your_roll`, e scrivi `Your roll` nell'*Etic
 
 ### `W.GE.16`
 
-**Un callback dell'host osserva qualcosa che non c'è più.**
+**Una callback dell'host osserva qualcosa che non c'è più.**
 
-Un callback nomina una lavagna e, facoltativamente, una scheda su di essa. Se la lavagna o la scheda vengono eliminate, la dichiarazione viene rimossa dalla campagna compilata o non scatta mai, e chiunque si fosse registrato con quel nome non viene mai avvisato. È l'unico messaggio qui che non riguarda una scheda: nomina il callback e porta con sé la lavagna quando questa è ancora nel progetto.
+Una callback nomina una lavagna e, facoltativamente, una scheda su di essa. Se la lavagna o la scheda vengono eliminate, la dichiarazione viene rimossa dalla campagna compilata o non scatta mai, e chiunque si fosse registrato con quel nome non viene mai avvisato. È l'unico messaggio qui che non riguarda una scheda: nomina la callback e porta con sé la lavagna quando questa è ancora nel progetto.
 
-Un callback rivolto a una variabile di console o a un componente che non esistono più viene segnalato quando la campagna viene costruita, perché quel controllo richiede le variabili e l'indice del progetto. Una scheda mancante non viene controllata altrove. Vedi [Callback dell'host](/it/reference/host-callbacks/).
+Una callback rivolta a una variabile di console o a un componente che non esistono più viene segnalato quando la campagna viene costruita, perché quel controllo richiede le variabili e l'indice del progetto. Una scheda mancante non viene controllata altrove. Vedi [Callback dell'host](/it/reference/host-callbacks/).
 
 ### `W.GE.17`
 

@@ -5,9 +5,7 @@ description: Attiva la dettatura, scarica un modello vocale e parla in un passag
 
 import { Steps } from '@astrojs/starlight/components';
 
-La dettatura scrive ciò che dici nel passaggio o nella nota che stai scrivendo. Tutto viene ascoltato sul tuo computer, dai modelli Nemotron di NVIDIA; niente di ciò che dici lo lascia.
-
-L'app non ha ancora una traduzione italiana per la dettatura: le sue voci compaiono in inglese, e qui sono scritte come le mostra l'app.
+La dettatura scrive ciò che dici nel passaggio o nella nota che stai scrivendo. Tutto viene ascoltato sul tuo computer, dai modelli Nemotron di NVIDIA; niente di ciò che dici ne esce.
 
 {/* TODO(shots): <Shot name="dictation" /> */}
 
@@ -18,15 +16,15 @@ La dettatura è disattivata finché non la attivi, e prima di poter ascoltare ha
 <Steps>
 
 1. Premi l'ingranaggio nella barra dell'app per aprire la finestra Impostazioni, e scegli la pagina *Generale*.
-2. Sotto *Dictation*, scegli *On*. Ora un microfono fluttua sopra gli editor dei passaggi e delle note.
-3. Sotto *Listens with*, scegli il modello:
-   - *English*: il più preciso per l'inglese, e solo per l'inglese.
-   - *Multilingual*: sente 32 lingue, e gli viene detta la lingua del passaggio in cui stai scrivendo.
-4. Sulla riga di quel modello, premi **Download**. Ogni modello è un download fatto una volta sola: circa 2,3 GB per English e 2,4 GB per Multilingual. La riga mostra l'avanzamento, e **Stop** lo interrompe.
+2. Sotto *Dettatura*, scegli *Attivata*. Ora un microfono fluttua sopra gli editor dei passaggi e delle note.
+3. Sotto *Ascolta con*, scegli il modello:
+   - *Inglese*: il più preciso per l'inglese, e solo per l'inglese.
+   - *Multilingue*: capisce 32 lingue, e gli viene indicata la lingua del passaggio che stai scrivendo.
+4. Sulla riga di quel modello, premi **Scarica**. Ogni modello è un download fatto una volta sola: circa 2,3 GB per Inglese e 2,4 GB per Multilingue. La riga mostra l'avanzamento, e **Interrompi** lo ferma.
 
 </Steps>
 
-Se un download si interrompe o lo fermi, la riga dice quanto è arrivato e offre **Resume**, che riprende da lì. Un modello già scaricato si cancella dalla stessa riga, con il cestino (*Delete from this computer*).
+Se un download si interrompe o lo fermi, la riga dice quanto è arrivato e offre **Riprendi**, che riprende da lì. Un modello già scaricato si cancella dalla stessa riga, con il cestino (*Elimina da questo computer*).
 
 Al primo avvio, una nuova installazione chiede se scrivi soprattutto in inglese. Rispondere sì, con la casella della dettatura spuntata, attiva la dettatura e scarica il modello inglese una volta finite le pagine del primo avvio; l'avanzamento è in Impostazioni.
 
@@ -35,33 +33,33 @@ Al primo avvio, una nuova installazione chiede se scrivi soprattutto in inglese.
 <Steps>
 
 1. Apri un passaggio o una nota Markdown, e metti il cursore dove devono andare le parole.
-2. Premi il microfono nel riquadro del testo (*Dictate*). La prima volta l'app chiede *Use the microphone?*: scegli **Allow**.
+2. Premi il microfono nel riquadro del testo (*Detta*). La prima volta l'app chiede *Usare il microfono?*: scegli **Consenti**.
 3. Parla. Il pulsante è rosso mentre ascolta e si illumina quando ti sente, e le tue parole vengono scritte al cursore. Se è selezionato un tratto di testo, le parole lo sostituiscono.
-4. Premi di nuovo il pulsante (*Stop dictating*) quando hai finito.
+4. Premi di nuovo il pulsante (*Smetti di dettare*) quando hai finito.
 
 </Steps>
 
 Si detta in un editor alla volta: premere il microfono in un altro editor ferma il primo. Puoi scrivere nel testo mentre ascolta; le parole che dici dopo ripartono dal cursore.
 
-Il comando della paletta **Toggle dictation** attiva e disattiva la dettatura, come l'impostazione.
+Il comando della paletta **Attiva o disattiva la dettatura** attiva e disattiva la dettatura, come l'impostazione.
 
 ## In che lingua ascolta
 
-Il modello *English* è solo inglese. Al modello *Multilingual* viene detta la lingua del testo: per un passaggio, la lingua che il suo editor sta mostrando; per una nota, la lingua predefinita del progetto.
+Il modello *Inglese* è solo inglese. Al modello *Multilingue* viene indicata la lingua del testo: per un passaggio, la lingua che il suo editor sta mostrando; per una nota, la lingua predefinita del progetto.
 
 ## Se il microfono non parte
 
 | Cosa dice l'app | Cosa fare |
 | --- | --- |
-| Il modello non è ancora scaricato | Scegli **Open Settings** e scarica il modello dalla sua riga. |
-| Il microfono non è consentito | Scegli **Open Permissions** e imposta *Microfono* su *Consenti*. Rispondere **Don't allow** alla prima domanda porta qui. |
+| Il modello non è ancora scaricato | Scegli **Apri Impostazioni** e scarica il modello dalla sua riga. |
+| Il microfono non è consentito | Scegli **Apri Autorizzazioni** e imposta *Microfono* su *Consenti*. Rispondere **Non consentire** alla prima domanda porta qui. |
 | Serve il programma `parecord` (Linux) | Installa il pacchetto `pulseaudio-utils`. Il `.deb` e l'`.rpm` lo installano da soli. |
 | La dettatura non è potuta partire | Il log di sessione ha i dettagli; vedi [Come segnalare un bug](/it/how-to/report-a-bug/). |
 
-Mentre la dettatura tiene il microfono, il suo simbolo compare nella barra dell'app. Passandoci sopra si legge *Microfono: Dictation*, e premerlo apre la pagina *Autorizzazioni* delle Impostazioni.
+Mentre la dettatura tiene il microfono, il suo simbolo compare nella barra dell'app. Passandoci sopra si legge *Microfono: Dettatura*, e premerlo apre la pagina *Autorizzazioni* delle Impostazioni.
 
 ## Vedi anche
 
-- [Controlli di impostazioni, accessibilità e aggiornamenti](/it/reference/settings/): la sezione *Dictation* e la pagina *Autorizzazioni*.
+- [Controlli di impostazioni, accessibilità e aggiornamenti](/it/reference/settings/): la sezione *Dettatura* e la pagina *Autorizzazioni*.
 - [Passaggi e traduzioni](/it/explanation/passages-and-translations/): perché un passaggio ha una lingua tutta sua.
 - [Cosa invia l'app](/it/about/what-the-app-sends/): il download del modello, e ciò che non esce mai.

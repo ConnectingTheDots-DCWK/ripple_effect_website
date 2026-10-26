@@ -17,7 +17,7 @@ Rinominare una callback rompe il codice dell'host registrato con il vecchio nome
 
 Cambiare l'evento di una callback rimuove i campi del bersaglio che il nuovo evento non può usare. Un campo che il nuovo evento richiede non può essere compilato al posto tuo, quindi la modifica viene rifiutata finché il bersaglio non lo contiene.
 
-Il pulsante **Dimentica** rimuove una dichiarazione dopo una conferma. Un host in ascolto di quel nome non lo riceve più.
+Il pulsante **Dimenticala** rimuove una dichiarazione dopo una conferma. Un host in ascolto di quel nome non lo riceve più.
 
 ## Eventi
 
