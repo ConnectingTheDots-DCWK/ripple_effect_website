@@ -1230,9 +1230,12 @@ it on 2026-10-12. Two things that pass found are worth knowing before the next
 one. An editor's revision is where unverified claims get in — a version
 number, a mechanism, a README's list of non-features, all plausible and
 unchecked — so what a revision adds is looked up in the package before it
-stays. And a post is dated: when what it describes has moved on, it says so
-**once**, in an editorial note at the top, rather than in three places or by
-rewriting history into the author's mouth.
+stays. And when what a post describes has moved on, **the stale sentences are
+rewritten in place** so the post reads as current, and its date stays the
+one it was published under. That reversed the first pass's editorial notes,
+on 2026-10-26. A figure measured at an earlier version keeps its value and
+says which version and how it was taken, rather than being re-measured
+silently.
 
 ## The news
 

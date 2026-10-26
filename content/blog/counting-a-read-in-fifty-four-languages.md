@@ -66,7 +66,8 @@ Korean.
 Hangul looks like the East Asian scripts. It sits beside them in every font
 menu and every encoding table you have ever seen. And Korean is **written with
 spaces** — it spaces its eojeol — so filing it with Chinese and Japanese and
-counting it by the character would roughly triple every Korean estimate.
+counting it by the character would overstate every Korean estimate, by up to
+about double.
 
 Korean is counted by the word. It is the single mistake the package is most
 careful about, and it is in there as a test rather than as a comment.
@@ -84,7 +85,7 @@ Every language a reasoned entry names is one of the measured seventeen.
 That distinction is carried in the API rather than in a footnote:
 
 ```dart
-estimate.speed.evidence;   // SpeedEvidence.measured
+estimate.readingSpeed.evidence;   // SpeedEvidence.measured
 ```
 
 which is what lets the app's tooltip tell you whether the number you are
@@ -148,8 +149,3 @@ not.** The app is proprietary and its source is not published. The pieces
 underneath it that are useful on their own get published on their own, take
 issues, and take pull requests. Reading time was never going to be our
 competitive advantage. It was going to be a bug in somebody else's Japanese.
-
-*Editorial note, 2026-10-12: this post was written against version 0.1.0.
-Version 1.0.0 renamed `ReadTime.speed` to `readingSpeed`, so the first snippet
-that touches it reads `estimate.readingSpeed.evidence` today. The algorithm and
-the table are unchanged.*
