@@ -1,6 +1,6 @@
 ---
 title: How to play and test a campaign
-description: Press Play, read a story in a chosen language, handle warnings and runaway loops, start from any node, and inspect a playthrough.
+description: Press Play, read a story in a chosen language, let it read the time or the location, handle warnings and runaway loops, start from any node, and inspect a playthrough.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -31,6 +31,24 @@ Pick the language from the campaign window's header. You can change it mid-passa
 When the story reaches an **Input** node, fill in the form and press Enter in a field to continue. The fields are listed in [The campaign window and saved games](/reference/campaign-window/).
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
+
+## Let a story read the time or the location
+
+A story that reads the date and time or where you are asks before it begins, unless you have already answered.
+
+<Steps>
+
+1. To answer ahead of time, open Settings, choose **Permissions**, and pick *Ask*, *Allow* or *Deny* for *Location* and for *Date and time*. Type a stand-in under either to have a story told that instead when it cannot have the real one, such as `2026-10-19 18:30` or `Rome, Italy`.
+
+2. Press **Play**. If a kind the story reads is still on *Ask*, the window opens on *Before this story begins*: press *Allow* or *Don't allow* on each row. Your answers are kept under Settings › Permissions.
+
+3. If you allowed the location, the window shows *Finding where you are…* for up to a few seconds. Press *Begin without it* to start at once.
+
+4. If a strip appears across the top of the window, the story was given your stand-in, was refused something it read, or was allowed something this computer had nothing of. Look its code up in the [diagnostics reference](/reference/diagnostics/#irt05), and press the cross (*Dismiss*) at its end to close it.
+
+</Steps>
+
+What a script is handed in each case is in [The world outside the story](/reference/python/the-world/).
 
 ## Deal with warnings
 

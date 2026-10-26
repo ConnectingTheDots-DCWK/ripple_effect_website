@@ -13,7 +13,7 @@ Use this when the game or player that will run the campaign is built without the
 
 1. Open the Export dialog as described in [How to export a project copy or a campaign](/how-to/export-a-project-or-campaign/).
 2. Under *Campaign*, tick **Needs no Python**.
-3. Export. The export looks for every Script node, and for every passage with a `ripple` code block or an inline `{{ … }}` in any of its languages, and stops if it finds one.
+3. Export. The export looks for every Script node, for every passage with a `ripple` code block or an inline `{{ … }}` in any of its languages, and for every Localized string whose words have either, and stops if it finds one.
 4. If it stopped, open Messages. Each place that would run Python is listed and opens its card. The dialog stays open, so you can fix the cards or untick the box and try again.
 5. Export again. A campaign that passes carries no scripts at all.
 
@@ -21,11 +21,11 @@ Use this when the game or player that will run the campaign is built without the
 
 ## Fix what stops the export
 
-Messages lists two codes. Any one of them stops the export.
+Messages lists three codes. Any one of them stops the export.
 
 - [`E.EX.01`](/reference/diagnostics/#eex01), a Script node. Move what the script does onto cards that do not need Python, such as a console variable set and read by its own nodes, or a branch on a value. A Script node inside a macro is reported on the card that calls the macro when you export, and on the macro's own board while you edit.
 - [`E.EX.02`](/reference/diagnostics/#eex02), a passage that runs Python. Replace each `ripple` block or inline `{{ … }}` with the text it would have produced, or split the passage so that a choice or a branch picks between versions of it.
-- [`E.EX.03`](/reference/diagnostics/#eex03), a Localized string that runs Python. Replace each inline `{{ … }}` with the text it would have produced, or use one card per form and pick between them with a branch.
+- [`E.EX.03`](/reference/diagnostics/#eex03), a Localized string that runs Python. Replace each `ripple` block or inline `{{ … }}` with the text it would have produced, or use one card per form and pick between them with a branch.
 
 If the player does have the interpreter, untick **Needs no Python** instead.
 

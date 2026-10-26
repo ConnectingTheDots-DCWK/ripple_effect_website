@@ -3,7 +3,7 @@ title: Binding JavaScript e TypeScript
 description: "Il binding JavaScript e TypeScript del motore di Ripple Effect: @ripplefx/player e @ripplefx/soundscape su npm, con ogni classe, membro, opzione, effetto ed errore."
 ---
 
-Il binding del motore per JavaScript e TypeScript è composto da due pacchetti su npm, per una pagina di browser o per Node. [`@ripplefx/player`](https://www.npmjs.com/package/@ripplefx/player) porta il motore come componente WebAssembly, in entrambe le varianti, e l'API TypeScript costruita sopra. [`@ripplefx/soundscape`](https://www.npmjs.com/package/@ripplefx/soundscape) è lo speaker Web Audio per i soundscape di una campagna ed è facoltativo. La versione 1.5.x di ciascuno si lega al contratto 1.5 di Ripple Effect: il `MAJOR.MINOR` di un pacchetto è il contratto, e il suo `PATCH` è del pacchetto stesso. Il sorgente è pubblico su [ConnectingTheDots-DCWK/ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration).
+Il binding del motore per JavaScript e TypeScript è composto da due pacchetti su npm, per una pagina di browser o per Node. [`@ripplefx/player`](https://www.npmjs.com/package/@ripplefx/player) porta il motore come componente WebAssembly, in entrambe le varianti, e l'API TypeScript costruita sopra. [`@ripplefx/soundscape`](https://www.npmjs.com/package/@ripplefx/soundscape) è lo speaker Web Audio per i soundscape di una campagna ed è facoltativo. La versione 1.6.x di ciascuno si lega al contratto 1.6 di Ripple Effect, *Grammar Lich*, e porta il world del motore `ripple:engine@1.6.0`: il `MAJOR.MINOR` di un pacchetto è il contratto, e il suo `PATCH` è del pacchetto stesso. Il sorgente è pubblico su [ConnectingTheDots-DCWK/ripple_effect_js_ts_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_js_ts_integration).
 
 Il codice di `@ripplefx/player` è MIT. Il motore al suo interno è sotto la [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/): libero da distribuire, non modificato nel funzionamento, come parte del tuo prodotto. Riproduci l'`ENGINE-NOTICE` del pacchetto ovunque il tuo prodotto elenchi il software di terze parti che usa. `@ripplefx/soundscape` non contiene alcun motore ed è semplicemente MIT.
 
@@ -17,7 +17,7 @@ npm install @ripplefx/player @ripplefx/soundscape   # and the Web Audio speaker
 | Pacchetto | Esporta | Gira in | Richiede |
 | --- | --- | --- | --- |
 | `@ripplefx/player` | `Campaign`, `Session`, `Player`, `SoundscapeDriver`, gli effetti, i valori, gli errori | browser, Node 22.18 o successivo | nient'altro |
-| `@ripplefx/soundscape` | `WebAudioSpeaker`, `amplitude` | browser (Web Audio) | `@ripplefx/player` |
+| `@ripplefx/soundscape` | `WebAudioSpeaker`, `amplitude` | browser (Web Audio) | `@ripplefx/player` 1.6, di cui è peer |
 
 Entrambi sono moduli ES. Il player include `dist/`, entrambe le varianti del motore sotto `generated/`, `LICENSE` e `ENGINE-NOTICE`.
 
@@ -74,7 +74,7 @@ In un motore senza Python una scheda Script lo segnala e uno snippet mostra un a
 | WebKit | Testato, come Chromium, in WebKitGTK. Safari su macOS e iOS non è ancora confermato per le tracce dello speaker. |
 | Node 22.18 o successivo | Testato: ogni fixture di conformità, attraverso `Session` e attraverso `Player`, in entrambe le varianti. Nessuno speaker. |
 
-Le fixture sono 24 con Python e 21 senza.
+Le fixture sono 33 con Python e 27 senza.
 
 Il motore gira **sul thread chiamante**. Non c'è alcun trasporto via Worker: ogni verbo è sincrono, e un Worker renderebbe ogni verbo una promise. Una pagina la cui campagna esegue script pesanti può far girare il binding in un Worker proprio e inviare gli effetti oltre il confine con un messaggio.
 
@@ -157,6 +157,7 @@ static fromFiles(files: BundleFiles, options?: CampaignOptions): Promise<Campaig
 | `boards`, `passages`, `components`, `scripts`, `media`, `machines`, `soundscapes` | `readonly BundleEntry[]` | Le tabelle del bundle. Un `BundleEntry` è `{ id, name, path }`, tutte stringhe. |
 | `cvars` | `readonly { name: string; type: string; default: RippleValue }[]` | Le variabili di console che la campagna dichiara. |
 | `needs` | `readonly string[]` | Di che cosa la campagna ha bisogno da un motore: `python` quando esegue script. |
+| `permissions` | `readonly string[]` | Ciò che la storia legge del mondo fuori da lei, `dateTime` e `location`, elencato dal compilatore. Una sessione chiede di ciascuno prima di cominciare, a meno che l'host non abbia già risposto. Stringhe e non `PermissionKind`, perché l'elenco è aperto ad aggiunte. |
 
 ## Session
 
@@ -204,11 +205,14 @@ Ognuna ha come predefinito quello del motore.
 
 | Verbo | Risponde con | Note |
 | --- | --- | --- |
-| `start()` | `Effect[]` | Avvia la storia, o una storia ripresa. |
+| `start()` | `Effect[]` | Avvia la storia, o una storia ripresa. Finché un tipo in `manifest.permissions` non ha risposta, la risposta è un solo effetto `permit` e nient'altro: nessuna pagina e nessuna callback, finché `permit` non ha risposto a tutti. |
 | `choose(index?: number)` | `Effect[]` | Compie la scelta all'indice `index` tra quelle offerte. Senza indice, il lettore se ne va: il passaggio non porta da nessuna parte e la storia finisce lì. |
-| `answer(values?: Answers)` | `Effect[]` | Risponde alla richiesta mostrata. I valori vanno al motore esattamente come sono dati. Senza valori, il lettore se ne va, come con `choose()`. |
+| `answer(values?: Answers)` | `Effect[]` | Risponde alla richiesta mostrata. I valori vanno al motore esattamente come sono dati, con la chiave del `name` di ogni campo. Un campo facoltativo lasciato vuoto si omette o è `null`; uno obbligatorio non si invia vuoto, ed è una regola che spetta all'host. A un campo con `options` si risponde con gli ID scelti: una stringa, o un elenco di stringhe per un `…List`. Senza valori, il lettore se ne va, come con `choose()`. |
 | `elapsed()` | `Effect[]` | Segnala che l'attesa richiesta da un `hold` è finita. Un `Player` lo chiama per te. |
-| `setLocale(locale: string)` | `Effect[]` | Continua a leggere in un'altra lingua; il passaggio mostrato viene mostrato di nuovo in quella lingua. |
+| `beginCountdown()` | `Effect[]` | Segnala che il conto alla rovescia del passaggio mostrato comincia: il suo `timer.afterMs` è passato sul tuo orologio. Nulla si muove; la risposta è solo la callback `countdown.started`, se un autore ne ha dichiarata una. Una seconda chiamata non risponde nulla. Un passaggio senza timer viene rifiutato con `no-countdown`. Un `Player` lo chiama per te. |
+| `expire()` | `Effect[]` | Segnala che il conto alla rovescia è scaduto: viene presa la scelta predefinita del passaggio, come farebbe `choose(timer.default)`, dopo una callback `countdown.expired`. Prima di `beginCountdown` viene rifiutato con `countdown-not-begun`. Un `Player` lo chiama per te. |
+| `permit(kind: PermissionKind, granted: boolean)` | `Effect[]` | La risposta del lettore per un tipo, in qualsiasi momento, anche prima di `start`, e allora non si chiede a nessuno. Su un turno `permit` la risposta all'ultimo tipo senza risposta fa cominciare la storia, e questo verbo risponde con tutto fino al suo primo turno vero. Non fa parte di un salvataggio: rispondi di nuovo a una sessione ripresa. |
+| `setLocale(locale: string)` | `Effect[]` | Continua a leggere in un'altra lingua. Il passaggio o la richiesta mostrati vengono mostrati di nuovo in quella lingua, con etichette, segnaposto e opzioni di una richiesta riformulati e i nomi dei campi e gli ID delle opzioni mantenuti, e un conto alla rovescia continua a scorrere: è la stessa visita. |
 | `restart()` | `Effect[]` | Ricomincia da capo, dimenticando ogni entità e mantenendo la lingua. |
 | `stop()` | `Effect[]` | Termina la sessione per sempre. |
 | `pause()` | `Paused` | Mette giù la storia e termina la sessione, rispondendo con un salvataggio. Solo su un passaggio o su una richiesta: altrove nulla si ferma, e non c'è né salvataggio né effetto. |
@@ -218,6 +222,24 @@ Ognuna ha come predefinito quello del motore.
 | `resetAllCvars()` | `Effect[]` | Riporta ogni variabile di console al suo valore predefinito. |
 | `removeEntity(key)` | `{ removed: boolean; effects: Effect[] }` | Dimentica l'entità sotto `key`. |
 | `consoleFeed(code: string)` | `{ result: PythonResult; effects: Effect[] }` | Una riga di Python contro la storia in corso: le sue entità, le sue variabili, i suoi suoni. |
+
+### Leggere il mondo
+
+Ciò che la storia può leggere dell'orologio e della posizione del lettore viene consegnato dall'host; il motore non legge nessun orologio e non tocca nessun sensore suo. Nessuno di questi fa avanzare la storia, e nessuno risponde con effetti.
+
+| Membro | Firma | Fa |
+| --- | --- | --- |
+| `setNow` | `(now?: Moment) => void` | Che ora è, prima di ogni verbo che può avanzare, da un host a cui il lettore ha consentito `dateTime`. `undefined` è nessun orologio. Dentro un verbo il tempo non si muove. Un `Player` lo chiama per te. |
+| `setPosition` | `(fix?: Position) => void` | L'ultima rilevazione della posizione dell'host, o `undefined` per nessuna. Rifiutato con `not-permitted` una volta che il lettore ha detto no a `location`. Una rilevazione data prima della risposta viene tenuta e letta solo se la risposta è sì, così un host che se ne procura una a un sì la consegna prima del `permit` che lo dice. |
+| `setStandIn` | `(kind: PermissionKind, typed?: string, localOffsetMinutes?: number) => void` | Ciò che il lettore preferirebbe la storia credesse, come l'ha scritto: un'ora ISO 8601 per `dateTime`, `"lat, lon"` o il nome di un luogo per `location`. Risponde ogni volta che manca il valore vero. `undefined` lo toglie. Un'ora scritta senza scostamento viene letta a `localOffsetMinutes`, quello di questa macchina in quella data se non indicato. Uno che non si legge viene rifiutato con `stand-in`, e resta quello di prima. |
+
+| Export | Genere | Che cos'è |
+| --- | --- | --- |
+| `PermissionKind` | tipo | `'dateTime' \| 'location'`: la grafia dell'API host, non il `date-time` del world WebAssembly. |
+| `Moment` | interfaccia | `{ utcMs: number; offsetMinutes: number }`: millisecondi dall'epoch, e lo scostamento in minuti a cui sta l'orologio del lettore, positivo a est, così Roma in ottobre è `120`. |
+| `momentOf` | `(date?: Date) => Moment` | `date` con lo scostamento di questa macchina in quell'istante; adesso quando non si dà una data. |
+| `Position` | interfaccia | Una rilevazione modellata sul `GeolocationPosition` del web, ogni parte facoltativa: `label?: string`, `latitude?: number`, `longitude?: number`, `accuracy?: number` (metri), `when?: Moment`. Anche il nome di un luogo senza coordinate è una rilevazione. |
+| `localOffsetFor` | `(typed: string) => number` | Lo scostamento dell'orologio di questa macchina nella data scritta da un lettore, che è quello a cui si legge un sostituto scritto senza. Lo scostamento attuale, per un testo che non nomina una data. |
 
 Un verbo rifiutato lancia `HostError` e nulla si muove. `Paused` è `{ save?: string; effects: Effect[] }`. `Answers` è una `Map` o un oggetto semplice da nome di campo a valore; un oggetto semplice annidato viene preso come mappa.
 
@@ -278,6 +300,8 @@ Un `Effect` è un oggetto semplice etichettato con `kind`, così uno `switch` su
 | `ended` | `title?: string`, `ranOut: boolean` | La storia è finita come l'ha scritta l'autore, oppure ha esaurito la strada (`ranOut`). Un turno. |
 | `failed` | `message: string`, `node?: string` | La storia si è fermata per un errore. `message` è in inglese, da mostrare e mai da analizzare. Un turno. |
 | `stopped` | nessuno | La sessione è terminata, dopo `stop()` o `pause()`. Un turno. |
+| `permit` | `kinds: readonly PermissionKind[]` | La storia non è cominciata: legge questi del mondo fuori da lei, e nessuno ha risposto. Rispondi a ciascuno con `permit`; la risposta all'ultimo fa cominciare la storia. Un turno. |
+| `notice` | `notice: Notice` | Una lettura dell'orologio o della posizione non ha avuto il valore vero. Detto una volta per tipo ed esito in una partita, prima del turno della lettura. |
 | `jumped` | `board: number`, `node?: string` | La storia è passata a un'altra lavagna. `board` è un indice in `manifest.boards`; non è l'id di catalogo. |
 | `ambience` | `ambience: Ambience \| null` | Il soundscape in vigore è cambiato. `null` è il silenzio. |
 | `audio` | `command: AudioCommand` | Ciò che viene detto a uno speaker. Vedi [Suono](#suono). |
@@ -285,7 +309,7 @@ Un `Effect` è un oggetto semplice etichettato con `kind`, così uno `switch` su
 | `callback` | `event: CallbackEvent` | Una callback con nome dichiarata dall'autore. Vedi [Callback con nome](#callback-con-nome). |
 | `trace` | `event: RunEvent` | Solo con `trace` attivo. La forma `{ tag, val }` propria del motore, con i tag in kebab-case e tutto il resto, senza mappatura. |
 
-I sei turni (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) sono il tipo `Turn`; uno è sempre l'ultimo effetto di un lotto. `isTurn(effect: Effect): effect is Turn` li distingue.
+I sette turni (`show`, `ask`, `permit`, `hold`, `ended`, `failed`, `stopped`) sono il tipo `Turn`; uno è sempre l'ultimo effetto di un lotto. `isTurn(effect: Effect): effect is Turn` li distingue.
 
 ### Record
 
@@ -303,6 +327,18 @@ I sei turni (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) sono il tipo `
 | `untranslated` | `string`, facoltativo | La lingua in cui il passaggio non ha testo, quando è questo il motivo per cui è vuoto. |
 | `soundscape` | `Soundscape`, facoltativo | Il soundscape che il passaggio riproduce. |
 | `silence` | `boolean` | Il passaggio chiede il silenzio. |
+| `timer` | `ChoiceTimer`, facoltativo | Il conto alla rovescia del passaggio; assente per uno che aspetta per sempre. |
+
+#### `ChoiceTimer`
+
+Il conto alla rovescia di un passaggio. Il motore non tiene il tempo: un host aspetta `afterMs`, chiama `beginCountdown`, aspetta `timeoutMs` e chiama `expire`. Un `Player` fa tutto questo da sé.
+
+| Campo | Tipo | Significato |
+| --- | --- | --- |
+| `afterMs` | `number` | Quanto prima che il conto alla rovescia cominci, in millisecondi; zero è subito. |
+| `timeoutMs` | `number` | Quanto scorre una volta cominciato, in millisecondi; mai zero. |
+| `visible` | `boolean` | Se l'autore voleva che il lettore lo vedesse scorrere. |
+| `default` | `number` | L'indice in `choices` preso quando scade. |
 
 #### `Choice`
 
@@ -319,9 +355,27 @@ I sei turni (`show`, `ask`, `hold`, `ended`, `failed`, `stopped`) sono il tipo `
 | `Prompt.node` | `string` | |
 | `Prompt.title` | `string` | |
 | `Prompt.fields` | `readonly PromptField[]` | |
-| `PromptField.name` | `string` | La chiave con cui rispondere. |
+| `PromptField.name` | `string` | La chiave con cui rispondere: un ID, uguale in ogni lingua. |
 | `PromptField.type` | `string` | Il tipo del campo. |
-| `PromptField.default` | `RippleValue` | |
+| `PromptField.default` | `RippleValue` | Ciò con cui il controllo è riempito, e la risposta se nessuno lo modifica. Non è un segnaposto. |
+| `PromptField.label` | `string` | Ciò che viene mostrato al lettore, nella lingua in lettura: `name` dove l'autore non ha scritto nulla. |
+| `PromptField.placeholder` | `string` | Il suggerimento disegnato mentre il campo è vuoto; vuoto se non c'è. Mai la risposta. |
+| `PromptField.optional` | `boolean` | Se il lettore può lasciarlo vuoto, che risponde `null`. Un campo non facoltativo è obbligatorio: non inviarlo vuoto. |
+| `PromptField.options` | `readonly PromptOption[]` | Le risposte fisse tra cui scegliere, in ordine: una scelta per un tipo scalare, un numero qualsiasi per un `…List`. Vuoto per un campo in cui il lettore scrive. Si risponde con gli `id` delle opzioni scelte, mai con le loro etichette o i loro valori. |
+| `PromptOption.id` | `string` | Ciò con cui risponde un host; uguale in ogni lingua. |
+| `PromptOption.label` | `string` | Ciò che viene mostrato al lettore, nella lingua in lettura. |
+| `PromptOption.value` | `RippleValue` | Ciò che viene consegnato alla storia, del tipo del campo. |
+
+#### `Notice`
+
+Una lettura dell'orologio o della posizione che non ha avuto il valore vero.
+
+| Campo | Tipo | Significato |
+| --- | --- | --- |
+| `code` | `string` | Il codice di partita, la cui lettera è la gravità: `I.RT.05` ha risposto un sostituto, `W.RT.06` la lettura è stata rifiutata, `I.RT.07` l'host non aveva niente da dare. |
+| `kind` | `PermissionKind` | |
+| `node` | `string`, facoltativo | La scheda che ha fatto la lettura. |
+| `message` | `string` | La frase inglese del motore, da mostrare e mai da analizzare. |
 
 #### `Ambience`
 
@@ -382,7 +436,7 @@ Ogni tempo è in millisecondi.
 | `from`, `to` | `RippleValue`, facoltativo | |
 | `index` | `number`, facoltativo | |
 
-`CallbackEventName` è uno tra `story.started`, `board.entered`, `soundscape.changed`, `passage.shown`, `choice.taken`, `delay.started`, `delay.elapsed`, `story.ended`, `story.failed`, `cvar.changed`, `entity.spawned`, `entity.removed`, `entity.renamed`, `entity.field.changed`, `machine.state.entered`, `node.entered`, `node.exited`, `node.failed`. `CallbackKind` è lo stesso insieme come lo scrive l'interfaccia WebAssembly del motore, con i trattini (`cvar-changed`).
+`CallbackEventName` è uno tra `story.started`, `board.entered`, `soundscape.changed`, `passage.shown`, `choice.taken`, `delay.started`, `delay.elapsed`, `story.ended`, `story.failed`, `cvar.changed`, `entity.spawned`, `entity.removed`, `entity.renamed`, `entity.field.changed`, `machine.state.entered`, `node.entered`, `node.exited`, `node.failed`, `countdown.started`, `countdown.expired`. `CallbackKind` è lo stesso insieme come lo scrive l'interfaccia WebAssembly del motore, con i trattini (`cvar-changed`).
 
 #### `AudioCommand`
 
@@ -433,7 +487,7 @@ Int e Float sono tipi diversi e restano diversi: `7n` è un Int e `7` un Float, 
 
 ## Player
 
-Il ciclo sopra una sessione: consegna ogni effetto in ordine, conserva il turno nominato dall'ultimo, aspetta che finisca un `hold`, applica il suono della storia e smista le callback con nome.
+Il ciclo sopra una sessione: consegna ogni effetto in ordine, conserva il turno nominato dall'ultimo, aspetta che finisca un `hold`, fa scorrere il conto alla rovescia di un passaggio, consegna alla storia l'ora una volta che il lettore lo ha consentito, applica il suono della storia e smista le callback con nome.
 
 ```ts
 new Player(session: Session, handlers: PlayerHandlers)
@@ -444,8 +498,13 @@ new Player(session: Session, handlers: PlayerHandlers)
 | Gestore | Tipo | Significato |
 | --- | --- | --- |
 | `onEffect` | `(effect: Effect) => void` | Obbligatorio. Ogni effetto, nell'ordine in cui il motore l'ha prodotto. |
-| `onError` | `(error: unknown) => void` | Un errore di un verbo che il player ha eseguito da sé (l'`elapsed()` dopo un'attesa), o lanciato da un gestore mentre si consegnava un lotto. **Senza di esso, un errore dopo un'attesa è un'eccezione non catturata** lanciata da un timer, e l'errore di un gestore va a `reportError`, o a `console.error` dove non esiste. |
+| `onError` | `(error: unknown) => void` | Un errore di un verbo che il player ha eseguito da sé (l'`elapsed()` dopo un'attesa, `beginCountdown()` ed `expire()` di un conto alla rovescia), o lanciato da un gestore mentre si consegnava un lotto. **Senza di esso, un errore dopo un'attesa è un'eccezione non catturata** lanciata da un timer, e l'errore di un gestore va a `reportError`, o a `console.error` dove non esiste. |
 | `audio` | `SoundscapeDriver` | Dove va il suono della storia. Ogni effetto `audio` viene applicato a esso oltre a essere passato a `onEffect`. Senza uno, non si sente nulla. |
+| `now` | `() => Moment \| undefined` | Che ora è, per la storia: letto prima di ogni verbo una volta che il lettore ha consentito `dateTime` tramite `permit`, e mai prima. `momentOf` se non indicato; un test passa un istante fisso, e `undefined` è nessun orologio. |
+| `countdowns` | `boolean` | Se il player fa scorrere da sé il conto alla rovescia di un passaggio. Attivo a meno di `false`. **Disattivalo per un host il cui orologio non attende**, un test o un agente che percorre ogni ramo, dove un conto alla rovescia prenderebbe sempre la scelta predefinita; disattivarlo è anche il modo in cui un host rispetta un lettore che ha chiesto nessun limite di tempo (WCAG 2.2.1). L'host chiama allora `beginCountdown` ed `expire` dove li intende. |
+| `onCountdown` | `(countdown: Countdown \| undefined) => void` | A che punto è il conto alla rovescia del passaggio mostrato, da disegnare: in attesa del suo `afterMs`, poi cominciato, e `undefined` quando non ce n'è più, perché il lettore ha scelto, è scaduto o la storia si è mossa. Un cambio di lingua non dice nulla: è la stessa visita e lo stesso conto alla rovescia. |
+
+`Countdown` è `{ timer: ChoiceTimer; begun: boolean }`: `begun` è `false` mentre aspetta `timer.afterMs` e `true` quando scorre, per `timer.timeoutMs`.
 
 ### Membri
 
@@ -453,17 +512,23 @@ new Player(session: Session, handlers: PlayerHandlers)
 | --- | --- | --- |
 | `session` | `Session` | La sessione sottostante, per ciò che il player non avvolge: i lettori di stato, `checkpoint`, cvar, entità. **Un verbo chiamato su di essa aggira il player**: un'attesa in sospeso non viene annullata e può svegliare un turno successivo, e nulla di ciò che risponde raggiunge `onEffect` o il suono. |
 | `handlers` | `PlayerHandlers` | Come dati. |
-| `turn` | `Turn \| undefined` | L'ultimo passaggio, richiesta, attesa o finale consegnato. |
+| `turn` | `Turn \| undefined` | L'ultimo passaggio, richiesta, domanda, attesa o finale consegnato; una volta che `permit` ha risposto ad alcuni dei tipi di un turno `permit`, quel turno senza di essi, così un host che disegna da lì chiede solo ciò che resta. |
+| `countdown` | `Countdown \| undefined` | A che punto è il conto alla rovescia del passaggio mostrato, o `undefined` se non ne scorre nessuno. |
 | `start()` | `void` | `session.start()`, consegnato. |
 | `choose(index?)` | `void` | `session.choose(index)`, consegnato. |
 | `answer(values?)` | `void` | `session.answer(values)`, consegnato. |
-| `setLocale(locale)` | `void` | `session.setLocale(locale)`, consegnato. |
+| `setLocale(locale)` | `void` | `session.setLocale(locale)`, consegnato. Un'attesa o un conto alla rovescia in sospeso continua: è la stessa visita. |
+| `permit(kind, granted)` | `void` | `session.permit(kind, granted)`, consegnato, dopo aver annotato se `dateTime` si può leggere. Un'attesa o un conto alla rovescia in sospeso continua: una risposta non muove nulla. |
+| `setStandIn(kind, typed?, localOffsetMinutes?)` | `void` | `session.setStandIn`. Uno che non si legge lancia `HostError`, e resta quello di prima. |
+| `setPosition(fix?)` | `void` | `session.setPosition`. Lancia `HostError` una volta che il lettore ha detto no a `location`. |
+| `beginCountdown()` | `void` | `session.beginCountdown()`, consegnato, per un host che fa scorrere da sé i conti alla rovescia (`countdowns: false`). Con `countdowns` attivo lo chiama il player quando è il momento; chiamarlo prende in mano il conto alla rovescia. |
+| `expire()` | `void` | `session.expire()`, consegnato: il conto alla rovescia è scaduto, e viene presa la sua scelta predefinita. |
 | `restart()` | `void` | `session.restart()`, consegnato. |
 | `stop()` | `void` | `session.stop()`, consegnato. |
 | `pause()` | `string \| undefined` | `session.pause()`: consegna i suoi effetti e risponde con il salvataggio, oppure `undefined` e nulla si è fermato a meno che la storia non sia su un passaggio o su una richiesta. Risponde ancora dopo `dispose()`, così una pagina può salvare mentre se ne va. Non è `SoundscapeDriver.pause`. |
 | `consoleFeed(code)` | `PythonResult` | `session.consoleFeed(code)`; ciò a cui porta viene consegnato come gli effetti di qualsiasi verbo. |
 | `onCallback`, `onAnyCallback`, `clearCallbacks()`, `callbackMisses` | | Vedi [Callback con nome](#callback-con-nome). |
-| `dispose()` | `void` | Smette di attendere qualsiasi `hold` e non consegna più nulla. Dopo di esso, `start`, `choose`, `answer`, `setLocale`, `restart` e `stop` non fanno assolutamente nulla, e `pause` risponde ancora con un salvataggio. |
+| `dispose()` | `void` | Smette di attendere qualsiasi `hold` o conto alla rovescia e non consegna più nulla. Dopo di esso, ogni verbo non fa assolutamente nulla, e `pause` risponde ancora con un salvataggio. |
 
 Un verbo del player lancia, verso di te, qualsiasi cosa lanci il verbo della sessione (`HostError`, `EngineTrap`).
 
@@ -479,7 +544,15 @@ Un gestore che lancia un errore viene segnalato, e il resto del lotto arriva com
 
 ### Attese
 
-Quando l'ultimo effetto di un lotto è un `hold`, il player imposta un timer per `ms`, poi chiama `session.elapsed()` e consegna ciò che risponde. Qualsiasi verbo chiamato mentre l'attesa è in sospeso annulla prima il timer, così un riavvio durante una pausa nella storia non risveglia la storia un attimo dopo. Un errore di quell'`elapsed()` va a `onError`.
+Quando l'ultimo effetto di un lotto è un `hold`, il player imposta un timer per `ms`, poi chiama `session.elapsed()` e consegna ciò che risponde. Un verbo a cui la sessione ha risposto mentre l'attesa è in sospeso annulla il timer, così un riavvio durante una pausa nella storia non risveglia la storia un attimo dopo. Un verbo rifiutato dalla sessione non ha mosso nulla e non annulla nulla, e `setLocale` e `permit` non annullano mai un'attesa, né lo fa una `pause` altrove che su un passaggio o una richiesta, dove nulla si è fermato. Un errore di quell'`elapsed()` va a `onError`.
+
+### Conti alla rovescia
+
+Quando l'ultimo effetto di un lotto è un passaggio con un `timer`, e `countdowns` non è `false`, il player aspetta `afterMs`, chiama `session.beginCountdown()`, aspetta `timeoutMs`, chiama `session.expire()`, e consegna ciò a cui ciascuno risponde, dicendo a `onCountdown` a che punto è a ogni passo. Lascia cadere entrambe le attese nel momento in cui la storia si muove, con la stessa regola di un'attesa: non per un verbo rifiutato dalla sessione, e non per un cambio di lingua, che mostra di nuovo la stessa visita. Un errore di uno dei due verbi va a `onError`.
+
+### L'orologio
+
+Una volta che il lettore ha consentito `dateTime` tramite `player.permit`, ogni verbo del player è preceduto da `session.setNow(now())`, con il gestore `now` o `momentOf`; mai prima. Su una `Session` nuda, chiama tu `setNow(momentOf())` prima di ogni verbo.
 
 ## Callback con nome
 
@@ -630,7 +703,7 @@ Ogni errore lanciato dal pacchetto è un `RippleError`, e ciascuno è una classe
 | `BundleError` | `Campaign.load`, `Campaign.fromFiles`, `campaign.soundscape`, `Session.create` | `failure: BundleFailure` | sì: un bundle che non si apre, o uno proveniente da un motore più recente |
 | `NeedsPython` | `Campaign.load`, `Campaign.fromFiles` con `python: false` | nessuno | sì, per tua scelta |
 | `ResumeError` | `Session.resume` | `failure: ResumeFailure` | sì: un salvataggio che non è più compatibile con la campagna |
-| `HostError` | qualsiasi verbo di sessione | `failure: HostFailure` | solo due tipi (sotto) |
+| `HostError` | qualsiasi verbo di sessione, `setPosition`, `setStandIn` | `failure: HostFailure` | solo tre tipi (sotto) |
 | `ReentrantVerb` | un verbo di `Player` chiamato mentre consegna un lotto | nessuno | no: un bug |
 | `EngineTrap` | qualsiasi chiamata nel motore dopo che è andato in panic | `cause` | sì, e raro |
 
@@ -657,10 +730,14 @@ Un verbo rifiutato lascia la storia dov'era.
 | --- | --- | --- | --- |
 | `choice-spent` | `port` | È stata compiuta una scelta indicata come non disponibile. | sì: gestiscilo |
 | `unknown-locale` | `locale` | Una lingua in cui la campagna non è stata scritta. | sì: gestiscilo |
-| `wrong-turn` | `asked`, `answered` | Un verbo che non si adatta al turno. `asked` è `present`, `ask`, `wait`, `ended`, `failed` o `stopped`; `answered` è `choose`, `answer` o `elapsed`. | no: un bug |
+| `stand-in` | `permission`, `reason` | Un sostituto che non si legge come un'ora o un luogo, e il perché in inglese del motore. | sì: gestiscilo |
+| `wrong-turn` | `asked`, `answered` | Un verbo che non si adatta al turno. `asked` è `present`, `ask`, `wait`, `ended`, `failed`, `stopped` o `permit`; `answered` è `choose`, `answer`, `elapsed`, `begin-countdown` o `expire`. | no: un bug |
 | `no-such-choice` | `offered`, `chosen` | Un indice oltre le scelte offerte. | no: un bug |
 | `stopped` | nessuno | La sessione è ferma. | no: un bug |
 | `nothing-asked` | nessuno | La storia non sta aspettando nulla. | no: un bug |
+| `not-permitted` | `permission` | Una posizione consegnata per un tipo a cui il lettore ha detto no. | no: un bug |
+| `no-countdown` | nessuno | `beginCountdown` o `expire` su un passaggio senza conto alla rovescia. | no: un bug |
+| `countdown-not-begun` | nessuno | `expire` prima di `beginCountdown`. | no: un bug |
 
 ### `EngineTrap`
 
@@ -671,11 +748,11 @@ Il motore è andato in panic. L'istanza della campagna è compromessa: ogni chia
 - **Ogni verbo è sincrono** e gira sul thread chiamante. Nulla in `Session` restituisce una promise; solo `Campaign.load`, `Campaign.fromFiles`, `Speaker.voice`, `WebAudioSpeaker.unlock` e `WebAudioSpeaker.close` lo fanno.
 - **Un passaggio costa microsecondi.** Una scheda Script gira entro la sua scadenza (`scriptLimits.deadlineMs`), e la pagina non viene disegnata mentre gira.
 - **Una sola coda, nell'ordine delle chiamate.** Le chiamate su una sessione vengono fatte una dopo l'altra; un `Player` è quella coda, e rifiuta un verbo dall'interno della propria consegna con `ReentrantVerb`.
-- **I timer** sono quelli del `Player`, per un'attesa, e quelli del `SoundscapeDriver`, che scatta ogni `tickMs` mentre qualcosa suona e si ferma quando è inattivo o in pausa.
+- **I timer** sono quelli del `Player`, per un'attesa e un conto alla rovescia, e quelli del `SoundscapeDriver`, che scatta ogni `tickMs` mentre qualcosa suona e si ferma quando è inattivo o in pausa.
 
 | Oggetto | Si rilascia con |
 | --- | --- |
-| `Player` | `dispose()`: niente più attese, niente più consegne. |
+| `Player` | `dispose()`: niente più attese né conti alla rovescia, niente più consegne. |
 | `SoundscapeDriver` | `dispose()`: interrompe il suono e ferma ogni voce. |
 | `WebAudioSpeaker` | `close()`: chiude il suo `AudioContext`. |
 | `Session` | `stop()` la termina. Non ha un `dispose`. |
@@ -683,7 +760,7 @@ Il motore è andato in panic. L'istanza della campagna è compromessa: ogni chia
 
 ## Un host completo
 
-Una pagina con un elemento `#stage`, un pulsante `#begin` e una select `#locale`, che rende il Markdown con `marked` e lo sanifica con `DOMPurify`. I nomi delle callback (`chapterTwo`, `goldChanged`, `skipAhead`) sono quelli dell'autore, concordati con te.
+Una pagina con un elemento `#stage`, un pulsante `#begin` e una select `#locale`, che rende il Markdown con `marked` e lo sanifica con `DOMPurify`. Chiede prima che una storia legga l'orologio o il luogo, e lascia i conti alla rovescia al player. I nomi delle callback (`chapterTwo`, `goldChanged`, `skipAhead`) sono quelli dell'autore, concordati con te.
 
 ```ts
 import {
@@ -693,9 +770,12 @@ import {
   HostError,
   LoadError,
   NeedsPython,
+  momentOf,
   type Passage,
+  type PermissionKind,
   Player,
   type Prompt,
+  type PromptField,
   type RippleValue,
   ResumeError,
   resolveLink,
@@ -773,34 +853,67 @@ function showPassage(passage: Passage): void {
   });
 }
 
+// One field's control, and how to read it: undefined is left empty.
+function control(field: PromptField): [HTMLElement, () => RippleValue | undefined] {
+  if (field.options.length > 0) {
+    // A pick, answered with the options' ids and never their words.
+    const select = el('select');
+    select.multiple = field.type.endsWith('List');
+    if (field.optional && !select.multiple) select.append(new Option('—', ''));
+    for (const option of field.options) select.append(new Option(option.label, option.id));
+    select.required = !field.optional;
+    return [
+      select,
+      () => {
+        const picked = [...select.selectedOptions].map((option) => option.value).filter(Boolean);
+        if (picked.length === 0) return undefined;
+        return select.multiple ? picked : picked[0];
+      },
+    ];
+  }
+  const input = el('input');
+  input.placeholder = field.placeholder; // a hint, never the answer
+  if (field.type === 'bool') {
+    input.type = 'checkbox';
+    input.checked = field.default === true;
+    return [input, () => input.checked];
+  }
+  if (field.type === 'number') {
+    input.type = 'number';
+    input.step = 'any';
+  }
+  if (field.default !== null && typeof field.default !== 'object') {
+    input.value = String(field.default); // the answer if nobody edits it
+  }
+  input.required = !field.optional; // a required field is not submitted empty
+  return [
+    input,
+    () =>
+      input.value.trim() === ''
+        ? undefined
+        : field.type === 'number'
+          ? Number(input.value)
+          : input.value,
+  ];
+}
+
 function showPrompt(prompt: Prompt): void {
   const form = el('form');
-  for (const field of prompt.fields) {
-    const input = el('input');
-    input.name = field.name;
-    if (field.type === 'bool') input.type = 'checkbox';
-    else if (field.type === 'int' || field.type === 'float') input.type = 'number';
-    if (field.default !== null && typeof field.default !== 'object') {
-      input.value = String(field.default);
-    }
-    const label = el('label', field.name);
+  const reads = prompt.fields.map((field) => {
+    // The reader's words for the field; its name is the key the answer goes under.
+    const label = el('label', field.optional ? `${field.label} (optional)` : field.label);
+    const [input, read] = control(field);
     label.append(input);
     form.append(label);
-  }
+    return [field, read] as const;
+  });
   form.append(el('button', 'Continue'));
   form.onsubmit = (event) => {
     event.preventDefault();
     const values: Record<string, RippleValue> = {};
-    for (const field of prompt.fields) {
-      const input = form.elements.namedItem(field.name) as HTMLInputElement;
-      values[field.name] =
-        field.type === 'bool'
-          ? input.checked
-          : field.type === 'int'
-            ? BigInt(Math.trunc(Number(input.value || 0))) // an Int is a bigint
-            : field.type === 'float'
-              ? Number(input.value || 0)
-              : input.value;
+    for (const [field, read] of reads) {
+      const value = read();
+      if (value !== undefined) values[field.name] = value; // an optional field left out is skipped
     }
     try {
       player?.answer(values);
@@ -809,6 +922,60 @@ function showPrompt(prompt: Prompt): void {
     }
   };
   stage.replaceChildren(el('h2', prompt.title), form);
+}
+
+const QUESTIONS: Record<PermissionKind, string> = {
+  dateTime: 'This story would like to know the date and time.',
+  location: 'This story would like to know where you are.',
+};
+
+// Before the story begins, a kind at a time. A reader who says no may give
+// a stand-in: what the story should believe instead.
+function showPermit(kinds: readonly PermissionKind[]): void {
+  stage.replaceChildren(el('h2', 'Before the story begins'));
+  for (const kind of kinds) {
+    const row = el('div');
+    const standIn = el('input');
+    standIn.placeholder = kind === 'dateTime' ? '2026-10-31 23:00' : 'Rome, or 41.9, 12.5';
+    const answered = (granted: boolean) => {
+      row.remove();
+      player?.permit(kind, granted); // the answer to the last kind begins the story
+    };
+    const allow = el('button', 'Allow');
+    allow.onclick = () => {
+      if (kind !== 'location' || !navigator.geolocation) return answered(true);
+      // Hand the fix over before the yes that begins the story, or its first page reads nothing.
+      navigator.geolocation.getCurrentPosition(
+        (fix) => {
+          player?.setPosition({
+            latitude: fix.coords.latitude,
+            longitude: fix.coords.longitude,
+            accuracy: fix.coords.accuracy,
+            when: momentOf(new Date(fix.timestamp)),
+          });
+          answered(true);
+        },
+        () => answered(true),
+      );
+    };
+    const refuse = el('button', "Don't allow");
+    refuse.onclick = () => {
+      try {
+        player?.setStandIn(kind, standIn.value.trim() || undefined);
+      } catch (error) {
+        // A stand-in that does not read is refused, and the one before stays.
+        if (error instanceof HostError && error.failure.kind === 'stand-in') {
+          standIn.setCustomValidity(error.failure.reason);
+          standIn.reportValidity();
+          return;
+        }
+        throw error;
+      }
+      answered(false);
+    };
+    row.append(el('p', QUESTIONS[kind]), allow, refuse, standIn);
+    stage.append(row);
+  }
 }
 
 function showHold(ms: number): void {
@@ -881,6 +1048,12 @@ function onEffect(effect: Effect): void {
     case 'ask':
       showPrompt(effect.prompt);
       queueMicrotask(checkpoint);
+      break;
+    case 'permit':
+      showPermit(effect.kinds); // nothing else happens until each kind is answered
+      break;
+    case 'notice':
+      console.info(effect.notice.message); // a read that got a stand-in, a refusal or nothing
       break;
     case 'hold':
       showHold(effect.ms);

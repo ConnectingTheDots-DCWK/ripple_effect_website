@@ -15,8 +15,8 @@ Usa una macro per un tratto che vuoi richiamare da più punti: un negozio, un ri
 <Steps>
 
 1. Nell'albero dei file, premi **+** accanto a una lavagna e scegli **Macro**. Il file è `*.macro.graph.json` e si apre sulla stessa area di lavoro di una lavagna, con una scheda **Macro In** e una **Macro Out** al posto di Start e delle End di una lavagna.
-2. Fai doppio clic su **Macro In** per indicare cosa riceve la macro: un nome e un tipo per riga, come in una scheda Input. Ogni nome diventa un'uscita che porta ciò che la lavagna chiamante collega o digita sulla scheda. Un parametro può avere un valore predefinito, usato quando la scheda chiamante non collega e non digita nulla.
-3. Fai doppio clic su **Macro Out** per indicare cosa risponde la macro, allo stesso modo. Ogni nome diventa un ingresso. La sua porta di ingresso accetta un numero qualsiasi di collegamenti, così ogni ramo interno alla macro può terminare nella stessa porta di uscita.
+2. Fai doppio clic su **Macro In** per indicare cosa riceve la macro: un ID e un tipo per riga, come in una scheda Input. Un ID si scrive come un nome Python, per esempio `captain_hp`, e l'editor non ti lascia digitarne un altro. Ogni ID diventa un'uscita che porta ciò che la lavagna chiamante collega o digita sulla scheda. Un parametro può avere un valore predefinito, usato quando la scheda chiamante non collega e non digita nulla.
+3. Fai doppio clic su **Macro Out** per indicare cosa risponde la macro, allo stesso modo. Ogni ID diventa un ingresso. La sua porta di ingresso accetta un numero qualsiasi di collegamenti, così ogni ramo interno alla macro può terminare nella stessa porta di uscita.
 4. Costruisci il tratto tra le due schede con il normale insieme di schede. Una macro ha esattamente una Macro In e una Macro Out.
 
 </Steps>
@@ -37,6 +37,7 @@ Usa una macro per un tratto che vuoi richiamare da più punti: un negozio, un ri
 - Due chiamate sono due copie indipendenti, quindi un varco *Once* dentro un negozio scatta una volta per negozio, non una volta per l'intera storia.
 - Il conteggio *Volte* di una scelta dentro una macro viene tenuto per chiamata: un corridoio richiamato da due punti ha un budget separato per ciascuno. Vedi [Come limitare una scelta](/it/how-to/limit-a-choice/).
 - Una macro non può richiamare se stessa.
+- Una macro di una versione precedente alla 1.6 ha i suoi nomi riscritti come ID quando viene aperta: `Captain HP` diventa `captain_hp`, e i suoi collegamenti lo seguono. Una volta salvata dalla 1.6, non si può più aprire con una versione precedente.
 - A una macro non si può saltare e una lavagna non si può richiamare: una scheda Jump elenca le lavagne, e una scheda Macro elenca le macro.
 - Una storia può essere messa in pausa dentro una macro e ripresa da dove si era interrotta.
 

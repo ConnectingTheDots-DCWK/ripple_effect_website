@@ -50,9 +50,21 @@ Sono il modo in cui un gioco, un'app o una pagina web esegue una campagna esport
 
 L'interprete è un sottoinsieme di Python: niente filesystem, niente rete, niente `class`, e una libreria standard ridotta a un breve elenco. Questa restrizione è ciò che rende sicuro eseguire la storia di uno sconosciuto. [Python in una storia](/it/explanation/python-in-a-story/) spiega il compromesso, [La sandbox e i suoi limiti](/it/reference/python/sandbox/) dice cosa consente, e il [riferimento Python](/it/reference/python/) elenca cosa l'app vi rende disponibile.
 
+## Harper: ortografia e grammatica
+
+[github.com/automattic/harper](https://github.com/automattic/harper) · Apache-2.0
+
+**Non è nostro.** Harper è un correttore grammaticale scritto in Rust, e il suo `harper-core` è ciò che controlla ortografia, grammatica e stile dei passaggi e delle note in inglese, sul tuo computer, mentre scrivi. Le regole di stile che un progetto scrive per sé sono in Weir, il linguaggio di regole di Harper. [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) e [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/) spiegano come usarlo.
+
+## parakeet-rs: la dettatura
+
+[github.com/altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs) · MIT o Apache-2.0
+
+**Non è nostro.** `parakeet-rs` esegue i modelli in streaming Nemotron di NVIDIA, ed è il modo in cui la dettatura ti ascolta sul tuo computer. I modelli non fanno parte dell'app: ciascuno si scarica quando lo chiedi, e sono soggetti alle licenze di NVIDIA, non alla nostra. [Come dettare un passaggio](/it/how-to/dictate-a-passage/) spiega come configurarla.
+
 ## Tutto il resto
 
-L'elenco completo dei componenti di terze parti e delle loro licenze si trova nell'applicazione, in **Impostazioni ▸ Informazioni ▸ Licenze di terze parti**. Ciascuno è regolato dalla propria licenza, che quella dell'app non tocca.
+L'elenco completo dei componenti di terze parti e delle loro licenze si trova nell'applicazione, in **Impostazioni ▸ Informazioni ▸ Licenze di terze parti**. Ciascuno è regolato dalla propria licenza, che quella dell'app non tocca. Dalla 1.6 l'elenco comprende anche il codice nativo contenuto nei pacchetti, tra cui il lettore audio e FFmpeg, Git, il visualizzatore PDF, la segnalazione dei crash e l'elenco di parole del correttore ortografico, oltre ai font delle icone, ai tre caratteri tipografici dell'app e ai due modelli vocali che la dettatura scarica.
 
 ## Vedi anche
 

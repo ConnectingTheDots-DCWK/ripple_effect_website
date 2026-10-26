@@ -137,6 +137,8 @@ A name read by a script must be a name Python can read.
 | Script node inputs and outputs; a passage's inputs | A letter or an underscore, followed by letters, digits and underscores. Python's own words, such as `class`, are refused, with the reason shown under the field. A board that carries a name Python cannot read reports it. |
 | Output and Input node slots, and a macro's takes and answers | The same rule: a name is how the board refers to a slot, its port and every wire on it. What the reader sees on an Output or Input node is the slot's label, which can say anything, such as `Your roll`. |
 
+A board from a version before 1.6 is updated when it is opened: a name on an Output, Input, Macro In or Macro Out card becomes an ID, `Captain HP` becoming `captain_hp`, its wires follow, and the reader still sees *Captain HP* as the label. A board saved by 1.6 cannot be opened by an earlier version.
+
 ## Macros
 
 {/* TODO(shots): <Shot name="macro" /> */}

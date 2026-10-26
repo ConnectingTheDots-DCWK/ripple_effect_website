@@ -25,11 +25,17 @@ Una storia ha anche bisogno di cose da ricordare, e l'app offre tre luoghi diver
 
 Il calcolo può stare in una scheda sulla lavagna, oppure dentro una frase. [Python in una storia](/it/explanation/python-in-a-story/) spiega perché esistono entrambi. Un passaggio nomina un soundscape, cioè musica e suoni su una linea temporale in un file a sé, che resta in vigore finché un altro non lo sostituisce, mentre una scheda o uno script riproduce un suono una volta sola e la storia prosegue. Vedi [Soundscape e suoni singoli](/it/explanation/soundscapes-and-sounds/).
 
+Una storia può anche leggere il mondo fuori da sé. Può leggere la data e l'ora e, se lo consenti, più o meno dove si trova il computer, da Python o dalle schede del gruppo **World** del menu Crea, e un sostituto impostato nelle autorizzazioni dell'app risponde quando non può avere quello vero; [Il mondo fuori dalla storia](/it/reference/python/the-world/) elenca cosa può chiedere. Anche le parole fuori da un passaggio possono essere nella lingua di chi legge: una scheda *Localized string* contiene un testo per lingua, *Get locale* dice quale lingua e regione ha il lettore, e *Convert* trasforma `12 km` nelle unità di misura della regione del lettore; vedi [Come aggiungere, disattivare o cambiare le lingue di un progetto](/it/how-to/manage-languages/). Una scheda Input chiede qualcosa al lettore, e un suo campo può essere facoltativo oppure offrire risposte fisse tra cui scegliere.
+
 ## Giocare e distribuire usano lo stesso motore
 
-Il pulsante Gioca esegue la storia da qualsiasi scheda, con accanto una traccia che dice cosa ha fatto la storia. Usa lo stesso motore che esegue una campagna esportata, ed è per questo che una sessione di gioco nell'editor è una prova sulla storia distribuita e non un'approssimazione; [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/) ne espone l'argomento.
+Il pulsante Gioca esegue la storia da qualsiasi scheda, con accanto una traccia che dice cosa ha fatto la storia. Un passaggio può mettere un conto alla rovescia sulle sue scelte e prenderne una da solo se il lettore aspetta troppo; vedi [Come mettere un conto alla rovescia su una scelta](/it/how-to/time-a-choice/). Usa lo stesso motore che esegue una campagna esportata, ed è per questo che una sessione di gioco nell'editor è una prova sulla storia distribuita e non un'approssimazione; [Perché l'anteprima è la storia pubblicata](/it/explanation/the-preview-is-the-shipped-story/) ne espone l'argomento.
 
 L'esportazione poi compila il progetto in una campagna che un runtime esegue senza alcun editor accanto, oppure copia il progetto per un traduttore. Sono cose diverse con scopi diversi, descritte in [Cos'è un'esportazione](/it/explanation/what-an-export-is/). Un gioco che incorpora la storia può essere informato su ciò che vi accade tramite callback dell'host con nome, descritte in [Callback dell'host](/it/explanation/host-callbacks/).
+
+## Un aiuto alla scrittura
+
+I passaggi in inglese e le note in Markdown vengono controllati per ortografia, grammatica e stile mentre scrivi, sul tuo computer, con un dizionario per progetto condiviso con chiunque lo apra e regole di stile tue scritte in Weir. Vedi [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) e [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/). La dettatura scrive al cursore ciò che dici, ascoltato sul tuo computer da un modello che scarichi una volta sola; vedi [Come dettare un passaggio o una nota](/it/how-to/dictate-a-passage/).
 
 ## Orientarsi in una storia lunga
 

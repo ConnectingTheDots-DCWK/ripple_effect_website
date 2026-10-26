@@ -31,7 +31,7 @@ const AUDIENCES: Audience[] = [
     href: "/writers",
     eyebrow: "For writers and narrative designers",
     title: "Write prose, and keep the structure in view",
-    body: "Spelling and grammar checked on your own machine, house-style rules you write yourself, and a map of how every chapter hands the story on.",
+    body: "Spelling and grammar checked and dictation heard on your own machine, house-style rules you write yourself, and a map of how every chapter hands the story on.",
     icon: PenLineIcon,
   },
   {

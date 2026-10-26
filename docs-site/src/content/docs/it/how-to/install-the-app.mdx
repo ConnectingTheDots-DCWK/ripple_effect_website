@@ -20,7 +20,7 @@ Richiede Windows 10 o 11.
 Setup installa in `%LOCALAPPDATA%\Programs\Ripple Effect`, solo per il tuo account, e non chiede mai i privilegi di amministratore. Per aggiornare a mano, esegui un programma di installazione più recente sopra quello esistente.
   </TabItem>
   <TabItem label="macOS">
-Richiede macOS 12 Monterey o successivo. Il `.dmg` è un'unica build universale per Apple silicon e Intel.
+Richiede macOS 12 Monterey o successivo. Il `.dmg` è solo per Apple silicon.
 
 <Steps>
 1. Apri il `.dmg` e trascina l'app in Applicazioni.
@@ -44,7 +44,7 @@ sudo apt install ./ripple_effect-<version>-linux.deb
 sudo dnf install ./ripple_effect-<version>-linux.rpm
 ```
 
-Il `.deb` si installa in `/opt/ripple_effect` e l'`.rpm` in `/usr/share/ripple-effect`. Entrambi mettono `ripple_effect` nel tuo `PATH`. Il `.deb` dichiara ALSA, PulseAudio e PipeWire come dipendenze per l'audio.
+Il `.deb` si installa in `/opt/ripple_effect` e l'`.rpm` in `/usr/share/ripple-effect`. Entrambi mettono `ripple_effect` nel tuo `PATH`. Per l'audio serve solo ALSA; PulseAudio e PipeWire vengono usati se sono installati. Entrambi i pacchetti installano `pulseaudio-utils`, che serve alla dettatura.
 
 Se il gestore di pacchetti lo rifiuta con un errore su `libc6` o `GLIBC_2.38`, la tua distribuzione è più vecchia del requisito indicato sopra.
   </TabItem>

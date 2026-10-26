@@ -137,6 +137,8 @@ Un nome letto da uno script deve essere un nome che Python sa leggere.
 | Ingressi e uscite delle schede Script; gli ingressi di un passaggio | Una lettera o un trattino basso, seguiti da lettere, cifre e trattini bassi. Le parole riservate di Python, come `class`, vengono rifiutate, con il motivo mostrato sotto il campo. Una lavagna che contiene un nome che Python non sa leggere lo segnala. |
 | Slot delle schede Output e Input, e ciò che una macro riceve e restituisce | La stessa regola: un nome è il modo in cui la lavagna si riferisce a uno slot, alla sua porta e a ogni collegamento su di essa. Ciò che il lettore vede su una scheda Output o Input è l'etichetta dello slot, che può dire qualsiasi cosa, come `Your roll`. |
 
+Una lavagna di una versione precedente alla 1.6 viene aggiornata quando la apri: un nome su una scheda Output, Input, Macro In o Macro Out diventa un ID, `Captain HP` diventa `captain_hp`, i suoi collegamenti lo seguono, e il lettore vede ancora *Captain HP* come etichetta. Una lavagna salvata dalla 1.6 non può essere aperta da una versione precedente.
+
 ## Macro
 
 {/* TODO(shots): <Shot name="macro" /> */}

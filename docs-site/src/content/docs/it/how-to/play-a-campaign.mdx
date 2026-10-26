@@ -1,6 +1,6 @@
 ---
 title: Come giocare e testare una campagna
-description: Premi Gioca, leggi una storia nella lingua scelta, gestisci avvisi e cicli fuori controllo, parti da qualsiasi scheda e ispeziona una sessione di gioco.
+description: Premi Gioca, leggi una storia nella lingua scelta, lasciale leggere l'ora o la posizione, gestisci avvisi e cicli fuori controllo, parti da qualsiasi scheda e ispeziona una sessione di gioco.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -31,6 +31,24 @@ Scegli la lingua dall'intestazione della finestra della campagna. Puoi cambiarla
 Quando la storia raggiunge una scheda **Input**, compila il modulo e premi Invio in un campo per continuare. I campi sono elencati in [La finestra della campagna e le partite salvate](/it/reference/campaign-window/).
 
 {/* TODO(shots): <Shot name="inputForm" /> */}
+
+## Lasciare che una storia legga l'ora o la posizione
+
+Una storia che legge la data e l'ora o dove ti trovi lo chiede prima di iniziare, a meno che tu non abbia già risposto.
+
+<Steps>
+
+1. Per rispondere in anticipo, apri le Impostazioni, scegli **Autorizzazioni** e scegli *Chiedi*, *Consenti* o *Nega* per *Posizione* e per *Data e ora*. Scrivi un sostituto sotto l'una o l'altra perché a una storia venga detto quello quando non può avere il valore vero, come `2026-10-19 18:30` o `Roma, Italia`.
+
+2. Premi **Gioca**. Se un tipo che la storia legge è ancora su *Chiedi*, la finestra si apre su *Prima che questa storia inizi*: premi *Consenti* o *Non consentire* su ogni riga. Le tue risposte restano in Impostazioni › Autorizzazioni.
+
+3. Se hai consentito la posizione, la finestra mostra *Cerco dove ti trovi…* per qualche secondo al massimo. Premi *Comincia senza* per iniziare subito.
+
+4. Se compare una striscia in cima alla finestra, alla storia è stato dato il tuo sostituto, è stato negato qualcosa che ha letto, o poteva leggere qualcosa che non c'era. Cerca il suo codice nel [riferimento della diagnostica](/it/reference/diagnostics/#irt05) e premi la croce (*Chiudi*) in fondo alla striscia per toglierla.
+
+</Steps>
+
+Cosa riceve uno script in ciascun caso è in [Il mondo fuori dalla storia](/it/reference/python/the-world/).
 
 ## Gestire gli avvisi
 

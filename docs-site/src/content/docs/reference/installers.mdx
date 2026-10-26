@@ -14,11 +14,12 @@ Ripple Effect is one download per platform from the [download page](https://ripp
 | Linux, Debian and Ubuntu | `.deb` | glibc 2.38 or newer: Ubuntu 24.04+, Debian 13+ | `/opt/ripple_effect` |
 | Linux, Fedora and RHEL | `.rpm` | glibc 2.38 or newer: Fedora 39+ | `/usr/share/ripple-effect` |
 | Windows | Setup `.exe` | Windows 10 or 11 | `%LOCALAPPDATA%\Programs\Ripple Effect` |
-| macOS | `.dmg` | macOS 12 Monterey or newer | Applications, by dragging the app there |
+| macOS | `.dmg` | macOS 12 Monterey or newer, on Apple silicon | Applications, by dragging the app there |
 
-- **Linux.** Both packages put `ripple_effect` on `PATH`. The glibc floor exists because version control ships a libgit2 that needs it, and a package that claimed less would install and then be unable to open a repository; a package refused with a complaint about `libc6` or `GLIBC_2.38` is this floor. The `.deb` declares three runtime libraries for sound: ALSA, PulseAudio and PipeWire.
+- **Linux.** Both packages put `ripple_effect` on `PATH`. The glibc floor exists because version control ships a libgit2 that needs it, and a package that claimed less would install and then be unable to open a repository; a package refused with a complaint about `libc6` or `GLIBC_2.38` is this floor. Sound needs only ALSA, which the `.deb` declares; PulseAudio and PipeWire are used when they are installed but are not required. Both packages also install `pulseaudio-utils`, because dictation records through its `parecord`.
 - **Windows.** Installs for the current account only and never asks for an administrator. Running a later installer over an existing install upgrades it in place.
-- **macOS.** One universal build, for Apple silicon and Intel.
+- **macOS.** Apple silicon only: the build is arm64, because the libgit2 that version control ships is.
+- **Every platform.** The app draws with Impeller on Windows, macOS and Linux, so text may look slightly different from earlier versions. If something draws wrongly or slowly, report it from Settings › Support.
 
 Install commands for Linux:
 
@@ -35,9 +36,10 @@ The first launch shows pages before the home page, in this order.
 | --- | --- | --- |
 | Agreement pages | No | The agreements the app asks you to accept; see [Licensing](/about/licensing/). |
 | Make it yours | Yes | Theme, contrast, colour vision and how wires are drawn, beside a small preview of the app that changes as you choose. |
+| Write the way you like | Yes | *Is most of your writing in English?*, with nothing chosen. A yes offers two boxes, both ticked: *Check spelling and grammar*, and *Turn on dictation and download the English model*. The download starts once onboarding is done, and its progress is in Settings. |
 | Help make Ripple Effect better | Yes | Whether to send usage statistics, with neither answer picked and the full list of what would be sent shown. Also states how crash reports are asked, and carries the coffee. |
 
-Everything on the two skippable pages is in Settings afterwards. An upgrade from 1.4 shows the pages once, like a new install, and resets nothing already set.
+Everything on the skippable pages is in Settings afterwards. An upgrade from 1.4 shows the pages once, like a new install, and resets nothing already set. *Write the way you like* was added in 1.6 and is shown only to a new installation.
 
 ## Code signing
 

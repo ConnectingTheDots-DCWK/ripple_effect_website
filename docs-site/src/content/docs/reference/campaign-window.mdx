@@ -38,6 +38,7 @@ until a path reaches an End.
 | --- | --- |
 | Passage | Rendered as Markdown with its Python already run. |
 | Choices | The tiles beneath the passage. |
+| Countdown | The tile of the choice the countdown will take is set a step apart from the others and fills from its leading edge as the time runs out. Nothing is drawn when the author hid the countdown, or before its wait is over. *Countdowns* in Settings makes every countdown ten times longer or turns them off. |
 | Choice with a used-up **Times** limit | Stays on screen, greyed out and unpressable. A passage never becomes an empty slide. |
 | Delay node | Holds the last passage on screen, greyed, with a thin bar while it waits. |
 | Input node | A form. Enter in a field is Continue. |
@@ -90,6 +91,18 @@ and else its first option; an optional one as nothing.
 | Where set | *Playing* in Settings. |
 | Interaction | A For node's own *Max iterations* applies first when it is lower. |
 | Travels with an export | No. The ceiling is the app's. |
+
+## A story that reads the time or the location
+
+A story that reads the date and time or the location is told, before it begins, what *Settings › Permissions* says, stand-ins included. See [Permissions](/reference/settings/#permissions) for the answers and [The world outside the story](/reference/python/the-world/) for what a script is handed.
+
+| Element | Behaviour |
+| --- | --- |
+| *Before this story begins* | A slide before the first passage, shown while a kind the story reads is still on *Ask*. A row per kind, each answered on its own with *Allow* or *Don't allow*, neither chosen beforehand. Under each row, what a no means: the stand-in the story will be told instead, or that it will be told it can't have it. The answers are kept under *Settings › Permissions*, where they can be changed. Answering the last row begins the story. |
+| *Finding where you are…* | Shown over the window when the story reads the location and it is allowed, while the app asks where this computer is, to about the nearest town. The story begins as soon as there is a reading, after five seconds without one, or at once on *Begin without it*. Asked again on a start over and on a resume. |
+| Notice strip | A strip across the top of the window when the story was given your stand-in (`I.RT.05`), refused something it read (`W.RT.06`), or allowed something there was nothing of (`I.RT.07`). A warning is in the caution colour and a notice is muted; each has a cross (*Dismiss*) to close it. One strip per kind and outcome, kept across a resume. The same codes are listed in Messages; see [Diagnostics](/reference/diagnostics/#irt05). |
+| App bar | The clock, and the location, show on the app bar while a story that reads them plays, and go on a pause, an ending, a start over and a stop. |
+| A playthrough an agent drives | Never asks. A kind on *Ask* is refused, and the story is never told where this computer is. |
 
 ## Play from here
 

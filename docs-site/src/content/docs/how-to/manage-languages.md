@@ -53,6 +53,8 @@ The card answers in the reader's language when the flow reaches it. Where nothin
 
 **Get locale**, in the same group, says which language the reader is reading in: its id, its language and region, its name, how its region measures and which money it uses. Branch on it to tell a reader in the United States something different from a reader in Italy.
 
+To give a quantity in the units the reader's region measures in, use a **Convert** card, under Math: type the quantity, such as `12 km`, and pick *Reader's system* as the unit to convert to. A reader in the United States sees miles and one in Italy sees kilometres. Which region measures in what is in [Units](/reference/units/#readers-system).
+
 A value is in the language it was read in. A reader who switches language mid-story gets the new language the next time the flow reaches the card.
 
 ### Write a plural in each language
@@ -81,4 +83,5 @@ A row with no label in the reader's language shows the story's own, and one with
 - [Passages and translations](/explanation/passages-and-translations/)
 - [Passages, choices, languages and reading time](/reference/passages/)
 - [Project files and the .ripple folder](/reference/project-files/)
+- [Units](/reference/units/)
 - [How to write a passage](/how-to/write-a-passage/)

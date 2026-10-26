@@ -3,7 +3,7 @@ title: C# binding
 description: "The C# binding of the Ripple Effect engine: its NuGet packages, the variants and platforms, and every public type: Campaign, Session, the effects, Value, Player, the speaker contract and the exceptions."
 ---
 
-The C# binding is three NuGet packages: `RippleFx.Engine`, the managed bindings, and one of two engine packages, `RippleFx.Engine.Native` or `RippleFx.Engine.Native.NoPython`. Version 1.5.x binds Ripple Effect contract 1.5. `MAJOR.MINOR` is the engine contract, and the `PATCH` is the binding's own. Each binding release pins one engine release, `engine-v<version>` of the public [ripple_engine_releases](https://github.com/ConnectingTheDots-DCWK/ripple_engine_releases) repository, and the engine packages carry exactly the libraries of that release's signed archives. Binding 1.5.0 pins engine 1.5.3. The source is at [ConnectingTheDots-DCWK/ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration). The bindings are MIT. The engine binary the native packages carry is under the [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), and its notice must be reproduced wherever your product lists the third-party software it contains.
+The C# binding is three NuGet packages: `RippleFx.Engine`, the managed bindings, and one of two engine packages, `RippleFx.Engine.Native` or `RippleFx.Engine.Native.NoPython`. Version 1.6.x binds Ripple Effect contract 1.6, *Grammar Lich*. `MAJOR.MINOR` is the engine contract, and the `PATCH` is the binding's own. Each binding release pins one engine release, `engine-v<version>` of the public [ripple_engine_releases](https://github.com/ConnectingTheDots-DCWK/ripple_engine_releases) repository, and the engine packages carry exactly the libraries of that release's signed archives. Binding 1.6.0 pins engine 1.6.0. The source is at [ConnectingTheDots-DCWK/ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration). The bindings are MIT. The engine binary the native packages carry is under the [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), and its notice must be reproduced wherever your product lists the third-party software it contains.
 
 Everything below is in the `RippleFx.Engine` namespace. Times are milliseconds throughout.
 
@@ -61,8 +61,8 @@ The full matrix of engine builds is [Engine targets](/reference/engine-targets/)
 
 | Member | Type | What it is |
 | --- | --- | --- |
-| `BoundContract` | `const string` | The contract these bindings bind: `"1.5"`. |
-| `Version` | `string` | The loaded library's version, such as `1.5.3`: the one loaded, not the one built against. |
+| `BoundContract` | `const string` | The contract these bindings bind: `"1.6"`. |
+| `Version` | `string` | The loaded library's version, such as `1.6.0`: the one loaded, not the one built against. |
 | `Contract` | `string` | The contract the loaded library binds. |
 | `HasPython` | `bool` | Whether the loaded library runs scripts: `false` for the `NoPython` one. |
 | `Outstanding` | `long` | How many things the engine handed out and has not had back. Zero whenever no call is in flight. |
@@ -112,6 +112,7 @@ A `Campaign` is an opened bundle: immutable, shared by every session made from i
 | `Boards`, `Passages`, `Components`, `Scripts`, `Media`, `Machines`, `Soundscapes` | `IReadOnlyList<Entry>` | The manifest's tables. |
 | `Cvars` | `IReadOnlyList<Cvar>` | The console variables the campaign declares. |
 | `Needs` | `IReadOnlyList<string>` | What the campaign needs of its host: `python`, when it runs scripts. |
+| `Permissions` | `IReadOnlyList<string>` | What the story reads of the world outside it, by wire name, `dateTime` and `location`, listed by the compiler. A session asks about each before the story begins (`Effect.Permit`). |
 
 | Record | Fields |
 | --- | --- |
@@ -172,12 +173,15 @@ A `Session` is one story being played: `IDisposable`, used by one caller at a ti
 
 | Verb | Answers | Notes |
 | --- | --- | --- |
-| `Start()` | effects | The first turn, or the turn a resumed save was on. |
+| `Start()` | effects | The first turn, or the turn a resumed save was on. While a kind in `Manifest.Permissions` is unanswered, the answer is `Effect.Permit` and nothing else. |
 | `Choose(int index)` | effects | Takes the choice at `index` among those the passage offers. A negative index throws `ArgumentOutOfRangeException`. |
 | `Leave()` | effects | The reader leaves the passage without choosing. |
-| `Answer(IEnumerable<KeyValuePair<string, Value>>? fields)` | effects | Answers the form showing, field by field in the order given. `null` is the reader leaving the form. |
+| `Answer(IEnumerable<KeyValuePair<string, Value>>? fields)` | effects | Answers the form showing, field by field in the order given, each keyed by the field's `Name`. An optional field left empty is left out, or `Value.Null`; a field with `Options` is answered with the picked `Id`s. `null` is the reader leaving the form. |
 | `Elapsed()` | effects | Answers a `Hold` once your clock says it is over. |
-| `SetLocale(string locale)` | effects | Changes the language; the turn the story is on is answered again in it. |
+| `BeginCountdown()` | effects | Your clock says the shown passage's countdown begins, its `ChoiceTimer.AfterMs` after it was shown. Moves nothing: the effects are only the callbacks an author aimed at it. A second call, or one after the reader chose, answers none. Throws `HostException` with `Code.NoCountdown` on a passage with none. |
+| `Expire()` | effects | Your clock says the countdown ran out: the passage's `ChoiceTimer.Default` is taken as a reader would take it. `Code.CountdownNotBegun` before `BeginCountdown`; `Code.NoCountdown` on a passage with none. |
+| `Permit(PermissionKind kind, bool granted)` | effects | The reader's answer for one kind, at any time, before `Start` included, when it answers nothing. On an `Effect.Permit` turn, the answer to the last kind unanswered begins the story. Answers are not part of a save: a resumed session is told again. |
+| `SetLocale(string locale)` | effects | Changes the language; the turn the story is on is answered again in it: a form re-worded with its names and `Id`s kept, a passage with its countdown kept. |
 | `Restart()` | effects | Starts the story over from its first turn. |
 | `Stop()` | effects | Stops the story for good. |
 | `Pause()` | `Paused` | Puts the story down: its save and what pausing did. Pausing stops the story; resuming is a new session from the save. |
@@ -187,6 +191,21 @@ A `Session` is one story being played: `IDisposable`, used by one caller at a ti
 | `ResetCvar(string name)` | `CvarChange` | Puts a console variable back to its default. |
 | `ResetAllCvars()` | effects | Puts every console variable back to its default. |
 | `RemoveEntity(string key)` | `EntityRemoval` | Removes an entity from the story. |
+
+The readings a host hands in. None of them moves the story or answers effects:
+
+| Member | What it does |
+| --- | --- |
+| `SetNow(Moment? now)` | What time it is; null for no clock. Before every verb that can step, by a host that granted `PermissionKind.DateTime`; within one verb time does not move. |
+| `SetPosition(Position? position)` | The host's last fix; null for none. A fix handed in before the reader answered is kept, and read only if the answer is yes. Throws `HostException` with `Code.NotPermitted` once location is denied. |
+| `SetStandIn(PermissionKind kind, string? typed, int localOffsetMinutes)` | The reader's stand-in for one kind, as they typed it, answered whenever the real value is missing; null takes it away. A time is ISO 8601 (`2026-10-19T18:30:00+02:00`, or a date alone for its midnight), read at `localOffsetMinutes` when typed without an offset: pass the reader's own for that date. A position is `"lat, lon"` in decimal degrees, or anything else as a place's name. Throws `HostException` with `Code.StandIn`, saying why, for one that does not read. |
+
+| Type | What it is |
+| --- | --- |
+| `PermissionKind` | `enum : uint`: `DateTime` (`dateTime`), `Location` (`location`), numbered as the header's `RipplePermissionKind`. Open for appending: a kind this binding does not name arrives as its number. |
+| `PermissionKinds` | `Wire(this PermissionKind)`, the wire name (a kind this binding does not name, as its number), and `FromWire(string)`, the kind a wire name names, or null. |
+| `Moment(long UtcMs, int OffsetMinutes)` | An instant: milliseconds since the Unix epoch, and the offset in minutes the reader's wall clock is at. `Moment.Of(DateTimeOffset)`, `Moment.Now()` (this machine's clock at its offset) and `ToDateTimeOffset()`. |
+| `Position` | A fix, any part of which may be absent, shaped after the web's `GeolocationPosition`: `Label` (`string?`), `Latitude`, `Longitude`, `Accuracy` (`double?`, the last in metres), `When` (`Moment?`). |
 
 | Result record | Fields |
 | --- | --- |
@@ -229,16 +248,17 @@ Every `Effects` field is an `IReadOnlyList<Effect>` to dispatch like any verb's 
 
 | Member | What it is |
 | --- | --- |
-| `IsTurn` | `true` for a Turn: where the story now is. Exactly one closes every batch that moved the story. |
+| `IsTurn` | `true` for a Turn: where the story now is, `Show`, `Ask`, `Hold`, `Permit`, `Ended`, `Failed` or `Stopped`. Exactly one closes every batch that moved the story. |
 | `IsOver` | `true` for `Ended`, `Failed` and `Stopped`. |
 
 ### Turns
 
 | Effect | Fields | Answered with |
 | --- | --- | --- |
-| `Effect.Show` | `Passage` (`Passage`) | `Choose` or `Leave` |
+| `Effect.Show` | `Passage` (`Passage`) | `Choose` or `Leave`; when it carries a `Passage.Timer`, also by your clock with `BeginCountdown` and `Expire` |
 | `Effect.Ask` | `Prompt` (`Prompt`) | `Answer` |
 | `Effect.Hold` | `Ms` (`ulong`) | `Elapsed`, once your clock says `Ms` have passed |
+| `Effect.Permit` | `Kinds` (`IReadOnlyList<PermissionKind>`): what the story reads and nobody has answered, before it begins | `Permit`, once per kind; the answer to the last begins the story |
 | `Effect.Ended` | `Title` (`string?`); `RanOut` (`bool`, true when the story ran out of road rather than reaching an End) | nothing; `IsOver` |
 | `Effect.Failed` | `Message` (`string`); `Node` (`string?`) | nothing; `IsOver` |
 | `Effect.Stopped` | none | nothing; `IsOver` |
@@ -253,18 +273,21 @@ Every `Effects` field is an `IReadOnlyList<Effect>` to dispatch like any verb's 
 | `Effect.Changed` | `Entities` (`IReadOnlyList<Entity>?`); `Memory` (`Memory?`); `Cvars` (`IReadOnlyList<CvarSnapshot>?`) | Which stores moved; a store that did not is null. The first `Changed` after `Start` names all three. |
 | `Effect.Callback` | `Event` (`CallbackEvent`) | A named callback the author declared, fired. |
 | `Effect.Trace` | `Event` (`RunEvent`) | One event of the run's trace, when the session traces. |
+| `Effect.Notice` | `Code` (`string`); `Kind` (`PermissionKind`); `Node` (`string?`); `Message` (`string`) | A read of the world outside the story that did not get the real value, once per kind and outcome in a playthrough, before the Turn of the verb that read it. `Code` is `I.RT.05` a stand-in, `W.RT.06` a refusal, `I.RT.07` nothing, and its letter is the severity; `Node` is the node whose read it was; `Message` is the engine's English sentence. |
 
 ### Records
 
 | Record | Fields |
 | --- | --- |
-| `Passage` | `Node`, `Title` (`string`); `Text` (`string`, Markdown, or HTML when `Manifest.TextFormat` says so); `Choices` (`IReadOnlyList<Choice>`); `Sources` (`IReadOnlyList<LocaleText>?`, the text in every language when the compiler kept them); `Snippets` (`IReadOnlyList<Snippet>`); `Media` (`IReadOnlyList<MediaLink>`); `Untranslated` (`string?`, the language the text is missing in); `Soundscape` (`Soundscape?`, the one the passage names); `Silence` (`bool`, true when the passage asks for silence) |
+| `Passage` | `Node`, `Title` (`string`); `Text` (`string`, Markdown, or HTML when `Manifest.TextFormat` says so); `Choices` (`IReadOnlyList<Choice>`); `Sources` (`IReadOnlyList<LocaleText>?`, the text in every language when the compiler kept them); `Snippets` (`IReadOnlyList<Snippet>`); `Media` (`IReadOnlyList<MediaLink>`); `Untranslated` (`string?`, the language the text is missing in); `Soundscape` (`Soundscape?`, the one the passage names); `Silence` (`bool`, true when the passage asks for silence); `Timer` (`ChoiceTimer?`, its countdown; null when it waits for the reader as long as they like) |
+| `ChoiceTimer` | `AfterMs` (`ulong`, how long before the countdown begins; zero is at once); `TimeoutMs` (`ulong`, how long it runs once begun; never zero); `Visible` (`bool`, whether the author meant the reader to see it count); `Default` (`int`, the index into the passage's choices taken when it runs out). The engine measures none of it. |
 | `Choice` | `Port` (`string`, the control output the flow leaves by); `Text` (`string`); `Available` (`bool`, false for a choice not open now; still shown, and choosing it throws `HostException` with `Code.ChoiceSpent`) |
 | `LocaleText` | `Locale`, `Text` (`string`) |
 | `Snippet` | `Code` (`string`); `IsInline` (`bool`) |
 | `MediaLink` | `Link` (`string`, the name the author linked it under); `Media` (`uint`, by index into the manifest's media) |
 | `Prompt` | `Node`, `Title` (`string`); `Fields` (`IReadOnlyList<PromptField>`) |
-| `PromptField` | `Name`, `Type` (`string`: `number`, `bool`, `string`, `numberList`, `boolList`, `stringList` or `json`); `Default` (`Value`). Answer with the matching type. |
+| `PromptField` | `Name` (`string`, what an answer is keyed by); `Type` (`string`: `number`, `bool`, `string`, `numberList`, `boolList`, `stringList` or `json`); `Default` (`Value`, what the control is filled in with, and the answer if nobody edits it); `Label` (`string`, what the reader is shown, in the reader's language: the name where the author wrote nothing); `Placeholder` (`string`, the hint drawn while the field is empty; empty for none, never the answer); `Optional` (`bool`, whether the reader may leave it empty, which answers null; a required field is not submitted empty); `Options` (`IReadOnlyList<PromptOption>`, the fixed answers to pick from, in order: one for a scalar type, any number for a `…List`; empty for a field the reader types into). Answer with the matching type, or with the picked options' `Id`s. |
+| `PromptOption` | `Id` (`string`, what a host answers with; the same in every language); `Label` (`string`, what the reader is shown, in the reader's language); `Value` (`Value`, what the story is handed when it is picked, of the field's type) |
 | `Ambience` | `Soundscape` (`Soundscape`); `Board` (`uint`); `Node` (`string`, the node that set it) |
 | `Entity` | `Key`, `Label` (`string`); `Component` (`string?`); `Values` (`Value`, a map, field by field) |
 | `Memory` | `Nodes` (`Value`, a map, node by node); `Machines` (`IReadOnlyList<KeyValuePair<string, string>>`, each state machine and the state it is in) |
@@ -273,7 +296,7 @@ Every `Effects` field is an `IReadOnlyList<Effect>` to dispatch like any verb's 
 | `AudioCommand` | `Kind` (`AudioKind`: `Play`, `Stop`, `Cut`, `Cue`); `Soundscape` (`Soundscape?`, Play: what to play); `FadeMs` (`ulong`, Play: the fade-in, Stop: the fade-out); `Media` (`uint`, Cue: the medium); `Volume`, `Speed` (`double`, default 1.0); `Node` (`string?`, Cue: the node that asked for it) |
 | `RunEvent` | `Kind` (`RunEventKind`: `RunStarted`, `NodeStarted`, `NodeFinished`, `MemoHit`, `Diagnostic`, `Log`, `RunFinished`); `Run`, `Board`, `Sequence`, `Step`, `Steps` (`uint`); `Node`, `Entry`, `Message` (`string`); `Primed`, `Flowed` (`IReadOnlyList<string>`); `EnteredVia`, `Error`, `FailedNode` (`string?`); `Pulled`, `Cancelled` (`bool`); `Inputs`, `Outputs` (`IReadOnlyList<TraceValue>`); `Outcome` (`uint`: 0 done, 1 failed); `Diagnostic` (`RunDiagnostic?`); `Level` (`uint`: 0 debug, 1 info, 2 warning, 3 error); `Data` (`Value?`). Read the fields by `Kind`. |
 | `TraceValue` | `FromNode`, `FromPort` (`string`); `ToNode`, `ToPort` (`string?`); `Payload` (`PayloadKind`: `Present`, `Withheld`, `Absent`); `Value` (`Value`, set when `Payload` is `Present`) |
-| `RunDiagnostic` | `Issue` (`uint`: 0 ambiguous flow, 1 multiple inputs, 2 producer not run, 3 re-entered); `Message` (`string`); `Node`, `Port` (`string?`); `Wires` (`uint?`) |
+| `RunDiagnostic` | `Issue` (`uint`: 0 ambiguous flow, 1 multiple inputs, 2 producer not run, 3 re-entered, 4 nothing on wire, the run remark `W.RT.08`); `Message` (`string`); `Node`, `Port` (`string?`); `Wires` (`uint?`) |
 
 The `uint` kinds match the enums of the same name in `RippleFx.Engine.Interop`, such as `RippleCallbackKind` and `RippleRunIssue`.
 
@@ -316,16 +339,23 @@ The player owns `session` from then on and disposes it. `now` is the clock in mi
 | `OnEffect` | `Action<Effect>?` | Every effect, in the order the engine produced it. |
 | `OnError` | `Action<Exception>?` | The failure of a verb the player made by itself (the `Elapsed` after a hold), or an exception from a handler. Delivery goes on either way. Without one, a self-made verb's failure is thrown from `Update()` and a handler's is lost. |
 | `Audio` | `SoundscapeDriver?` | Where the story's sound goes: the player applies every `Effect.Audio` to it. Without one, nothing is heard. |
+| `Countdowns` | `bool`, default `true` | Whether the player runs a passage's countdown on its clock, beginning and expiring it from `Update()`. False for a reader who asked for no time limits (WCAG 2.2.1), or for a host that runs them itself with `BeginCountdown` and `Expire`. |
+| `Now` | `Func<Moment?>?` | What time it is for the story, handed to `Session.SetNow` before every verb the player makes or is asked for, for a host that granted `PermissionKind.DateTime`. `Moment.Now` is this machine's. Without one, the story has no clock unless the host sets it on the session. |
 
 ### Members
 
 | Member | What it does |
 | --- | --- |
 | `Start()`, `Choose(int)`, `Leave()`, `Answer(fields)`, `SetLocale(string)`, `Restart()`, `Stop()` | The session's verbs. The player delivers the batch they answer instead of returning it. After `Dispose` they do nothing. |
+| `Permit(PermissionKind, bool)` | The reader's answer for one kind; the answer to the last one asked begins the story. |
+| `BeginCountdown()` | Begins the shown passage's countdown now, for a host that runs countdowns itself; with `Countdowns` on, the player then runs it out on its clock. |
+| `Expire()` | Runs the shown passage's countdown out now: its default is taken. |
 | `Pause()` | Puts the story down and answers its save, `string?`. Null, and nothing stopped, unless the story is on a passage or a prompt. |
-| `Update()` | Call it from your loop. Answers a hold whose time has come with `Elapsed()`. |
+| `Update()` | Call it from your loop. Answers a hold whose time has come with `Elapsed()`, and begins or runs out a countdown whose time has. |
 | `Turn` | `Effect?`: the last Turn delivered; null before `Start()`. |
 | `HoldDue` | `ulong?`: when the pending hold is due by the player's clock; null when none is. |
+| `CountdownBegins` | `ulong?`: when the shown passage's countdown begins, by the player's clock; null when it has begun, or there is none to run. |
+| `CountdownExpires` | `ulong?`: when the countdown runs out, by the player's clock, once it has begun; null otherwise. A host drawing a visible `ChoiceTimer` counts down to this. |
 | `Session` | The session underneath, for what the player does not wrap. A verb called on it goes round the player and its batch is not delivered. |
 | `OnCallback`, `RemoveCallback`, `OnAnyCallback`, `ClearCallbacks`, `CallbackMisses` | The callback table: [Named callbacks](#named-callbacks). |
 | `Dispose()` | Delivers nothing more, moves the story no further, and disposes the session. |
@@ -339,7 +369,11 @@ For each effect in order, the player:
 3. dispatches an `Effect.Callback` through the callback table;
 4. calls `OnEffect`.
 
-When the batch ends with `Effect.Hold`, `HoldDue` is set to the clock plus `Ms`, and the next `Update()` at or after it calls `Elapsed()`. Any verb clears a pending hold.
+When the batch ends with `Effect.Hold`, `HoldDue` is set to the clock plus `Ms`, and the next `Update()` at or after it calls `Elapsed()`. When it ends with an `Effect.Show` whose passage carries a `Timer`, and `Countdowns` is on, `CountdownBegins` is set to the clock plus `AfterMs`; the `Update()` at or after it calls `BeginCountdown()` and sets `CountdownExpires` to the moment it was due plus `TimeoutMs`, so a slow frame does not lengthen the countdown, and the `Update()` at or after that calls `Expire()`.
+
+**A verb that moved the story clears a pending hold and a countdown under way.** One the engine refused, and one that answered nothing, moved nothing: a permit after the story has begun, a language change on a hold, a second start. The hold and the countdown it was waiting on are still owed. A language change keeps a countdown even when it answers, because the passage shown again is the same visit.
+
+With `Now` set, every verb the player makes or is asked for is preceded by `Session.SetNow(Now())`.
 
 **A verb called from inside a handler** throws `ReentrantVerbException` (`Code.Reentrant`): the rest of the batch would arrive after the new one. Queue the verb and call it after the handler returns.
 
@@ -473,7 +507,7 @@ Every failure the engine reports is a `RippleException` subclass. `Failure` carr
 | --- | --- | --- | --- |
 | `BundleException` | `BundleFormat` (1), `BundleVersion` (2) | A document of the bundle is malformed or missing, or is from a version this engine cannot read. | Normal use: opening a bad or newer bundle. |
 | `NeedsPythonException` | `NeedsPython` (3) | The bundle needs Python, and this is the `NoPython` engine. | Normal use: opening. |
-| `HostException` | `WrongTurn` (10), `NoSuchChoice` (11), `ChoiceSpent` (12), `Stopped` (13), `NothingAsked` (14), `UnknownLocale` (15) | A verb that does not answer the turn, a choice past those offered, a choice used up or closed, a session that has stopped, a verb before `Start()`, a language the campaign is not readable in. | A host bug, except `ChoiceSpent` when you offer an unavailable choice and `UnknownLocale` from user input. |
+| `HostException` | `WrongTurn` (10), `NoSuchChoice` (11), `ChoiceSpent` (12), `Stopped` (13), `NothingAsked` (14), `UnknownLocale` (15), `NotPermitted` (16), `StandIn` (17), `NoCountdown` (18), `CountdownNotBegun` (19) | A verb that does not answer the turn, a choice past those offered, a choice used up or closed, a session that has stopped, a verb before `Start()`, a language the campaign is not readable in, a position for a kind the reader denied, a stand-in that does not read, a countdown verb on a passage with none, `Expire` before `BeginCountdown`. | A host bug, except `ChoiceSpent` when you offer an unavailable choice, and `UnknownLocale` and `StandIn` from user input. |
 | `ResumeException` | `BoardGone` (20), `NodeGone` (21) | A save names a board or node the campaign no longer has. | Normal use: a save from an older build of the story. |
 | `InvalidArgumentException` | `InvalidArgument` (-1) | A malformed argument: a null handle, text that is not UTF-8, a value out of range. Also any code the binding does not know. | A bug. |
 | `EngineTrapException` | `Trap` (-2) | The engine panicked, now or earlier on this handle. | A bug in the engine. |
@@ -488,9 +522,9 @@ Every failure the engine reports is a `RippleException` subclass. `Failure` carr
 | `Location` | `string?` | `BundleFormat`: the document at fault |
 | `Found`, `Supported` | `long` | `BundleVersion`: the bundle's format, and the newest this engine reads |
 | `Oldest` | `long?` | `BundleVersion`: the oldest, when there is a floor |
-| `Asked`, `Answered` | `uint` | `WrongTurn`: what the story was asking (`RippleTurnKind`: 0 present, 1 ask, 2 wait, 3 ended, 4 failed, 5 stopped) and the verb that answered (`RippleVerb`: 0 choose, 1 answer, 2 elapsed) |
+| `Asked`, `Answered` | `uint` | `WrongTurn`: what the story was asking (`RippleTurnKind`: 0 present, 1 ask, 2 wait, 3 ended, 4 failed, 5 stopped, 6 permit) and the verb that answered (`RippleVerb`: 0 choose, 1 answer, 2 elapsed, 3 begin countdown, 4 expire) |
 | `Offered`, `Chosen` | `uint` | `NoSuchChoice`: how many choices were offered, and the index taken |
-| `Subject` | `string` | the choice, locale, board or node a host or resume error is about |
+| `Subject` | `string` | the choice, locale, board or node a host or resume error is about, and for `NotPermitted` and `StandIn` the kind's wire name |
 | `Node` | `string` | `NodeGone`: the node |
 
 Other exceptions the bindings throw:
@@ -504,7 +538,7 @@ Other exceptions the bindings throw:
 ## Threading and lifetime
 
 - **One caller at a time per handle.** A `Campaign`, `Session` or `Mixer` is not thread-safe. A handle may move between threads.
-- **The engine starts no thread, never sleeps and never reads a clock.** A `Hold` is answered by your clock. `Player` and `SoundscapeDriver` read the clock they were given and own no thread: your game loop is the timer.
+- **The engine starts no thread, never sleeps and never reads a clock.** A `Hold` and a countdown are answered by your clock, and the time a story reads is the one you hand `SetNow`. `Player` and `SoundscapeDriver` read the clock they were given and own no thread: your game loop is the timer.
 - **`VoiceEvents` is the one thing callable from any thread.**
 - **Every verb is synchronous.** A script runs inside the verb that reached it, for up to `ScriptDeadlineMs`. If that cannot be spent on your main thread, own the session on a worker and marshal the effects back: they are values.
 - **Everything a verb answers is a copy.** Effects, passages and values are C# records that outlive the session and the campaign. The engine's batch is freed before the verb returns, and `RippleEngine.Outstanding` is zero whenever no call is in flight.
@@ -514,7 +548,7 @@ Other exceptions the bindings throw:
 
 ## A complete host
 
-A terminal host over a bundle folder: two sittings with a save between them, a speaker that prints what it would play, the author's callbacks, and recovery from a trap.
+A terminal host over a bundle folder: two sittings with a save between them, the question a story asks before it reads the clock or the place, a form drawn by its labels, a speaker that prints what it would play, the author's callbacks, and recovery from a trap.
 
 ```csharp
 using System;
@@ -606,12 +640,15 @@ public static class Host
         var player = new Player(session, new PlayerHandlers
         {
             Audio = audio,                                        // every Effect.Audio goes to the driver
+            Now = Moment.Now,                                     // read by the story only once it is allowed
             OnError = error => Console.Error.WriteLine($"host: {error.Message}"),
             OnEffect = effect =>
             {
                 if (effect is Effect.Changed { Cvars: { } cvars })
                     foreach (var cvar in cvars)
                         Console.WriteLine($"  [{cvar.Name} = {cvar.Value}]");
+                if (effect is Effect.Notice notice)               // a stand-in, a refusal or nothing
+                    Console.WriteLine($"  [{notice.Code}] {notice.Message}");
             },
         });
 
@@ -629,7 +666,7 @@ public static class Host
         while (true)
         {
             audio.Update();                                       // the sound's tick
-            player.Update();                                      // answers a Hold that has come due
+            player.Update();                                      // answers a Hold, and runs a countdown, that has come due
             while (Later.Count > 0) Later.Dequeue()();
 
             switch (player.Turn)
@@ -648,6 +685,12 @@ public static class Host
                     break;
                 case Effect.Ask asked:
                     player.Answer(Fill(asked.Prompt));            // null leaves the form
+                    break;
+                case Effect.Permit permit:
+                    // Before the story begins; a resumed session asks again, since a save
+                    // carries no answer. The answer to the last kind begins the story.
+                    foreach (var kind in permit.Kinds)
+                        player.Permit(kind, Allowed(kind));
                     break;
             }
         }
@@ -692,27 +735,59 @@ public static class Host
         }
     }
 
+    static bool Allowed(PermissionKind kind)
+    {
+        Console.Write(kind == PermissionKind.Location
+            ? "May this story read where you are? [y/N] "
+            : "May this story read the date and time? [y/N] ");
+        return Console.ReadLine()?.Trim().StartsWith("y", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
     static IEnumerable<KeyValuePair<string, Value>>? Fill(Prompt prompt)
     {
         Console.WriteLine($"\n-- {prompt.Title} --");
         var answers = new List<KeyValuePair<string, Value>>();
         foreach (var field in prompt.Fields)
         {
-            Console.Write($"{field.Name} [{field.Default}]: ");
-            var line = Console.ReadLine();
-            if (line == null) return null;                        // the reader leaves the form
-            var value = line.Length == 0 ? field.Default : field.Type switch
+            // Shown by its label, in the reader's language; answered under its Name.
+            Console.WriteLine($"{field.Label}{(field.Optional ? " (optional)" : "")}");
+            for (var i = 0; i < field.Options.Count; i++)
+                Console.WriteLine($"  {i + 1}. {field.Options[i].Label}");
+            Value? value = null;
+            while (value == null)
             {
-                "number" => long.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var whole)
-                    ? Value.Int(whole)
-                    : Value.Float(double.Parse(line, CultureInfo.InvariantCulture)),
-                "bool" => Value.Bool(line == "y"),
-                _ => Value.Text(line),                            // the list types and json need parsing of their own
-            };
-            answers.Add(new KeyValuePair<string, Value>(field.Name, value));
+                Console.Write(field.Options.Count > 0 ? "> " : $"{field.Placeholder} [{field.Default}]: ");
+                var line = Console.ReadLine();
+                if (line == null) return null;                    // the reader leaves the form
+                if (line.Length == 0 && field.Optional) break;    // left out: the story reads nothing
+                value = field.Options.Count > 0 ? Pick(field, line) : Typed(field, line);
+            }
+            if (value != null) answers.Add(new KeyValuePair<string, Value>(field.Name, value));
         }
         return answers;
     }
+
+    // A pick is answered with the option's Id, never its words; null asks again.
+    static Value? Pick(PromptField field, string line)
+    {
+        if (!int.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var picked)
+            || picked < 1 || picked > field.Options.Count)
+            return null;
+        var id = Value.Text(field.Options[picked - 1].Id);
+        return field.Type.EndsWith("List", StringComparison.Ordinal) ? Value.List(id) : id;
+    }
+
+    // An empty line keeps the default; a required field with none asks again.
+    static Value? Typed(PromptField field, string line) => line.Length == 0
+        ? (field.Default.IsNull ? null : field.Default)
+        : field.Type switch
+        {
+            "number" => long.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var whole)
+                ? Value.Int(whole)
+                : Value.Float(double.Parse(line, CultureInfo.InvariantCulture)),
+            "bool" => Value.Bool(line == "y"),
+            _ => Value.Text(line),                                // the list types and json need parsing of their own
+        };
 
     static void Report(Effect? turn)
     {

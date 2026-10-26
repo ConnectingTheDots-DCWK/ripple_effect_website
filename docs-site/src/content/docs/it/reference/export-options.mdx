@@ -93,14 +93,15 @@ La storia compilata in un bundle che un runtime riproduce senza alcun editor. Og
 
 ## Non richiede Python
 
-In una build senza l'interprete Python, una scheda Script ferma la storia dove si trova e un passaggio mostra un avviso dove c'era il suo Python.
+In una build senza l'interprete Python, una scheda Script ferma la storia dove si trova, un passaggio mostra un avviso dove c'era il suo Python e una scheda Localized string risponde con un avviso al posto di ogni snippet.
 
-Con **Non richiede Python** selezionato, l'esportazione controlla ogni scheda Script e ogni passaggio con un blocco di codice `ripple` o un `{{ … }}` inline in qualsiasi lingua. Si ferma se ne trova uno.
+Con **Non richiede Python** selezionato, l'esportazione controlla ogni scheda Script, ogni passaggio con un blocco di codice `ripple` o un `{{ … }}` inline in qualsiasi lingua e ogni scheda Localized string le cui parole contengono l'uno o l'altro in qualsiasi lingua. Si ferma se ne trova uno.
 
 | Codice | Segnalazione | Apre |
 | --- | --- | --- |
 | [`E.EX.01`](/it/reference/diagnostics/#eex01) | Una scheda Script. | La sua scheda |
 | [`E.EX.02`](/it/reference/diagnostics/#eex02) | Un passaggio che contiene Python. Il messaggio conta gli snippet in tutte le lingue. | La sua scheda Narration |
+| [`E.EX.03`](/it/reference/diagnostics/#eex03) | Una scheda Localized string con Python nelle sue parole. Il messaggio conta gli snippet in tutte le lingue. | La sua scheda |
 
 - Ogni segnalazione è elencata in Messaggi.
 - La finestra di dialogo resta aperta.
@@ -135,7 +136,7 @@ Un elemento senza classe assegnata non riceve alcun attributo. Senza profilo, og
 
 ## Diagnostiche
 
-I due codici dell'esportazione, [`E.EX.01`](/it/reference/diagnostics/#eex01) e [`E.EX.02`](/it/reference/diagnostics/#eex02), sono elencati sotto [Non richiede Python](#non-richiede-python); [Diagnostiche](/it/reference/diagnostics/) contiene il resto.
+I tre codici dell'esportazione, [`E.EX.01`](/it/reference/diagnostics/#eex01), [`E.EX.02`](/it/reference/diagnostics/#eex02) ed [`E.EX.03`](/it/reference/diagnostics/#eex03), sono elencati sotto [Non richiede Python](#non-richiede-python); [Diagnostiche](/it/reference/diagnostics/) contiene il resto.
 
 ## Vedi anche
 

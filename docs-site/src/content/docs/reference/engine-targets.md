@@ -61,7 +61,7 @@ The engine is released as `engine-v<version>` in [ripple_engine_releases](https:
 | Path | What it is |
 | --- | --- |
 | `lib/ripple_engine.wasm` | The component. |
-| `wit/` | The interface it exports, `ripple:engine@1.5.0`. |
+| `wit/` | The interface it exports, `ripple:engine@1.6.0`. |
 | `NOTICE` | As above. |
 
 **The desktop archive**, `ripple-engine-<version>[-no-python]-<target>.tar.gz`, also carries two command-line tools: `bin/ripple`, the terminal player, which plays a bundle (`ripple <bundle> --auto --seed N` for an unattended run), and `bin/compile`, which compiles a project into a bundle.
@@ -80,6 +80,7 @@ The engine is released as `engine-v<version>` in [ripple_engine_releases](https:
 | Contract | Codename | Reads campaigns of | Engine releases |
 | --- | --- | --- | --- |
 | 1.5 | Multiclassing | 1.3, 1.4 and 1.5 | 1.5.0 to 1.5.4 |
+| 1.6 | Grammar Lich | 1.3, 1.4, 1.5 and 1.6 | 1.6.0 |
 
 A binding's version is the contract's `MAJOR.MINOR` and its own patch. The engine release each binding pins is in its repository's `engine.json`.
 

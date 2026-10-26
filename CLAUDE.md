@@ -984,8 +984,8 @@ missing — because that was a fix release and a fix release does not get a
 codename. 1.4 was such a gap once and became a pack of its own. The list used
 to be a copy of `ROADMAP.md` in the app repository; that file was removed,
 and the list is the plan now. 1.6 is the reminder that it moves: it was a paid
-release until its checking moved onto the author's machine, and its chip
-says *Free*.
+release until its checking moved onto the author's machine, and it shipped
+free.
 
 **A shipped release gets three lines, read off its changelog section.** Three
 is what a card holds, and the lines are the ones a reader of the release notes

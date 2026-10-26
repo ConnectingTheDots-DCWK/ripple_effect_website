@@ -38,6 +38,7 @@ finché un percorso raggiunge un End.
 | --- | --- |
 | Passaggio | Mostrato come Markdown con il suo Python già eseguito. |
 | Scelte | Le tessere sotto il passaggio. |
+| Conto alla rovescia | La tessera della scelta che il conto alla rovescia prenderà si distingue di un passo dalle altre e si riempie dal bordo d'inizio man mano che il tempo scorre. Non viene disegnato niente se l'autore ha nascosto il conto alla rovescia, o prima che la sua attesa sia finita. *Conti alla rovescia* nelle Impostazioni rende ogni conto alla rovescia dieci volte più lungo o li disattiva. |
 | Scelta con un limite di **Volte** esaurito | Resta sullo schermo, in grigio e non selezionabile. Un passaggio non diventa mai una diapositiva vuota. |
 | Scheda Delay | Mantiene sullo schermo l'ultimo passaggio, in grigio, con una sottile barra mentre attende. |
 | Scheda Input | Un modulo. Invio in un campo equivale a Continua. |
@@ -90,6 +91,18 @@ e altrimenti la prima opzione; uno facoltativo come nulla.
 | Dove si imposta | *Riproduzione* nelle Impostazioni. |
 | Interazione | Il valore *Max iterations* di una scheda For si applica per primo quando è più basso. |
 | Viaggia con un'esportazione | No. Il limite appartiene all'app. |
+
+## Una storia che legge l'ora o la posizione
+
+A una storia che legge la data e l'ora o la posizione viene detto, prima che inizi, ciò che dice *Impostazioni › Autorizzazioni*, sostituti compresi. Vedi [Impostazioni](/it/reference/settings/) per le risposte e [Il mondo fuori dalla storia](/it/reference/python/the-world/) per ciò che riceve uno script.
+
+| Elemento | Comportamento |
+| --- | --- |
+| *Prima che questa storia inizi* | Una diapositiva prima del primo passaggio, mostrata finché un tipo che la storia legge è ancora su *Chiedi*. Una riga per tipo, ciascuna con la sua risposta, *Consenti* o *Non consentire*, nessuna scelta in anticipo. Sotto ogni riga, cosa comporta un no: il sostituto che verrà detto alla storia, oppure che le verrà detto che non può averlo. Le risposte restano in *Impostazioni › Autorizzazioni*, dove si possono cambiare. Rispondere all'ultima riga avvia la storia. |
+| *Cerco dove ti trovi…* | Mostrato sopra la finestra quando la storia legge la posizione e questa è consentita, mentre l'app chiede dove si trova questo computer, con la precisione di una città circa. La storia comincia appena c'è una lettura, dopo cinque secondi senza, o subito con *Comincia senza*. Viene chiesto di nuovo quando si ricomincia e quando si riprende. |
+| Striscia degli avvisi | Una striscia in cima alla finestra quando alla storia è stato dato il tuo sostituto (`I.RT.05`), è stato negato qualcosa che ha letto (`W.RT.06`), o poteva leggere qualcosa che non c'era (`I.RT.07`). Un avviso è nel colore di attenzione e una nota è attenuata; ognuno ha una croce (*Chiudi*) per toglierlo. Una striscia per tipo ed esito, mantenuta quando si riprende. Gli stessi codici compaiono in Messaggi; vedi [Diagnostica](/it/reference/diagnostics/#irt05). |
+| Barra dell'app | L'orologio, e la posizione, compaiono nella barra dell'app mentre gioca una storia che li legge, e spariscono a una pausa, a un finale, quando si ricomincia e quando ci si ferma. |
+| Una sessione guidata da un agente | Non chiede mai. Un tipo su *Chiedi* viene negato, e alla storia non viene mai detto dove si trova questo computer. |
 
 ## Gioca da qui
 

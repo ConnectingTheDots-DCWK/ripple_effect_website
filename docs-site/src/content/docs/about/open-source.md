@@ -50,9 +50,21 @@ These are how a game, an app or a page plays a campaign exported from the editor
 
 The interpreter is a subset of Python: no filesystem, no network, no `class`, and a standard library that is a short list. That restriction is what makes it safe to run a stranger's story. [Python in a story](/explanation/python-in-a-story/) explains the trade, [The sandbox and its limits](/reference/python/sandbox/) says what it allows, and the [Python reference](/reference/python/) lists what the app binds into it.
 
+## Harper: spelling and grammar
+
+[github.com/automattic/harper](https://github.com/automattic/harper) · Apache-2.0
+
+**Not ours.** Harper is a grammar checker written in Rust, and its `harper-core` is what checks the spelling, grammar and style of English passages and notes, on your machine, as you write. The style rules a project writes for itself are in Weir, Harper's rule language. [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) and [How to write a style rule](/how-to/write-a-style-rule/) say how to use it.
+
+## parakeet-rs: dictation
+
+[github.com/altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs) · MIT or Apache-2.0
+
+**Not ours.** `parakeet-rs` runs NVIDIA's Nemotron streaming models, which is how dictation hears you on your own computer. The models are not part of the app: each is downloaded when you ask for it, and they are under NVIDIA's licences rather than ours. [How to dictate a passage](/how-to/dictate-a-passage/) says how to set it up.
+
 ## Everything else
 
-The complete list of third-party components and their licences is in the application, under **Settings → About → Third-party licences**. Each is governed by its own licence, which the app's does not touch.
+The complete list of third-party components and their licences is in the application, under **Settings → About → Third-party licences**. Each is governed by its own licence, which the app's does not touch. Since 1.6 the list also covers the native code inside the packages, among it the audio player and FFmpeg, Git, the PDF viewer, crash reporting and the spelling checker's word list, and the icon fonts, the app's three typefaces and the two speech models dictation downloads.
 
 ## Related
 

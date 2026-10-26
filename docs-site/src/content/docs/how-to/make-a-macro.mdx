@@ -15,8 +15,8 @@ Use a macro for a stretch you want to call from several places: a shop, a rest, 
 <Steps>
 
 1. In the file tree, press **+** beside a board and choose **Macro**. The file is `*.macro.graph.json` and opens on the same canvas as a board, with a **Macro In** and a **Macro Out** node where a board has its Start and its Ends.
-2. Double-click **Macro In** to say what the macro takes: a name and a type per row, as on an Input node. Each name becomes an output carrying what the calling board wires in or types on the card. A take can carry a default, which is used when the calling card wires nothing and types nothing.
-3. Double-click **Macro Out** to say what the macro answers, the same way. Each name becomes an input. Its way in takes any number of wires, so every branch inside the macro can finish at the same way out.
+2. Double-click **Macro In** to say what the macro takes: an ID and a type per row, as on an Input node. An ID is written like a Python name, such as `captain_hp`, and the editor will not let you type another. Each ID becomes an output carrying what the calling board wires in or types on the card. A take can carry a default, which is used when the calling card wires nothing and types nothing.
+3. Double-click **Macro Out** to say what the macro answers, the same way. Each ID becomes an input. Its way in takes any number of wires, so every branch inside the macro can finish at the same way out.
 4. Build the stretch between the two with the ordinary node set. A macro has exactly one Macro In and one Macro Out.
 
 </Steps>
@@ -37,6 +37,7 @@ Use a macro for a stretch you want to call from several places: a shop, a rest, 
 - Two calls are two independent copies, so a *Once* gate inside a shop fires once per shop, not once for the whole story.
 - A choice's *Times* count inside a macro is kept per call: a corridor called from two places has a separate budget for each. See [How to limit a choice](/how-to/limit-a-choice/).
 - A macro cannot call itself.
+- A macro from a version before 1.6 has its names rewritten as IDs when it is opened: `Captain HP` becomes `captain_hp`, and its wires follow. Once saved by 1.6, it cannot be opened by an earlier version.
 - A macro cannot be jumped to and a board cannot be called: a Jump lists boards, and a Macro card lists macros.
 - A story can be paused inside a macro and picked up where it left off.
 

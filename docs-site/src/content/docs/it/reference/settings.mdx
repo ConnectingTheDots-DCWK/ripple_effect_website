@@ -7,16 +7,17 @@ L'ingranaggio nella barra dell'app, in ogni schermata, apre la finestra Impostaz
 
 Ogni opzione è una scelta tra poche voci con un nome, disegnata come controllo segmentato con la scelta attuale evidenziata, e una riga sotto il controllo spiega cosa significa quella scelta. Una scelta ha effetto non appena la premi; non c'è Applica. L'eccezione al controllo segmentato è *Lingua*, un menu a tendina.
 
-La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile e il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app. La barra della pagina iniziale ha anche il pulsante Novità, con un numero finché qualcosa resta da leggere; vedi [Novità](#novità).
+La barra dell'app tiene solo ciò che ha novità: un aggiornamento disponibile, il segno degli agenti mentre un assistente è connesso o non è riuscito a raggiungere l'app, e l'indicatore delle autorizzazioni mentre qualcosa usa il microfono, la posizione o la data e l'ora, un simbolo per ogni tipo in uso. Passandoci sopra il puntatore, o raggiungendolo con la tastiera, dice cosa sta usando ciascun tipo; premendolo si apre la pagina [Autorizzazioni](#autorizzazioni). La barra della pagina iniziale ha anche il pulsante Novità, con un numero finché qualcosa resta da leggere; vedi [Novità](#novità).
 
 ## Pagine
 
-La finestra ha sei pagine lungo una barra sulla sinistra. Ogni pagina ha la stessa altezza, ed entrambe le colonne scorrono.
+La finestra ha sette pagine lungo una barra sulla sinistra. Ogni pagina ha la stessa altezza, ed entrambe le colonne scorrono.
 
 | Pagina | Descrizione nella barra | Contiene |
 | --- | --- | --- |
 | *Generale* | Aspetto, accessibilità, lingua | Come l'app appare, si legge e riproduce |
 | *Controllo dati* | Cosa lascia questo computer | *Statistiche di utilizzo* |
+| *Autorizzazioni* | Cosa può usare qui questa app | *Microfono*, *Posizione*, *Data e ora*, e un sostituto per gli ultimi due; vedi [Autorizzazioni](#autorizzazioni) |
 | *Aggiornamenti* | Canale, note di rilascio, correzioni del motore, novità | *Canale di rilascio*, *Note di rilascio* e i suoi filtri, *Aggiornamenti del motore*, *Usa il motore incluso*, *Novità* |
 | *Agenti* | Assistenti che raggiungono l'app | La connessione dell'assistente; vedi [Strumenti MCP](/it/reference/mcp-tools/) |
 | *Assistenza* | Domande, bug, idee | [La pagina Assistenza](#pagina-assistenza) |
@@ -40,6 +41,7 @@ Le righe, nell'ordine della pagina.
 | *Riproduzione* | *128*, *512*, *2,048*, *8,192*, *Nessuno* | Il limite di cicli |
 | *Conti alla rovescia* | *Come scritti*, *Dieci volte più lunghi*, *Disattivati* | Quanto tempo hai quando un passaggio fa un conto alla rovescia verso una scelta |
 | *Scrittura* | *Controlla ortografia e grammatica*, *Disattivato* | Se i passaggi e le note in inglese vengono controllati mentre scrivi; vedi [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) |
+| *Dictation* | *Off*, *On* | Se un microfono fluttua sopra gli editor dei passaggi e delle note; vedi [Dettatura](#dettatura) |
 
 ### Lingua
 
@@ -54,7 +56,9 @@ Le righe, nell'ordine della pagina.
 
 *Sistema* segue qualunque cosa sia impostata nel sistema operativo. *Chiaro* e *Scuro* sono sempre quel tema. L'aspetto è indipendente da Contrasto e Visione dei colori, quindi tema scuro e contrasto *Elevato* possono essere attivi insieme.
 
-L'aspetto predefinito è sobrio e monocromatico: il pulsante principale di ogni vista è riempito con il colore del testo, e anche la selezione, il focus e la scheda attiva sono disegnati con quello, sia nel tema chiaro sia in quello scuro. Il colore è riservato a ciò che ti comunica: le famiglie di schede, i percorsi tracciati, i segni del controllo di versione e gli avvisi. I collegamenti in Markdown sono sottolineati, e l'icona dell'app è una piastra scura con il simbolo in bianco.
+L'aspetto predefinito è caldo: un tema chiaro color carta, un tema scuro antracite come alla luce di una lampada, e un solo accento color brace per il focus, la selezione e l'azione principale di ogni schermata. Le famiglie di schede, i percorsi tracciati, i segni del controllo di versione e i tag prendono colori più terrosi, in armonia. I collegamenti in Markdown sono sottolineati, e l'icona dell'app è color brace, come il simbolo nella barra dell'app.
+
+L'app include tre caratteri tipografici suoi, così ha lo stesso aspetto su ogni computer: Instrument Sans per menu, pannelli e pulsanti, Literata per passaggi e note (mentre li scrivi, su una lavagna e mentre una campagna è in gioco) e JetBrains Mono per il codice. I passaggi sono più grandi e ariosi nell'editor, e ancora più grandi mentre una campagna è in gioco, in una colonna abbastanza stretta da leggersi comodamente per quanto larga sia la finestra.
 
 ### Collegamenti
 
@@ -79,6 +83,27 @@ L'aspetto predefinito è sobrio e monocromatico: il pulsante principale di ogni 
 | *Come scritti* | I conti alla rovescia durano il tempo impostato dall'autore |
 | *Dieci volte più lunghi* | Ogni conto alla rovescia, e l'attesa prima che inizi, dura dieci volte tanto |
 | *Disattivati* | Nessun conto alla rovescia; la storia aspetta che tu scelga |
+
+### Dettatura
+
+Una sezione sotto *Scrittura*. La dettatura è *Off* finché non la attivi. L'app non ha ancora una traduzione italiana per la dettatura: le sue voci compaiono in inglese, e qui sono scritte come le mostra l'app.
+
+| Riga | Scelte | Significato |
+| --- | --- | --- |
+| *Dictation* | *Off*, *On* | *Off*: nessun microfono negli editor. *On*: un microfono fluttua sopra gli editor dei passaggi e delle note; premilo, parla, e le tue parole vengono scritte al cursore. Tutto viene ascoltato su questo computer; niente di ciò che dici lo lascia. |
+| *Listens with* | *English*, *Multilingual* | *English* è il più preciso per l'inglese, e solo per l'inglese. *Multilingual* sente 32 lingue, e gli viene detta la lingua del passaggio in cui stai scrivendo; una nota è nella lingua predefinita del progetto. |
+
+Sotto ci sono una riga per modello, *English* e *Multilingual*:
+
+| Parte | Mostra |
+| --- | --- |
+| Stato | *Not downloaded*, *Part-way* con quanto è arrivato, *Downloading* mentre arriva, oppure *Downloaded*, ciascuno con la dimensione del modello |
+| *Licence* | La licenza con cui NVIDIA pubblica il modello, con il collegamento: la NVIDIA Open Model License per *English*, la OpenMDW License 1.1 per *Multilingual* |
+| **Download** / **Resume** | Scarica il modello una volta sola: circa 2,3 GB (English) o 2,4 GB (Multilingual). **Resume** riprende un download interrotto o fermato. |
+| Barra di avanzamento e **Stop** | Mentre il modello si scarica |
+| Cestino, *Delete from this computer* | Toglie un modello scaricato o scaricato a metà e restituisce lo spazio |
+
+Scaricare il modello non scelto, mentre quello scelto non è sul disco, lo rende il modello scelto. Un download che non riesce dice perché sotto la riga: spazio libero insufficiente, download irraggiungibile o rifiutato, un file arrivato danneggiato e scartato, oppure il modello non è stato scritto sul disco. Disattivare la dettatura libera il modello caricato in memoria; i file restano sul disco. La richiesta che fa un download è in [Cosa invia l'app](/it/about/what-the-app-sends/), e come si usa il modello è in [Come dettare un passaggio o una nota](/it/how-to/dictate-a-passage/).
 
 ## Contrasto
 
@@ -133,6 +158,46 @@ La dimensione del testo non è un'impostazione dell'app.
 | *Statistiche di utilizzo* | *Disattivate*, *Attivate* | *Disattivate* finché non le porti su *Attivate*. L'elenco completo di ciò che viene inviato è mostrato sotto il controllo, e l'identificatore è mostrato mentre sono attive. Non viene inviato nulla finché non sono rimaste attive per un'ora. |
 
 Disattivarle distrugge l'identificatore. Per far cancellare ciò che è stato inviato, scrivi all'indirizzo mostrato nella pagina, indicando l'identificatore, prima di disattivarle. Riattivarle avvia una nuova installazione. Ciò che viene inviato è elencato in [Cosa invia l'app](/it/about/what-the-app-sends/).
+
+## Autorizzazioni
+
+Ciò che l'app può usare su questo computer. La pagina comincia dicendo che ognuna di queste viene usata solo mentre qualcosa che hai avviato ne ha bisogno, e che niente di ciò che legge lascia questo computer. Non è *Controllo dati*, che riguarda ciò che lascia il computer: niente in questa pagina viene inviato.
+
+Le righe nell'ordine della pagina. Ognuna è *Chiedi*, *Consenti* o *Nega* con la tua risposta evidenziata, e una riga sotto dice cosa significa la risposta evidenziata. Una scelta ha effetto non appena la premi.
+
+| Riga | Serve per | Predefinito |
+| --- | --- | --- |
+| *Microfono* | Dettare nell'editor | *Chiedi* |
+| *Posizione* | Le storie che giochi e che cambiano in base a dove ti trovi | *Chiedi* |
+| *Data e ora* | Le storie che giochi e che cambiano con l'ora del giorno | *Consenti* |
+
+| Risposta | Significato |
+| --- | --- |
+| *Chiedi* | Ti viene chiesto la prima volta che qualcosa ne ha bisogno. Una storia lo chiede prima di iniziare; vedi [La finestra della campagna](/it/reference/campaign-window/). |
+| *Consenti* | Usata mentre qualcosa che hai avviato ne ha bisogno, e mai altrimenti. |
+| *Nega* | Mai usata, e niente lo chiede. |
+
+Anche il sistema operativo ha voce in capitolo, e viene interpellato quando la pagina si apre o quando qualcosa ha bisogno della risposta, e di nuovo ogni volta che torni all'app dopo di allora:
+
+- Prima che il sistema sia stato interpellato, la riga lo dice, e scegliere *Consenti* glielo chiede una volta.
+- Quando è il sistema a impedire che un *Consenti* abbia effetto, una riga sotto dice perché: il sistema non consente a questa app di usarla, una regola di questo computer non lo consente, oppure sul computer non c'è niente che l'app possa usare.
+- **Apri le impostazioni di sistema** compare sulla riga quando il sistema ha rifiutato e ha un'impostazione per cambiarlo. Su macOS una modifica fatta lì si applica quando l'app viene riavviata, e la pagina lo dice.
+
+### Sostituti
+
+*Posizione* e *Data e ora* hanno ciascuna un campo *Sostituto*: ciò che viene detto a una storia ogni volta che non può avere il valore vero, perché non l'hai consentito o perché questo computer non ha niente da dare. Una storia non distingue un sostituto da quello vero. Il microfono non ne ha; una storia non lo legge mai.
+
+| Campo | Accetta | Esempio |
+| --- | --- | --- |
+| *Data e ora* | Una data come anno-mese-giorno e un'ora nel formato 24 ore, con o senza scostamento da UTC. Senza, è l'ora locale di questo computer per quella data. | `2026-10-19 18:30`, `2026-10-19T18:30+02:00` |
+| *Posizione* | Un luogo, per nome o come latitudine e longitudine | `Roma, Italia`, `41.9028, 12.4964` |
+
+- Il campo viene controllato mentre scrivi e tenuto appena si legge; non c'è Applica. Ciò che non si legge viene detto sotto il campo e non viene tenuto.
+- Una riga sotto il campo dice cosa vedranno le storie: il momento con il suo scostamento, il luogo, oppure latitudine e longitudine. L'ora è mostrata come l'hai scritta, mai convertita nel fuso di questo computer.
+- Svuotare il campo toglie il sostituto. Senza un sostituto per la data e l'ora, una storia che non può avere quella vera riceve un rifiuto.
+- Se consenti la posizione, a una storia viene detto dove si trova questo computer, con la precisione di una città circa. Il sostituto si usa quando non lo consenti, o quando questo computer non sa dirlo.
+
+Come uno script vede ciascuna risposta è in [Il mondo fuori dalla storia](/it/reference/python/the-world/).
 
 ## Aggiornamenti
 
@@ -237,12 +302,13 @@ Il resto di ciò che potresti allegare, e i suggerimenti, si trovano nel menu Ai
 
 ## Primo avvio
 
-Dopo le pagine dell'accordo, il primo avvio mostra due pagine. Entrambe si possono saltare, e tutto ciò che contengono si trova poi in Impostazioni.
+Dopo le pagine dell'accordo, il primo avvio mostra tre pagine. Tutte e tre si possono saltare, e tutto ciò che contengono si trova poi in Impostazioni.
 
 | Pagina | Contenuto |
 | --- | --- |
 | Prima | Aspetto, *Contrasto*, *Visione dei colori* e come vengono disegnati i collegamenti, accanto a una piccola anteprima dell'app che cambia mentre scegli |
-| Seconda | La domanda sulle *Statistiche di utilizzo* senza nessuna risposta preselezionata e l'elenco completo di ciò che verrebbe inviato, come viene chiesto dei rapporti di crash e un cenno alle donazioni |
+| Seconda | *Write the way you like* (ancora in inglese nell'app): *Is most of your writing in English?*, senza nessuna risposta preselezionata. *Yes* offre due caselle, entrambe spuntate: *Check spelling and grammar*, e *Turn on dictation and download the English model*, che si scarica una volta finite le pagine del primo avvio, con l'avanzamento in Impostazioni. *No* non cambia nulla. Aggiunta nella 1.6, e mostrata solo a una nuova installazione. |
+| Terza | La domanda sulle *Statistiche di utilizzo* senza nessuna risposta preselezionata e l'elenco completo di ciò che verrebbe inviato, come viene chiesto dei rapporti di crash e un cenno alle donazioni |
 
 ## Vedi anche
 

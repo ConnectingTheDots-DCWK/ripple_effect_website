@@ -99,8 +99,8 @@ export const roadmap: Milestone[] = [
   {
     version: "1.5",
     codename: "Multiclassing",
-    note: "Current",
-    tone: "current",
+    note: "Shipped",
+    tone: "shipped",
     // The plan said "the core story engine ported to Rust, with bindings";
     // what shipped is that engine, released on its own for desktop, phones
     // and the web with a JavaScript binding over it, and around it the
@@ -115,15 +115,17 @@ export const roadmap: Milestone[] = [
   {
     version: "1.6",
     codename: "Grammar Lich",
-    note: "Free",
-    tone: "planned",
+    note: "Current",
+    tone: "current",
     // The plan said "integration with an orthography-checking service", and
-    // a paid one. What is being built checks on the author's machine instead,
-    // which is why the chip moved to free.
+    // a paid one. What shipped checks on the author's machine instead, which
+    // is why it is free — and around it the changelog's 1.6.0 section:
+    // dictation on the device, countdowns on choices, and stories that read
+    // the clock, the location and the reader's language.
     features: [
-      "Spelling and grammar checked as you type, on your machine, by Harper",
-      "A dictionary per project, shared with everyone who opens it",
-      "Style rules of your own, written in Weir",
+      "Spelling, grammar and style rules of your own, checked on your machine, with a dictionary per project",
+      "Dictation on your computer by NVIDIA's Nemotron models, in English or in 32 languages",
+      "Countdowns on choices, and stories that read the time, where you are and the reader's language",
     ],
   },
   {

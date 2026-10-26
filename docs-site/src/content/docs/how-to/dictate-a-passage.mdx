@@ -1,0 +1,65 @@
+---
+title: How to dictate a passage or a note
+description: Switch dictation on, download a speech model, and speak into a passage or a Markdown note so your words are typed at the cursor.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Dictation types what you say into the passage or note you are writing. Everything is heard on your computer, by NVIDIA's Nemotron models; nothing you say leaves it.
+
+{/* TODO(shots): <Shot name="dictation" /> */}
+
+## Switch it on and download a model
+
+Dictation is off until you switch it on, and needs a model on your computer before it can listen.
+
+<Steps>
+
+1. Press the gear in the app bar to open the Settings dialog, and pick the *General* page.
+2. Under *Dictation*, choose *On*. A microphone now floats over the passage and note editors.
+3. Under *Listens with*, choose the model:
+   - *English*: the most accurate for English, and English only.
+   - *Multilingual*: hears 32 languages, and is told the language of the passage you are writing in.
+4. On the row for that model, press **Download**. Each model is a download made once: about 2.3 GB for English and 2.4 GB for Multilingual. The row shows the progress, and **Stop** halts it.
+
+</Steps>
+
+If a download is interrupted or stopped, the row says how much arrived and offers **Resume**, which carries on from there. A model already downloaded is deleted from the same row, with the bin (*Delete from this computer*).
+
+A new installation is asked during its first launch whether most of your writing is in English. Saying yes, with its dictation box ticked, switches dictation on and downloads the English model once the first-launch pages are done; the progress is in Settings.
+
+## Dictate
+
+<Steps>
+
+1. Open a passage or a Markdown note, and put the cursor where the words should go.
+2. Press the microphone in the text pane (*Dictate*). The first time, the app asks *Use the microphone?*: choose **Allow**.
+3. Speak. The button is red while it listens and glows as it hears you, and your words are typed at the cursor. If a stretch of text is selected, the words replace it.
+4. Press the button again (*Stop dictating*) when you are done.
+
+</Steps>
+
+One dictation runs at a time: pressing the microphone in another editor stops the first. You can type into the text while it listens; the next words you say start again at the cursor.
+
+The command palette's **Toggle dictation** switches dictation on and off, as the setting does.
+
+## Which language it listens for
+
+The *English* model is English only. The *Multilingual* model is told the language of the text: a passage in the language its editor is showing, and a note in the project's default language.
+
+## If the microphone does not start
+
+| What the app says | What to do |
+| --- | --- |
+| The model is not downloaded yet | Choose **Open Settings** and download the model on its row. |
+| The microphone is not allowed | Choose **Open Permissions** and set *Microphone* to *Allow*. Answering **Don't allow** to the first question leads here. |
+| It needs the `parecord` program (Linux) | Install the `pulseaudio-utils` package. The `.deb` and `.rpm` install it themselves. |
+| Dictation could not start | The session log has the details; see [How to report a bug](/how-to/report-a-bug/). |
+
+While dictation holds the microphone, its glyph shows in the app bar. Hovering it shows *Microphone: Dictation*, and pressing it opens the *Permissions* page of Settings.
+
+## Related
+
+- [Settings, accessibility and updates controls](/reference/settings/): the *Dictation* section and the *Permissions* page.
+- [Passages and translations](/explanation/passages-and-translations/): why a passage has a language of its own.
+- [What the app sends](/about/what-the-app-sends/): the model download, and what never leaves.

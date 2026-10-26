@@ -17,9 +17,9 @@ A published archive is never replaced. A release that turns out wrong is superse
 
 ## A version number is a contract
 
-The first two parts of a version, `1.5`, name a **contract**: the campaign format, the formats the editor writes, the engine's interfaces and the fixtures, frozen together and given a codename (1.5 is *Multiclassing*). The editor, the engine and every binding count their own third part within it. So `@ripplefx/player` 1.5.0, the C# packages 1.5.0 and an engine 1.5.4 all speak the same contract, and a binding's patch is its own fix, not the engine's.
+The first two parts of a version, `1.6`, name a **contract**: the campaign format, the formats the editor writes, the engine's interfaces and the fixtures, frozen together and given a codename (1.6 is *Grammar Lich*). The editor, the engine and every binding count their own third part within it. So `@ripplefx/player` 1.6.0, the C# packages 1.6.0 and engine 1.6.0 all speak the same contract, and when one of them takes a patch it moves on its own: a binding's patch is its own fix, not the engine's.
 
-What that buys you is a short rule. **A binding of contract 1.5 plays any campaign exported by an editor of contract 1.5**, and those of the earlier contracts the engine still reads (1.3 and 1.4, for engine 1.5). A campaign from a newer editor is refused at open, with a sentence saying which version made it and to update. An engine patch within a contract keeps every interface a binding compiled against, which is why a binding can move to a newer engine patch without changing its own API.
+What that buys you is a short rule. **A binding of contract 1.6 plays any campaign exported by an editor of contract 1.6**, and those of the earlier contracts the engine still reads (1.3, 1.4 and 1.5, for engine 1.6). A campaign from a newer editor is refused at open, with a sentence saying which version made it and to update. An engine patch within a contract keeps every interface a binding compiled against, which is why a binding can move to a newer engine patch without changing its own API.
 
 ## Three ways in: a C library, a component, and Emscripten
 

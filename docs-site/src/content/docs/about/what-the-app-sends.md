@@ -21,6 +21,7 @@ The [Privacy Notice](https://legal.ripplefx.app/privacy/) is the formal version,
 | [Contributor list and avatars](#contributor-list-and-avatars) | `ripplefx.app` for the list, `avatars.githubusercontent.com` for the images | When the About box opens | None | No |
 | [Usage statistics](#usage-statistics) | Ripple Effect's hosted backend | At most one row a day, after an hour on | Settings ▸ Data control, off until you switch it on | No |
 | [Crash report](#crash-report) | Ripple Effect's hosted backend | Only when you press *Send report* | Asked once per crash | It can |
+| [Dictation model download](#requests-you-cause) | `huggingface.co`, and the storage it redirects to | Only when you press *Download* or *Resume*, or said yes to it at first launch | None: made only when you ask, under Settings ▸ General ▸ *Dictation* | No |
 | [Your own actions](#requests-you-cause) | Where you point them | When you act | n/a | Depends |
 
 ## Before the licence is accepted
@@ -162,6 +163,7 @@ These are yours rather than the app's, and are listed because they put bytes on 
 | Opening a documentation or support page | Hands a URL to your browser. From version 1.5 it goes through a redirect on `ripplefx.app`, which sees the request and nothing else. What your browser does next is between you and wherever it went. |
 | Image in a document, referenced by `http` or `https` | Drawing the document fetches the image from whoever hosts it, and that host sees the request. The app does not ask before making it, and an image small enough to be invisible is still a request. This includes a project somebody sent you, whose documents you did not write. |
 | Image in the project folder | Read from your disk. No network is involved. |
+| Downloading a dictation model | From version 1.6. Pressing *Download* or *Resume* under **Settings ▸ General ▸ Dictation**, or answering yes to dictation at first launch, fetches the model's files from `huggingface.co` at a fixed address, following the redirect to where Hugging Face stores them. Each request asks for one file, and a resumed one asks from where the last stopped; it carries nothing about you or your projects. Hugging Face sees the address the request came from. Nothing is fetched until you ask, and nothing is fetched again once the model is on your computer. |
 
 ## What never leaves
 
@@ -169,6 +171,8 @@ These are yours rather than the app's, and are listed because they put bytes on 
 | --- | --- |
 | Your work | Passages, boards, projects, components, scripts and exports are not sent anywhere. There is no background sync. |
 | Spelling and grammar | Checked on your machine, as you type. Your words, the project's dictionary and its style rules are not sent anywhere. |
+| The clock and the location | From version 1.6, a story you allowed may read the date and time or where your computer is. The location comes from your operating system's own location service, to about the nearest town, and the app makes no request of its own for it: it is not turned into a place name. What a story reads is not sent to us. A story an agent plays is never told the location. |
+| Dictation | Heard on your machine, by the model you downloaded. The sound from the microphone and the words heard in it are not sent anywhere, and neither is written to the session log. |
 | What you do in the app | Which boards you open, how long you spend and what you click are not recorded or sent, with or without statistics switched on. The statistics say that the app was used on a day, and nothing about how. |
 | The session log | Not sent, unless it goes inside a crash report you sent. It is written on your machine, with private things replaced as they are written, and a run where nothing went wrong is deleted the next time you start the app. |
 | Network responses | The update check, the news, the contributor list and an installer download each leave a line in the session log saying where the request went, what came back and how long it took. The address is recorded without anything after the `?`, and no response content is written. |

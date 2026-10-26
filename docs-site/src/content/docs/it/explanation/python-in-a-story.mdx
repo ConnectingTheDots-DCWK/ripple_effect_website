@@ -7,7 +7,7 @@ sidebar:
 
 import Shot from '../../../../components/Shot.astro';
 
-Una storia può contenere Python in tre posti: una scheda Script esegue un file di Python, una frase di un passaggio può contenere uno snippet e una console accanto a ogni script è il posto dove provare una riga. Le ramificazioni, i dadi, le variabili e le macchine a stati sono schede. Questa pagina parla della forma che quella decisione ha dato alla funzione: perché è una sandbox, perché non è tutto Python, perché un passaggio può guardare ma non toccare e perché la stessa campagna può essere distribuita con l'interprete o senza.
+Una storia può contenere Python in quattro posti: una scheda Script esegue un file di Python, una frase di un passaggio può contenere uno snippet, così come le parole di una scheda Localized string, e una console accanto a ogni script è il posto dove provare una riga. Le ramificazioni, i dadi, le variabili e le macchine a stati sono schede. Questa pagina parla della forma che quella decisione ha dato alla funzione: perché è una sandbox, perché non è tutto Python, perché un passaggio può guardare ma non toccare e perché la stessa campagna può essere distribuita con l'interprete o senza.
 
 <Shot name="python" />
 
@@ -19,6 +19,10 @@ Il prezzo è che è Python, ma non tutto Python. Non c'è `class`, non c'è un `
 
 L'assenza di `random` è una lacuna voluta, con una risposta a misura di storia. Le schede Dice roller, Random number e Weighted branch sono il modo in cui una storia tira i dadi, quindi un tiro è una scheda e non una chiamata nascosta in un file.
 
+### Perché il mondo va chiesto
+
+La sandbox non ha un orologio né un sensore propri, eppure una storia può leggere che ora è e dove si trova chi legge: `datetime.now()` e `date.today()` per l'orologio, `location_get()` e `location_distance(latitude, longitude)` per la posizione. Il motore non va mai a prenderli da sé. Risponde solo con ciò che l'host gli consegna, e solo se chi legge lo consente: a una storia che legge l'una o l'altra cosa viene chiesto prima che cominci. Una lettura che chi legge non ha consentito solleva il `PermissionError` di Python, che uno script intercetta per scrivere invece ciò che la storia dice. Chi legge può anche indicare un sostituto, a cui si risponde come se fosse reale. [Il mondo fuori dalla storia](/it/reference/python/the-world/) riporta che cosa risponde ogni lettura e quando viene rifiutata.
+
 ### Perché l'API passa dei dict
 
 L'assenza di `class` ha due conseguenze che modellano l'intera API. Un componente o un'entità entra in Python come **dict**, quindi si scrive `component_get("Goblin")["HP"]` e mai `goblin.hp`. E non c'è una sintassi a oggetti per costruirne una più comoda: non esiste `import ripple` e non c'è nulla da istanziare. Tutto ciò che uno script può chiamare è una **funzione dell'host**, legata al nome che l'autore scrive e presente senza alcun `import`, alla quale risponde l'app oppure il runtime che gioca la campagna.
@@ -29,7 +33,7 @@ Un valore passa dall'app a Python attraverso JSON, quindi ciò che restituiscono
 
 ### Perché una chiamata è rigorosa
 
-Ogni argomento opzionale è solo per parola chiave, e una chiamata sbagliata solleva un errore invece di rispondere. Il controllo esiste perché l'interprete fa passare una parola chiave sconosciuta senza alcun errore. Senza il controllo, un refuso in `of=` si comporterebbe come se l'argomento fosse stato omesso, e la chiamata si comporterebbe come se l'argomento fosse stato omesso. Un errore rumoroso alla chiamata costa meno di una risposta sbagliata ma plausibile. Le tre funzioni che precedono la regola, `component()`, `components()` e `set_attribute()`, sono escluse per il motivo opposto: ogni passaggio già scritto le chiama, quindi ciò che fanno davanti a un errore è congelato quanto i loro nomi. I nomi sono un contratto con ogni script scritto su di essi, e si aggiunge ad essi invece di riutilizzarli.
+L'opzionale `of` è solo per parola chiave, e una chiamata sbagliata solleva un errore invece di rispondere. Il controllo esiste perché l'interprete fa passare una parola chiave sconosciuta senza alcun errore. Senza il controllo, un refuso in `of=` verrebbe ignorato, e la chiamata si comporterebbe come se l'argomento fosse stato omesso. Un errore rumoroso alla chiamata costa meno di una risposta sbagliata ma plausibile. Le tre funzioni che precedono la regola, `component()`, `components()` e `set_attribute()`, sono escluse per il motivo opposto: ogni passaggio già scritto le chiama, quindi ciò che fanno davanti a un errore è congelato quanto i loro nomi. I nomi sono un contratto con ogni script scritto su di essi, e si aggiunge ad essi invece di riutilizzarli.
 
 Lo stesso ragionamento fa sì che `entity_create` rifiuti un nome già occupato invece di restituire l'entità esistente. Uno script che chiede un nome che può già vedere vuole essere avvisato, non scoprire l'errore passaggi dopo. Le schede Component e Spawn invece sono get-or-create, perché è ciò che permette a una scheda di essere rientrata e a una campagna in pausa di sopravvivere alla ripresa.
 
@@ -39,7 +43,7 @@ Le funzioni dell'host non possono nemmeno essere chiamate dentro `map()`, `filte
 
 Il Python compare in cinque posti, che l'API chiama superfici: una scheda Script, un passaggio, la console in fase di progettazione, un agente tramite MCP e la console durante una sessione di gioco. Ogni funzione è disponibile su ogni superficie. Ciò che cambia è l'effetto di una chiamata, e le differenze seguono un'unica idea: **chi chiede decide che cosa può succedere**.
 
-Una scheda Script legge e scrive, perché è una scheda sulla lavagna. Un **passaggio** legge soltanto. Creare, modificare o eliminare un'entità, o scrivere una variabile di console, viene rifiutato da dentro la prosa, perché un cambiamento di stato dovrebbe essere qualcosa che si può indicare sul canvas, e un goblin eliminato da una frase non ha nulla sulla lavagna da indicare. Il rifiuto viene mostrato sul posto come un chip `⚠` e la storia prosegue, quindi un errore nella prosa degrada una frase invece di terminare la partita. Ogni rifiuto è una sola riga, un `RuntimeError` che uno script può intercettare, e le frasi sono fisse perché gli script già diramano in base ad esse.
+Una scheda Script legge e scrive, perché è una scheda sulla lavagna. Un **passaggio** legge soltanto. Creare, modificare o eliminare un'entità, o scrivere una variabile di console, viene rifiutato da dentro la prosa, perché un cambiamento di stato dovrebbe essere qualcosa che si può indicare sul canvas, e un goblin eliminato da una frase non ha nulla sulla lavagna da indicare. Le parole di una scheda Localized string seguono la stessa regola: i loro snippet girano sulla superficie del passaggio, sugli ingressi che la scheda dichiara. Il rifiuto viene mostrato sul posto come un chip `⚠` e la storia prosegue, quindi un errore nella prosa degrada una frase invece di terminare la partita. Ogni rifiuto è una sola riga, un `RuntimeError` che uno script può intercettare, e le frasi sono fisse perché gli script già diramano in base ad esse.
 
 Riprodurre un suono viene rifiutato da un passaggio per un motivo diverso, e la differenza è la parte istruttiva. Un suono non cambia alcuno stato. Ciò che fa è accadere, e gli snippet di un passaggio vengono rieseguiti a ogni ridisegno e a ogni cambio di lingua, quindi una campana suonata dalla prosa suonerebbe due volte per un lettore passato all'italiano, senza alcuna scheda sulla lavagna a spiegare perché. La regola qui riguarda la ripetizione, non lo stato. Uno stinger va su una scheda Play sound prima del passaggio, oppure in una scheda Script. La frase pensata per la fase di progettazione della console e per un agente è ancora diversa, così che nessuno che ne incontri una vada a cercare la regola dell'altra.
 
@@ -63,7 +67,7 @@ La console accanto a ogni file `.py` e la console durante una sessione di gioco 
 
 ## Disattivarlo
 
-Un progetto scritto per un gioco, o per un lettore costruito senza l'interprete, può dichiararlo: disattiva **Python** sotto *Capacità* nelle impostazioni del progetto. Il motivo per cui è un interruttore del progetto e non qualcosa che si scopre all'esportazione è il momento in cui agisce. Ogni scheda Script, e ogni passaggio con un blocco `{{ … }}` o `ripple`, viene segnata come errore sulla propria scheda ed elencata in Messaggi mentre scrivi ([`E.EX.01`](/it/reference/diagnostics/#eex01) ed [`E.EX.02`](/it/reference/diagnostics/#eex02)), e la campagna non verrà giocata né esportata finché non ce ne sono più. Riattivarlo non cambia nulla del progetto, quindi provare l'interruttore non costa niente.
+Un progetto scritto per un gioco, o per un lettore costruito senza l'interprete, può dichiararlo: disattiva **Python** sotto *Capacità* nelle impostazioni del progetto. Il motivo per cui è un interruttore del progetto e non qualcosa che si scopre all'esportazione è il momento in cui agisce. Ogni scheda Script, ogni passaggio con un blocco `{{ … }}` o `ripple` e ogni scheda Localized string le cui parole eseguono Python viene segnata come errore sulla propria scheda ed elencata in Messaggi mentre scrivi ([`E.EX.01`](/it/reference/diagnostics/#eex01), [`E.EX.02`](/it/reference/diagnostics/#eex02) ed [`E.EX.03`](/it/reference/diagnostics/#eex03)), e la campagna non verrà giocata né esportata finché non ce ne sono più. Riattivarlo non cambia nulla del progetto, quindi provare l'interruttore non costa niente.
 
 Dietro c'è il fatto che il motore viene distribuito in due build, una con l'interprete e una molto più piccola senza. Ogni campagna esportata registra se richiede Python. L'opzione *Non richiede Python* della finestra di esportazione è il controllo fatto al momento dell'esportazione. Vedi [Che cos'è un'esportazione](/it/explanation/what-an-export-is/) per come viene costruita una campagna e [Come costruire una campagna senza Python](/it/how-to/turn-python-off/) per i passaggi.
 
@@ -89,6 +93,7 @@ Una campagna compilata contiene le dichiarazioni (nome, tipo e valore predefinit
 
 - [Come eseguire Python in una storia](/it/how-to/script-a-passage/): scrivere una scheda Script e uno snippet.
 - [Come costruire una campagna senza Python](/it/how-to/turn-python-off/): l'interruttore del progetto e il controllo all'esportazione.
-- [Riferimento Python](/it/reference/python/): le diciotto funzioni, le superfici e le frasi di rifiuto.
+- [Riferimento Python](/it/reference/python/): le ventuno funzioni, le superfici e le frasi di rifiuto.
+- [Il mondo fuori dalla storia](/it/reference/python/the-world/): l'orologio e la posizione di chi legge, e che cosa solleva una lettura rifiutata.
 - [I limiti della sandbox](/it/reference/python/sandbox/): che cosa dice il rapporto e i numeri dietro i limiti.
 - [Come funziona una storia](/it/explanation/how-a-story-runs/): dove si colloca una scheda Script nel flusso.

@@ -3,7 +3,7 @@ title: Binding Dart
 description: Il pacchetto ripplefx_engine per Dart, Flutter e Flame, nativo e web — come installarlo, come scegliere la variante, e ogni classe, membro, effetto, record ed eccezione che esporta.
 ---
 
-`ripplefx_engine` su [pub.dev](https://pub.dev/packages/ripplefx_engine), pubblicato da `connecting-the-dots.dev`, esegue una campagna compilata da Dart: un programma da riga di comando, un server, un'app Flutter o un gioco [Flame](https://flame-engine.org). In modo nativo funziona su `dart:ffi`, sul web su `dart:js_interop`, con un'unica API per entrambi. La versione 1.5.x collega il contratto 1.5 di Ripple Effect. Il `PATCH` è del binding stesso, e ogni versione fissa una release del motore (la 1.5.0 fissa il motore 1.5.4). Il sorgente è pubblico su [ConnectingTheDots-DCWK/ripple_effect_dart_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration). Il pacchetto è MIT. Il motore che carica è sotto la [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), e il suo `NOTICE` va riprodotto ovunque il tuo prodotto elenchi il software di terze parti che contiene.
+`ripplefx_engine` su [pub.dev](https://pub.dev/packages/ripplefx_engine), pubblicato da `connecting-the-dots.dev`, esegue una campagna compilata da Dart: un programma da riga di comando, un server, un'app Flutter o un gioco [Flame](https://flame-engine.org). In modo nativo funziona su `dart:ffi`, sul web su `dart:js_interop`, con un'unica API per entrambi. La versione 1.6.x collega il contratto 1.6 di Ripple Effect, *Grammar Lich*. Il `PATCH` è del binding stesso, e ogni versione fissa una release del motore (la 1.6.0 fissa il motore 1.6.0). Il sorgente è pubblico su [ConnectingTheDots-DCWK/ripple_effect_dart_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration). Il pacchetto è MIT. Il motore che carica è sotto la [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), e il suo `NOTICE` va riprodotto ovunque il tuo prodotto elenchi il software di terze parti che contiene.
 
 Tutto ciò che segue è esportato da un'unica libreria:
 
@@ -103,11 +103,11 @@ L'elenco dei target del motore è in [Target del motore](/it/reference/engine-ta
 
 | Membro | Tipo | Significato |
 | --- | --- | --- |
-| `boundContract` | `String` (const) | Il contratto che questi binding collegano, `'1.5'`. |
+| `boundContract` | `String` (const) | Il contratto che questi binding collegano, `'1.6'`. |
 | `load({Uri? base})` | `Future<void>` | Carica il motore e controlla che colleghi `boundContract`. Non fa nulla in modo nativo; sul web è l'unico await prima che i getter a livello di motore funzionino. `base` è solo per il web. Lancia `EngineNotFoundException`. |
 | `ensureLoaded()` | `void` | In modo nativo, carica la libreria e ne controlla il contratto, una sola volta; il costruttore di ogni handle la chiama. Sul web, controlla che si sia atteso `load()`. Lancia `EngineNotFoundException`. |
-| `version` | `String` | La versione del motore caricato, come `1.5.4`. |
-| `contract` | `String` | Il contratto che il motore caricato collega, come `1.5`. |
+| `version` | `String` | La versione del motore caricato, come `1.6.0`. |
+| `contract` | `String` | Il contratto che il motore caricato collega, come `1.6`. |
 | `hasPython` | `bool` | `false` per il motore senza Python. |
 | `outstanding` | `int` | Quante cose il motore ha consegnato senza che gli fossero restituite. Zero ogni volta che nessuna chiamata è in corso. Sempre `0` sul web. |
 
@@ -155,6 +155,7 @@ L'apertura lancia `BundleException` per un bundle malformato, mancante o più re
 | `boards`, `passages`, `components`, `scripts`, `media`, `machines`, `soundscapes` | `List<Entry>` | Le tabelle del bundle. Un `Entry` è `id`, `name`, `path`. |
 | `cvars` | `List<Cvar>` | Le variabili di console che la campagna dichiara: `name`, `type` (`String`), `defaultValue` (`Value`). |
 | `needs` | `List<String>` | Di che cosa la campagna ha bisogno dal suo host: `python` quando esegue script. |
+| `permissions` | `List<String>` | Ciò che la storia legge del mondo fuori da lei, per nome di wire, `dateTime` e `location` (`PermissionKind.wire`). Li elenca il compilatore, e una sessione chiede di ciascuno prima che la storia cominci. |
 
 ### Board e Node
 
@@ -207,12 +208,15 @@ Una storia in corso. Ogni verbo risponde con gli effetti a cui ha portato, nell'
 
 | Verbo | Risponde | Risponde a quale Turn | Note |
 | --- | --- | --- | --- |
-| `start()` | `List<Effect>` | qualsiasi | Porta la storia al suo primo turno oppure, se ripresa, di nuovo al turno su cui era stata salvata. |
+| `start()` | `List<Effect>` | qualsiasi | Porta la storia al suo primo turno oppure, se ripresa, di nuovo al turno su cui era stata salvata. Finché un tipo in `manifest.permissions` non ha risposta, quel turno è `Permit` e nient'altro. |
 | `choose(int index)` | `List<Effect>` | `Show` | La scelta all'indice `index` tra `passage.choices`. Un indice negativo lancia `RangeError`. Una scelta non disponibile lancia `HostException` (`Code.choiceSpent`); un indice oltre la fine, `Code.noSuchChoice`. |
 | `leave()` | `List<Effect>` | `Show` | Il lettore lascia il passaggio senza scegliere. |
-| `answer(Map<String, Value>? fields)` | `List<Effect>` | `Ask` | I campi del modulo per nome, nell'ordine dato; `null` abbandona il modulo. |
+| `answer(Map<String, Value>? fields)` | `List<Effect>` | `Ask` | I campi del modulo per nome, nell'ordine dato; `null` abbandona il modulo. Un campo facoltativo lasciato vuoto si omette; a un campo con `options` si risponde con gli `id` scelti, un `TextValue` o un `ListValue` di essi. |
 | `elapsed()` | `List<Effect>` | `Hold` | Risponde a un'attesa quando il tuo orologio dice che è finita. |
-| `setLocale(String locale)` | `List<Effect>` | qualsiasi | Cambia la lingua; il turno su cui si trova la storia viene restituito di nuovo in quella lingua. |
+| `beginCountdown()` | `List<Effect>` | `Show` | Il tuo orologio dice che il conto alla rovescia del passaggio mostrato comincia, `ChoiceTimer.afterMs` dopo che il passaggio è stato mostrato. Non muove nulla: il lotto sono le callback che un autore vi ha puntato, e vuoto quando non ce ne sono. `Code.noCountdown` su un passaggio senza. |
+| `expire()` | `List<Effect>` | `Show` | Il tuo orologio dice che il conto alla rovescia è scaduto: viene presa la scelta predefinita del passaggio, come la prenderebbe `choose`, e la storia corre fino al suo prossimo Turn. `Code.countdownNotBegun` prima di `beginCountdown`; `Code.noCountdown` su un passaggio senza. |
+| `permit(PermissionKind kind, {required bool granted})` | `List<Effect>` | `Permit`, o prima di `start` | La risposta del lettore per un tipo, in qualsiasi momento, anche prima di `start`, ed è così che un host che sa già non mostra mai il turno `Permit`. Su quel turno, la risposta all'ultimo tipo senza risposta fa cominciare la storia. Le risposte non vengono salvate: una sessione ripresa chiede di nuovo. |
+| `setLocale(String locale)` | `List<Effect>` | qualsiasi | Cambia la lingua; il turno su cui si trova la storia viene restituito di nuovo in quella lingua: un modulo riformulato con nomi e id mantenuti, un passaggio con il suo conto alla rovescia mantenuto. |
 | `restart()` | `List<Effect>` | qualsiasi | Fa ricominciare la storia dal suo primo turno. |
 | `stop()` | `List<Effect>` | qualsiasi | Ferma la storia definitivamente. |
 | `pause()` | `Paused` | qualsiasi | Mette giù la storia: `save` (`String?`, `null` quando non c'è nulla da salvare) ed `effects`. Mettere in pausa ferma la storia; riprendere è una nuova sessione dal salvataggio. |
@@ -222,6 +226,20 @@ Una storia in corso. Ogni verbo risponde con gli effetti a cui ha portato, nell'
 | `resetAllCvars()` | `List<Effect>` | | Riporta ogni variabile di console al suo valore predefinito. |
 | `removeEntity(String key)` | `EntityRemoval` | | Rimuove un'entità dalla storia: `removed` (`bool`) ed `effects`. |
 | `consoleFeed(String code)` | `ConsoleResult` | | Esegue una riga di Python nell'interprete della storia, come fa la console dell'editor: `result` (`PythonResult`) ed `effects`. Il motore senza Python risponde che non è disponibile. |
+
+Le letture che un host consegna. Nessuna muove la storia o risponde con effetti:
+
+| Membro | Significato |
+| --- | --- |
+| `setNow(Moment? now)` | Che ora è; `null` per nessun orologio. Prima di ogni verbo che può avanzare, da un host che ha concesso `PermissionKind.dateTime`; dentro un verbo il tempo non si muove. |
+| `setPosition(Position? position)` | L'ultima rilevazione dell'host; `null` per nessuna. Una rilevazione data prima della risposta viene tenuta, e letta solo se è sì. Lancia `HostException` (`Code.notPermitted`) una volta che il lettore ha detto no a `PermissionKind.location`. |
+| `setStandIn(PermissionKind kind, String? typed, {int? localOffsetMinutes})` | Il sostituto del lettore per `kind`, come l'ha scritto, detto alla storia ogni volta che manca il valore vero; `null` lo toglie. Un orologio è ISO 8601, e uno scritto senza scostamento viene letto a `localOffsetMinutes`, il fuso di questa macchina nella data scritta se non indicato. Una posizione è `"lat, lon"`, o il nome di un luogo. Uno che non si legge lancia `HostException` (`Code.standIn`), con un messaggio che dice perché. |
+
+| Tipo | Significato |
+| --- | --- |
+| `PermissionKind` | `dateTime`, `location`, nell'ordine di `RipplePermissionKind`; `wire` è il nome che gli dà il manifest, e `PermissionKind.fromWire(String)` il tipo che un nome nomina, o `null`. |
+| `Moment` | Un istante: `utcMs` (millisecondi dall'epoch) e `offsetMinutes` (lo scostamento a cui sta l'orologio del lettore). `Moment(utcMs, offsetMinutes)`, `Moment.of(DateTime)` allo scostamento dell'ora stessa, e `Moment.now()`, l'orologio di questa macchina nel suo fuso. |
+| `Position` | Una rilevazione, di cui ogni campo può mancare, modellata sul `GeolocationPosition` del web: `label` (`String?`), `latitude`, `longitude`, `accuracy` (`double?`, l'ultimo in metri), `when` (`Moment?`). |
 
 Un verbo che la storia non stava aspettando lancia `HostException` e non sposta nulla. `CvarChange` porta `outcome` (`CvarWrite.done`, `unknown` o `refused`), `refusal` (la frase, quando rifiutata) ed `effects`.
 
@@ -264,13 +282,14 @@ final batch = resumed.start();               // the passage again
 
 ## Effetti
 
-`Effect` è una classe sealed. `Turn` e `Over` sono intermedie sealed, quindi uno `switch` su `batch.last` è esaustivo sui sei Turn.
+`Effect` è una classe sealed. `Turn` e `Over` sono intermedie sealed, quindi uno `switch` su `batch.last` è esaustivo sui sette Turn.
 
 | Effetto | Campi | `isTurn` | `isOver` | Si risponde con |
 | --- | --- | --- | --- | --- |
-| `Show` | `passage` (`Passage`) | sì | | `choose` o `leave` |
+| `Show` | `passage` (`Passage`) | sì | | `choose` o `leave`; quando il suo `timer` scade, `expire` |
 | `Ask` | `prompt` (`Prompt`) | sì | | `answer` |
 | `Hold` | `ms` (`int`) | sì | | `elapsed`, una volta che il tuo orologio lo dice |
+| `Permit` | `kinds` (`List<PermissionKind>`): ciò che la storia legge e a cui nessuno ha risposto, prima che cominci | sì | | `permit`, una volta per tipo; la risposta all'ultimo fa cominciare la storia |
 | `Ended` | `title` (`String?`), `ranOut` (`bool`: la storia è rimasta senza strada invece di raggiungere un End) | sì | sì | |
 | `Failed` | `message` (`String`), `node` (`String?`) | sì | sì | |
 | `Stopped` | | sì | sì | |
@@ -280,6 +299,7 @@ final batch = resumed.start();               // the passage again
 | `AmbienceChanged` | `ambience` (`Ambience?`; `null` per il silenzio) | | | |
 | `Audio` | `command` (`AudioCommand`) | | | consegnalo a `SoundscapeDriver.apply` |
 | `Changed` | `entities` (`List<Entity>?`), `memory` (`Memory?`), `cvars` (`List<CvarSnapshot>?`); un archivio che non si è mosso è `null` | | | |
+| `Notice` | `code` (`String`: `I.RT.05` un sostituto, `W.RT.06` un rifiuto, `I.RT.07` niente; la lettera è la gravità), `kind` (`PermissionKind`), `node` (`String?`, il nodo che ha fatto la lettura), `message` (la frase inglese del motore) | | | una lettura del mondo fuori dalla storia che non ha avuto il valore vero, una volta per tipo ed esito in una partita, prima del suo Turn |
 
 `Ended`, `Failed` e `Stopped` estendono `Over`, che estende `Turn`.
 
@@ -289,13 +309,15 @@ Ogni record è una copia: sopravvive al verbo che l'ha prodotto, alla sessione e
 
 | Record | Campi |
 | --- | --- |
-| `Passage` | `node`, `title`, `text` (Markdown, o HTML quando lo dice `manifest.textFormat`), `choices` (`List<Choice>`), `sources` (`List<LocaleText>?`), `snippets` (`List<Snippet>`), `media` (`List<MediaLink>`), `untranslated` (`String?`: la lingua da cui questo passaggio è ricaduto), `soundscape` (`Soundscape?`), `silence` (`bool`) |
+| `Passage` | `node`, `title`, `text` (Markdown, o HTML quando lo dice `manifest.textFormat`), `choices` (`List<Choice>`), `sources` (`List<LocaleText>?`), `snippets` (`List<Snippet>`), `media` (`List<MediaLink>`), `untranslated` (`String?`: la lingua da cui questo passaggio è ricaduto), `soundscape` (`Soundscape?`), `silence` (`bool`), `timer` (`ChoiceTimer?`: il suo conto alla rovescia; `null` quando aspetta il lettore quanto vuole) |
+| `ChoiceTimer` | `afterMs` (quanto prima che il conto alla rovescia cominci; zero è subito), `timeoutMs` (quanto scorre una volta cominciato; mai zero), `visible` (`bool`: se l'autore voleva che il lettore lo vedesse scorrere), `defaultChoice` (l'indice nelle scelte del passaggio preso quando scade). Il motore non ne misura nulla. |
 | `Choice` | `port`, `text`, `available` (`false` per una scelta che ora non è aperta; disegnala in grigio) |
 | `LocaleText` | `locale`, `text` |
 | `Snippet` | `code`, `isInline` |
 | `MediaLink` | `link` (il nome nel testo), `media` (indice in `manifest.media`) |
 | `Prompt` | `node`, `title`, `fields` (`List<PromptField>`) |
-| `PromptField` | `name`, `type` (`String`), `defaultValue` (`Value`) |
+| `PromptField` | `name` (il suo ID, la chiave di una risposta), `type` (`String`), `defaultValue` (`Value`: ciò con cui il controllo è riempito; un valore predefinito che nessuno modifica è la risposta), `label` (ciò che viene mostrato al lettore, nella sua lingua: `name` dove l'autore non ha scritto nulla), `placeholder` (il suggerimento disegnato mentre il campo è vuoto; vuoto se non c'è, mai la risposta), `optional` (`bool`: se il lettore può lasciarlo vuoto, che risponde null; un campo obbligatorio non si invia vuoto), `options` (`List<PromptOption>`: le risposte fisse tra cui scegliere, in ordine, una per un tipo scalare e un numero qualsiasi per un `…List`; vuoto per un campo in cui il lettore scrive) |
+| `PromptOption` | `id` (ciò con cui risponde un host, uguale in ogni lingua), `label` (ciò che viene mostrato al lettore, nella sua lingua), `value` (`Value`: ciò che viene consegnato alla storia quando è scelto, del tipo del campo) |
 | `Ambience` | `soundscape` (`Soundscape`), `board` (`int`), `node` (`String`): il soundscape in vigore e il nodo che lo ha impostato |
 | `Entity` | `key`, `component` (`String?`), `label`, `values` (una mappa `Value`, campo per campo) |
 | `Memory` | `nodes` (una mappa `Value`, nodo per nodo), `machines` (`List<(String machine, String state)>`, ogni state machine e il suo stato, in ordine) |
@@ -306,7 +328,7 @@ Ogni record è una copia: sopravvive al verbo che l'ha prodotto, alla sessione e
 | `Track` | `media`, `lane`, `start`, `clipStart`, `clipEnd` (`int?`), `volume`, `speed`, `fadeIn`, `fadeOut`, `mode` (`TrackMode.once`, `looping` o `auto`), `interval` |
 | `RunEvent` | `kind` (`RunEventKind`), `run`, `board`, `sequence`, `node`, `step`, `entry`, `primed` (`List<String>`), `enteredVia` (`String?`), `pulled`, `inputs` e `outputs` (`List<TraceValue>`), `outcome` (`int`), `flowed` (`List<String>`), `error` (`String?`), `diagnostic` (`RunDiagnostic?`), `level` (`int`), `message`, `data` (`Value?`), `steps`, `cancelled`, `failedNode` (`String?`). Leggi i campi in base a `kind`. |
 | `TraceValue` | `fromNode`, `fromPort`, `toNode`, `toPort` (`String?`), `payload` (`PayloadKind.present`, `withheld` o `absent`), `value` (impostato quando `present`) |
-| `RunDiagnostic` | `issue` (`int`), `message`, `node`, `port` (`String?`), `wires` (`int?`) |
+| `RunDiagnostic` | `issue` (`int`, un `RippleRunIssue`; 4 è niente sul collegamento, l'osservazione di partita `W.RT.08`), `message`, `node`, `port` (`String?`), `wires` (`int?`) |
 | `PythonResult` | `value` (`Value`), `output` (`String`), `error` (`PythonFailure?`) |
 | `PythonFailure` | `kind` (`int`), `exception` (`String?`), `message`, `line` (`int?`), `traceback` (`String?`) |
 
@@ -349,7 +371,7 @@ switch (value) {
 
 ## Player
 
-Il ciclo su una sessione, scritto una volta sola. Consegna ogni effetto in ordine, tiene l'ultimo Turn, risponde a un `Hold` con il proprio orologio quando `update()` lo trova scaduto, applica gli effetti `Audio` a un driver, e smista le callback con nome.
+Il ciclo su una sessione, scritto una volta sola. Consegna ogni effetto in ordine, tiene l'ultimo Turn, risponde a un `Hold` con il proprio orologio quando `update()` lo trova scaduto, fa scorrere allo stesso modo il conto alla rovescia di un passaggio, dice alla sessione l'ora prima di ogni verbo, applica gli effetti `Audio` a un driver, e smista le callback con nome.
 
 ```dart
 Player(
@@ -358,6 +380,8 @@ Player(
   void Function(Object error, StackTrace stack)? onError,
   SoundscapeDriver? audio,
   Clock? now,
+  bool countdowns = true,
+  Moment Function()? wallClock,
 })
 ```
 
@@ -365,19 +389,25 @@ Player(
 | --- | --- |
 | `session` | La sessione da eseguire. Da qui in poi il player ne è il proprietario e la rilascia. |
 | `onEffect` | Sente ogni effetto, nell'ordine in cui il motore l'ha prodotto. |
-| `onError` | Sente il fallimento di un verbo che il player ha emesso da sé (l'`elapsed` dopo un hold) e l'eccezione di qualsiasi gestore; la consegna prosegue in entrambi i casi. Senza di esso, il fallimento di un verbo emesso da sé viene lanciato da `update()`, e l'eccezione di un gestore va persa. |
+| `onError` | Sente il fallimento di un verbo che il player ha emesso da sé (l'`elapsed` dopo un hold, `beginCountdown` ed `expire` di un conto alla rovescia) e l'eccezione di qualsiasi gestore; la consegna prosegue in entrambi i casi. Senza di esso, il fallimento di un verbo emesso da sé viene lanciato da `update()`, e l'eccezione di un gestore va persa. |
 | `audio` | Dove vanno gli effetti `Audio`. Senza, non si sente nulla. |
 | `now` | L'orologio, in millisecondi. `Clocks.steady()` se omesso. |
+| `countdowns` | Fa scorrere su quell'orologio il conto alla rovescia di un passaggio: `beginCountdown` dopo la sua attesa da quando il passaggio è stato mostrato, `expire` quando scade, misurati da quando ciascuno era dovuto e non dal fotogramma che se n'è accorto. Disattivalo per non offrire al lettore nessun limite di tempo (WCAG 2.2.1), o per dire tu quando. |
+| `wallClock` | Che ora è per la storia, passata alla sessione prima di ogni verbo che può avanzare: `Moment.now` per l'orologio del lettore. Senza, la storia non ha orologio, qualunque cosa il lettore abbia consentito. |
 
 | Membro | Tipo | Significato |
 | --- | --- | --- |
 | `session` | `Session` | La sessione sottostante. Un verbo chiamato su di essa aggira il player. |
-| `turn` | `Turn?` | L'ultimo Turn consegnato. |
+| `turn` | `Turn?` | L'ultimo Turn consegnato, oppure, una volta che `permit` ha risposto ad alcuni dei tipi di un turno `Permit`, quel turno senza di essi, così un host chiede ciò che resta. |
 | `holdDue` | `int?` | Quando scade l'hold in sospeso, secondo l'orologio del player; `null` se non ce n'è. |
+| `countdown` | `Countdown?` | Il conto alla rovescia del passaggio mostrato e a che punto è: `timer` (`ChoiceTimer`), `begun` (`bool`) e `due` (`int`), quando è dovuto il suo prossimo passo secondo l'orologio del player, l'inizio o, una volta cominciato, la fine. Un host che lo disegna mostra `due - now` mentre `begun` e il timer è `visible`. `null` quando il passaggio non ne ha, o quando il player è stato creato con `countdowns: false`. Mantenuto attraverso `setLocale`, che è la stessa visita. |
 | `callbackMisses` | `int` | Quante callback sono scattate senza nulla di registrato sotto il loro nome. Non è un fallimento. |
 | `start()`, `choose(int index)`, `leave()`, `answer(Map<String, Value>? fields)`, `setLocale(String locale)`, `restart()`, `stop()` | `void` | I verbi della sessione; gli effetti vanno ai gestori. Dopo `dispose()` non fanno nulla. |
+| `permit(PermissionKind kind, {required bool granted})` | `void` | La risposta del lettore per un tipo; la risposta all'ultimo che un turno `Permit` ha chiesto fa cominciare la storia. |
+| `beginCountdown()` | `void` | Fa cominciare adesso il conto alla rovescia del passaggio mostrato. Il player lo fa da sé a meno che non sia stato creato con `countdowns: false`; chiamato prima, il conto alla rovescia scorre da adesso. |
+| `expire()` | `void` | Fa scadere adesso il conto alla rovescia del passaggio mostrato: viene presa la sua scelta predefinita. |
 | `pause()` | `String?` | Mette giù la storia e restituisce il suo salvataggio — `null`, senza fermare nulla, a meno che la storia non sia su un passaggio o su un prompt. I suoi effetti vengono consegnati. |
-| `update()` | `void` | Chiamalo dal tuo ciclo (l'`update(dt)` di Flame): risponde a un hold il cui momento è arrivato. |
+| `update()` | `void` | Chiamalo dal tuo ciclo (l'`update(dt)` di Flame): risponde a un hold il cui momento è arrivato, e fa avanzare un conto alla rovescia quando è il suo momento. |
 | `onCallback(String name, handler)` | `void` | Chiama `handler` ogni volta che scatta la callback chiamata `name`, sostituendo qualsiasi gestore sotto quel nome. |
 | `removeCallback(String name)` | `void` | Rimuove il gestore sotto `name`. |
 | `onAnyCallback(handler)` | `void` | Chiama `handler` per ogni callback che scatta, registrata o no. |
@@ -538,12 +568,12 @@ Ogni fallimento riportato dal motore è una `RippleException`, una classe sealed
 | `BundleException` | `bundleFormat`, `bundleVersion` | Un documento del bundle è malformato, mancante, o di un motore più recente. | sì, all'apertura |
 | `NeedsPythonException` | `needsPython` | Il bundle ha bisogno di Python e questo è il motore senza. | sì, all'apertura |
 | `ResumeException` | `boardGone`, `nodeGone` | Un salvataggio non può essere riunito a questa campagna: la sua lavagna o il suo nodo non ci sono più. | sì, alla ripresa |
-| `HostException` | `wrongTurn`, `noSuchChoice`, `choiceSpent`, `stopped`, `nothingAsked`, `unknownLocale` | Un verbo che la storia non stava aspettando. Nulla si è mosso. | un bug dell'host, tranne `unknownLocale` quando la lingua viene dal lettore |
+| `HostException` | `wrongTurn`, `noSuchChoice`, `choiceSpent`, `stopped`, `nothingAsked`, `unknownLocale`, `notPermitted`, `standIn`, `noCountdown`, `countdownNotBegun` | Un verbo che la storia non stava aspettando, o una lettura che non accetta: una posizione per un tipo che il lettore ha negato, un sostituto che non si legge, un verbo del conto alla rovescia su un passaggio senza, `expire` prima di `beginCountdown`. Nulla si è mosso. | un bug dell'host, tranne `unknownLocale` e `standIn` quando ciò che è stato dato viene dal lettore |
 | `InvalidArgumentException` | `invalidArgument`, e qualsiasi codice sconosciuto | Un argomento malformato. Non è stato fatto nulla. | un bug dell'host |
 | `EngineTrapException` | `trap` | Il motore è andato in panic, ora o prima su questo handle. | raro |
 | `ReentrantVerbException` | `reentrant` | Un verbo di `Player` chiamato dall'interno di un gestore. | un bug dell'host |
 
-`Code` contiene i numeri del motore: `success` (0), `bundleFormat` (1), `bundleVersion` (2), `needsPython` (3), `wrongTurn` (10), `noSuchChoice` (11), `choiceSpent` (12), `stopped` (13), `nothingAsked` (14), `unknownLocale` (15), `boardGone` (20), `nodeGone` (21), `invalidArgument` (-1), `trap` (-2), e il `reentrant` (-100) proprio del binding. `Code.value` è il numero; `Code.of(int)` ne risale al codice.
+`Code` contiene i numeri del motore: `success` (0), `bundleFormat` (1), `bundleVersion` (2), `needsPython` (3), `wrongTurn` (10), `noSuchChoice` (11), `choiceSpent` (12), `stopped` (13), `nothingAsked` (14), `unknownLocale` (15), `notPermitted` (16), `standIn` (17), `noCountdown` (18), `countdownNotBegun` (19), `boardGone` (20), `nodeGone` (21), `invalidArgument` (-1), `trap` (-2), e il `reentrant` (-100) proprio del binding. `Code.value` è il numero; `Code.of(int)` ne risale al codice.
 
 | Campo di `Failure` | Impostato per |
 | --- | --- |
@@ -552,7 +582,7 @@ Ogni fallimento riportato dal motore è una `RippleException`, una classe sealed
 | `found`, `supported`, `oldest` | `bundleVersion`: il formato del bundle, il più recente che questo motore legge, il più vecchio quando c'è un limite inferiore |
 | `asked`, `answered` | `wrongTurn`: che cosa la storia stava chiedendo, e il verbo che ha risposto |
 | `offered`, `chosen` | `noSuchChoice`: quante scelte erano offerte, e l'indice scelto |
-| `subject` | la scelta, la lingua, la lavagna o il nodo a cui si riferisce un errore dell'host o di ripresa |
+| `subject` | la scelta, la lingua, la lavagna o il nodo a cui si riferisce un errore dell'host o di ripresa; per `notPermitted` e `standIn`, il nome `PermissionKind.wire` del tipo |
 | `node` | `nodeGone`: il nodo |
 
 Due fallimenti non sono `RippleException`:
@@ -571,11 +601,11 @@ Due fallimenti non sono `RippleException`:
 - **`dispose()`** è su `Campaign`, `Session`, `Mixer`, `SoundscapeDriver` e `Player`. Una campagna, una sessione o un mixer mai rilasciati vengono liberati quando vengono raccolti (in modo nativo da un `NativeFinalizer`). Un secondo `dispose()` non fa nulla.
 - **Una sessione sopravvive alla sua campagna.** Rilasciare una campagna lascia funzionanti le sue sessioni.
 - **Un chiamante alla volta.** Un handle appartiene all'isolate che lo ha creato, e un solo isolate alla volta può usarlo.
-- **Il driver e il player non possiedono alcun timer.** Entrambi leggono il `Clock` che è stato dato loro; chiama il loro `update()` dal tuo ciclo.
+- **Il driver e il player non possiedono alcun timer.** Entrambi leggono il `Clock` che è stato dato loro; chiama il loro `update()` dal tuo ciclo. Un hold e un conto alla rovescia vengono risposti da lì, e l'ora che una storia legge è il `wallClock` del player o ciò che passi a `setNow`.
 
 ## Un host completo
 
-Un host da terminale su una cartella di bundle. Apre la campagna, la esegue con `Player` con uno speaker e un driver, disegna in grigio una scelta esaurita, compila un modulo con i suoi valori predefiniti, lascia che `update()` risponda agli hold, registra le callback, fa un checkpoint prima di ogni risposta, e si riprende da una trap riprendendo dall'ultimo checkpoint. Un gioco legge l'input dal proprio ciclo invece che da `stdin`.
+Un host da terminale su una cartella di bundle. Apre la campagna, la esegue con `Player` con uno speaker e un driver, chiede prima che una storia legga l'orologio o il luogo, disegna in grigio una scelta esaurita, compila un modulo dalle sue etichette e sceglie le sue risposte fisse per id, lascia che `update()` risponda agli hold, registra le callback, fa un checkpoint prima di ogni risposta, e si riprende da una trap riprendendo dall'ultimo checkpoint. Un gioco legge l'input dal proprio ciclo invece che da `stdin`.
 
 ```dart
 import 'dart:io';
@@ -629,6 +659,10 @@ final class StoryHost {
             audio: audio,
             onEffect: _onEffect,
             onError: (error, stack) => stderr.writeln('ripple: $error'),
+            wallClock: Moment.now, // read by the story only once it is allowed
+            // A terminal waits on the reader's line, so no frame could run a
+            // countdown out: the reader is given all the time they like.
+            countdowns: false,
           )
           ..onCallback('chapterTwoBegan', (event) => stdout.writeln('*'))
           ..onAnyCallback(
@@ -650,6 +684,8 @@ final class StoryHost {
         stdout.writeln('The end${title == null ? '' : ': $title'}');
       case Failed(:final message):
         stderr.writeln('The story could not go on: $message');
+      case Notice(:final code, :final message): // a stand-in, a refusal or nothing
+        stdout.writeln('  [$code] $message');
       default:
     }
   }
@@ -661,10 +697,12 @@ final class StoryHost {
   }
 
   void fill(Prompt prompt) {
+    final answers = <String, Value>{
+      for (final field in prompt.fields)
+        if (readField(field) case final answer?) field.name: answer,
+    };
     _save();
-    player.answer({
-      for (final field in prompt.fields) field.name: field.defaultValue,
-    });
+    player.answer(answers); // an optional field left out reads as nothing
   }
 
   void _save() {
@@ -732,6 +770,8 @@ Future<void> main(List<String> args) async {
           host.pick(passage, readChoice(passage));
         case Ask(:final prompt):
           host.fill(prompt);
+        case Permit(:final kinds): // before it begins; the last answer begins it
+          host.player.permit(kinds.first, granted: allow(kinds.first));
         default: // a Hold: update() answers it when its time comes
           host.frame();
           await Future<void>.delayed(const Duration(milliseconds: 16));
@@ -753,6 +793,37 @@ int readChoice(Passage passage) {
   stdout.write('> ');
   final picked = int.tryParse(stdin.readLineSync() ?? '') ?? 1;
   return picked < 1 || picked > passage.choices.length ? 0 : picked - 1;
+}
+
+bool allow(PermissionKind kind) {
+  stdout.write(switch (kind) {
+    PermissionKind.dateTime => 'May this story read the date and time? ',
+    PermissionKind.location => 'May this story read where you are? ',
+  });
+  return (stdin.readLineSync() ?? '').trim().toLowerCase().startsWith('y');
+}
+
+/// One field, shown by its label in the reader's language; null leaves it out.
+Value? readField(PromptField field) {
+  stdout.writeln('${field.label}${field.optional ? ' (optional)' : ''}');
+  for (final (i, option) in field.options.indexed) {
+    stdout.writeln('  ${i + 1}. ${option.label}');
+  }
+  while (true) {
+    stdout.write(field.options.isEmpty ? '${field.placeholder}> ' : '> ');
+    final line = stdin.readLineSync() ?? '';
+    if (line.isEmpty && field.optional) return null;
+    if (field.options.isNotEmpty) {
+      // A pick is answered with the option's id, never its words.
+      final picked = int.tryParse(line);
+      if (picked == null || picked < 1 || picked > field.options.length) continue;
+      final id = TextValue(field.options[picked - 1].id);
+      return field.type.endsWith('List') ? ListValue([id]) : id;
+    }
+    // The default is the answer if nobody edits it; this host types only text.
+    if (line.isEmpty || field.type != 'string') return field.defaultValue;
+    return TextValue(line);
+  }
 }
 
 /// Your audio API goes here; the driver decides when, how loud and from where.

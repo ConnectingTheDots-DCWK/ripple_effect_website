@@ -333,7 +333,7 @@ Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure divid
 
 ### `E.EX.03`
 
-**Una scheda Localized string che esegue Python, in una campagna che deve funzionare senza Python.** Le sue parole contengono un `{{ … }}` inline in almeno una delle sue lingue, e un player senza interprete risponderebbe con un avviso al suo posto. Il messaggio indica il numero in tutte le lingue.
+**Una scheda Localized string che esegue Python, in una campagna che deve funzionare senza Python.** Le sue parole contengono un blocco di codice `ripple` o un `{{ … }}` inline in almeno una delle sue lingue, e un player senza interprete risponderebbe con un avviso al suo posto. Il messaggio indica il numero in tutte le lingue.
 
 Correzione: sostituisci ciascuno con il testo che avrebbe prodotto, oppure usa una scheda Localized string per ogni forma e scegli tra di esse con una diramazione.
 ## Vedi anche

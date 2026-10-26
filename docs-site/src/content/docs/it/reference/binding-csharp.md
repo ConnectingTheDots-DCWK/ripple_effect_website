@@ -3,7 +3,7 @@ title: Binding C#
 description: "Il binding C# del motore di Ripple Effect: i pacchetti NuGet, le varianti e le piattaforme, e ogni tipo pubblico: Campaign, Session, gli effetti, Value, Player, il contratto dello speaker e le eccezioni."
 ---
 
-Il binding C# è composto da tre pacchetti NuGet: `RippleFx.Engine`, i binding gestiti, e uno dei due pacchetti del motore, `RippleFx.Engine.Native` o `RippleFx.Engine.Native.NoPython`. La versione 1.5.x collega il contratto 1.5 di Ripple Effect. `MAJOR.MINOR` è il contratto del motore, e `PATCH` è quello del binding. Ogni release del binding fissa una release del motore, `engine-v<version>` del repository pubblico [ripple_engine_releases](https://github.com/ConnectingTheDots-DCWK/ripple_engine_releases), e i pacchetti del motore contengono esattamente le librerie degli archivi firmati di quella release. Il binding 1.5.0 fissa il motore 1.5.3. Il sorgente è su [ConnectingTheDots-DCWK/ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration). I binding sono MIT. Il binario del motore che i pacchetti nativi contengono è sotto la [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), e la sua nota va riprodotta ovunque il tuo prodotto elenchi il software di terze parti che contiene.
+Il binding C# è composto da tre pacchetti NuGet: `RippleFx.Engine`, i binding gestiti, e uno dei due pacchetti del motore, `RippleFx.Engine.Native` o `RippleFx.Engine.Native.NoPython`. La versione 1.6.x collega il contratto 1.6 di Ripple Effect, *Grammar Lich*. `MAJOR.MINOR` è il contratto del motore, e `PATCH` è quello del binding. Ogni release del binding fissa una release del motore, `engine-v<version>` del repository pubblico [ripple_engine_releases](https://github.com/ConnectingTheDots-DCWK/ripple_engine_releases), e i pacchetti del motore contengono esattamente le librerie degli archivi firmati di quella release. Il binding 1.6.0 fissa il motore 1.6.0. Il sorgente è su [ConnectingTheDots-DCWK/ripple_effect_csharp_integration](https://github.com/ConnectingTheDots-DCWK/ripple_effect_csharp_integration). I binding sono MIT. Il binario del motore che i pacchetti nativi contengono è sotto la [Ripple Effect Runtime Licence](https://legal.ripplefx.app/runtime/), e la sua nota va riprodotta ovunque il tuo prodotto elenchi il software di terze parti che contiene.
 
 Tutto ciò che segue sta nel namespace `RippleFx.Engine`. I tempi sono sempre in millisecondi.
 
@@ -61,8 +61,8 @@ La matrice completa delle build del motore è in [Piattaforme e varianti del mot
 
 | Membro | Tipo | Che cos'è |
 | --- | --- | --- |
-| `BoundContract` | `const string` | Il contratto che questi binding collegano: `"1.5"`. |
-| `Version` | `string` | La versione della libreria caricata, ad esempio `1.5.3`: quella caricata, non quella con cui si è compilato. |
+| `BoundContract` | `const string` | Il contratto che questi binding collegano: `"1.6"`. |
+| `Version` | `string` | La versione della libreria caricata, ad esempio `1.6.0`: quella caricata, non quella con cui si è compilato. |
 | `Contract` | `string` | Il contratto che la libreria caricata collega. |
 | `HasPython` | `bool` | Se la libreria caricata esegue gli script: `false` per quella `NoPython`. |
 | `Outstanding` | `long` | Quante cose il motore ha consegnato e non si è ancora visto restituire. Zero ogni volta che nessuna chiamata è in corso. |
@@ -112,6 +112,7 @@ Una `Campaign` è un bundle aperto: immutabile, condiviso da ogni sessione creat
 | `Boards`, `Passages`, `Components`, `Scripts`, `Media`, `Machines`, `Soundscapes` | `IReadOnlyList<Entry>` | Le tabelle del manifest. |
 | `Cvars` | `IReadOnlyList<Cvar>` | Le variabili di console che la campagna dichiara. |
 | `Needs` | `IReadOnlyList<string>` | Ciò che la campagna richiede al suo host: `python`, quando esegue script. |
+| `Permissions` | `IReadOnlyList<string>` | Ciò che la storia legge del mondo fuori da lei, per nome di wire, `dateTime` e `location`, elencato dal compilatore. Una sessione chiede di ciascuno prima che la storia cominci (`Effect.Permit`). |
 
 | Record | Campi |
 | --- | --- |
@@ -172,12 +173,15 @@ Una `Session` è una storia in corso di riproduzione: `IDisposable`, usata da un
 
 | Verbo | Risponde | Note |
 | --- | --- | --- |
-| `Start()` | effetti | Il primo turno, o il turno in cui si trovava un salvataggio ripreso. |
+| `Start()` | effetti | Il primo turno, o il turno in cui si trovava un salvataggio ripreso. Finché un tipo in `Manifest.Permissions` è senza risposta, la risposta è `Effect.Permit` e nient'altro. |
 | `Choose(int index)` | effetti | Prende la scelta all'indice `index` tra quelle offerte dal passaggio. Un indice negativo lancia `ArgumentOutOfRangeException`. |
 | `Leave()` | effetti | Il lettore lascia il passaggio senza scegliere. |
-| `Answer(IEnumerable<KeyValuePair<string, Value>>? fields)` | effetti | Risponde al modulo mostrato, campo per campo nell'ordine dato. `null` significa che il lettore lascia il modulo. |
+| `Answer(IEnumerable<KeyValuePair<string, Value>>? fields)` | effetti | Risponde al modulo mostrato, campo per campo nell'ordine dato, ciascuno con la chiave del `Name` del campo. Un campo facoltativo lasciato vuoto si omette, o è `Value.Null`; a un campo con `Options` si risponde con gli `Id` scelti. `null` significa che il lettore lascia il modulo. |
 | `Elapsed()` | effetti | Risponde a un `Hold` quando il tuo orologio dice che è finito. |
-| `SetLocale(string locale)` | effetti | Cambia la lingua; il turno in cui si trova la storia viene risposto di nuovo in quella lingua. |
+| `BeginCountdown()` | effetti | Il tuo orologio dice che il conto alla rovescia del passaggio mostrato comincia, `ChoiceTimer.AfterMs` dopo che è stato mostrato. Non muove nulla: gli effetti sono solo le callback che un autore vi ha puntato. Una seconda chiamata, o una dopo che il lettore ha scelto, non risponde nulla. Lancia `HostException` con `Code.NoCountdown` su un passaggio senza. |
+| `Expire()` | effetti | Il tuo orologio dice che il conto alla rovescia è scaduto: viene presa la `ChoiceTimer.Default` del passaggio come la prenderebbe un lettore. `Code.CountdownNotBegun` prima di `BeginCountdown`; `Code.NoCountdown` su un passaggio senza. |
+| `Permit(PermissionKind kind, bool granted)` | effetti | La risposta del lettore per un tipo, in qualsiasi momento, anche prima di `Start`, quando non risponde nulla. Su un turno `Effect.Permit`, la risposta all'ultimo tipo senza risposta fa cominciare la storia. Le risposte non fanno parte di un salvataggio: a una sessione ripresa si risponde di nuovo. |
+| `SetLocale(string locale)` | effetti | Cambia la lingua; il turno in cui si trova la storia viene risposto di nuovo in quella lingua: un modulo riformulato con nomi e `Id` mantenuti, un passaggio con il suo conto alla rovescia mantenuto. |
 | `Restart()` | effetti | Fa ricominciare la storia dal suo primo turno. |
 | `Stop()` | effetti | Ferma la storia per sempre. |
 | `Pause()` | `Paused` | Mette giù la storia: il suo salvataggio e ciò che la pausa ha fatto. La pausa ferma la storia; riprendere significa una nuova sessione dal salvataggio. |
@@ -187,6 +191,21 @@ Una `Session` è una storia in corso di riproduzione: `IDisposable`, usata da un
 | `ResetCvar(string name)` | `CvarChange` | Riporta una variabile di console al suo valore predefinito. |
 | `ResetAllCvars()` | effetti | Riporta ogni variabile di console al suo valore predefinito. |
 | `RemoveEntity(string key)` | `EntityRemoval` | Rimuove un'entità dalla storia. |
+
+Le letture che un host consegna. Nessuna muove la storia o risponde con effetti:
+
+| Membro | Che cosa fa |
+| --- | --- |
+| `SetNow(Moment? now)` | Che ora è; null per nessun orologio. Prima di ogni verbo che può avanzare, da un host che ha concesso `PermissionKind.DateTime`; dentro un verbo il tempo non si muove. |
+| `SetPosition(Position? position)` | L'ultima rilevazione dell'host; null per nessuna. Una rilevazione consegnata prima che il lettore rispondesse viene tenuta, e letta solo se la risposta è sì. Lancia `HostException` con `Code.NotPermitted` una volta negata la posizione. |
+| `SetStandIn(PermissionKind kind, string? typed, int localOffsetMinutes)` | Il sostituto del lettore per un tipo, come l'ha scritto, che risponde ogni volta che manca il valore vero; null lo toglie. Un'ora è ISO 8601 (`2026-10-19T18:30:00+02:00`, o una data sola per la sua mezzanotte), letta a `localOffsetMinutes` quando è scritta senza scostamento: passa quello del lettore per quella data. Una posizione è `"lat, lon"` in gradi decimali, o qualsiasi altra cosa come nome di un luogo. Lancia `HostException` con `Code.StandIn`, dicendo perché, per uno che non si legge. |
+
+| Tipo | Che cos'è |
+| --- | --- |
+| `PermissionKind` | `enum : uint`: `DateTime` (`dateTime`), `Location` (`location`), numerati come il `RipplePermissionKind` dell'header. Aperto ad aggiunte: un tipo che questo binding non nomina arriva come il suo numero. |
+| `PermissionKinds` | `Wire(this PermissionKind)`, il nome di wire (un tipo che questo binding non nomina, come il suo numero), e `FromWire(string)`, il tipo che un nome di wire nomina, o null. |
+| `Moment(long UtcMs, int OffsetMinutes)` | Un istante: millisecondi dall'epoch Unix, e lo scostamento in minuti a cui sta l'orologio del lettore. `Moment.Of(DateTimeOffset)`, `Moment.Now()` (l'orologio di questa macchina al suo scostamento) e `ToDateTimeOffset()`. |
+| `Position` | Una rilevazione, di cui ogni parte può mancare, modellata sul `GeolocationPosition` del web: `Label` (`string?`), `Latitude`, `Longitude`, `Accuracy` (`double?`, l'ultimo in metri), `When` (`Moment?`). |
 
 | Record di risultato | Campi |
 | --- | --- |
@@ -229,16 +248,17 @@ Ogni campo `Effects` è una `IReadOnlyList<Effect>` da smistare come la risposta
 
 | Membro | Che cos'è |
 | --- | --- |
-| `IsTurn` | `true` per un turno: dove si trova ora la storia. Esattamente uno chiude ogni gruppo di effetti che ha mosso la storia. |
+| `IsTurn` | `true` per un turno: dove si trova ora la storia, `Show`, `Ask`, `Hold`, `Permit`, `Ended`, `Failed` o `Stopped`. Esattamente uno chiude ogni gruppo di effetti che ha mosso la storia. |
 | `IsOver` | `true` per `Ended`, `Failed` e `Stopped`. |
 
 ### Turni
 
 | Effetto | Campi | Si risponde con |
 | --- | --- | --- |
-| `Effect.Show` | `Passage` (`Passage`) | `Choose` o `Leave` |
+| `Effect.Show` | `Passage` (`Passage`) | `Choose` o `Leave`; quando porta un `Passage.Timer`, anche dal tuo orologio con `BeginCountdown` ed `Expire` |
 | `Effect.Ask` | `Prompt` (`Prompt`) | `Answer` |
 | `Effect.Hold` | `Ms` (`ulong`) | `Elapsed`, una volta che il tuo orologio dice che sono passati `Ms` |
+| `Effect.Permit` | `Kinds` (`IReadOnlyList<PermissionKind>`): ciò che la storia legge e a cui nessuno ha risposto, prima che cominci | `Permit`, una volta per tipo; la risposta all'ultimo fa cominciare la storia |
 | `Effect.Ended` | `Title` (`string?`); `RanOut` (`bool`, true quando la storia ha finito la strada anziché raggiungere una scheda End) | niente; `IsOver` |
 | `Effect.Failed` | `Message` (`string`); `Node` (`string?`) | niente; `IsOver` |
 | `Effect.Stopped` | nessuno | niente; `IsOver` |
@@ -253,18 +273,21 @@ Ogni campo `Effects` è una `IReadOnlyList<Effect>` da smistare come la risposta
 | `Effect.Changed` | `Entities` (`IReadOnlyList<Entity>?`); `Memory` (`Memory?`); `Cvars` (`IReadOnlyList<CvarSnapshot>?`) | Quali archivi si sono mossi; un archivio che non si è mosso è null. Il primo `Changed` dopo `Start` nomina tutti e tre. |
 | `Effect.Callback` | `Event` (`CallbackEvent`) | Una callback con nome dichiarata dall'autore, scattata. |
 | `Effect.Trace` | `Event` (`RunEvent`) | Un evento della traccia dell'esecuzione, quando la sessione traccia. |
+| `Effect.Notice` | `Code` (`string`); `Kind` (`PermissionKind`); `Node` (`string?`); `Message` (`string`) | Una lettura del mondo fuori dalla storia che non ha avuto il valore vero, una volta per tipo ed esito in una partita, prima del turno del verbo che l'ha letta. `Code` è `I.RT.05` un sostituto, `W.RT.06` un rifiuto, `I.RT.07` niente, e la sua lettera è la gravità; `Node` è il nodo che ha fatto la lettura; `Message` è la frase inglese del motore. |
 
 ### Record
 
 | Record | Campi |
 | --- | --- |
-| `Passage` | `Node`, `Title` (`string`); `Text` (`string`, Markdown, o HTML quando lo dice `Manifest.TextFormat`); `Choices` (`IReadOnlyList<Choice>`); `Sources` (`IReadOnlyList<LocaleText>?`, il testo in ogni lingua quando il compilatore le ha conservate); `Snippets` (`IReadOnlyList<Snippet>`); `Media` (`IReadOnlyList<MediaLink>`); `Untranslated` (`string?`, la lingua in cui manca il testo); `Soundscape` (`Soundscape?`, quello nominato dal passaggio); `Silence` (`bool`, true quando il passaggio chiede il silenzio) |
+| `Passage` | `Node`, `Title` (`string`); `Text` (`string`, Markdown, o HTML quando lo dice `Manifest.TextFormat`); `Choices` (`IReadOnlyList<Choice>`); `Sources` (`IReadOnlyList<LocaleText>?`, il testo in ogni lingua quando il compilatore le ha conservate); `Snippets` (`IReadOnlyList<Snippet>`); `Media` (`IReadOnlyList<MediaLink>`); `Untranslated` (`string?`, la lingua in cui manca il testo); `Soundscape` (`Soundscape?`, quello nominato dal passaggio); `Silence` (`bool`, true quando il passaggio chiede il silenzio); `Timer` (`ChoiceTimer?`, il suo conto alla rovescia; null quando aspetta il lettore quanto vuole) |
+| `ChoiceTimer` | `AfterMs` (`ulong`, quanto prima che il conto alla rovescia cominci; zero è subito); `TimeoutMs` (`ulong`, quanto scorre una volta cominciato; mai zero); `Visible` (`bool`, se l'autore voleva che il lettore lo vedesse scorrere); `Default` (`int`, l'indice nelle scelte del passaggio preso quando scade). Il motore non ne misura nulla. |
 | `Choice` | `Port` (`string`, l'uscita di controllo da cui il flusso parte); `Text` (`string`); `Available` (`bool`, false per una scelta non aperta ora; viene mostrata comunque, e sceglierla lancia `HostException` con `Code.ChoiceSpent`) |
 | `LocaleText` | `Locale`, `Text` (`string`) |
 | `Snippet` | `Code` (`string`); `IsInline` (`bool`) |
 | `MediaLink` | `Link` (`string`, il nome con cui l'autore l'ha collegato); `Media` (`uint`, per indice nei media del manifest) |
 | `Prompt` | `Node`, `Title` (`string`); `Fields` (`IReadOnlyList<PromptField>`) |
-| `PromptField` | `Name`, `Type` (`string`: `number`, `bool`, `string`, `numberList`, `boolList`, `stringList` o `json`); `Default` (`Value`). Rispondi con il tipo corrispondente. |
+| `PromptField` | `Name` (`string`, la chiave di una risposta); `Type` (`string`: `number`, `bool`, `string`, `numberList`, `boolList`, `stringList` o `json`); `Default` (`Value`, ciò con cui il controllo è riempito, e la risposta se nessuno lo modifica); `Label` (`string`, ciò che viene mostrato al lettore, nella sua lingua: il nome dove l'autore non ha scritto nulla); `Placeholder` (`string`, il suggerimento disegnato mentre il campo è vuoto; vuoto se non c'è, mai la risposta); `Optional` (`bool`, se il lettore può lasciarlo vuoto, che risponde null; un campo obbligatorio non si invia vuoto); `Options` (`IReadOnlyList<PromptOption>`, le risposte fisse tra cui scegliere, in ordine: una per un tipo scalare, un numero qualsiasi per un `…List`; vuoto per un campo in cui il lettore scrive). Rispondi con il tipo corrispondente, o con gli `Id` delle opzioni scelte. |
+| `PromptOption` | `Id` (`string`, ciò con cui risponde un host; uguale in ogni lingua); `Label` (`string`, ciò che viene mostrato al lettore, nella sua lingua); `Value` (`Value`, ciò che viene consegnato alla storia quando è scelto, del tipo del campo) |
 | `Ambience` | `Soundscape` (`Soundscape`); `Board` (`uint`); `Node` (`string`, il nodo che l'ha impostato) |
 | `Entity` | `Key`, `Label` (`string`); `Component` (`string?`); `Values` (`Value`, una mappa, campo per campo) |
 | `Memory` | `Nodes` (`Value`, una mappa, nodo per nodo); `Machines` (`IReadOnlyList<KeyValuePair<string, string>>`, ogni state machine e lo stato in cui si trova) |
@@ -273,7 +296,7 @@ Ogni campo `Effects` è una `IReadOnlyList<Effect>` da smistare come la risposta
 | `AudioCommand` | `Kind` (`AudioKind`: `Play`, `Stop`, `Cut`, `Cue`); `Soundscape` (`Soundscape?`, Play: che cosa riprodurre); `FadeMs` (`ulong`, Play: la dissolvenza in entrata, Stop: quella in uscita); `Media` (`uint`, Cue: il media); `Volume`, `Speed` (`double`, predefinito 1.0); `Node` (`string?`, Cue: il nodo che l'ha richiesto) |
 | `RunEvent` | `Kind` (`RunEventKind`: `RunStarted`, `NodeStarted`, `NodeFinished`, `MemoHit`, `Diagnostic`, `Log`, `RunFinished`); `Run`, `Board`, `Sequence`, `Step`, `Steps` (`uint`); `Node`, `Entry`, `Message` (`string`); `Primed`, `Flowed` (`IReadOnlyList<string>`); `EnteredVia`, `Error`, `FailedNode` (`string?`); `Pulled`, `Cancelled` (`bool`); `Inputs`, `Outputs` (`IReadOnlyList<TraceValue>`); `Outcome` (`uint`: 0 riuscito, 1 fallito); `Diagnostic` (`RunDiagnostic?`); `Level` (`uint`: 0 debug, 1 info, 2 warning, 3 error); `Data` (`Value?`). Leggi i campi in base a `Kind`. |
 | `TraceValue` | `FromNode`, `FromPort` (`string`); `ToNode`, `ToPort` (`string?`); `Payload` (`PayloadKind`: `Present`, `Withheld`, `Absent`); `Value` (`Value`, impostato quando `Payload` è `Present`) |
-| `RunDiagnostic` | `Issue` (`uint`: 0 flusso ambiguo, 1 più ingressi, 2 produttore non eseguito, 3 rientrato); `Message` (`string`); `Node`, `Port` (`string?`); `Wires` (`uint?`) |
+| `RunDiagnostic` | `Issue` (`uint`: 0 flusso ambiguo, 1 più ingressi, 2 produttore non eseguito, 3 rientrato, 4 niente sul collegamento, l'osservazione di partita `W.RT.08`); `Message` (`string`); `Node`, `Port` (`string?`); `Wires` (`uint?`) |
 
 I tipi `uint` corrispondono agli enum con lo stesso nome in `RippleFx.Engine.Interop`, come `RippleCallbackKind` e `RippleRunIssue`.
 
@@ -316,16 +339,23 @@ Da quel momento il player possiede `session` e la rilascia. `now` è l'orologio 
 | `OnEffect` | `Action<Effect>?` | Ogni effetto, nell'ordine in cui il motore l'ha prodotto. |
 | `OnError` | `Action<Exception>?` | Il fallimento di un verbo che il player ha eseguito da sé (l'`Elapsed` dopo un hold), o un'eccezione di un gestore. La consegna prosegue in entrambi i casi. Senza di esso, il fallimento di un verbo eseguito dal player viene lanciato da `Update()` e quello di un gestore va perso. |
 | `Audio` | `SoundscapeDriver?` | Dove va il suono della storia: il player applica a esso ogni `Effect.Audio`. Senza, non si sente nulla. |
+| `Countdowns` | `bool`, predefinito `true` | Se il player fa scorrere sul suo orologio il conto alla rovescia di un passaggio, facendolo cominciare e scadere da `Update()`. False per un lettore che ha chiesto nessun limite di tempo (WCAG 2.2.1), o per un host che li fa scorrere da sé con `BeginCountdown` ed `Expire`. |
+| `Now` | `Func<Moment?>?` | Che ora è per la storia, passata a `Session.SetNow` prima di ogni verbo che il player esegue o gli viene chiesto, per un host che ha concesso `PermissionKind.DateTime`. `Moment.Now` è quella di questa macchina. Senza, la storia non ha orologio a meno che l'host non lo imposti sulla sessione. |
 
 ### Membri
 
 | Membro | Che cosa fa |
 | --- | --- |
 | `Start()`, `Choose(int)`, `Leave()`, `Answer(fields)`, `SetLocale(string)`, `Restart()`, `Stop()` | I verbi della sessione. Il player consegna il gruppo di effetti a cui rispondono invece di restituirlo. Dopo `Dispose` non fanno nulla. |
+| `Permit(PermissionKind, bool)` | La risposta del lettore per un tipo; la risposta all'ultimo chiesto fa cominciare la storia. |
+| `BeginCountdown()` | Fa cominciare adesso il conto alla rovescia del passaggio mostrato, per un host che fa scorrere da sé i conti alla rovescia; con `Countdowns` attivo, il player poi lo fa scadere sul suo orologio. |
+| `Expire()` | Fa scadere adesso il conto alla rovescia del passaggio mostrato: viene presa la sua scelta predefinita. |
 | `Pause()` | Mette giù la storia e risponde con il suo salvataggio, `string?`. Null, e nulla viene fermato, a meno che la storia non sia su un passaggio o un prompt. |
-| `Update()` | Chiamalo dal tuo ciclo. Risponde con `Elapsed()` a un hold il cui momento è arrivato. |
+| `Update()` | Chiamalo dal tuo ciclo. Risponde con `Elapsed()` a un hold il cui momento è arrivato, e fa cominciare o scadere un conto alla rovescia il cui momento è arrivato. |
 | `Turn` | `Effect?`: l'ultimo turno consegnato; null prima di `Start()`. |
 | `HoldDue` | `ulong?`: quando scade l'hold in attesa secondo l'orologio del player; null se non ce n'è. |
+| `CountdownBegins` | `ulong?`: quando comincia il conto alla rovescia del passaggio mostrato, secondo l'orologio del player; null quando è già cominciato, o non ce n'è nessuno da far scorrere. |
+| `CountdownExpires` | `ulong?`: quando scade il conto alla rovescia, secondo l'orologio del player, una volta cominciato; null altrimenti. Un host che disegna un `ChoiceTimer` visibile conta alla rovescia fino a questo. |
 | `Session` | La sessione sottostante, per ciò che il player non incapsula. Un verbo chiamato su di essa aggira il player e il suo gruppo di effetti non viene consegnato. |
 | `OnCallback`, `RemoveCallback`, `OnAnyCallback`, `ClearCallbacks`, `CallbackMisses` | La tabella delle callback: [Callback con nome](#callback-con-nome). |
 | `Dispose()` | Non consegna più nulla, non muove più la storia, e rilascia la sessione. |
@@ -339,7 +369,11 @@ Per ogni effetto, nell'ordine, il player:
 3. smista un `Effect.Callback` attraverso la tabella delle callback;
 4. chiama `OnEffect`.
 
-Quando il gruppo termina con `Effect.Hold`, `HoldDue` viene impostato all'orologio più `Ms`, e il successivo `Update()` a quel momento o dopo chiama `Elapsed()`. Qualsiasi verbo cancella un hold in attesa.
+Quando il gruppo termina con `Effect.Hold`, `HoldDue` viene impostato all'orologio più `Ms`, e il successivo `Update()` a quel momento o dopo chiama `Elapsed()`. Quando termina con un `Effect.Show` il cui passaggio porta un `Timer`, e `Countdowns` è attivo, `CountdownBegins` viene impostato all'orologio più `AfterMs`; l'`Update()` a quel momento o dopo chiama `BeginCountdown()` e imposta `CountdownExpires` al momento in cui era dovuto più `TimeoutMs`, così un fotogramma lento non allunga il conto alla rovescia, e l'`Update()` a quel momento o dopo chiama `Expire()`.
+
+**Un verbo che ha mosso la storia cancella un hold in attesa e un conto alla rovescia in corso.** Uno rifiutato dal motore, e uno che non ha risposto nulla, non hanno mosso nulla: un permit dopo che la storia è cominciata, un cambio di lingua su un hold, un secondo start. L'hold e il conto alla rovescia che aspettava restano dovuti. Un cambio di lingua mantiene un conto alla rovescia anche quando risponde, perché il passaggio mostrato di nuovo è la stessa visita.
+
+Con `Now` impostato, ogni verbo che il player esegue o gli viene chiesto è preceduto da `Session.SetNow(Now())`.
 
 **Un verbo chiamato dall'interno di un gestore** lancia `ReentrantVerbException` (`Code.Reentrant`): il resto del gruppo arriverebbe dopo quello nuovo. Metti il verbo in coda e chiamalo dopo che il gestore è tornato.
 
@@ -473,7 +507,7 @@ Ogni fallimento che il motore segnala è una sottoclasse di `RippleException`. `
 | --- | --- | --- | --- |
 | `BundleException` | `BundleFormat` (1), `BundleVersion` (2) | Un documento del bundle è malformato o mancante, o è di una versione che questo motore non sa leggere. | Uso normale: l'apertura di un bundle errato o più recente. |
 | `NeedsPythonException` | `NeedsPython` (3) | Il bundle richiede Python, e questo è il motore `NoPython`. | Uso normale: l'apertura. |
-| `HostException` | `WrongTurn` (10), `NoSuchChoice` (11), `ChoiceSpent` (12), `Stopped` (13), `NothingAsked` (14), `UnknownLocale` (15) | Un verbo che non risponde al turno, una scelta oltre quelle offerte, una scelta esaurita o chiusa, una sessione che si è fermata, un verbo prima di `Start()`, una lingua in cui la campagna non è leggibile. | Un bug dell'host, tranne `ChoiceSpent` quando offri una scelta non disponibile e `UnknownLocale` da input dell'utente. |
+| `HostException` | `WrongTurn` (10), `NoSuchChoice` (11), `ChoiceSpent` (12), `Stopped` (13), `NothingAsked` (14), `UnknownLocale` (15), `NotPermitted` (16), `StandIn` (17), `NoCountdown` (18), `CountdownNotBegun` (19) | Un verbo che non risponde al turno, una scelta oltre quelle offerte, una scelta esaurita o chiusa, una sessione che si è fermata, un verbo prima di `Start()`, una lingua in cui la campagna non è leggibile, una posizione per un tipo che il lettore ha negato, un sostituto che non si legge, un verbo del conto alla rovescia su un passaggio senza, `Expire` prima di `BeginCountdown`. | Un bug dell'host, tranne `ChoiceSpent` quando offri una scelta non disponibile, e `UnknownLocale` e `StandIn` da input dell'utente. |
 | `ResumeException` | `BoardGone` (20), `NodeGone` (21) | Un salvataggio nomina una lavagna o un nodo che la campagna non ha più. | Uso normale: un salvataggio di una build più vecchia della storia. |
 | `InvalidArgumentException` | `InvalidArgument` (-1) | Un argomento malformato: un handle null, un testo che non è UTF-8, un valore fuori intervallo. Anche qualsiasi codice che il binding non conosce. | Un bug. |
 | `EngineTrapException` | `Trap` (-2) | Il motore è andato in panic, ora o prima su questo handle. | Un bug del motore. |
@@ -488,9 +522,9 @@ Ogni fallimento che il motore segnala è una sottoclasse di `RippleException`. `
 | `Location` | `string?` | `BundleFormat`: il documento in difetto |
 | `Found`, `Supported` | `long` | `BundleVersion`: il formato del bundle, e il più recente che questo motore legge |
 | `Oldest` | `long?` | `BundleVersion`: il più vecchio, quando esiste un limite inferiore |
-| `Asked`, `Answered` | `uint` | `WrongTurn`: ciò che la storia stava chiedendo (`RippleTurnKind`: 0 present, 1 ask, 2 wait, 3 ended, 4 failed, 5 stopped) e il verbo che ha risposto (`RippleVerb`: 0 choose, 1 answer, 2 elapsed) |
+| `Asked`, `Answered` | `uint` | `WrongTurn`: ciò che la storia stava chiedendo (`RippleTurnKind`: 0 present, 1 ask, 2 wait, 3 ended, 4 failed, 5 stopped, 6 permit) e il verbo che ha risposto (`RippleVerb`: 0 choose, 1 answer, 2 elapsed, 3 begin countdown, 4 expire) |
 | `Offered`, `Chosen` | `uint` | `NoSuchChoice`: quante scelte erano offerte, e l'indice preso |
-| `Subject` | `string` | la scelta, la lingua, la lavagna o il nodo di cui parla un errore dell'host o di ripresa |
+| `Subject` | `string` | la scelta, la lingua, la lavagna o il nodo di cui parla un errore dell'host o di ripresa, e per `NotPermitted` e `StandIn` il nome di wire del tipo |
 | `Node` | `string` | `NodeGone`: il nodo |
 
 Altre eccezioni che i binding lanciano:
@@ -504,7 +538,7 @@ Altre eccezioni che i binding lanciano:
 ## Thread e ciclo di vita
 
 - **Un chiamante alla volta per handle.** Una `Campaign`, `Session` o `Mixer` non è thread-safe. Un handle può passare da un thread all'altro.
-- **Il motore non avvia alcun thread, non dorme mai e non legge mai un orologio.** Un `Hold` viene risposto dal tuo orologio. `Player` e `SoundscapeDriver` leggono l'orologio che è stato dato loro e non possiedono alcun thread: il tuo ciclo di gioco è il timer.
+- **Il motore non avvia alcun thread, non dorme mai e non legge mai un orologio.** Un `Hold` e un conto alla rovescia vengono risposti dal tuo orologio, e l'ora che una storia legge è quella che passi a `SetNow`. `Player` e `SoundscapeDriver` leggono l'orologio che è stato dato loro e non possiedono alcun thread: il tuo ciclo di gioco è il timer.
 - **`VoiceEvents` è l'unica cosa chiamabile da qualsiasi thread.**
 - **Ogni verbo è sincrono.** Uno script gira dentro il verbo che lo raggiunge, per al massimo `ScriptDeadlineMs`. Se quel tempo non può essere speso sul tuo thread principale, tieni la sessione su un worker e riporta gli effetti indietro: sono valori.
 - **Tutto ciò che un verbo risponde è una copia.** Effetti, passaggi e valori sono record C# che sopravvivono alla sessione e alla campagna. Il gruppo di effetti del motore viene liberato prima che il verbo ritorni, e `RippleEngine.Outstanding` è zero ogni volta che nessuna chiamata è in corso.
@@ -514,7 +548,7 @@ Altre eccezioni che i binding lanciano:
 
 ## Un host completo
 
-Un host da terminale su una cartella bundle: due sedute con un salvataggio in mezzo, uno speaker che stampa ciò che riprodurrebbe, le callback dell'autore, e il recupero da un trap.
+Un host da terminale su una cartella bundle: due sedute con un salvataggio in mezzo, la domanda che una storia fa prima di leggere l'orologio o il luogo, un modulo disegnato dalle sue etichette, uno speaker che stampa ciò che riprodurrebbe, le callback dell'autore, e il recupero da un trap.
 
 ```csharp
 using System;
@@ -606,12 +640,15 @@ public static class Host
         var player = new Player(session, new PlayerHandlers
         {
             Audio = audio,                                        // every Effect.Audio goes to the driver
+            Now = Moment.Now,                                     // read by the story only once it is allowed
             OnError = error => Console.Error.WriteLine($"host: {error.Message}"),
             OnEffect = effect =>
             {
                 if (effect is Effect.Changed { Cvars: { } cvars })
                     foreach (var cvar in cvars)
                         Console.WriteLine($"  [{cvar.Name} = {cvar.Value}]");
+                if (effect is Effect.Notice notice)               // a stand-in, a refusal or nothing
+                    Console.WriteLine($"  [{notice.Code}] {notice.Message}");
             },
         });
 
@@ -629,7 +666,7 @@ public static class Host
         while (true)
         {
             audio.Update();                                       // the sound's tick
-            player.Update();                                      // answers a Hold that has come due
+            player.Update();                                      // answers a Hold, and runs a countdown, that has come due
             while (Later.Count > 0) Later.Dequeue()();
 
             switch (player.Turn)
@@ -648,6 +685,12 @@ public static class Host
                     break;
                 case Effect.Ask asked:
                     player.Answer(Fill(asked.Prompt));            // null leaves the form
+                    break;
+                case Effect.Permit permit:
+                    // Before the story begins; a resumed session asks again, since a save
+                    // carries no answer. The answer to the last kind begins the story.
+                    foreach (var kind in permit.Kinds)
+                        player.Permit(kind, Allowed(kind));
                     break;
             }
         }
@@ -692,27 +735,59 @@ public static class Host
         }
     }
 
+    static bool Allowed(PermissionKind kind)
+    {
+        Console.Write(kind == PermissionKind.Location
+            ? "May this story read where you are? [y/N] "
+            : "May this story read the date and time? [y/N] ");
+        return Console.ReadLine()?.Trim().StartsWith("y", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
     static IEnumerable<KeyValuePair<string, Value>>? Fill(Prompt prompt)
     {
         Console.WriteLine($"\n-- {prompt.Title} --");
         var answers = new List<KeyValuePair<string, Value>>();
         foreach (var field in prompt.Fields)
         {
-            Console.Write($"{field.Name} [{field.Default}]: ");
-            var line = Console.ReadLine();
-            if (line == null) return null;                        // the reader leaves the form
-            var value = line.Length == 0 ? field.Default : field.Type switch
+            // Shown by its label, in the reader's language; answered under its Name.
+            Console.WriteLine($"{field.Label}{(field.Optional ? " (optional)" : "")}");
+            for (var i = 0; i < field.Options.Count; i++)
+                Console.WriteLine($"  {i + 1}. {field.Options[i].Label}");
+            Value? value = null;
+            while (value == null)
             {
-                "number" => long.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var whole)
-                    ? Value.Int(whole)
-                    : Value.Float(double.Parse(line, CultureInfo.InvariantCulture)),
-                "bool" => Value.Bool(line == "y"),
-                _ => Value.Text(line),                            // the list types and json need parsing of their own
-            };
-            answers.Add(new KeyValuePair<string, Value>(field.Name, value));
+                Console.Write(field.Options.Count > 0 ? "> " : $"{field.Placeholder} [{field.Default}]: ");
+                var line = Console.ReadLine();
+                if (line == null) return null;                    // the reader leaves the form
+                if (line.Length == 0 && field.Optional) break;    // left out: the story reads nothing
+                value = field.Options.Count > 0 ? Pick(field, line) : Typed(field, line);
+            }
+            if (value != null) answers.Add(new KeyValuePair<string, Value>(field.Name, value));
         }
         return answers;
     }
+
+    // A pick is answered with the option's Id, never its words; null asks again.
+    static Value? Pick(PromptField field, string line)
+    {
+        if (!int.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var picked)
+            || picked < 1 || picked > field.Options.Count)
+            return null;
+        var id = Value.Text(field.Options[picked - 1].Id);
+        return field.Type.EndsWith("List", StringComparison.Ordinal) ? Value.List(id) : id;
+    }
+
+    // An empty line keeps the default; a required field with none asks again.
+    static Value? Typed(PromptField field, string line) => line.Length == 0
+        ? (field.Default.IsNull ? null : field.Default)
+        : field.Type switch
+        {
+            "number" => long.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out var whole)
+                ? Value.Int(whole)
+                : Value.Float(double.Parse(line, CultureInfo.InvariantCulture)),
+            "bool" => Value.Bool(line == "y"),
+            _ => Value.Text(line),                                // the list types and json need parsing of their own
+        };
 
     static void Report(Effect? turn)
     {

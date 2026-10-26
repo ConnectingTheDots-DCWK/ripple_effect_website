@@ -1,6 +1,6 @@
 ---
 title: Come eseguire una campagna nel tuo programma
-description: Esporta una campagna, aggiungi il binding del motore per il tuo linguaggio e gioca la storia con le sue scelte, i moduli, le attese, le callback, il suono e i salvataggi.
+description: Esporta una campagna, aggiungi il binding del motore per il tuo linguaggio e gioca la storia con le sue scelte, i moduli, le attese, i conti alla rovescia, i permessi, le callback, il suono e i salvataggi.
 ---
 
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
@@ -26,7 +26,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    FetchContent_Declare(
        ripple_effect
        GIT_REPOSITORY https://github.com/ConnectingTheDots-DCWK/ripple_effect_c_cpp_integration
-       GIT_TAG v1.5.2)
+       GIT_TAG v1.6.0)
    FetchContent_MakeAvailable(ripple_effect)
    target_link_libraries(my_game PRIVATE Ripple::cpp)
    ```
@@ -74,7 +74,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
 
    Il motore senza Python rifiuta una campagna che ne ha bisogno quando la campagna viene aperta.
 
-4. **Apri la campagna, crea una sessione e avvolgila in un player.** Scegli tu il seed: lo stesso seed e le stesse risposte riproducono la stessa storia.
+4. **Apri la campagna, crea una sessione e avvolgila in un player.** Scegli tu il seed: lo stesso seed e le stesse risposte riproducono la stessa storia. Dai al player anche il tuo orologio, per una storia che legge l'ora: la consegna alla storia solo dopo che il lettore lo ha consentito.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -85,7 +85,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    const player = new Player(campaign.session({ seed: BigInt(Date.now()) }), {
      onEffect: draw,                       // step 5
      onError: (error) => console.error(error),
-   });
+   });                                     // the Player reads this machine's clock by itself
    ```
    </TabItem>
    <TabItem label="C++">
@@ -100,6 +100,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    ripple::PlayerHandlers handlers;
    handlers.on_effect = [&](const ripple::Effect& effect) { draw(effect); };   // step 5
    handlers.on_error = [](const ripple::Failure& failure) { log(failure.message); };
+   handlers.moment = [] { return std::optional<ripple::Moment>(ripple::local_moment()); };
    ripple::Player player(ripple::Session::create(campaign, config), handlers);
    ```
    </TabItem>
@@ -113,6 +114,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    {
        OnEffect = Draw,                                     // step 5
        OnError = error => Log(error.Message),
+       Now = Moment.Now,                                    // the time, for a story that may read it
    });
    ```
    </TabItem>
@@ -128,6 +130,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
      ),
      onEffect: draw,                                      // step 5
      onError: (error, stack) => log('$error'),
+     wallClock: Moment.now,                               // the time, for a story that may read it
    );
    ```
    </TabItem>
@@ -135,7 +138,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
 
    Un programma che impacchetta le proprie risorse a modo suo apre invece la campagna dai suoi file in memoria: `Campaign.fromFiles`, `Campaign::open_files`, `Campaign.OpenFiles` o `Campaign.openFiles`.
 
-5. **Disegna il turno.** Ogni effetto raggiunge il tuo gestore in ordine. Quelli da disegnare sono un passaggio (`show`), un modulo (`ask`) e una fine (`ended`, `failed`, `stopped`). Disegna una scelta non disponibile in grigio e non permettere che venga premuta.
+5. **Disegna il turno.** Ogni effetto raggiunge il tuo gestore in ordine. Quelli da disegnare sono un passaggio (`show`), un modulo (`ask`), la domanda che una storia fa prima di leggere l'orologio o la posizione del lettore (`permit`, passo 6) e una fine (`ended`, `failed`, `stopped`). Disegna una scelta non disponibile in grigio e non permettere che venga premuta.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -144,6 +147,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
      switch (effect.kind) {
        case 'show':  showPassage(effect.passage); break;   // passage.text, passage.choices[i].available
        case 'ask':   showForm(effect.prompt); break;
+       case 'permit': askPermission(effect.kinds); break;   // step 6
        case 'ended': showEnding(effect.title); break;
        case 'failed': showProblem(effect.message); break;
      }
@@ -155,6 +159,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    void draw(const ripple::Effect& effect) {
        if (const auto* shown = std::get_if<ripple::Show>(&effect)) show_passage(shown->passage);
        else if (const auto* asked = std::get_if<ripple::Ask>(&effect)) show_form(asked->prompt);
+       else if (const auto* permit = std::get_if<ripple::Permit>(&effect)) ask_permission(permit->kinds);
        else if (const auto* ended = std::get_if<ripple::Ended>(&effect)) show_ending(ended->title);
        else if (const auto* failed = std::get_if<ripple::Failed>(&effect)) show_problem(failed->message);
    }
@@ -168,6 +173,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
        {
            case Effect.Show s:   ShowPassage(s.Passage); break;   // Passage.Choices[i].Available
            case Effect.Ask a:    ShowForm(a.Prompt); break;
+           case Effect.Permit p: AskPermission(p.Kinds); break;   // step 6
            case Effect.Ended e:  ShowEnding(e.Title); break;
            case Effect.Failed f: ShowProblem(f.Message); break;
        }
@@ -180,6 +186,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
      switch (effect) {
        case Show(:final passage): showPassage(passage);   // passage.choices[i].available
        case Ask(:final prompt): showForm(prompt);
+       case Permit(:final kinds): askPermission(kinds);   // step 6
        case Ended(:final title): showEnding(title);
        case Failed(:final message): showProblem(message);
        default:
@@ -191,7 +198,48 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
 
    Il testo di un passaggio è Markdown, oppure HTML quando la campagna è stata esportata in quel modo, come indica il formato del testo nel manifest. Visualizzalo con una libreria a tua scelta.
 
-6. **Avvia la storia, rispondi al lettore e dai al player il tuo orologio.** Chiama il verbo corrispondente a ciò che ha fatto il lettore. Fuori da JavaScript, chiama `update` del player dal tuo ciclo di frame o di eventi: risponde a un'attesa quando il suo momento è arrivato.
+   Disegna ogni campo di un modulo con la sua `label`, nella lingua del lettore, con il suo `placeholder` come suggerimento, e rispondi con la chiave del suo `name`. Segna come obbligatorio un campo che non è `optional`, e non inviarlo vuoto. Disegna un campo con `options` come un menu: una scelta per un valore singolo, un numero qualsiasi per un elenco.
+
+6. **Rispondi alla domanda prima che la storia cominci.** Una storia che legge l'orologio o la posizione del lettore chiede prima: il suo primo turno è `permit`, che nomina i tipi ancora senza risposta, e non succede nient'altro finché non si è risposto a ciascuno. Rispondi a ogni tipo con `permit` del player; l'ultima risposta fa cominciare la storia. A un sì alla posizione, procurati una posizione e consegnala **prima** del `permit` che dice sì, o la prima pagina non legge niente. A un no, il lettore può dare un sostituto, un'ora o un luogo che la storia crede al loro posto.
+
+   <Tabs syncKey="language">
+   <TabItem label="JavaScript">
+   ```ts
+   player.setPosition({ latitude, longitude, accuracy });   // on a yes, before the permit
+   player.permit('location', true);
+   player.setStandIn('dateTime', '2026-10-31 23:00');        // on a no, if the reader typed one
+   player.permit('dateTime', false);                          // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="C++">
+   ```cpp
+   player.session().set_position(fix);       // on a yes, before the permit
+   player.permit(ripple::PermissionKind::location, true);
+   player.session().set_stand_in(ripple::PermissionKind::date_time, typed, offset);   // on a no
+   player.permit(ripple::PermissionKind::date_time, false);   // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="C#">
+   ```csharp
+   player.Session.SetPosition(fix);          // on a yes, before the permit
+   player.Permit(PermissionKind.Location, true);
+   player.Session.SetStandIn(PermissionKind.DateTime, typed, offset);   // on a no
+   player.Permit(PermissionKind.DateTime, false);   // the last answer begins the story
+   ```
+   </TabItem>
+   <TabItem label="Dart">
+   ```dart
+   player.session.setPosition(fix);          // on a yes, before the permit
+   player.permit(PermissionKind.location, granted: true);
+   player.session.setStandIn(PermissionKind.dateTime, typed);   // on a no
+   player.permit(PermissionKind.dateTime, granted: false);   // the last answer begins the story
+   ```
+   </TabItem>
+   </Tabs>
+
+   Se il tuo programma ricorda le risposte del lettore, dalle prima di `start`, e la domanda non viene mai mostrata. Un salvataggio non porta con sé le risposte, quindi rispondi di nuovo a una sessione ripresa.
+
+7. **Avvia la storia, rispondi al lettore e dai al player il tuo orologio.** Chiama il verbo corrispondente a ciò che ha fatto il lettore. Fuori da JavaScript, chiama `update` del player dal tuo ciclo di frame o di eventi: risponde a un'attesa quando il suo momento è arrivato, e fa scorrere il conto alla rovescia di un passaggio, facendolo cominciare e scadere. In JavaScript il player fa entrambe le cose da sé.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -199,7 +247,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    player.start();
    choiceButton.onclick = () => player.choose(index);
    leaveButton.onclick = () => player.choose();           // the reader leaves the passage
-   form.onsubmit = () => player.answer({ name: 'Ada', age: 31n });   // an Int is a bigint
+   form.onsubmit = () => player.answer({ name: 'Ada', calling: 'wizard' });   // an option by its id
    // The player waits out a hold by itself.
    ```
    </TabItem>
@@ -232,9 +280,11 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    </TabItem>
    </Tabs>
 
-   Un verbo che la storia non stava chiedendo viene rifiutato e nulla si muove. Intercetta il rifiuto per una scelta esaurita e per una lingua sconosciuta, che sono i due che si incontrano nell'uso normale.
+   Un verbo che la storia non stava chiedendo viene rifiutato e nulla si muove. Intercetta il rifiuto per una scelta esaurita, per una lingua sconosciuta e per un sostituto scritto dal lettore che non si legge, che sono quelli che si incontrano nell'uso normale.
 
-7. **Registra le callback dell'autore.** Concorda i nomi con l'autore. Un gestore non deve chiamare un verbo, quindi mettine uno in coda per dopo il suo ritorno.
+   Per non offrire al lettore nessun limite di tempo, crea il player con `countdowns: false` (`countdowns = false` in C++, `Countdowns = false` in C#): nessun conto alla rovescia scorre, e la storia aspetta il lettore. Disegna un conto alla rovescia che l'autore ha reso visibile dallo stato del conto alla rovescia del player. Come un autore ne mette uno su una scelta è in [Come mettere un conto alla rovescia su una scelta](/it/how-to/time-a-choice/).
+
+8. **Registra le callback dell'autore.** Concorda i nomi con l'autore. Un gestore non deve chiamare un verbo, quindi mettine uno in coda per dopo il suo ritorno.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -263,7 +313,7 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    </TabItem>
    </Tabs>
 
-8. **Dai alla storia uno speaker.** Crea un driver di soundscape sulla campagna e uno speaker, passa il driver al player come suo audio e fallo avanzare insieme al player. In un browser, `@ripplefx/soundscape` è lo speaker; altrove implementi l'interfaccia speaker del binding sopra la tua API audio, come descrive il suo riferimento.
+9. **Dai alla storia uno speaker.** Crea un driver di soundscape sulla campagna e uno speaker, passa il driver al player come suo audio e fallo avanzare insieme al player. In un browser, `@ripplefx/soundscape` è lo speaker; altrove implementi l'interfaccia speaker del binding sopra la tua API audio, come descrive il suo riferimento.
 
    <Tabs syncKey="language">
    <TabItem label="JavaScript">
@@ -301,38 +351,38 @@ Questi passi portano una storia dall'editor dentro un tuo programma: un gioco, u
    </TabItem>
    </Tabs>
 
-9. **Salva e riprendi.** Crea un checkpoint mentre la storia è su un passaggio o su un modulo, e conserva il salvataggio insieme al seed. Per riprendere, apri una sessione dal salvataggio sulla stessa campagna e avviala: mostra di nuovo il turno salvato.
+10. **Salva e riprendi.** Crea un checkpoint mentre la storia è su un passaggio o su un modulo, e conserva il salvataggio insieme al seed. Per riprendere, apri una sessione dal salvataggio sulla stessa campagna e avviala: mostra di nuovo il turno salvato, dopo la domanda del passo 6 se la storia legge il mondo, e un passaggio a tempo ricomincia ad aspettare da capo.
 
-   <Tabs syncKey="language">
-   <TabItem label="JavaScript">
-   ```ts
-   const save = player.session.checkpoint();            // undefined except on a passage or a form
-   const resumed = Session.resume(campaign, save, { seed });
-   ```
-   </TabItem>
-   <TabItem label="C++">
-   ```cpp
-   std::optional<std::string> save = player.session().checkpoint();
-   ripple::Session resumed = ripple::Session::resume(campaign, *save, seed, options);
-   ```
-   </TabItem>
-   <TabItem label="C#">
-   ```csharp
-   string? save = player.Session.Checkpoint();
-   var resumed = Session.Resume(campaign, save, seed, options);
-   ```
-   </TabItem>
-   <TabItem label="Dart">
-   ```dart
-   final save = player.session.checkpoint();
-   final resumed = Session.resume(campaign, save!, seed: seed);
-   ```
-   </TabItem>
-   </Tabs>
+    <Tabs syncKey="language">
+    <TabItem label="JavaScript">
+    ```ts
+    const save = player.session.checkpoint();            // undefined except on a passage or a form
+    const resumed = Session.resume(campaign, save, { seed });
+    ```
+    </TabItem>
+    <TabItem label="C++">
+    ```cpp
+    std::optional<std::string> save = player.session().checkpoint();
+    ripple::Session resumed = ripple::Session::resume(campaign, *save, seed, options);
+    ```
+    </TabItem>
+    <TabItem label="C#">
+    ```csharp
+    string? save = player.Session.Checkpoint();
+    var resumed = Session.Resume(campaign, save, seed, options);
+    ```
+    </TabItem>
+    <TabItem label="Dart">
+    ```dart
+    final save = player.session.checkpoint();
+    final resumed = Session.resume(campaign, save!, seed: seed);
+    ```
+    </TabItem>
+    </Tabs>
 
-   Un salvataggio di una campagna che nel frattempo è cambiata troppo viene rifiutato quando lo si riprende. Di' al giocatore che il salvataggio proviene da una versione più vecchia della storia. Se il motore segnala un **trap**, da quel momento la campagna è inutilizzabile: eliminala, aprila di nuovo e riprendi dall'ultimo checkpoint.
+    Un salvataggio di una campagna che nel frattempo è cambiata troppo viene rifiutato quando lo si riprende. Di' al giocatore che il salvataggio proviene da una versione più vecchia della storia. Se il motore segnala un **trap**, da quel momento la campagna è inutilizzabile: eliminala, aprila di nuovo e riprendi dall'ultimo checkpoint.
 
-10. **Distribuisci l'avviso del motore.** Riproduci il `NOTICE` del motore ovunque il tuo prodotto elenchi il software di terze parti. Ogni binding indica il file: `ENGINE-NOTICE` nel pacchetto npm, `share/ripple_effect/ENGINE-NOTICE` in un'installazione CMake, `ENGINE-NOTICE.txt` nei pacchetti del motore per C# e il `NOTICE` dell'archivio per Dart.
+11. **Distribuisci l'avviso del motore.** Riproduci il `NOTICE` del motore ovunque il tuo prodotto elenchi il software di terze parti. Ogni binding indica il file: `ENGINE-NOTICE` nel pacchetto npm, `share/ripple_effect/ENGINE-NOTICE` in un'installazione CMake, `ENGINE-NOTICE.txt` nei pacchetti del motore per C# e il `NOTICE` dell'archivio per Dart.
 
 </Steps>
 

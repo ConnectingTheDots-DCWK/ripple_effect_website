@@ -17,15 +17,15 @@ The tools the app offers a connected MCP client, with the arguments each takes. 
 
 The first two are linked from the site's header.
 
-Forty-four tools, in seven groups. The first four groups need **Let agents reach this app**. The next two need **Let agents change files** as well; a write tool called while that is off answers `refused`. The last group mixes the two: `writing_read` and `grammar_check` read, and the other three write.
+Forty-seven tools, in seven groups. The first four groups need **Let agents reach this app**. The next two need **Let agents change files** as well; a write tool called while that is off answers `refused`. The last group mixes the two: `writing_read` and `grammar_check` read, and the other three write.
 
 | | Tools |
 | --- | --- |
 | [Orientation](#orientation) | `project_info`, `project_outline`, `catalog_find` |
 | [Reading the story](#reading-the-story) | `board_read`, `passage_read`, `component_read`, `soundscape_read`, `board_links` |
 | [What only the app can answer](#what-only-the-app-can-answer) | `trace_between`, `trace_into`, `translation_status`, `diagnostics_read`, `node_types`, `python_capabilities`, `python_eval` |
-| [Playtesting](#playtesting) | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_state`, `campaign_trace`, `campaign_autoplay`, `campaign_end` |
-| [Writing](#writing) | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` |
+| [Playtesting](#playtesting) | `campaign_start`, `campaign_choose`, `campaign_answer`, `campaign_expire`, `campaign_state`, `campaign_trace`, `campaign_autoplay`, `campaign_end` |
+| [Writing](#writing) | `passage_write`, `passage_create`, `board_add_passage`, `board_add_node`, `board_connect`, `board_disconnect`, `board_set_choice`, `board_set_localized_text`, `board_set_countdown`, `board_set_node`, `board_remove_node`, `component_write`, `file_create`, `file_move`, `file_delete`, `save` |
 | [Sound](#sound) | `soundscape_set`, `soundscape_add_clip`, `soundscape_set_clip` |
 | [Spelling, grammar and style](#spelling-grammar-and-style) | `writing_read`, `grammar_check`, `dictionary_edit`, `style_rule_write`, `style_rule_delete` |
 

@@ -7,10 +7,11 @@ Usa questa guida quando la campagna è destinata a un gioco o a un player costru
 
 1. Apri le impostazioni del progetto e vai alla pagina **Capacità**.
 2. Disattiva **Python**.
-3. Apri **Messaggi**. Ogni scheda Script e ogni passaggio con un blocco `{{ … }}` o `ripple` è elencato lì e segnato come errore sulla sua scheda:
+3. Apri **Messaggi**. Ogni scheda Script, ogni passaggio con un blocco `{{ … }}` o `ripple` e ogni scheda Localized string le cui parole eseguono Python è elencato lì e segnato come errore sulla sua scheda:
    - [`E.EX.01`](/it/reference/diagnostics/#eex01) è una scheda Script.
    - [`E.EX.02`](/it/reference/diagnostics/#eex02) è un passaggio che esegue Python, in una qualsiasi delle sue lingue.
-4. Sostituisci ciascuno con schede che non richiedono Python, come una variabile di console impostata e letta da schede proprie, o una ramificazione su un valore. Finché ne resta anche solo una, la campagna non si può giocare né esportare.
+   - [`E.EX.03`](/it/reference/diagnostics/#eex03) è una scheda Localized string che esegue Python, in una qualsiasi delle sue lingue.
+4. Sostituisci ciascuno con schede che non richiedono Python, come una variabile di console impostata e letta da schede proprie, o una ramificazione su un valore. Per una scheda Localized string, sostituisci ogni snippet con il testo che avrebbe prodotto, oppure usa una scheda per ogni forma e scegli tra di esse con una diramazione. Finché ne resta anche solo una, la campagna non si può giocare né esportare.
 5. [Esporta la campagna](/it/how-to/export-for-a-player-without-python/). **Non richiede Python** è selezionato nella finestra di esportazione e non può essere deselezionato finché il progetto ha Python disattivato.
 
 Per tornare indietro, riattiva **Python**. Nulla del progetto è cambiato, e si gioca e si esporta come prima.

@@ -7,7 +7,7 @@ Ogni funzione che uno script può chiamare è una **funzione host**: è legata a
 
 ## Funzioni
 
-Venti nomi, legati su ogni superficie, in quattro gruppi. Le firme sono quelle che l'app registra; la pagina di ciascun gruppo elenca che cosa risponde e che cosa rifiuta ogni funzione.
+Ventuno nomi, legati su ogni superficie, in cinque gruppi. Le firme sono quelle che l'app registra; la pagina di ciascun gruppo elenca che cosa risponde e che cosa rifiuta ogni funzione.
 
 ### Componenti ed entità
 
@@ -76,12 +76,12 @@ Chi chiama decide che cosa può succedere. Ogni funzione è legata su ogni super
 | Superficie | Dove | Legge | Scrive |
 | --- | --- | --- | --- |
 | `script` | Una scheda Script su una lavagna | Sì | Sì |
-| `passage` | `{{ … }}` e ```` ```ripple ```` nella prosa | Sì | Rifiutato |
+| `passage` | `{{ … }}` e ```` ```ripple ```` nella prosa, e nelle parole di una scheda Localized string | Sì | Rifiutato |
 | `console` | La console Python dell'editor, in fase di progettazione | Definizioni e valori predefiniti | Rifiutato |
 | `agent` | `python_eval` tramite MCP | Definizioni e valori predefiniti | Rifiutato |
 | `playthrough` | La console della finestra della campagna, durante il gioco | Sì | Sì |
 
-- Un passaggio rifiuta le scritture per via del punto in cui gira la chiamata: un cambio di stato appartiene a una scheda che puoi indicare sulla lavagna.
+- Un passaggio, e le parole di una scheda Localized string, rifiutano le scritture per via del punto in cui gira la chiamata: un cambio di stato appartiene a una scheda che puoi indicare sulla lavagna.
 - Un passaggio rifiuta un suono perché i suoi snippet vengono rieseguiti a ogni ridisegno.
 - La console e un agente rifiutano le scritture perché in fase di progettazione non c'è nulla in esecuzione: un progetto senza una sessione di gioco non ha entità, e una variabile di console contiene il suo valore predefinito.
 - Le letture funzionano in fase di progettazione. `component_get` e `component_names` rispondono dai file. `entity_names()` è `[]` e `entity_get(name)` è `None`. Sono risposte, non errori.
@@ -91,7 +91,7 @@ I motivi sono in [Python in una storia](/it/explanation/python-in-a-story/).
 
 ## Chiamate
 
-Gli argomenti obbligatori sono posizionali. L'opzionale `of` è solo per parola chiave. `play_sound` fa eccezione: `volume` e `speed` possono essere passati per posizione o per nome. Non è accettata nessuna parola chiave oltre a quelle elencate.
+Gli argomenti obbligatori sono posizionali. L'opzionale `of` è solo per parola chiave. `play_sound` e `locale_get` fanno eccezione: `volume` e `speed` di `play_sound`, e `locale` di `locale_get`, possono essere passati per posizione o per nome. Non è accettata nessuna parola chiave oltre a quelle elencate.
 
 ```python
 entity_names(of="Goblin")                 # right
@@ -104,6 +104,7 @@ entity_create("Goblin-7", frm="Goblin")   # raises: unknown keyword, names the o
 | `entity_names` | 0 | `of` |
 | `entity_create` | 1 | `of` |
 | `play_sound` | da 1 a 3 | `volume`, `speed` |
+| `locale_get` | da 0 a 1 | `locale` |
 
 Le altre funzioni accettano esattamente gli argomenti posizionali della loro firma e nessuna parola chiave. Una chiamata sbagliata solleva un errore invece di rispondere. `component`, `components` e `set_attribute` fanno eccezione: ciò che fanno davanti a un errore è congelato quanto i loro nomi.
 
@@ -148,7 +149,7 @@ Le frasi con cui una superficie rifiuta sono fisse, perché uno script potrebbe 
 | Un passaggio, `play_sound` | `a passage cannot play a sound — its snippets run again every time it is redrawn, so put this on a Play sound node or in a Script node` |
 | Console o agente, `play_sound` | `no campaign is running, so there is nothing to play this through — press play, or put this on a Play sound node` |
 
-Una lettura del mondo che chi legge non ha consentito è l'unico rifiuto che non è un `RuntimeError`: è il `PermissionError` di Python, quindi `except PermissionError:` cattura quello e nient'altro. Vedi [Il mondo fuori dalla storia](/it/reference/python/the-world/).
+Due rifiuti non sono un `RuntimeError`. Una lettura del mondo che chi legge non ha consentito è il `PermissionError` di Python, quindi `except PermissionError:` cattura quello e nient'altro. Una lettura dell'orologio consentita, quando l'host non ha un'ora da dare, è un `OSError`: `this host has not said what time it is`. Vedi [Il mondo fuori dalla storia](/it/reference/python/the-world/#quando-una-lettura-viene-rifiutata).
 
 Un rifiuto dentro un passaggio non interrompe l'esecuzione. Viene mostrato sul posto come un chip `⚠ RuntimeError: …` e la storia prosegue, ed è per questo che ogni messaggio è di una sola riga. Un nome citato in un rifiuto viene tagliato a circa quaranta caratteri.
 

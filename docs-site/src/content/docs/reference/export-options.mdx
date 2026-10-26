@@ -93,14 +93,15 @@ The story compiled to a bundle that a runtime plays with no editor present. Ever
 
 ## Needs no Python
 
-On a build without the Python interpreter, a Script node stops the story where it stands, and a passage shows a warning where its Python was.
+On a build without the Python interpreter, a Script node stops the story where it stands, a passage shows a warning where its Python was, and a Localized string answers a warning in place of each snippet.
 
-With **Needs no Python** ticked, the export checks every Script node, and every passage with a `ripple` code block or an inline `{{ … }}` in any language. It stops if it finds one.
+With **Needs no Python** ticked, the export checks every Script node, every passage with a `ripple` code block or an inline `{{ … }}` in any language, and every Localized string whose words have either in any language. It stops if it finds one.
 
 | Code | Finding | Opens |
 | --- | --- | --- |
 | [`E.EX.01`](/reference/diagnostics/#eex01) | A Script node. | Its card |
 | [`E.EX.02`](/reference/diagnostics/#eex02) | A passage with Python in it. The message counts snippets across every language. | Its Narration card |
+| [`E.EX.03`](/reference/diagnostics/#eex03) | A Localized string with Python in its words. The message counts snippets across every language. | Its card |
 
 - Each finding is listed in Messages.
 - The dialog stays open.
@@ -135,7 +136,7 @@ An element with no class assigned gets no attribute. With no profile, every elem
 
 ## Diagnostics
 
-The export's two codes, [`E.EX.01`](/reference/diagnostics/#eex01) and [`E.EX.02`](/reference/diagnostics/#eex02), are listed under [Needs no Python](#needs-no-python); [Diagnostics](/reference/diagnostics/) has the rest.
+The export's three codes, [`E.EX.01`](/reference/diagnostics/#eex01), [`E.EX.02`](/reference/diagnostics/#eex02) and [`E.EX.03`](/reference/diagnostics/#eex03), are listed under [Needs no Python](#needs-no-python); [Diagnostics](/reference/diagnostics/) has the rest.
 
 ## Related
 
