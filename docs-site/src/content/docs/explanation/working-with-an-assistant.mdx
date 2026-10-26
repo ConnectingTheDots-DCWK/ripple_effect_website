@@ -7,7 +7,7 @@ import Shot from '../../../components/Shot.astro';
 
 Ripple Effect is an **MCP server**, so Claude Code, Claude Desktop, Cursor and anything else that speaks the protocol can work in the folder alongside you instead of being pasted things. The design rests on four decisions: the channel is private, the tools are the app's rather than the bridge's, a write is the same act whoever makes it, and the log records that something happened without recording what.
 
-{/* TODO(shots): <Shot name="agentsPanel" /> */}
+<Shot name="agentsPanel" />
 
 ## Why a server at all
 
@@ -47,7 +47,7 @@ With the second switch on, an assistant can write: passages and their translatio
 
 The important property is that none of these is a separate path to the disk. Every write goes through the app's own sessions, the same ones your typing goes through. That has three consequences you would otherwise have to build separately. Adding a passage is a single undo. Autosave sees it, so it is not lost or overwritten. Version control lists it, so it appears in the changes like anything else. A second route that wrote files directly would need its own answer to each of those, and the app would have two ways of being wrong. Everything changed this session is listed on the Agents page, and every change is posted to Messages as it happens.
 
-{/* TODO(shots): <Shot name="agentConnected" /> */}
+<Shot name="agentConnected" />
 
 ### What a write is refused
 

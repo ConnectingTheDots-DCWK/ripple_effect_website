@@ -8,7 +8,7 @@ import Shot from '../../../components/Shot.astro';
 
 Declare a console variable when a value has to be read or written from more than one board, or from Python, with no wire between them.
 
-{/* TODO(shots): <Shot name="cvarsPage" /> */}
+<Shot name="cvarsPage" />
 
 ## Declare a variable
 
@@ -50,7 +50,7 @@ Ticking a board moves `.ripple/cvars.json` to version 2, which an earlier build 
 
 Add a Get variable, Set variable or Variable branch node and pick the variable by name on the card. The three nodes' ports and behaviour are in [Nodes](/reference/nodes/).
 
-{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+<Shot name="cvarsNodes" />
 
 A value that does not fit the declared type is refused as you type it on a card. A value arriving on a wire that does not fit ends the run with a message naming the node. The rule is in [Console variables](/reference/python/console-variables/#coercion).
 

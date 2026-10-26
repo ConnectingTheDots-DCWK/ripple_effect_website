@@ -4,6 +4,7 @@ description: Salva una sessione di gioco con un nome, mettila in pausa e riprend
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import Shot from '../../../../components/Shot.astro';
 
 ## Salvare una sessione di gioco con un nome
 
@@ -34,7 +35,7 @@ Mettere in pausa e riprendere nella stessa sessione di lavoro ti restituisce la 
 
 </Steps>
 
-{/* TODO(shots): <Shot name="savedGames" /> */}
+<Shot name="savedGames" />
 
 Un salvataggio registra il punto in cui sei e tutto ciò che la storia ha prodotto. [La finestra della campagna e le partite salvate](/it/reference/campaign-window/) elenca cosa contiene, e [Come funziona una storia](/it/explanation/how-a-story-runs/) spiega come si comportano i conteggi delle scelte e le macro.
 

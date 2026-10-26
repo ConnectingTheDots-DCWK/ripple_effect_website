@@ -75,7 +75,7 @@ Dietro c'è il fatto che il motore viene distribuito in due build, una con l'int
 
 I limiti dell'interprete cambiano tra una sua versione e l'altra. Una pagina che elencasse ciò che è consentito sarebbe corretta il giorno in cui è stata scritta e sbagliata più avanti, e un lettore agirebbe sulla differenza. Quindi l'app non descrive la sandbox, la **sonda**: il rapporto sulla sandbox dietro il pulsante `i` della console esegue una serie di piccoli snippet (istruzioni, moduli, funzioni built-in, forme di chiamata) nel vero interprete e riporta che cosa è successo, riga per riga. Dice che cosa lega l'app, che cosa può raggiungere `import` e quali limiti vengono applicati. Un agente può chiedere lo stesso testo tramite `python_capabilities`. Dove una qualsiasi pagina e quel rapporto non concordano, ha ragione il rapporto, ed è ciò che va copiato in una segnalazione di bug.
 
-{/* TODO(shots): <Shot name="sandbox" /> */}
+<Shot name="sandbox" />
 
 L'interprete è [monty](/it/about/open-source/); la pagina open source dice di chi è.
 

@@ -3,6 +3,8 @@ title: Il log di sessione e i rapporti
 description: "Cosa contiene una cartella di sessione, cosa viene oscurato e registrato, cosa elenca la finestra del rapporto di crash, cosa comprendono le statistiche di utilizzo e dove si trovano i file."
 ---
 
+import Shot from '../../../../components/Shot.astro';
+
 Ogni esecuzione dell'app scrive una **sessione**: una cartella di file di log e due piccoli registri. Nessuna impostazione carica il log di sessione. L'unica cosa che invia file di sessione è il rapporto di crash, che chiede prima il permesso; le statistiche di utilizzo inviano un piccolo registro a parte e nessun log, e restano disattivate finché non le attivi. Qui sotto trovi cosa contiene ciascuno, e in [Cosa invia l'app](/it/about/what-the-app-sends/).
 
 ## Dove si trovano i file
@@ -176,7 +178,7 @@ Non viene inviato nulla finché l'interruttore non è rimasto attivo per un'ora.
 | Copia i dettagli del pacchetto, copia i dettagli del dispositivo, apri la cartella di questa sessione | **Aiuto ▸ Risoluzione dei problemi** |
 | *Mostra di nuovo ogni suggerimento* | Il menu Aiuto stesso |
 
-{/* TODO(shots): <Shot name="support" /> */}
+<Shot name="support" />
 
 La pagina di assistenza apre il modulo corrispondente, compilato con la versione, il tuo sistema operativo e il programma di installazione da cui proviene questa copia, nel repository pubblico [`ripple_effect_support`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_support), dove vanno anche le domande e le richieste di funzionalità. I passaggi sono in [Come segnalare un bug](/it/how-to/report-a-bug/).
 

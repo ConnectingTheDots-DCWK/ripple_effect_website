@@ -3,9 +3,11 @@ title: Controllo di versione nell'app
 description: "La sezione Modifiche della barra laterale, i suoi termini, cosa scrive l'avvio di una cronologia, la barra del backup, la vista dei conflitti e l'elenco delle modifiche annullate."
 ---
 
+import Shot from '../../../../components/Shot.astro';
+
 Il controllo di versione è integrato nell'app e si raggiunge dalla sezione **Modifiche** della barra laterale, la seconda icona della barra delle attività accanto a File. La cronologia sottostante è un normale repository git, e tutto ciò che ne legge uno legge anche questa. Il motore è libgit2, compilato nell'app: non serve installare git.
 
-{/* TODO(shots): <Shot name="changesTab" /> */}
+<Shot name="changesTab" />
 
 ## Termini
 
@@ -210,7 +212,7 @@ Il menu **Altro** contiene **Controlla senza scaricare nulla**, **Cambia dove vi
 
 ## Conflitti
 
-{/* TODO(shots): <Shot name="conflict" /> */}
+<Shot name="conflict" />
 
 Un conflitto nasce quando le modifiche ottenute dal backup toccano gli stessi punti delle modifiche locali. Il rilevamento avviene in memoria: i file di lavoro, l'area di staging e il punto di salvataggio corrente restano intatti finché ogni disaccordo non ha una risposta. Nei file non vengono scritti marcatori di conflitto.
 

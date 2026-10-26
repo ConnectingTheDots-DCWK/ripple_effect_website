@@ -3,9 +3,11 @@ title: What an export is
 description: Why a campaign is compiled rather than copied, why media is a switch, why there are two engine builds, and why HTML is shaped by a profile in the project.
 ---
 
+import Shot from '../../../components/Shot.astro';
+
 Export makes one of two things, and the dialog asks which. They look alike from the outside, since both write a folder, but they answer different questions. A project copy answers "how do I hand this story to someone who will keep editing it?". A campaign answers "how do I hand this story to something that will only play it?".
 
-{/* TODO(shots): <Shot name="exportDialog" /> */}
+<Shot name="exportDialog" />
 
 ## A project copy is the project, resolved
 
@@ -46,7 +48,7 @@ Separately, every campaign records in its manifest whether it needs Python, unde
 
 A campaign can have every passage written out as an HTML fragment per language, ready to drop into a page. The editor and the play view stay Markdown; HTML is for whatever reads the campaign next. The export dialog is split to say so: the controls above the line decide what *travels*, and the ones below decide what the prose *becomes*.
 
-{/* TODO(shots): <Shot name="exportProfile" /> */}
+<Shot name="exportProfile" />
 
 The difficulty is that HTML only makes sense inside a page, and the page already has a stylesheet. The export cannot know your class names, and guessing a set would force you to rewrite your CSS around the tool. So an **export profile** names the class each kind of element gets: a paragraph, a heading, emphasis, a link, a table cell, a Python snippet can each carry a class of your choosing. Nothing assigned means no attribute at all, so the fragments carry no styling opinions of their own.
 

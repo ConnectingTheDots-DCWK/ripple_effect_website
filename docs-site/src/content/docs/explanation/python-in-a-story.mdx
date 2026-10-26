@@ -75,7 +75,7 @@ Behind it is the fact that the engine ships in two builds, one with the interpre
 
 The interpreter's limits change between its releases. A page that listed what is allowed would be correct on the day it was written and wrong later, and a reader would act on the difference. So the app does not describe the sandbox, it **probes** it: the sandbox report behind the `i` button on the console runs a suite of tiny snippets (statements, modules, built-ins, call shapes) in the real interpreter and reports what happened, row by row. It says what the app binds, what `import` can reach and which limits are enforced. An agent can ask for the same text through `python_capabilities`. Where any page and that report disagree, the report is right, and it is the thing to copy into a bug report.
 
-{/* TODO(shots): <Shot name="sandbox" /> */}
+<Shot name="sandbox" />
 
 The interpreter is [monty](/about/open-source/#monty-python-in-a-sandbox); the open-source page says whose it is.
 

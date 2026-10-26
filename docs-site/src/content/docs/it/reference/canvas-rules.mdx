@@ -30,7 +30,7 @@ import Shot from '../../../../components/Shot.astro';
 | Annulla, Ripeti | Nel menu Modifica e con le rispettive combinazioni di tasti. |
 | Scheda delle scorciatoie | Visualizza ▸ Scheda delle scorciatoie la riporta. |
 
-{/* TODO(shots): <Shot name="nodeMenu" /> */}
+<Shot name="nodeMenu" />
 
 ### Metadati della scheda
 
@@ -40,7 +40,7 @@ import Shot from '../../../../components/Shot.astro';
 - I tipi di voce sono `int`, `float`, `bool` e `string`, una lista di ciascuno, e `json` per qualsiasi cosa annidata. È un elenco più corto di quello dei tipi di una porta: una scheda memorizza il valore e non il suo tipo, quindi l'editor deduce il tipo dalla forma del valore. `asset`, `componentRef`, `entity` e `markdown` non sono offerti, perché una volta scritti ciascuno è una semplice stringa.
 - Una versione dell'editor precedente a questa funzione, che risalva una lavagna di questo tipo, mantiene ogni collegamento e ogni campo e perde le note.
 
-{/* TODO(shots): <Shot name="metadataEditor" /> */}
+<Shot name="metadataEditor" />
 
 ### Selettori
 
@@ -237,7 +237,7 @@ Si apre dal primo pulsante nel piè di pagina del pannello a sinistra.
 
 ## Vista unita
 
-{/* TODO(shots): <Shot name="mergedTrace" /> */}
+<Shot name="mergedTrace" />
 
 Ogni lavagna sul percorso su un unico canvas, con la contabilità tra due passaggi attraversata invece che disegnata. È in sola lettura, come la navigazione Script.
 

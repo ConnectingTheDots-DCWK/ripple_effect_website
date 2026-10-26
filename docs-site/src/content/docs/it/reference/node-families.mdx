@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import Shot from '../../../../components/Shot.astro';
+
 Il [riferimento delle schede](/it/reference/nodes/) elenca ogni scheda, porta per porta. Questa pagina descrive ciò che le schede hanno in comune: le famiglie in cui le raggruppa il menu Crea, i tipi di slot, i valori predefiniti e i selettori di file, le coppie di schede che partecipano a una macro e ciò che conserva lo stato.
 
 ## Famiglie
@@ -141,7 +143,7 @@ Una lavagna di una versione precedente alla 1.6 viene aggiornata quando la apri:
 
 ## Macro
 
-{/* TODO(shots): <Shot name="macro" /> */}
+<Shot name="macro" />
 
 Una macro è un file a sé, `*.macro.graph.json`, creato con il **+** dell'albero dei file accanto a una lavagna. Si apre sulla stessa tela, con due schede al posto dello Start e degli End di una lavagna.
 
@@ -200,7 +202,7 @@ La categoria Entities del menu delle schede ne contiene altre quattro.
 
 ## Variabili di console su una lavagna
 
-{/* TODO(shots): <Shot name="cvarsNodes" /> */}
+<Shot name="cvarsNodes" />
 
 Un Set su una lavagna e un Branch su un'altra non hanno bisogno di un collegamento tra loro: la variabile è il collegamento.
 

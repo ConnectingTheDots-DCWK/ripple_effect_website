@@ -30,7 +30,7 @@ import Shot from '../../../components/Shot.astro';
 | Undo, Redo | In the Edit menu and on their keystrokes. |
 | Shortcuts card | View ▸ Shortcuts card brings it back. |
 
-{/* TODO(shots): <Shot name="nodeMenu" /> */}
+<Shot name="nodeMenu" />
 
 ### Node metadata
 
@@ -40,7 +40,7 @@ import Shot from '../../../components/Shot.astro';
 - Entry types are `int`, `float`, `bool` and `string`, a list of each, and `json` for anything nested. This is shorter than a port's list of types: a node stores the value and not its type, so the editor infers the type from the value's shape. `asset`, `componentRef`, `entity` and `markdown` are not offered, because each is a plain string once written.
 - A build of the editor older than the feature, re-saving such a board, keeps every wire and every field and drops the notes.
 
-{/* TODO(shots): <Shot name="metadataEditor" /> */}
+<Shot name="metadataEditor" />
 
 ### Pickers
 
@@ -237,7 +237,7 @@ Opened from the first button in the left panel's footer.
 
 ## Merged view
 
-{/* TODO(shots): <Shot name="mergedTrace" /> */}
+<Shot name="mergedTrace" />
 
 Every board on the route on one canvas, with the bookkeeping between two passages traversed rather than drawn. It is read-only, like script navigation.
 
