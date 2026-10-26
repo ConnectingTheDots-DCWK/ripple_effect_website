@@ -41,7 +41,7 @@ Le righe, nell'ordine della pagina.
 | *Riproduzione* | *128*, *512*, *2,048*, *8,192*, *Nessuno* | Il limite di cicli |
 | *Conti alla rovescia* | *Come scritti*, *Dieci volte più lunghi*, *Disattivati* | Quanto tempo hai quando un passaggio fa un conto alla rovescia verso una scelta |
 | *Scrittura* | *Controlla ortografia e grammatica*, *Disattivato* | Se i passaggi e le note in inglese vengono controllati mentre scrivi; vedi [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) |
-| *Dictation* | *Off*, *On* | Se un microfono fluttua sopra gli editor dei passaggi e delle note; vedi [Dettatura](#dettatura) |
+| *Dettatura* | *Disattivata*, *Attivata* | Se un microfono fluttua sopra gli editor dei passaggi e delle note; vedi [Dettatura](#dettatura) |
 
 ### Lingua
 
@@ -86,22 +86,22 @@ L'app include tre caratteri tipografici suoi, così ha lo stesso aspetto su ogni
 
 ### Dettatura
 
-Una sezione sotto *Scrittura*. La dettatura è *Off* finché non la attivi. L'app non ha ancora una traduzione italiana per la dettatura: le sue voci compaiono in inglese, e qui sono scritte come le mostra l'app.
+Una sezione sotto *Scrittura*. La dettatura è *Disattivata* finché non la attivi.
 
 | Riga | Scelte | Significato |
 | --- | --- | --- |
-| *Dictation* | *Off*, *On* | *Off*: nessun microfono negli editor. *On*: un microfono fluttua sopra gli editor dei passaggi e delle note; premilo, parla, e le tue parole vengono scritte al cursore. Tutto viene ascoltato su questo computer; niente di ciò che dici lo lascia. |
-| *Listens with* | *English*, *Multilingual* | *English* è il più preciso per l'inglese, e solo per l'inglese. *Multilingual* sente 32 lingue, e gli viene detta la lingua del passaggio in cui stai scrivendo; una nota è nella lingua predefinita del progetto. |
+| *Dettatura* | *Disattivata*, *Attivata* | *Disattivata*: nessun microfono negli editor. *Attivata*: un microfono fluttua sopra gli editor dei passaggi e delle note; premilo, parla, e le tue parole vengono scritte al cursore. Tutto viene ascoltato su questo computer; niente di ciò che dici ne esce. |
+| *Ascolta con* | *Inglese*, *Multilingue* | *Inglese* è il più preciso per l'inglese, e solo per l'inglese. *Multilingue* capisce 32 lingue, e gli viene indicata la lingua del passaggio che stai scrivendo; una nota è nella lingua predefinita del progetto. |
 
-Sotto ci sono una riga per modello, *English* e *Multilingual*:
+Sotto ci sono una riga per modello, *Inglese* e *Multilingue*:
 
 | Parte | Mostra |
 | --- | --- |
-| Stato | *Not downloaded*, *Part-way* con quanto è arrivato, *Downloading* mentre arriva, oppure *Downloaded*, ciascuno con la dimensione del modello |
-| *Licence* | La licenza con cui NVIDIA pubblica il modello, con il collegamento: la NVIDIA Open Model License per *English*, la OpenMDW License 1.1 per *Multilingual* |
-| **Download** / **Resume** | Scarica il modello una volta sola: circa 2,3 GB (English) o 2,4 GB (Multilingual). **Resume** riprende un download interrotto o fermato. |
-| Barra di avanzamento e **Stop** | Mentre il modello si scarica |
-| Cestino, *Delete from this computer* | Toglie un modello scaricato o scaricato a metà e restituisce lo spazio |
+| Stato | *Non scaricato*, *Scaricato in parte* con quanto è arrivato, *Download in corso* mentre arriva, oppure *Scaricato*, ciascuno con la dimensione del modello |
+| *Licenza* | La licenza con cui NVIDIA pubblica il modello, con il collegamento: la NVIDIA Open Model License per *Inglese*, la OpenMDW License 1.1 per *Multilingue* |
+| **Scarica** / **Riprendi** | Scarica il modello una volta sola: circa 2,3 GB (Inglese) o 2,4 GB (Multilingue). **Riprendi** riprende un download interrotto o fermato. |
+| Barra di avanzamento e **Interrompi** | Mentre il modello si scarica |
+| Cestino, *Elimina da questo computer* | Toglie un modello scaricato o scaricato a metà e restituisce lo spazio |
 
 Scaricare il modello non scelto, mentre quello scelto non è sul disco, lo rende il modello scelto. Un download che non riesce dice perché sotto la riga: spazio libero insufficiente, download irraggiungibile o rifiutato, un file arrivato danneggiato e scartato, oppure il modello non è stato scritto sul disco. Disattivare la dettatura libera il modello caricato in memoria; i file restano sul disco. La richiesta che fa un download è in [Cosa invia l'app](/it/about/what-the-app-sends/), e come si usa il modello è in [Come dettare un passaggio o una nota](/it/how-to/dictate-a-passage/).
 
@@ -307,7 +307,7 @@ Dopo le pagine dell'accordo, il primo avvio mostra tre pagine. Tutte e tre si po
 | Pagina | Contenuto |
 | --- | --- |
 | Prima | Aspetto, *Contrasto*, *Visione dei colori* e come vengono disegnati i collegamenti, accanto a una piccola anteprima dell'app che cambia mentre scegli |
-| Seconda | *Write the way you like* (ancora in inglese nell'app): *Is most of your writing in English?*, senza nessuna risposta preselezionata. *Yes* offre due caselle, entrambe spuntate: *Check spelling and grammar*, e *Turn on dictation and download the English model*, che si scarica una volta finite le pagine del primo avvio, con l'avanzamento in Impostazioni. *No* non cambia nulla. Aggiunta nella 1.6, e mostrata solo a una nuova installazione. |
+| Seconda | *Scrivi come preferisci*: *Scrivi soprattutto in inglese?*, senza nessuna risposta preselezionata. *Sì* offre due caselle, entrambe spuntate: *Controlla ortografia e grammatica*, e *Attiva la dettatura e scarica il modello inglese*, che si scarica una volta finite le pagine del primo avvio, con l'avanzamento in Impostazioni. *No* non cambia nulla. Aggiunta nella 1.6, e mostrata solo a una nuova installazione. |
 | Terza | La domanda sulle *Statistiche di utilizzo* senza nessuna risposta preselezionata e l'elenco completo di ciò che verrebbe inviato, come viene chiesto dei rapporti di crash e un cenno alle donazioni |
 
 ## Vedi anche
