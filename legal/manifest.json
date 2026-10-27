@@ -6,7 +6,7 @@
       "slug": "eula",
       "title": "End-User Licence Agreement",
       "summary": "What you may do with the Ripple Effect application on your own machine.",
-      "current": "2.0",
+      "current": "3.0",
       "languages": ["en"],
       "versions": [
         {
@@ -26,6 +26,15 @@
           "sha256": "05717dc6b3d1fd8e7dfc13d24e3e0be44c19970cb51d172c12f7ba4a19b69097",
           "path": "v/eula-2.0",
           "source": "en/eula/2.0.md"
+        },
+        {
+          "version": "3.0",
+          "effectiveOn": "acceptance",
+          "effectiveFrom": "1.6.0",
+          "frozen": false,
+          "sha256": null,
+          "path": "v/eula-3.0",
+          "source": "en/eula/3.0.md"
         }
       ]
     },
@@ -51,17 +60,26 @@
       "slug": "terms",
       "title": "Terms of Service",
       "summary": "What governs this website and the hosted service an account gives you.",
-      "current": "1.0",
+      "current": "2.0",
       "languages": ["en"],
       "versions": [
         {
           "version": "1.0",
           "effectiveOn": "date",
           "effectiveFrom": "2026-10-15",
-          "frozen": false,
-          "sha256": null,
+          "frozen": true,
+          "sha256": "5c0e6038f401dbdfc8fb8a2baabee68ca3a6984ebdb63753e5a15ae5ff30dc3b",
           "path": "v/terms-1.0",
           "source": "en/terms/1.0.md"
+        },
+        {
+          "version": "2.0",
+          "effectiveOn": "date",
+          "effectiveFrom": "2026-12-01",
+          "frozen": false,
+          "sha256": null,
+          "path": "v/terms-2.0",
+          "source": "en/terms/2.0.md"
         }
       ]
     },
