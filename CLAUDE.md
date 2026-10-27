@@ -523,6 +523,17 @@ when set — a fine-grained token reads any public repository — and works
 without it. That token is never the download routes' `RIPPLE_EFFECT_EDITOR_RELEASES`,
 which can read a private repository and is used for nothing else.
 
+**`/api/credits` is what a 1.6 About page reads instead** (#271): the
+application repository's collaborators as the team, every language's
+`CONTRIBUTORS` in the translations repository, and the four bindings'
+contributors, each list asked on its own so one GitHub cannot answer empties
+its own section rather than the page. The team is a **private** repository's,
+so it needs `RIPPLE_EFFECT_METADATA` — whose metadata permission covers the
+organisation's repositories — and is empty without it. `/api/contributors`
+stays, unchanged, because every build before 1.6 reads its bare array.
+Privacy Notice 3.0 §4.2 says what the request is for; a new list here is a
+sentence there first.
+
 **`/api/engine` is the one engine route, and it serves discovery only**
 (`src/lib/engine.ts`). An installed editor asks it which engine patch of its
 contract, platform, variant and bridge hash is the newest above what it has —

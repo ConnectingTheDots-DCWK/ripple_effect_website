@@ -43,6 +43,24 @@ export const engineReleasesRepo = {
   name: "ripple_engine_releases",
 } as const;
 
+/**
+ * The repositories the About page credits, for `/api/credits`: the
+ * application's own (private, read with the metadata token), the public
+ * translations workspace, and the four bindings in the order the page draws
+ * them. `id` is what the app keys each binding's heading on.
+ */
+export const creditRepos = {
+  owner: "ConnectingTheDots-DCWK",
+  app: "ripple_effect",
+  translations: "ripple_effect_translations",
+  integrations: [
+    { id: "c-cpp", name: "ripple_effect_c_cpp_integration" },
+    { id: "csharp", name: "ripple_effect_csharp_integration" },
+    { id: "dart", name: "ripple_effect_dart_integration" },
+    { id: "js-ts", name: "ripple_effect_js_ts_integration" },
+  ],
+} as const;
+
 const support = `https://github.com/${supportRepo.owner}/${supportRepo.name}`;
 
 type GoLink = { source: string; destination: string };

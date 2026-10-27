@@ -26,7 +26,7 @@ pnpm dev
 | | |
 | --- | --- |
 | `RIPPLE_EFFECT_EDITOR_RELEASES` | **Required for downloads.** A fine-grained PAT, resource owner `ConnectingTheDots-DCWK`, scoped to `ConnectingTheDots-DCWK/ripple_effect` alone, `Contents: read`. Server-side only — no `NEXT_PUBLIC_` prefix, ever. Read by `/download` and the update routes and nothing else. |
-| `RIPPLE_EFFECT_METADATA` | Optional. A fine-grained PAT with the `ConnectingTheDots-DCWK` organisation as its resource owner and no permissions beyond the metadata every token has. `/api/contributors` and `/api/engine` read public repositories with it, for the rate limit; without it they still work, at sixty requests an hour. Server-side only. |
+| `RIPPLE_EFFECT_METADATA` | Optional. A fine-grained PAT with the `ConnectingTheDots-DCWK` organisation as its resource owner and no permissions beyond the metadata every token has. Its repository access is **all repositories**, because `/api/credits` lists the collaborators on the private `ripple_effect` with it; without it that one list is empty. `/api/contributors`, `/api/credits` and `/api/engine` read public repositories with it, for the rate limit; without it they still work, at sixty requests an hour. Server-side only. |
 | `NEXT_PUBLIC_WAITLIST_URL` | The hosted form the paid-tier waitlist button opens. Defaults to the live one; override to point it elsewhere. |
 
 Without `RIPPLE_EFFECT_EDITOR_RELEASES` the site builds and runs; `/download` draws its four
