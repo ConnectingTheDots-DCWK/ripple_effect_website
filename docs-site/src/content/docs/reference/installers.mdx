@@ -14,11 +14,11 @@ Ripple Effect is one download per platform from the [download page](https://ripp
 | Linux, Debian and Ubuntu | `.deb` | glibc 2.38 or newer: Ubuntu 24.04+, Debian 13+ | `/opt/ripple_effect` |
 | Linux, Fedora and RHEL | `.rpm` | glibc 2.38 or newer: Fedora 39+ | `/usr/share/ripple-effect` |
 | Windows | Setup `.exe` | Windows 10 or 11 | `%LOCALAPPDATA%\Programs\Ripple Effect` |
-| macOS | `.dmg` | macOS 12 Monterey or newer, on Apple silicon | Applications, by dragging the app there |
+| macOS | `.dmg` | macOS 26 Tahoe or newer, on Apple silicon | Applications, by dragging the app there |
 
 - **Linux.** Both packages put `ripple_effect` on `PATH`. The glibc floor exists because version control ships a libgit2 that needs it, and a package that claimed less would install and then be unable to open a repository; a package refused with a complaint about `libc6` or `GLIBC_2.38` is this floor. Sound needs only ALSA, which the `.deb` declares; PulseAudio and PipeWire are used when they are installed but are not required. Both packages also install `pulseaudio-utils`, because dictation records through its `parecord`.
 - **Windows.** Installs for the current account only and never asks for an administrator. Running a later installer over an existing install upgrades it in place.
-- **macOS.** Apple silicon only: the build is arm64, because the libgit2 that version control ships is.
+- **macOS.** Apple silicon and macOS 26 only, both because of the libgit2 that version control ships: it is built for arm64 and for macOS 26. Finder refuses to open the app on an older Mac; version 1.5.1 is the last that runs on macOS 12 to 15.
 - **Every platform.** The app draws with Impeller on Windows, macOS and Linux, so text may look slightly different from earlier versions. If something draws wrongly or slowly, report it from Settings › Support.
 
 Install commands for Linux:
