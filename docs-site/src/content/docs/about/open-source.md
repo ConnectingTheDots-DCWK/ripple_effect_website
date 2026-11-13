@@ -1,17 +1,21 @@
 ---
-title: Open source
-description: Ripple Effect is proprietary, but several packages it stands on are open source, four of them ours, and so are the engine's bindings; this page explains which, why, and whose the rest is.
+title: Awesome open source
+description: Ripple Effect is proprietary, but several packages it stands on are open source, four of them ours, and so are the engine's bindings; this page explains which, why, and whose the rest is, along with one game engine we recommend.
 ---
 
 Ripple Effect is [proprietary](/about/licensing/) and its source is not published. Several of the packages it is built on are open source, and four of them are ours: the node editor, the docking layout the workspace is drawn with, the reading-time estimate and the crash reporter. The distinction is worth keeping straight, because the two halves are easy to blur: **the packages are open, the app is not.** The four are published on their own and take pull requests. `fl_nodes_v2`, `fl_panel` and `fl_crashpad` are Flutter packages and need Flutter; `dart_read_time` is pure Dart. The bindings that let other programs play a campaign are open source too, though the engine they carry is not.
 
-## fl_nodes_v2: the node editor
+The page is in two halves: what we wrote, and what other people wrote that the app is built on or that we would recommend to anyone. The second half has one project that is not inside the app at all: Flame, a game engine a Dart game can play a campaign in.
+
+## By us
+
+### fl_nodes_v2: the node editor
 
 [github.com/ConnectingTheDots-DCWK/fl_nodes_v2](https://github.com/ConnectingTheDots-DCWK/fl_nodes_v2) · MIT
 
 This is the canvas: geometry, wiring, selection, undo, the execution model (control pushed, data pulled) and the minimap. It knows nothing about narrative. A node is whatever the host says a node is, and Ripple Effect is one host. Everything about how a card behaves on the canvas, described in [Boards, nodes and macros](/explanation/boards-nodes-and-macros/), is this package behaving, and a contribution there reaches Ripple Effect and every other application built on it.
 
-## fl_panel: the docking layout
+### fl_panel: the docking layout
 
 [github.com/ConnectingTheDots-DCWK/fl_panel](https://github.com/ConnectingTheDots-DCWK/fl_panel) · MIT
 
@@ -19,19 +23,19 @@ This is a tree of splits, single panels and tab groups that you resize, dock and
 
 It is what the [workspace](/reference/workspace-window/) is drawn with. The project page is one docking area over this package: the documents are tabs and splits, and the layout is kept per project in `.ripple/workspace.json`. The package went public first so that it was built in the open rather than around one application's shape. Its tree, solver and file format import nothing from Flutter, so a layout can be built, edited and saved headless. The [post that introduces it](https://ripplefx.app/blog/docking-is-a-tree-and-a-tab-is-a-name) says why the tree is the shape it is.
 
-## dart_read_time: how long a passage takes to read
+### dart_read_time: how long a passage takes to read
 
 [github.com/ConnectingTheDots-DCWK/dart_read_time](https://github.com/ConnectingTheDots-DCWK/dart_read_time) · MIT
 
 This is the estimate under every passage: fifty-four languages, mixed scripts counted a run at a time, and an honest word about whether the figure for a language is measured or reasoned. It is pure Dart with no Flutter in it, so a browser or a command line can use it too. [Passages, choices, languages and reading time](/reference/passages/) says what the row under the editor does with it.
 
-## fl_crashpad: native crash reports
+### fl_crashpad: native crash reports
 
 [github.com/ConnectingTheDots-DCWK/fl_crashpad](https://github.com/ConnectingTheDots-DCWK/fl_crashpad) · MIT
 
 This is native crash reporting for Flutter over Google Crashpad, on desktop, Android and iOS. It knows nothing about any app, logger or backend. In Ripple Effect it catches a native crash; every report is sanitised before it can be read or sent. [Updates, logs and Messages](/explanation/updates-logs-and-privacy/) covers what the app does with a report.
 
-## The engine's bindings
+### The engine's bindings
 
 | Binding | Repository | Published as |
 | --- | --- | --- |
@@ -42,25 +46,33 @@ This is native crash reporting for Flutter over Google Crashpad, on desktop, And
 
 These are how a game, an app or a page plays a campaign exported from the editor. Each is MIT. **The engine each one carries or downloads is not**: it is a compiled build of the engine, under the [Runtime Licence](/about/licensing/#the-runtime-licence), which lets you ship it unmodified in function as part of your own product. `@ripplefx/soundscape` carries no engine and is plain MIT. [Embedding the engine](/explanation/embedding-the-engine/) explains what they share, and [How the engine ships](/explanation/how-the-engine-ships/) explains what they put in your build.
 
-## monty: Python, in a sandbox
+## By others
+
+### monty: Python, in a sandbox
 
 [github.com/pydantic/monty](https://github.com/pydantic/monty) · MIT
 
-**Not ours.** `monty` is a sandboxed Python interpreter written in Rust by the pydantic team, and it is how a Script node, a `{{ … }}` span in a passage and the console run Python at all. Our thanks to [runyaga](https://github.com/runyaga), whose [`dart_monty`](https://pub.dev/packages/dart_monty) first brought the interpreter to Dart. The engine links the interpreter directly, and a runaway script is stopped at its deadline.
+`monty` is a sandboxed Python interpreter written in Rust by the pydantic team, and it is how a Script node, a `{{ … }}` span in a passage and the console run Python at all. Our thanks to [runyaga](https://github.com/runyaga), whose [`dart_monty`](https://pub.dev/packages/dart_monty) first brought the interpreter to Dart. The engine links the interpreter directly, and a runaway script is stopped at its deadline.
 
 The interpreter is a subset of Python: no filesystem, no network, no `class`, and a standard library that is a short list. That restriction is what makes it safe to run a stranger's story. [Python in a story](/explanation/python-in-a-story/) explains the trade, [The sandbox and its limits](/reference/python/sandbox/) says what it allows, and the [Python reference](/reference/python/) lists what the app binds into it.
 
-## Harper: spelling and grammar
+### Harper: spelling and grammar
 
 [github.com/automattic/harper](https://github.com/automattic/harper) · Apache-2.0
 
-**Not ours.** Harper is a grammar checker written in Rust, and its `harper-core` is what checks the spelling, grammar and style of English passages and notes, on your machine, as you write. The style rules a project writes for itself are in Weir, Harper's rule language. [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) and [How to write a style rule](/how-to/write-a-style-rule/) say how to use it.
+Harper is a grammar checker written in Rust, and its `harper-core` is what checks the spelling, grammar and style of English passages and notes, on your machine, as you write. The style rules a project writes for itself are in Weir, Harper's rule language. [How to check spelling and grammar](/how-to/check-spelling-and-grammar/) and [How to write a style rule](/how-to/write-a-style-rule/) say how to use it.
 
-## parakeet-rs: dictation
+### parakeet-rs: dictation
 
 [github.com/altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs) · MIT or Apache-2.0
 
-**Not ours.** `parakeet-rs` runs NVIDIA's Nemotron streaming models, which is how dictation hears you on your own computer. The models are not part of the app: each is downloaded when you ask for it, and they are under NVIDIA's licences rather than ours. [How to dictate a passage](/how-to/dictate-a-passage/) says how to set it up.
+`parakeet-rs` runs NVIDIA's Nemotron streaming models, which is how dictation hears you on your own computer. The models are not part of the app: each is downloaded when you ask for it, and they are under NVIDIA's licences rather than ours. [How to dictate a passage](/how-to/dictate-a-passage/) says how to set it up.
+
+### Flame: a game engine for Flutter
+
+[github.com/flame-engine/flame](https://github.com/flame-engine/flame) · MIT
+
+Flame is the open-source game engine for Flutter: a game loop, components, sprites, input, collisions and audio. Unlike everything else in this half, it is not inside Ripple Effect, and nothing in the app or the engine depends on it. It is here because it is the natural home for a narrative game written in Dart: the Dart binding, `ripplefx_engine`, plays a campaign inside a Flame game, and its repository carries a complete one, [`example/flame_player`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration/tree/main/example/flame_player), which opens a campaign from its assets and plays the soundscapes through `flame_audio`. [The Dart binding](/reference/binding-dart/) is the reference.
 
 ## Everything else
 

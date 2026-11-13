@@ -3,7 +3,9 @@ import Link from "next/link";
 import { RippleMark, Wordmark } from "@/components/ripple-mark";
 import { siteConfig } from "@/lib/site-config";
 
-const groups = [
+type FooterLink = { text: string; href: string } | { divider: string };
+
+const groups: { title: string; links: FooterLink[] }[] = [
   {
     title: "Product",
     links: [
@@ -57,16 +59,26 @@ const groups = [
   },
   {
     // "Open source" rather than "Built on": the docking layout is public and
-    // ours and the app does not stand on it yet, and a heading that said it
-    // did would be the one claim in this column a reader could catch out.
-    // The list is the docs page's list — three of ours, then the interpreter
-    // that is not — and the two are kept the same length by hand.
-    title: "Open source",
+    // ours, and Flame is not inside the app at all, so a heading that said the
+    // app stood on all of it would be the one claim in this column a reader
+    // could catch out. "Awesome" because it is a list of things we love.
+    //
+    // Split in two by a labelled rule, ours and then everybody else's, so
+    // nothing of somebody else's reads as ours by sitting in the same list.
+    // It is the docs page's list in the same order — `about/open-source`,
+    // whose two halves are headed the same way — kept in step by hand.
+    title: "Awesome open source",
     links: [
+      { divider: "By us" },
       { text: "fl_nodes_v2", href: siteConfig.links.editor },
       { text: "fl_panel", href: siteConfig.links.docking },
       { text: "dart_read_time", href: siteConfig.links.readTime },
+      { text: "fl_crashpad", href: siteConfig.links.crashpad },
+      { divider: "By others" },
       { text: "monty", href: siteConfig.links.monty },
+      { text: "Harper", href: siteConfig.links.harper },
+      { text: "parakeet-rs", href: siteConfig.links.parakeet },
+      { text: "Flame", href: siteConfig.links.flame },
     ],
   },
 ];
@@ -94,30 +106,49 @@ export function SiteFooter() {
           <nav key={group.title} aria-label={group.title}>
             <h3 className="text-sm font-semibold">{group.title}</h3>
             <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
-              {group.links.map((link) => (
-                <li key={link.text}>
-                  {link.href.startsWith("http") ? (
-                    // Another host is a plain anchor. A new tab for somebody
-                    // else's site; the docs are ours, and half the product,
-                    // so they open where the reader is.
-                    <a
-                      href={link.href}
-                      rel="noopener"
-                      target={link.href === siteConfig.links.docs ? undefined : "_blank"}
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {link.text}
-                    </a>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {link.text}
-                    </Link>
-                  )}
-                </li>
-              ))}
+              {group.links.map((link, index) =>
+                "divider" in link ? (
+                  // A label over a hairline; the first in a list needs no
+                  // rule, because the heading above already separates it.
+                  <li
+                    key={link.divider}
+                    className={
+                      index === 0
+                        ? "text-xs font-medium tracking-wide uppercase"
+                        : "border-t border-border pt-3 text-xs font-medium tracking-wide uppercase"
+                    }
+                  >
+                    {link.divider}
+                  </li>
+                ) : (
+                  <li key={link.text}>
+                    {link.href.startsWith("http") ? (
+                      // Another host is a plain anchor. A new tab for somebody
+                      // else's site; the docs are ours, and half the product,
+                      // so they open where the reader is.
+                      <a
+                        href={link.href}
+                        rel="noopener"
+                        target={
+                          link.href === siteConfig.links.docs
+                            ? undefined
+                            : "_blank"
+                        }
+                        className="transition-colors hover:text-foreground"
+                      >
+                        {link.text}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="transition-colors hover:text-foreground"
+                      >
+                        {link.text}
+                      </Link>
+                    )}
+                  </li>
+                ),
+              )}
             </ul>
           </nav>
         ))}

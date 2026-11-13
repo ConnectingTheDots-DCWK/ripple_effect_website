@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { AudienceHero } from "@/components/audience-hero";
 import { FeatureBlock } from "@/components/feature-block";
+import { FlameCard } from "@/components/flame-card";
 import { LanguageLogo, logoName, type LogoName } from "@/components/language-logo";
 import { Languages } from "@/components/mock/code-samples";
 import { mockFonts } from "@/components/mock/fonts";
@@ -173,6 +174,7 @@ export default function DevelopersPage() {
           </p>
         </FeatureBlock>
 
+        <FlameCard />
       </Reveal>
 
       <Cta />
