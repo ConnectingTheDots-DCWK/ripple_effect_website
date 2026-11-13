@@ -86,7 +86,13 @@ export const siteConfig = {
     // The reading-time estimate under every passage. Ours, pure Dart, and the
     // one of the three that was public and published before this site was.
     readTime: "https://github.com/ConnectingTheDots-DCWK/dart_read_time",
+    crashpad: "https://github.com/ConnectingTheDots-DCWK/fl_crashpad",
     monty: "https://github.com/pydantic/monty",
+    // Not ours, like monty: the spelling checker the editor embeds and the
+    // dictation engine, then Flame, which is not in the app at all.
+    harper: "https://github.com/Automattic/harper",
+    parakeet: "https://github.com/altunenes/parakeet-rs",
+    flame: "https://github.com/flame-engine/flame",
     funding: "https://buymeacoffee.com/wilielmus",
     // Interest in the paid tier. A hosted form rather than a field of our own,
     // so there is no address of anybody's sitting in a database we run.

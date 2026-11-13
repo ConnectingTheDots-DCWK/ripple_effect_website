@@ -187,6 +187,19 @@ than `--card`, because `--card` is `#14171c` in dark and the black marks would
 be no better off — this is the one fixed colour on the site that does not
 follow the theme, fixed for the same reason a photograph does not.
 
+**Two marks sit on no disc: Flame's and Harper's**, each in a card at the
+foot of an audience page (`components/project-card.tsx`; Flame on
+`/developers`, Harper on `/writers`). They are the only marks here shown **by
+permission** rather than under published guidelines — both projects'
+creators agreed on 2026-11-13 — and each is drawn from the owner's own file
+in a variant made for the background, so a disc would only cover a problem
+that is already solved. Flame ships a lockup for white and one for dark; the
+files are unchanged but for the viewBox, trimmed from a 1600×1600 canvas to
+the drawn area. Harper ships one logo, black strokes on a white rounded plate:
+dark mode shows it exactly as shipped, plate and all, and light mode a copy
+with only the plate removed. Whitening the strokes for dark would have been
+the recoloured mark this section forbids.
+
 **It is a `::after`, not a child element, and that is not a style
 preference.** Both buttons are `asChild` — one resolves to a `Link`, the other
 to an `<a>` pointed at a release asset — so a component that wrapped its

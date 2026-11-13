@@ -1,17 +1,21 @@
 ---
-title: Open source
-description: "Ripple Effect è proprietario, ma diversi pacchetti su cui si appoggia sono open source, quattro dei quali sono nostri, e lo sono anche i binding del motore: questa pagina spiega quali, perché e di chi sono gli altri."
+title: Open source fantastico
+description: "Ripple Effect è proprietario, ma diversi pacchetti su cui si appoggia sono open source, quattro dei quali sono nostri, e lo sono anche i binding del motore: questa pagina spiega quali, perché e di chi sono gli altri, insieme a un motore di gioco che consigliamo."
 ---
 
 Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente non è pubblicato. Diversi dei pacchetti su cui è costruito sono open source e quattro sono nostri: l'editor di nodi, il layout ad ancoraggio con cui è disegnato lo spazio di lavoro, la stima del tempo di lettura e il sistema di segnalazione dei crash. La distinzione va tenuta ben chiara, perché le due metà si confondono facilmente: **i pacchetti sono aperti, l'app no.** I quattro sono pubblicati a sé e accettano pull request. `fl_nodes_v2`, `fl_panel` e `fl_crashpad` sono pacchetti Flutter e richiedono Flutter; `dart_read_time` è Dart puro. Sono open source anche i binding che permettono ad altri programmi di eseguire una campagna, anche se il motore che contengono non lo è.
 
-## fl_nodes_v2: l'editor di nodi
+La pagina è divisa in due metà: quello che abbiamo scritto noi, e quello che altri hanno scritto e su cui l'app è costruita o che consiglieremmo a chiunque. La seconda metà contiene un progetto che non è affatto dentro l'app: Flame, un motore di gioco in cui un gioco Dart può eseguire una campagna.
+
+## I nostri
+
+### fl_nodes_v2: l'editor di nodi
 
 [github.com/ConnectingTheDots-DCWK/fl_nodes_v2](https://github.com/ConnectingTheDots-DCWK/fl_nodes_v2) · MIT
 
 È la tela: geometria, collegamenti, selezione, annullamento, il modello di esecuzione (il controllo è spinto, i dati sono tirati) e la minimappa. Non sa nulla di narrativa. Un nodo è ciò che l'host dice che sia un nodo, e Ripple Effect è un host tra gli altri. Tutto ciò che riguarda il comportamento di una scheda sulla tela, descritto in [Lavagne, nodi e macro](/it/explanation/boards-nodes-and-macros/), è questo pacchetto al lavoro, e un contributo lì arriva a Ripple Effect e a ogni altra applicazione costruita su di esso.
 
-## fl_panel: il layout ad ancoraggio
+### fl_panel: il layout ad ancoraggio
 
 [github.com/ConnectingTheDots-DCWK/fl_panel](https://github.com/ConnectingTheDots-DCWK/fl_panel) · MIT
 
@@ -19,19 +23,19 @@ Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente n
 
 È ciò con cui è disegnato lo [spazio di lavoro](/it/reference/workspace-window/). La pagina del progetto è un'unica area di ancoraggio su questo pacchetto: i documenti sono schede e divisioni, e il layout viene conservato per progetto in `.ripple/workspace.json`. Il pacchetto è diventato pubblico per primo, così da essere costruito allo scoperto e non attorno alla forma di una sola applicazione. Il suo albero, il solver e il formato di file non importano nulla da Flutter, quindi un layout può essere costruito, modificato e salvato senza interfaccia. [Il post che lo presenta](https://ripplefx.app/blog/docking-is-a-tree-and-a-tab-is-a-name) spiega perché l'albero ha questa forma.
 
-## dart_read_time: quanto ci vuole a leggere un passaggio
+### dart_read_time: quanto ci vuole a leggere un passaggio
 
 [github.com/ConnectingTheDots-DCWK/dart_read_time](https://github.com/ConnectingTheDots-DCWK/dart_read_time) · MIT
 
 È la stima sotto ogni passaggio: cinquantaquattro lingue, alfabeti misti contati una sequenza alla volta e una parola onesta sul fatto che il valore di una lingua sia misurato o stimato per ragionamento. È Dart puro, senza Flutter, quindi può usarlo anche un browser o una riga di comando. [Passaggi, scelte, lingue e tempo di lettura](/it/reference/passages/) spiega cosa fa con essa la riga sotto l'editor.
 
-## fl_crashpad: segnalazioni dei crash nativi
+### fl_crashpad: segnalazioni dei crash nativi
 
 [github.com/ConnectingTheDots-DCWK/fl_crashpad](https://github.com/ConnectingTheDots-DCWK/fl_crashpad) · MIT
 
 È la segnalazione dei crash nativi per Flutter basata su Google Crashpad, su desktop, Android e iOS. Non sa nulla di alcuna app, logger o backend. In Ripple Effect intercetta un crash nativo; ogni segnalazione viene ripulita prima che possa essere letta o inviata. [Aggiornamenti, log e Messaggi](/it/explanation/updates-logs-and-privacy/) spiega cosa fa l'app con una segnalazione.
 
-## I binding del motore
+### I binding del motore
 
 | Binding | Repository | Pubblicato come |
 | --- | --- | --- |
@@ -42,25 +46,33 @@ Ripple Effect è [proprietario](/it/about/licensing/) e il suo codice sorgente n
 
 Sono il modo in cui un gioco, un'app o una pagina web esegue una campagna esportata dall'editor. Ognuno è MIT. **Il motore che ognuno contiene o scarica non lo è**: è una build compilata del motore, sotto la [Runtime Licence](/it/about/licensing/#the-runtime-licence), che ti permette di distribuirlo, senza modificarne il funzionamento, come parte del tuo prodotto. `@ripplefx/soundscape` non contiene alcun motore ed è semplicemente MIT. [Incorporare il motore](/it/explanation/embedding-the-engine/) spiega che cosa hanno in comune, e [Come viene distribuito il motore](/it/explanation/how-the-engine-ships/) spiega che cosa mettono nella tua build.
 
-## monty: Python, in una sandbox
+## Di altri
+
+### monty: Python, in una sandbox
 
 [github.com/pydantic/monty](https://github.com/pydantic/monty) · MIT
 
-**Non è nostro.** `monty` è un interprete Python in sandbox scritto in Rust dal team di pydantic, ed è il modo in cui una scheda Script, uno span `{{ … }}` in un passaggio e la console eseguono Python. Un ringraziamento a [runyaga](https://github.com/runyaga), il cui [`dart_monty`](https://pub.dev/packages/dart_monty) ha portato per primo l'interprete in Dart. Il motore collega l'interprete direttamente, e uno script fuori controllo viene fermato alla sua scadenza.
+`monty` è un interprete Python in sandbox scritto in Rust dal team di pydantic, ed è il modo in cui una scheda Script, uno span `{{ … }}` in un passaggio e la console eseguono Python. Un ringraziamento a [runyaga](https://github.com/runyaga), il cui [`dart_monty`](https://pub.dev/packages/dart_monty) ha portato per primo l'interprete in Dart. Il motore collega l'interprete direttamente, e uno script fuori controllo viene fermato alla sua scadenza.
 
 L'interprete è un sottoinsieme di Python: niente filesystem, niente rete, niente `class`, e una libreria standard ridotta a un breve elenco. Questa restrizione è ciò che rende sicuro eseguire la storia di uno sconosciuto. [Python in una storia](/it/explanation/python-in-a-story/) spiega il compromesso, [La sandbox e i suoi limiti](/it/reference/python/sandbox/) dice cosa consente, e il [riferimento Python](/it/reference/python/) elenca cosa l'app vi rende disponibile.
 
-## Harper: ortografia e grammatica
+### Harper: ortografia e grammatica
 
 [github.com/automattic/harper](https://github.com/automattic/harper) · Apache-2.0
 
-**Non è nostro.** Harper è un correttore grammaticale scritto in Rust, e il suo `harper-core` è ciò che controlla ortografia, grammatica e stile dei passaggi e delle note in inglese, sul tuo computer, mentre scrivi. Le regole di stile che un progetto scrive per sé sono in Weir, il linguaggio di regole di Harper. [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) e [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/) spiegano come usarlo.
+Harper è un correttore grammaticale scritto in Rust, e il suo `harper-core` è ciò che controlla ortografia, grammatica e stile dei passaggi e delle note in inglese, sul tuo computer, mentre scrivi. Le regole di stile che un progetto scrive per sé sono in Weir, il linguaggio di regole di Harper. [Come controllare ortografia e grammatica](/it/how-to/check-spelling-and-grammar/) e [Come scrivere una regola di stile](/it/how-to/write-a-style-rule/) spiegano come usarlo.
 
-## parakeet-rs: la dettatura
+### parakeet-rs: la dettatura
 
 [github.com/altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs) · MIT o Apache-2.0
 
-**Non è nostro.** `parakeet-rs` esegue i modelli in streaming Nemotron di NVIDIA, ed è il modo in cui la dettatura ti ascolta sul tuo computer. I modelli non fanno parte dell'app: ciascuno si scarica quando lo chiedi, e sono soggetti alle licenze di NVIDIA, non alla nostra. [Come dettare un passaggio](/it/how-to/dictate-a-passage/) spiega come configurarla.
+`parakeet-rs` esegue i modelli in streaming Nemotron di NVIDIA, ed è il modo in cui la dettatura ti ascolta sul tuo computer. I modelli non fanno parte dell'app: ciascuno si scarica quando lo chiedi, e sono soggetti alle licenze di NVIDIA, non alla nostra. [Come dettare un passaggio](/it/how-to/dictate-a-passage/) spiega come configurarla.
+
+### Flame: un motore di gioco per Flutter
+
+[github.com/flame-engine/flame](https://github.com/flame-engine/flame) · MIT
+
+Flame è il motore di gioco open source per Flutter: un game loop, componenti, sprite, input, collisioni e audio. A differenza di tutto il resto di questa metà, non è dentro Ripple Effect, e né l'app né il motore dipendono da esso. È qui perché è la casa naturale di un gioco narrativo scritto in Dart: il binding Dart, `ripplefx_engine`, esegue una campagna dentro un gioco Flame, e il suo repository ne contiene uno completo, [`example/flame_player`](https://github.com/ConnectingTheDots-DCWK/ripple_effect_dart_integration/tree/main/example/flame_player), che apre una campagna dai suoi asset e ne riproduce i soundscape tramite `flame_audio`. [Il binding Dart](/it/reference/binding-dart/) è il riferimento.
 
 ## Tutto il resto
 

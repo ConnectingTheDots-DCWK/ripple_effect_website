@@ -3,6 +3,7 @@ import { LanguagesIcon, MicIcon, PlayIcon, RouteIcon } from "lucide-react";
 
 import { AudienceHero } from "@/components/audience-hero";
 import { FeatureBlock, SectionIntro } from "@/components/feature-block";
+import { HarperCard } from "@/components/harper-card";
 import { mockFonts } from "@/components/mock/fonts";
 import { Overview } from "@/components/mock/overview";
 import { GrammarEditor, WeirEditor } from "@/components/mock/writing";
@@ -144,6 +145,8 @@ export default function WritersPage() {
             ))}
           </div>
         </div>
+
+        <HarperCard />
       </Reveal>
 
       <Cta />
